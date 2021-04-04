@@ -1,0 +1,47 @@
+import express from 'express';
+import {ApolloServer, ApolloError} from 'apollo-server-express';
+import schema from './schema';
+import context from './context';
+import env from './utils/env';
+import cookieParser from 'cookie-parser';
+import auth from './routes/auth';
+
+const server = new ApolloServer({
+  context,
+  schema,
+  formatError: (err) => {
+    if (!(err instanceof ApolloError)) {
+      return new ApolloError(err.message);
+    }
+    return err;
+  },
+  introspection: true,
+  playground: {
+    settings: {
+      'request.credentials': 'include',
+    },
+  },
+});
+
+const app = express();
+app.use(cookieParser());
+
+// Routes
+auth(app);
+
+server.applyMiddleware({
+  app,
+  cors: {
+    origin: [
+      'http://localhost:3000',
+      'https://crew.kulturspektakel.de',
+      'https://table.kulturspektakel.de',
+    ],
+    credentials: true,
+  },
+});
+app.listen({port: env.PORT}, () =>
+  console.log(
+    `🚀 Server ready at http://localhost:${env.PORT}${server.graphqlPath}`,
+  ),
+);

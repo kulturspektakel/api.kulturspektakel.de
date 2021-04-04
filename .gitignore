@@ -1,0 +1,10 @@
+.nexus
+node_modules
+.DS_Store
+.env
+.tmp_build
+.vercel
+dist
+newrelic_agent.log
+.env
+.next

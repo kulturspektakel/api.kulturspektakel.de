@@ -1,0 +1,10 @@
+generates:
+  api.json:
+    schema: ./api.graphql
+    plugins:
+      - introspection
+    config:
+      minify: true
+hooks:
+  afterOneFileWrite:
+    - prettier --write

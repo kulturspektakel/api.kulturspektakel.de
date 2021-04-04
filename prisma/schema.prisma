@@ -1,0 +1,74 @@
+generator prisma_client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Viewer {
+  id             String   @id @default(uuid())
+  displayName    String
+  email          String
+  profilePicture String?
+  slackToken     String
+  slackScopes    String[]
+  updatedAt      DateTime @default(now()) @updatedAt
+}
+
+model Area {
+  id          String @id
+  displayName String
+  maxCapacity Int
+
+  table           Table[]
+  reservationSlot ReservationSlot[]
+}
+
+enum ReservationStatus {
+  Pending
+  Reserved
+  CheckedIn
+  Cleared
+}
+
+model Reservation {
+  id               Int               @id @default(autoincrement())
+  token            String            @unique @default(uuid())
+  primaryEmail     String
+  primaryPerson    String
+  otherEmails      String[]
+  otherPersons     String[]
+  createdAt        DateTime          @default(now())
+  status           ReservationStatus @default(Pending)
+  reservationSlots ReservationSlot[]
+  table            Table             @relation(fields: [tableId], references: [id])
+  tableId          String
+}
+
+model ReservationSlot {
+  id        String   @id @default(uuid())
+  startTime DateTime
+  endTime   DateTime
+  area      Area     @relation(fields: [areaId], references: [id])
+
+  areaId       String
+  reservations Reservation[]
+
+  @@unique([areaId, startTime])
+}
+
+model Table {
+  id           String @id @default(uuid())
+  areaId       String
+  maxCapacity  Int
+  minOccupancy Int
+  displayName  String
+
+  area Area @relation(fields: [areaId], references: [id])
+
+  reservations Reservation[]
+  @@unique([areaId, displayName])
+}
