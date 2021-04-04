@@ -1,14 +1,15 @@
 import {objectType} from 'nexus';
+import Node from './Node';
 
 export default objectType({
   name: 'ReservationSlot',
   definition(t) {
-    t.model.id();
+    t.implements(Node);
     t.model.startTime();
     t.model.endTime();
     t.model.area();
-    // t.model.reservation({
-    //   // TODO authorize:
-    // });
+    t.field('slotAvailability', {
+      type: 'SlotAvailability',
+    });
   },
 });

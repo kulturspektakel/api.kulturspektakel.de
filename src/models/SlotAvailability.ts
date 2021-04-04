@@ -14,14 +14,6 @@ export default objectType({
     t.field('availabilityForLargerPartySize', {
       type: 'Int',
     });
-
-    t.nonNull.field('reservationSlot', {
-      type: 'ReservationSlot',
-    });
-
-    t.list.field('consecutiveAvailableSlots', {
-      type: 'ReservationSlot',
-    });
   },
 });
 

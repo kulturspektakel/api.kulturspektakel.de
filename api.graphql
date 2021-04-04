@@ -2,10 +2,17 @@
 ### Do not make changes to this file directly
 
 
-type Area {
+type Area implements Node {
   displayName: String!
-  id: String!
-  reservableSlots(date: Date!, partySize: Int!): [SlotAvailability]
+
+  """Unique identifier for the resource"""
+  id: ID!
+  reservationSlot(after: ReservationSlotWhereUniqueInput, before: ReservationSlotWhereUniqueInput, first: Int, last: Int, orderBy: [AreaReservationSlotOrderByInput!]): [ReservationSlot!]!
+  table(after: TableWhereUniqueInput, before: TableWhereUniqueInput, first: Int, last: Int): [Table!]!
+}
+
+input AreaReservationSlotOrderByInput {
+  startTime: SortOrder
 }
 
 """
@@ -30,10 +37,15 @@ type Mutation {
   updateReservation(otherEmails: [String!]!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, token: String!): Reservation
 }
 
+interface Node {
+  """Unique identifier for the resource"""
+  id: ID!
+}
+
 type Query {
-  area(id: ID!): Area
   areas: [Area]
-  reservations(token: String!): [Reservation]
+  node(id: ID!): Node
+  reservationsForToken(token: String!): [Reservation]
   viewer: Viewer
 }
 
@@ -43,10 +55,13 @@ type Reservation {
   status: ReservationStatus!
 }
 
-type ReservationSlot {
+type ReservationSlot implements Node {
   area: Area!
   endTime: DateTime!
-  id: String!
+
+  """Unique identifier for the resource"""
+  id: ID!
+  slotAvailability(partySize: Int!): SlotAvailability
   startTime: DateTime!
 }
 
@@ -71,14 +86,28 @@ type SlotAvailability {
   availabilityForLargerPartySize: Int
   availabilityForSmallerPartySize: Int
   available: Boolean!
-  consecutiveAvailableSlots: [ReservationSlot]
-  reservationSlot: ReservationSlot!
+}
+
+enum SortOrder {
+  asc
+  desc
 }
 
 type Table {
   area: Area!
   displayName: String!
+  id: String!
   maxCapacity: Int!
+}
+
+input TableAreaIdDisplayNameCompoundUniqueInput {
+  areaId: String!
+  displayName: String!
+}
+
+input TableWhereUniqueInput {
+  areaId_displayName: TableAreaIdDisplayNameCompoundUniqueInput
+  id: String
 }
 
 type Viewer {

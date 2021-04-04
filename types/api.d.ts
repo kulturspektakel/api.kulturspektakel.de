@@ -51,6 +51,9 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  AreaReservationSlotOrderByInput: { // input type
+    startTime?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
   ReservationSlotAreaIdStartTimeCompoundUniqueInput: { // input type
     areaId: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
@@ -59,10 +62,19 @@ export interface NexusGenInputs {
     areaId_startTime?: NexusGenInputs['ReservationSlotAreaIdStartTimeCompoundUniqueInput'] | null; // ReservationSlotAreaIdStartTimeCompoundUniqueInput
     id?: string | null; // String
   }
+  TableAreaIdDisplayNameCompoundUniqueInput: { // input type
+    areaId: string; // String!
+    displayName: string; // String!
+  }
+  TableWhereUniqueInput: { // input type
+    areaId_displayName?: NexusGenInputs['TableAreaIdDisplayNameCompoundUniqueInput'] | null; // TableAreaIdDisplayNameCompoundUniqueInput
+    id?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
   ReservationStatus: "CheckedIn" | "Cleared" | "Pending" | "Reserved"
+  SortOrder: "asc" | "desc"
 }
 
 export interface NexusGenScalars {
@@ -79,7 +91,6 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Area: { // root type
     displayName: string; // String!
-    id: string; // String!
   }
   Mutation: {};
   Query: {};
@@ -89,18 +100,16 @@ export interface NexusGenObjects {
   }
   ReservationSlot: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
-    id: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   SlotAvailability: { // root type
     availabilityForLargerPartySize?: number | null; // Int
     availabilityForSmallerPartySize?: number | null; // Int
     available: boolean; // Boolean!
-    consecutiveAvailableSlots?: Array<NexusGenRootTypes['ReservationSlot'] | null> | null; // [ReservationSlot]
-    reservationSlot: NexusGenRootTypes['ReservationSlot']; // ReservationSlot!
   }
   Table: { // root type
     displayName: string; // String!
+    id: string; // String!
     maxCapacity: number; // Int!
   }
   Viewer: { // root type
@@ -111,20 +120,22 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
+  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['ReservationSlot'];
 }
 
 export interface NexusGenUnions {
 }
 
-export type NexusGenRootTypes = NexusGenObjects
+export type NexusGenRootTypes = NexusGenInterfaces & NexusGenObjects
 
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
   Area: { // field return type
     displayName: string; // String!
-    id: string; // String!
-    reservableSlots: Array<NexusGenRootTypes['SlotAvailability'] | null> | null; // [SlotAvailability]
+    id: string; // ID!
+    reservationSlot: NexusGenRootTypes['ReservationSlot'][]; // [ReservationSlot!]!
+    table: NexusGenRootTypes['Table'][]; // [Table!]!
   }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
@@ -133,9 +144,9 @@ export interface NexusGenFieldTypes {
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
   }
   Query: { // field return type
-    area: NexusGenRootTypes['Area'] | null; // Area
     areas: Array<NexusGenRootTypes['Area'] | null> | null; // [Area]
-    reservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
+    node: NexusGenRootTypes['Node'] | null; // Node
+    reservationsForToken: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
   }
   Reservation: { // field return type
@@ -146,19 +157,19 @@ export interface NexusGenFieldTypes {
   ReservationSlot: { // field return type
     area: NexusGenRootTypes['Area']; // Area!
     endTime: NexusGenScalars['DateTime']; // DateTime!
-    id: string; // String!
+    id: string; // ID!
+    slotAvailability: NexusGenRootTypes['SlotAvailability'] | null; // SlotAvailability
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   SlotAvailability: { // field return type
     availabilityForLargerPartySize: number | null; // Int
     availabilityForSmallerPartySize: number | null; // Int
     available: boolean; // Boolean!
-    consecutiveAvailableSlots: Array<NexusGenRootTypes['ReservationSlot'] | null> | null; // [ReservationSlot]
-    reservationSlot: NexusGenRootTypes['ReservationSlot']; // ReservationSlot!
   }
   Table: { // field return type
     area: NexusGenRootTypes['Area']; // Area!
     displayName: string; // String!
+    id: string; // String!
     maxCapacity: number; // Int!
   }
   Viewer: { // field return type
@@ -166,13 +177,17 @@ export interface NexusGenFieldTypes {
     email: string; // String!
     profilePicture: string | null; // String
   }
+  Node: { // field return type
+    id: string; // ID!
+  }
 }
 
 export interface NexusGenFieldTypeNames {
   Area: { // field return type name
     displayName: 'String'
-    id: 'String'
-    reservableSlots: 'SlotAvailability'
+    id: 'ID'
+    reservationSlot: 'ReservationSlot'
+    table: 'Table'
   }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
@@ -181,9 +196,9 @@ export interface NexusGenFieldTypeNames {
     updateReservation: 'Reservation'
   }
   Query: { // field return type name
-    area: 'Area'
     areas: 'Area'
-    reservations: 'Reservation'
+    node: 'Node'
+    reservationsForToken: 'Reservation'
     viewer: 'Viewer'
   }
   Reservation: { // field return type name
@@ -194,19 +209,19 @@ export interface NexusGenFieldTypeNames {
   ReservationSlot: { // field return type name
     area: 'Area'
     endTime: 'DateTime'
-    id: 'String'
+    id: 'ID'
+    slotAvailability: 'SlotAvailability'
     startTime: 'DateTime'
   }
   SlotAvailability: { // field return type name
     availabilityForLargerPartySize: 'Int'
     availabilityForSmallerPartySize: 'Int'
     available: 'Boolean'
-    consecutiveAvailableSlots: 'ReservationSlot'
-    reservationSlot: 'ReservationSlot'
   }
   Table: { // field return type name
     area: 'Area'
     displayName: 'String'
+    id: 'String'
     maxCapacity: 'Int'
   }
   Viewer: { // field return type name
@@ -214,13 +229,25 @@ export interface NexusGenFieldTypeNames {
     email: 'String'
     profilePicture: 'String'
   }
+  Node: { // field return type name
+    id: 'ID'
+  }
 }
 
 export interface NexusGenArgTypes {
   Area: {
-    reservableSlots: { // args
-      date: NexusGenScalars['Date']; // Date!
-      partySize: number; // Int!
+    reservationSlot: { // args
+      after?: NexusGenInputs['ReservationSlotWhereUniqueInput'] | null; // ReservationSlotWhereUniqueInput
+      before?: NexusGenInputs['ReservationSlotWhereUniqueInput'] | null; // ReservationSlotWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      orderBy?: NexusGenInputs['AreaReservationSlotOrderByInput'][] | null; // [AreaReservationSlotOrderByInput!]
+    }
+    table: { // args
+      after?: NexusGenInputs['TableWhereUniqueInput'] | null; // TableWhereUniqueInput
+      before?: NexusGenInputs['TableWhereUniqueInput'] | null; // TableWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
     }
   }
   Mutation: {
@@ -246,10 +273,10 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
-    area: { // args
+    node: { // args
       id: string; // ID!
     }
-    reservations: { // args
+    reservationsForToken: { // args
       token: string; // String!
     }
   }
@@ -261,12 +288,20 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
     }
   }
+  ReservationSlot: {
+    slotAvailability: { // args
+      partySize: number; // Int!
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {
+  Node: "Area" | "ReservationSlot"
 }
 
 export interface NexusGenTypeInterfaces {
+  Area: "Node"
+  ReservationSlot: "Node"
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
@@ -275,7 +310,7 @@ export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = keyof NexusGenEnums;
 
-export type NexusGenInterfaceNames = never;
+export type NexusGenInterfaceNames = keyof NexusGenInterfaces;
 
 export type NexusGenScalarNames = keyof NexusGenScalars;
 
@@ -283,7 +318,7 @@ export type NexusGenUnionNames = never;
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = never;
+export type NexusGenAbstractsUsingStrategyResolveType = "Node";
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {

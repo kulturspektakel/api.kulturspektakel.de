@@ -14,17 +14,18 @@ import Area from './models/Area';
 import Table from './models/Table';
 import requestReservation from './mutations/requestReservation';
 import ReservationStatus from './models/ReservationStatus';
+import Node from './models/Node';
 import Reservation from './models/Reservation';
 import SlotAvailability from './models/SlotAvailability';
 import confirmReservation from './mutations/confirmReservation';
 import ReservableTableSlot from './models/ReservationSlot';
-import reservations from './queries/reservations';
 import cancelReservation from './mutations/cancelReservation';
-import reservableSlots from './queries/reservableSlots';
 import updateReservation from './mutations/updateReservation';
 import Viewer from './models/Viewer';
 import viewer from './queries/viewer';
-import area from './queries/area';
+import slotAvailability from './queries/slotAvailability';
+import reservationsForToken from './queries/reservationsForToken';
+import node from './queries/node';
 
 export default makeSchema({
   contextType: {
@@ -49,13 +50,14 @@ export default makeSchema({
     SlotAvailability,
     Table,
     Viewer,
+    Node,
 
     // type extensions
-    reservableSlots,
+    slotAvailability,
     areas,
-    area,
-    reservations,
+    reservationsForToken,
     viewer,
+    node,
 
     // mutations
     cancelReservation,

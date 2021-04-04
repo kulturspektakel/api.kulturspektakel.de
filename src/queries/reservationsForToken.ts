@@ -3,7 +3,7 @@ import {extendType, nonNull, stringArg} from 'nexus';
 export default extendType({
   type: 'Query',
   definition: (t) => {
-    t.list.field('reservations', {
+    t.list.field('reservationsForToken', {
       type: 'Reservation',
       args: {
         token: nonNull(stringArg()),
