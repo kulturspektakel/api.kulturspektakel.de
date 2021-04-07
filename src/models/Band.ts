@@ -1,12 +1,12 @@
 import {objectType} from 'nexus';
-import Node from './Node';
 
 export default objectType({
-  name: 'ReservationSlot',
+  name: 'Band',
   definition(t) {
-    t.implements(Node);
+    t.model.id();
+    t.model.name();
+    t.model.genre();
     t.model.startTime();
     t.model.endTime();
-    t.model.area();
   },
 });

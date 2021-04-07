@@ -5,6 +5,7 @@ export default objectType({
   definition(t) {
     t.model.id();
     t.model.status();
+    t.model.token();
     t.model.reservationSlots({
       type: 'ReservationSlot',
     });

@@ -6,7 +6,7 @@ import {ArgsValue, intArg, nonNull} from 'nexus/dist/core';
 export default extendType({
   type: 'Area',
   definition(t) {
-    t.list.field('reservableSlots', {
+    t.nonNull.list.nonNull.field('reservableSlots', {
       type: 'SlotAvailability',
       args: {
         date: nonNull('Date'),

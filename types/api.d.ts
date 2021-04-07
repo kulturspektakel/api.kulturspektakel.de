@@ -92,6 +92,13 @@ export interface NexusGenObjects {
   Area: { // root type
     displayName: string; // String!
   }
+  Band: { // root type
+    endTime: NexusGenScalars['DateTime']; // DateTime!
+    genre?: string | null; // String
+    id: number; // Int!
+    name: string; // String!
+    startTime: NexusGenScalars['DateTime']; // DateTime!
+  }
   Mutation: {};
   Query: {};
   Reservation: { // root type
@@ -137,6 +144,13 @@ export interface NexusGenFieldTypes {
     reservationSlot: NexusGenRootTypes['ReservationSlot'][]; // [ReservationSlot!]!
     table: NexusGenRootTypes['Table'][]; // [Table!]!
   }
+  Band: { // field return type
+    endTime: NexusGenScalars['DateTime']; // DateTime!
+    genre: string | null; // String
+    id: number; // Int!
+    name: string; // String!
+    startTime: NexusGenScalars['DateTime']; // DateTime!
+  }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -144,9 +158,9 @@ export interface NexusGenFieldTypes {
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
   }
   Query: { // field return type
-    areas: Array<NexusGenRootTypes['Area'] | null> | null; // [Area]
+    areas: NexusGenRootTypes['Area'][]; // [Area!]!
     node: NexusGenRootTypes['Node'] | null; // Node
-    reservationsForToken: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
+    reservationsForToken: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
   }
   Reservation: { // field return type
@@ -156,9 +170,10 @@ export interface NexusGenFieldTypes {
   }
   ReservationSlot: { // field return type
     area: NexusGenRootTypes['Area']; // Area!
+    bandsPlaying: NexusGenRootTypes['Band'][]; // [Band!]!
     endTime: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
-    slotAvailability: NexusGenRootTypes['SlotAvailability'] | null; // SlotAvailability
+    slotAvailability: NexusGenRootTypes['SlotAvailability']; // SlotAvailability!
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   SlotAvailability: { // field return type
@@ -189,6 +204,13 @@ export interface NexusGenFieldTypeNames {
     reservationSlot: 'ReservationSlot'
     table: 'Table'
   }
+  Band: { // field return type name
+    endTime: 'DateTime'
+    genre: 'String'
+    id: 'Int'
+    name: 'String'
+    startTime: 'DateTime'
+  }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
     confirmReservation: 'Reservation'
@@ -208,6 +230,7 @@ export interface NexusGenFieldTypeNames {
   }
   ReservationSlot: { // field return type name
     area: 'Area'
+    bandsPlaying: 'Band'
     endTime: 'DateTime'
     id: 'ID'
     slotAvailability: 'SlotAvailability'

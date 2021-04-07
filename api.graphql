@@ -15,6 +15,14 @@ input AreaReservationSlotOrderByInput {
   startTime: SortOrder
 }
 
+type Band {
+  endTime: DateTime!
+  genre: String
+  id: Int!
+  name: String!
+  startTime: DateTime!
+}
+
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -43,9 +51,9 @@ interface Node {
 }
 
 type Query {
-  areas: [Area]
+  areas: [Area!]!
   node(id: ID!): Node
-  reservationsForToken(token: String!): [Reservation]
+  reservationsForToken(token: String!): [Reservation!]!
   viewer: Viewer
 }
 
@@ -57,11 +65,12 @@ type Reservation {
 
 type ReservationSlot implements Node {
   area: Area!
+  bandsPlaying: [Band!]!
   endTime: DateTime!
 
   """Unique identifier for the resource"""
   id: ID!
-  slotAvailability(partySize: Int!): SlotAvailability
+  slotAvailability(partySize: Int!): SlotAvailability!
   startTime: DateTime!
 }
 

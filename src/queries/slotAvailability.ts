@@ -5,7 +5,7 @@ import {ArgsValue, intArg, nonNull} from 'nexus/dist/core';
 export default extendType({
   type: 'ReservationSlot',
   definition(t) {
-    t.field('slotAvailability', {
+    t.nonNull.field('slotAvailability', {
       type: 'SlotAvailability',
       args: {
         partySize: nonNull(intArg()),
@@ -79,15 +79,15 @@ export default extendType({
           }
         }
 
+        // apply area limits
         const fs = freeSeats(slot);
         if (fs < partySize) {
-          available = false;
-          if (fs > 0) {
-            availabilityForSmallerPartySize = fs;
-          } else {
-            availabilityForSmallerPartySize = null;
-          }
           availabilityForLargerPartySize = null;
+          availabilityForSmallerPartySize = Math.min(
+            availabilityForSmallerPartySize ?? fs,
+            fs,
+          );
+          available = false;
         }
 
         if (available) {

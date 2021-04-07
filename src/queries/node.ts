@@ -15,7 +15,6 @@ export default extendType({
       args: {
         id: nonNull(idArg()),
       },
-      ...requireAuthorization,
       resolve: async (_parent, {id}, {prismaClient}) => {
         if (!id.includes(':')) {
           throw new UserInputError('ID must be prefixed with typename');

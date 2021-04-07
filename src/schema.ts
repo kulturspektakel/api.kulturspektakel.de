@@ -24,8 +24,11 @@ import updateReservation from './mutations/updateReservation';
 import Viewer from './models/Viewer';
 import viewer from './queries/viewer';
 import slotAvailability from './queries/slotAvailability';
-import reservationsForToken from './queries/reservationsForToken';
+import reservationForToken from './queries/reservationForToken';
+import reservationsFromSamePerson from './queries/reservationsFromSamePerson';
 import node from './queries/node';
+import Band from './models/Band';
+import bandsPlaying from './queries/bandsPlaying';
 
 export default makeSchema({
   contextType: {
@@ -51,13 +54,16 @@ export default makeSchema({
     Table,
     Viewer,
     Node,
+    Band,
 
     // type extensions
     slotAvailability,
     areas,
-    reservationsForToken,
+    reservationForToken,
+    reservationsFromSamePerson,
     viewer,
     node,
+    bandsPlaying,
 
     // mutations
     cancelReservation,
