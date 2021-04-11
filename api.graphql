@@ -3,16 +3,18 @@
 
 
 type Area implements Node {
+  availability(day: Date!, partySize: Int!): [Availability!]!
+  bandsPlaying(day: Date!): [Band!]!
   displayName: String!
 
   """Unique identifier for the resource"""
   id: ID!
-  reservationSlot(after: ReservationSlotWhereUniqueInput, before: ReservationSlotWhereUniqueInput, first: Int, last: Int, orderBy: [AreaReservationSlotOrderByInput!]): [ReservationSlot!]!
   table(after: TableWhereUniqueInput, before: TableWhereUniqueInput, first: Int, last: Int): [Table!]!
 }
 
-input AreaReservationSlotOrderByInput {
-  startTime: SortOrder
+type Availability {
+  endTime: DateTime!
+  startTime: DateTime!
 }
 
 type Band {
@@ -41,8 +43,8 @@ scalar JSONObject
 type Mutation {
   cancelReservation(token: String!): Boolean
   confirmReservation(token: String!): Reservation
-  requestReservation(otherEmails: [String!]!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, slotIds: [ID!]!): Reservation
-  updateReservation(otherEmails: [String!]!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, token: String!): Reservation
+  requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!): Boolean!
+  updateReservation(otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, token: String!): Reservation
 }
 
 interface Node {
@@ -50,51 +52,50 @@ interface Node {
   id: ID!
 }
 
+type Product {
+  id: Int!
+  name: String!
+  price: Int!
+}
+
+type ProductList {
+  emoji: String
+  id: Int!
+  name: String!
+  product(after: ProductWhereUniqueInput, before: ProductWhereUniqueInput, first: Int, last: Int, orderBy: [ProductListProductOrderByInput!]): [Product!]!
+}
+
+input ProductListProductOrderByInput {
+  order: SortOrder
+}
+
+input ProductWhereUniqueInput {
+  id: Int
+}
+
 type Query {
   areas: [Area!]!
   node(id: ID!): Node
-  reservationsForToken(token: String!): [Reservation!]!
+  productLists: [ProductList!]!
+  reservationForToken(token: String!): Reservation
   viewer: Viewer
 }
 
 type Reservation {
-  id: Int!
-  reservationSlots(after: ReservationSlotWhereUniqueInput, before: ReservationSlotWhereUniqueInput, first: Int, last: Int): [ReservationSlot!]!
-  status: ReservationStatus!
-}
-
-type ReservationSlot implements Node {
-  area: Area!
-  bandsPlaying: [Band!]!
   endTime: DateTime!
-
-  """Unique identifier for the resource"""
-  id: ID!
-  slotAvailability(partySize: Int!): SlotAvailability!
+  id: Int!
+  reservationsFromSamePerson: [Reservation!]!
   startTime: DateTime!
-}
-
-input ReservationSlotAreaIdStartTimeCompoundUniqueInput {
-  areaId: String!
-  startTime: DateTime!
-}
-
-input ReservationSlotWhereUniqueInput {
-  areaId_startTime: ReservationSlotAreaIdStartTimeCompoundUniqueInput
-  id: String
+  status: ReservationStatus!
+  table: Table!
+  token: String!
 }
 
 enum ReservationStatus {
   CheckedIn
   Cleared
+  Confirmed
   Pending
-  Reserved
-}
-
-type SlotAvailability {
-  availabilityForLargerPartySize: Int
-  availabilityForSmallerPartySize: Int
-  available: Boolean!
 }
 
 enum SortOrder {

@@ -13,6 +13,7 @@ const e = {
   SENDGRID_API_KEY: env.get('SENDGRID_API_KEY').required(!ci).asString(),
   SLACK_CLIENT_ID: env.get('SLACK_CLIENT_ID').required(!ci).asString(),
   SLACK_CLIENT_SECRET: env.get('SLACK_CLIENT_SECRET').required(!ci).asString(),
+  PASSKIT_KEY: env.get('PASSKIT_KEY').required(!ci).asString(),
 };
 
 export default e;

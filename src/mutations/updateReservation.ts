@@ -1,7 +1,6 @@
 import {extendType, stringArg, nonNull, list} from 'nexus';
 import isEmail from '../utils/isEmail';
 import {UserInputError} from 'apollo-server-express';
-import {PrismaClient, ReservationSlot, ReservationStatus} from '.prisma/client';
 
 export default extendType({
   type: 'Mutation',
@@ -12,39 +11,41 @@ export default extendType({
         token: nonNull(stringArg()),
         primaryEmail: nonNull(stringArg()),
         primaryPerson: nonNull(stringArg()),
-        otherEmails: nonNull(list(nonNull(stringArg()))),
         otherPersons: nonNull(list(nonNull(stringArg()))),
       },
       resolve: async (
         _,
-        {token, primaryEmail, primaryPerson, otherEmails, otherPersons},
+        {token, primaryEmail, primaryPerson, otherPersons},
         {prismaClient},
       ) => {
         const reservation = await prismaClient.reservation.findUnique({
+          include: {
+            table: true,
+          },
           where: {
             token,
           },
         });
 
         if (reservation == null) {
-          throw new UserInputError('Reservation not found');
+          throw new UserInputError('Reservierung konnte nicht gefunden werden');
         }
 
-        if (
-          primaryPerson.length < 1 ||
-          !isEmail(primaryEmail) ||
-          otherPersons.some((p) => p.length === 0) ||
-          otherEmails.some((e) => !isEmail(e))
-        ) {
-          throw new UserInputError('Invalid input data');
+        if (reservation.status !== 'Confirmed') {
+          throw new UserInputError('Reservierung kann nicht bearbeitet werden');
         }
+
         otherPersons = otherPersons.filter(Boolean);
-        otherEmails = otherEmails.filter(Boolean);
-
-        if (otherPersons.length > reservation.otherPersons.length) {
-          // TODO party size increased, check with area limit
-          // areaLimitNotExceeded(slots, otherPersons.length - reservation.otherPersons.length)
+        if (!primaryPerson || !isEmail(primaryEmail)) {
+          throw new UserInputError('Name/E-Mail ungültig');
         }
+        const newPartySize = otherPersons.length + 1;
+
+        if (newPartySize > reservation.table.maxCapacity) {
+          throw new UserInputError('Nicht genügend Platz am Tisch');
+        }
+        // TODO party size increased, check with area capacity
+        // areaLimitNotExceeded(slots, otherPersons.length - reservation.otherPersons.length)
 
         // TODO maybe downsize table?
 
@@ -52,7 +53,6 @@ export default extendType({
           data: {
             primaryEmail,
             primaryPerson,
-            otherEmails,
             otherPersons,
           },
           where: {

@@ -16,19 +16,21 @@ import requestReservation from './mutations/requestReservation';
 import ReservationStatus from './models/ReservationStatus';
 import Node from './models/Node';
 import Reservation from './models/Reservation';
-import SlotAvailability from './models/SlotAvailability';
+import Availability from './models/Availability';
 import confirmReservation from './mutations/confirmReservation';
-import ReservableTableSlot from './models/ReservationSlot';
 import cancelReservation from './mutations/cancelReservation';
 import updateReservation from './mutations/updateReservation';
 import Viewer from './models/Viewer';
 import viewer from './queries/viewer';
-import slotAvailability from './queries/slotAvailability';
+import availability from './queries/availability';
 import reservationForToken from './queries/reservationForToken';
 import reservationsFromSamePerson from './queries/reservationsFromSamePerson';
 import node from './queries/node';
 import Band from './models/Band';
 import bandsPlaying from './queries/bandsPlaying';
+import ProductList from './models/ProductList';
+import Product from './models/Product';
+import productLists from './queries/productLists';
 
 export default makeSchema({
   contextType: {
@@ -47,23 +49,25 @@ export default makeSchema({
 
     // models
     Area,
-    ReservableTableSlot,
     Reservation,
     ReservationStatus,
-    SlotAvailability,
+    Availability,
     Table,
     Viewer,
     Node,
     Band,
+    ProductList,
+    Product,
 
     // type extensions
-    slotAvailability,
+    availability,
     areas,
     reservationForToken,
     reservationsFromSamePerson,
     viewer,
     node,
     bandsPlaying,
+    productLists,
 
     // mutations
     cancelReservation,

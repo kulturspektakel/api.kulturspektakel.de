@@ -7,11 +7,6 @@ export default objectType({
   definition(t) {
     t.implements(Node);
     t.model.displayName();
-    t.model.reservationSlot({
-      ordering: {
-        startTime: true,
-      },
-    });
     t.model.table({
       ...requireAuthorization,
     });

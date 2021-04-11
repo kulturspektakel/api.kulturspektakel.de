@@ -1,27 +1,28 @@
-import {ReservationSlot} from '.prisma/client';
-import {extendType} from 'nexus';
+import {Area} from '@prisma/client';
+import endOfDay from 'date-fns/endOfDay';
+import startOfDay from 'date-fns/startOfDay';
+import {extendType, nonNull} from 'nexus';
 
 export default extendType({
-  type: 'ReservationSlot',
+  type: 'Area',
   definition: (t) => {
     t.nonNull.list.nonNull.field('bandsPlaying', {
       type: 'Band',
-      resolve: async (slot, _args, {prismaClient}) =>
+      args: {
+        day: nonNull('Date'),
+      },
+      resolve: async (area, {day}, {prismaClient}) =>
         prismaClient.band.findMany({
           where: {
             AND: [
               {
                 startTime: {
-                  lt: slot.endTime,
+                  gte: startOfDay(day),
+                  lte: endOfDay(day),
                 },
               },
               {
-                endTime: {
-                  gt: slot.startTime,
-                },
-              },
-              {
-                areaId: (slot as ReservationSlot).areaId,
+                areaId: (area as Area).id,
               },
             ],
           },

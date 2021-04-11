@@ -6,8 +6,8 @@ export default objectType({
     t.model.id();
     t.model.status();
     t.model.token();
-    t.model.reservationSlots({
-      type: 'ReservationSlot',
-    });
+    t.model.table();
+    t.model.startTime();
+    t.model.endTime();
   },
 });

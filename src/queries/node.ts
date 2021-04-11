@@ -1,6 +1,5 @@
 import {extendType, idArg, nonNull} from 'nexus';
 import Node from '../models/Node';
-import requireAuthorization from '../utils/requireAuthorization';
 import {NexusGenAbstractTypeMembers} from '../../types/api';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {Prisma} from '@prisma/client';
@@ -31,9 +30,6 @@ export default extendType({
         switch (__typename) {
           case 'Area':
             delegate = prismaClient.area;
-            break;
-          case 'ReservationSlot':
-            delegate = prismaClient.reservationSlot;
             break;
           default:
             new UnreachableCaseError(__typename);

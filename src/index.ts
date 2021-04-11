@@ -5,6 +5,7 @@ import context from './context';
 import env from './utils/env';
 import cookieParser from 'cookie-parser';
 import auth from './routes/auth';
+import passkit from './routes/passkit';
 
 const server = new ApolloServer({
   context,
@@ -28,6 +29,7 @@ app.use(cookieParser());
 
 // Routes
 auth(app);
+passkit(app);
 
 server.applyMiddleware({
   app,

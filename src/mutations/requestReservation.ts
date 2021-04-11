@@ -1,78 +1,117 @@
-import {extendType, stringArg, nonNull, list, idArg} from 'nexus';
-import sendMail from '../utils/sendMail';
-import endOfDay from 'date-fns/endOfDay';
+import {Reservation} from '@prisma/client';
 import {UserInputError} from 'apollo-server-errors';
-import {PrismaClient, ReservationSlot} from '.prisma/client';
+import {extendType, idArg, list, nonNull, stringArg} from 'nexus';
+import {ArgsValue} from 'nexus/dist/typegenTypeHelpers';
+import {
+  hasEnoughTimeLeft,
+  isLongEnough,
+  isTooLong,
+} from '../queries/availability';
+import isEmail from '../utils/isEmail';
+import sendMail from '../utils/sendMail';
 
 export default extendType({
   type: 'Mutation',
   definition: (t) => {
-    t.field('requestReservation', {
-      type: 'Reservation',
+    t.nonNull.field('requestReservation', {
+      type: 'Boolean',
       args: {
         primaryEmail: nonNull(stringArg()),
         primaryPerson: nonNull(stringArg()),
-        otherEmails: nonNull(list(nonNull(stringArg()))),
         otherPersons: nonNull(list(nonNull(stringArg()))),
-        slotIds: nonNull(list(nonNull(idArg()))),
+        startTime: nonNull('DateTime'),
+        endTime: nonNull('DateTime'),
+        areaId: nonNull(idArg()),
       },
       resolve: async (
         _,
-        {primaryEmail, primaryPerson, otherEmails, otherPersons, slotIds},
+        {
+          primaryEmail,
+          primaryPerson,
+          startTime,
+          endTime,
+          otherPersons,
+          areaId,
+        }: ArgsValue<'Mutation', 'requestReservation'> & {
+          startTime: Date;
+          endTime: Date;
+        },
         {prismaClient},
       ) => {
-        // TODO validate primary and others
+        otherPersons = otherPersons.filter(Boolean);
+        if (!primaryPerson || !isEmail(primaryEmail)) {
+          throw new UserInputError('Ungültige Angabe bei Namen/E-Mail');
+        }
+
         const partySize = otherPersons.length + 1;
 
-        const slots = await prismaClient.reservationSlot.findMany({
+        if (!hasEnoughTimeLeft(endTime)) {
+          throw new UserInputError('Nicht mehr genügend Zeit');
+        }
+        if (!isLongEnough(startTime, endTime)) {
+          throw new UserInputError('Reservierungszeitraum ist zu kurz');
+        }
+        if (isTooLong(startTime, endTime)) {
+          throw new UserInputError('Reservierungszeitraum ist zu lange');
+        }
+
+        const area = await prismaClient.area.findUnique({
           where: {
-            id: {
-              in: slotIds,
+            id: areaId,
+          },
+          include: {
+            areaOpeningHour: {
+              where: {
+                startTime: {
+                  lte: startTime,
+                },
+                endTime: {
+                  gte: endTime,
+                },
+              },
+            },
+          },
+        });
+
+        if (!area) {
+          throw new UserInputError('Bereich existiert nicht');
+        }
+        if (area.areaOpeningHour.length === 0) {
+          throw new UserInputError('Außerhalb der Öffnungszeiten');
+        }
+
+        const reservations = await prismaClient.reservation.findMany({
+          where: {
+            table: {
+              areaId,
+            },
+            startTime: {
+              lte: endTime,
+            },
+            endTime: {
+              gte: startTime,
+            },
+            status: {
+              not: 'Cleared',
             },
           },
           orderBy: {
             startTime: 'asc',
           },
-          include: {
-            reservations: {
-              include: {
-                reservationSlots: true,
-              },
-            },
-            area: true,
-          },
         });
 
-        if (slots.length === 0) {
-          return null;
-        }
-
-        const areaId = slots[0].areaId;
-
-        if (!slots.every((s) => s.areaId === areaId)) {
-          throw new UserInputError('Slots not in same area');
-        }
-
-        if (!(await slotsAreConsecutive(prismaClient, slots))) {
-          throw new UserInputError('Slots can not be reserved together');
-        }
-
         if (
-          !slots.every(
-            (slot) =>
-              slot.reservations.reduce(
-                (acc, r) => acc + r.otherPersons.length + 1,
-                0,
-              ) +
-                partySize <=
-              slot.area.maxCapacity,
+          occupancyIntervals(reservations).some(
+            ({occupancy}) => occupancy + partySize > area.maxCapacity,
           )
         ) {
           // not enough area capacity
-          return null;
+          throw new UserInputError(
+            'Besucherzahllimit für diesen Zeitraum erreicht.',
+          );
         }
 
-        const tables = await prismaClient.table.findMany({
+        const table = await prismaClient.table.findFirst({
           where: {
             minOccupancy: {
               lte: partySize,
@@ -81,55 +120,50 @@ export default extendType({
               gte: partySize,
             },
             areaId,
-          },
-          include: {
-            reservations: true,
+            reservations: {
+              none: {
+                startTime: {
+                  lte: endTime,
+                },
+                endTime: {
+                  gte: startTime,
+                },
+              },
+            },
           },
           orderBy: {
             maxCapacity: 'asc',
           },
         });
 
-        let tableId: string | null = null;
-        for (let table of tables) {
-          const hasReservations = slots.some((slot) =>
-            slot.reservations.some((r) => r.tableId === table.id),
-          );
-
-          if (!hasReservations) {
-            tableId = table.id;
-            break;
-          }
-        }
-
-        if (tableId == null) {
-          return null;
+        if (!table) {
+          throw new UserInputError('Kein Tisch verfügbar');
         }
 
         const reservation = await prismaClient.reservation.create({
           data: {
             primaryEmail,
             primaryPerson,
-            otherEmails,
             otherPersons,
-            reservationSlots: {
-              connect: slotIds.map((id) => ({id})),
-            },
+            startTime,
+            endTime,
             table: {
               connect: {
-                id: tableId,
+                id: table.id,
               },
             },
           },
         });
 
         try {
-          await sendMail({
-            from: 'dani@kulturspektakel.de',
+          const [res] = await sendMail({
             to: primaryEmail,
-            text: 'test body',
-            subject: 'Kulturspektakel Reservierung',
+            text: `Zum Bestätigen hier klicken: https://table.kulturspektakel.de/reservation/${reservation.token}`,
+            subject: 'Reservierung angefragt',
           });
+          if (res.statusCode > 299) {
+            throw new Error(`${res.statusCode}: ${JSON.stringify(res.body)}`);
+          }
         } catch (e) {
           // clear reservation, because it can't be confirmed
           await prismaClient.reservation.delete({
@@ -137,44 +171,46 @@ export default extendType({
               id: reservation.id,
             },
           });
-          return null;
+          throw new UserInputError(
+            'Bestätigungsmail konnte nicht versendet werden',
+          );
         }
 
-        return reservation;
+        if (!reservation) {
+          throw new UserInputError('Reserierung konnte nicht bestätigt werden');
+        }
+
+        return true;
       },
     });
   },
 });
 
-async function slotsAreConsecutive(
-  prismaClient: PrismaClient,
-  slots: ReservationSlot[],
-): Promise<boolean> {
-  if (slots.length < 2) {
-    return true;
-  }
-  const consecutiveSlots = await prismaClient.reservationSlot.findMany({
-    where: {
-      areaId: slots[0].areaId,
-      AND: [
-        {
-          startTime: {
-            gte: slots[0].startTime,
-          },
-        },
-        {
-          startTime: {
-            lte: endOfDay(slots[0].startTime),
-          },
-        },
-      ],
-    },
-  });
+type OccupancyInterval = {startTime: Date; endTime: Date; occupancy: number};
 
-  for (let i = 0; i < slots.length; i++) {
-    if (slots[i].id !== consecutiveSlots[i]?.id) {
-      return false;
-    }
+export function occupancyIntervals(
+  reservations: Reservation[],
+): OccupancyInterval[] {
+  const dateGroups = reservations
+    .flatMap((r) => [
+      {date: r.startTime.getTime(), persons: r.otherPersons.length + 1},
+      {date: r.endTime.getTime(), persons: -r.otherPersons.length - 1},
+    ])
+    .reduce(
+      (acc, cv) => acc.set(cv.date, (acc.get(cv.date) ?? 0) + cv.persons),
+      new Map<number, number>(),
+    );
+
+  const dates = Array.from(dateGroups).sort(([a], [b]) => a - b);
+
+  const result: OccupancyInterval[] = [];
+  for (let i = 0; i < dates.length - 1; i++) {
+    result.push({
+      startTime: new Date(dates[i][0]),
+      endTime: new Date(dates[i + 1][0]),
+      occupancy: dates[i][1],
+    });
   }
-  return true;
+
+  return result;
 }
