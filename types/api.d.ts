@@ -51,11 +51,21 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  OrderItem: { // input type
+    amount: number; // Int!
+    note?: string | null; // String
+    productId: number; // Int!
+  }
   ProductListProductOrderByInput: { // input type
     order?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
+  ProductProductListIdOrderCompoundUniqueInput: { // input type
+    order: number; // Int!
+    productListId: number; // Int!
+  }
   ProductWhereUniqueInput: { // input type
     id?: number | null; // Int
+    productListId_order?: NexusGenInputs['ProductProductListIdOrderCompoundUniqueInput'] | null; // ProductProductListIdOrderCompoundUniqueInput
   }
   TableAreaIdDisplayNameCompoundUniqueInput: { // input type
     areaId: string; // String!
@@ -68,6 +78,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "SUM_UP" | "VOUCHER"
   ReservationStatus: "CheckedIn" | "Cleared" | "Confirmed" | "Pending"
   SortOrder: "asc" | "desc"
 }
@@ -99,6 +110,11 @@ export interface NexusGenObjects {
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   Mutation: {};
+  Order: { // root type
+    id: number; // Int!
+    payment: NexusGenEnums['OrderPayment']; // OrderPayment!
+    tokens: number; // Int!
+  }
   Product: { // root type
     id: number; // Int!
     name: string; // String!
@@ -146,6 +162,7 @@ export interface NexusGenFieldTypes {
     bandsPlaying: NexusGenRootTypes['Band'][]; // [Band!]!
     displayName: string; // String!
     id: string; // ID!
+    openingHour: NexusGenRootTypes['Availability'][]; // [Availability!]!
     table: NexusGenRootTypes['Table'][]; // [Table!]!
   }
   Availability: { // field return type
@@ -162,8 +179,15 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    createOrder: NexusGenRootTypes['Order'] | null; // Order
     requestReservation: boolean; // Boolean!
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+  }
+  Order: { // field return type
+    id: number; // Int!
+    payment: NexusGenEnums['OrderPayment']; // OrderPayment!
+    tokens: number; // Int!
+    total: number | null; // Int
   }
   Product: { // field return type
     id: number; // Int!
@@ -214,6 +238,7 @@ export interface NexusGenFieldTypeNames {
     bandsPlaying: 'Band'
     displayName: 'String'
     id: 'ID'
+    openingHour: 'Availability'
     table: 'Table'
   }
   Availability: { // field return type name
@@ -230,8 +255,15 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
     confirmReservation: 'Reservation'
+    createOrder: 'Order'
     requestReservation: 'Boolean'
     updateReservation: 'Reservation'
+  }
+  Order: { // field return type name
+    id: 'Int'
+    payment: 'OrderPayment'
+    tokens: 'Int'
+    total: 'Int'
   }
   Product: { // field return type name
     id: 'Int'
@@ -285,6 +317,9 @@ export interface NexusGenArgTypes {
     bandsPlaying: { // args
       day: NexusGenScalars['Date']; // Date!
     }
+    openingHour: { // args
+      day?: NexusGenScalars['Date'] | null; // Date
+    }
     table: { // args
       after?: NexusGenInputs['TableWhereUniqueInput'] | null; // TableWhereUniqueInput
       before?: NexusGenInputs['TableWhereUniqueInput'] | null; // TableWhereUniqueInput
@@ -298,6 +333,11 @@ export interface NexusGenArgTypes {
     }
     confirmReservation: { // args
       token: string; // String!
+    }
+    createOrder: { // args
+      payment: NexusGenEnums['OrderPayment']; // OrderPayment!
+      products: NexusGenInputs['OrderItem'][]; // [OrderItem!]!
+      tableId: string; // ID!
     }
     requestReservation: { // args
       areaId: string; // ID!

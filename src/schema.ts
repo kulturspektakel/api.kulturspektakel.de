@@ -31,6 +31,9 @@ import bandsPlaying from './queries/bandsPlaying';
 import ProductList from './models/ProductList';
 import Product from './models/Product';
 import productLists from './queries/productLists';
+import Order from './models/Order';
+import createOrder from './mutations/createOrder';
+import OrderPayment from './models/OrderPayment';
 
 export default makeSchema({
   contextType: {
@@ -58,6 +61,8 @@ export default makeSchema({
     Band,
     ProductList,
     Product,
+    Order,
+    OrderPayment,
 
     // type extensions
     availability,
@@ -74,6 +79,7 @@ export default makeSchema({
     confirmReservation,
     requestReservation,
     updateReservation,
+    createOrder,
   ],
   plugins: [
     nexusPrisma({

@@ -9,6 +9,7 @@ type Area implements Node {
 
   """Unique identifier for the resource"""
   id: ID!
+  openingHour(day: Date): [Availability!]!
   table(after: TableWhereUniqueInput, before: TableWhereUniqueInput, first: Int, last: Int): [Table!]!
 }
 
@@ -43,6 +44,7 @@ scalar JSONObject
 type Mutation {
   cancelReservation(token: String!): Boolean
   confirmReservation(token: String!): Reservation
+  createOrder(payment: OrderPayment!, products: [OrderItem!]!, tableId: ID!): Order
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!): Boolean!
   updateReservation(otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, token: String!): Reservation
 }
@@ -50,6 +52,28 @@ type Mutation {
 interface Node {
   """Unique identifier for the resource"""
   id: ID!
+}
+
+type Order {
+  id: Int!
+  payment: OrderPayment!
+  tokens: Int!
+  total: Int
+}
+
+input OrderItem {
+  amount: Int!
+  note: String
+  productId: Int!
+}
+
+enum OrderPayment {
+  BON
+  CASH
+  FREE_BAND
+  FREE_CREW
+  SUM_UP
+  VOUCHER
 }
 
 type Product {
@@ -69,8 +93,14 @@ input ProductListProductOrderByInput {
   order: SortOrder
 }
 
+input ProductProductListIdOrderCompoundUniqueInput {
+  order: Int!
+  productListId: Int!
+}
+
 input ProductWhereUniqueInput {
   id: Int
+  productListId_order: ProductProductListIdOrderCompoundUniqueInput
 }
 
 type Query {

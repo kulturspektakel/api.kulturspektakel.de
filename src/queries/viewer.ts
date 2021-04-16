@@ -1,19 +1,19 @@
 import {extendType} from 'nexus';
-import requireAuthorization from '../utils/requireAuthorization';
+import requireUserAuthorization from '../utils/requireUserAuthorization';
 
 export default extendType({
   type: 'Query',
   definition: (t) => {
     t.field('viewer', {
       type: 'Viewer',
-      ...requireAuthorization,
-      resolve: async (_root, _args, {prismaClient, userId}) => {
-        if (!userId) {
+      ...requireUserAuthorization,
+      resolve: async (_root, _args, {prismaClient, token}) => {
+        if (token?.type !== 'user') {
           return null;
         }
         return prismaClient.viewer.findUnique({
           where: {
-            id: userId,
+            id: token.userId,
           },
         });
       },

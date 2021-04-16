@@ -7,9 +7,15 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import {add} from 'date-fns';
 
-type TokenInput = {
-  userId: string;
-};
+type TokenInput =
+  | {
+      type: 'user';
+      userId: string;
+    }
+  | {
+      type: 'device';
+      deviceId: string;
+    };
 
 export type ParsedToken = TokenInput & {
   iat: number;
@@ -35,6 +41,7 @@ function setCookie(req: Request, res: Response, userId: string) {
   const expiresIn = 60 * 60 * 24 * 30;
 
   const tokenInput: TokenInput = {
+    type: 'user',
     userId,
   };
 
@@ -56,20 +63,19 @@ const SCOPES = ['identity.basic', 'identity.email', 'identity.avatar'];
 
 export default function (app: Express) {
   app.use((req, res, next) => {
-    const token = parseToken(req.cookies.token);
-
-    if (!token) {
-      return next();
-    }
-
+    const auth = req.headers.authorization?.match(/^Bearer (.+)$/) ?? [];
+    const token = parseToken(req.cookies.token ?? auth[1]);
     // @ts-ignore: put token on request object so it can be used elsewhere
     req._token = token;
 
-    const renewal = add(new Date(), {days: 7}).getTime();
-    if (token.exp * 1000 < renewal) {
-      // extend token lifetime
-      setCookie(req, res, token.userId);
+    if (token?.type === 'user') {
+      // extend cookie lifetime, if necessary
+      const renewal = add(new Date(), {days: 7}).getTime();
+      if (token.exp * 1000 < renewal) {
+        setCookie(req, res, token.userId);
+      }
     }
+
     next();
   });
 

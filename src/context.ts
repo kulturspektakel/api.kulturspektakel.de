@@ -6,13 +6,16 @@ import {Request} from 'express';
 
 export type Context = {
   prismaClient: PrismaClient;
-  token?: string;
-} & Partial<ParsedToken>;
+  token?: Partial<ParsedToken>;
+};
 
 const context: ContextFunction<{
   req: Request & {
     _token?: ParsedToken;
+    _deviceId?: string;
   };
-}> = ({req}): Context => ({prismaClient, userId: req._token?.userId});
-
+}> = ({req}): Context => ({
+  prismaClient,
+  token: req._token,
+});
 export default context;
