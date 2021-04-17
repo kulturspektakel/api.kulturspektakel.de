@@ -15,7 +15,10 @@ export default objectType({
             items: true,
           },
         });
-        return order?.items.reduce(
+        if (!order) {
+          throw new Error('Could not find order');
+        }
+        return order.items.reduce(
           (acc, cv) => acc + cv.amount * cv.perUnitPrice,
           0,
         );

@@ -123,7 +123,7 @@ export default extendType({
             reservations: {
               none: {
                 startTime: {
-                  lte: endTime,
+                  lt: endTime,
                 },
                 endTime: {
                   gte: startTime,

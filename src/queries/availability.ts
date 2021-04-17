@@ -69,6 +69,7 @@ export default extendType({
             minOccupancy: {
               lte: partySize,
             },
+            areaId: area.id,
           },
           include: {
             reservations: {
