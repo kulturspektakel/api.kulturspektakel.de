@@ -13,9 +13,16 @@ export default extendType({
         token: nonNull(stringArg()),
       },
       resolve: async (_, {token}, {prismaClient}) => {
-        const reservation = await prismaClient.reservation.findUnique({
+        let reservation = await prismaClient.reservation.findUnique({
           where: {
             token,
+          },
+          include: {
+            table: {
+              include: {
+                area: true,
+              },
+            },
           },
         });
 
@@ -24,12 +31,19 @@ export default extendType({
         }
 
         if (reservation.status === 'Pending') {
-          await prismaClient.reservation.update({
+          reservation = await prismaClient.reservation.update({
             data: {
               status: 'Confirmed',
             },
             where: {
               token,
+            },
+            include: {
+              table: {
+                include: {
+                  area: true,
+                },
+              },
             },
           });
 
@@ -54,8 +68,47 @@ export default extendType({
           try {
             await sendMail({
               to: reservation.primaryEmail,
-              subject: 'Reservierung bestätigt',
-              text: `Zum Bearbeiten hier klicken: https://table.kulturspektakel.de/reservation/${reservation.token}`,
+              subject: `Reservierung bestätigt: ${reservation.startTime.toLocaleString(
+                'de',
+                {
+                  weekday: 'long',
+                  day: '2-digit',
+                  month: 'long',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  timeZone: 'Europe/Berlin',
+                },
+              )} Uhr`,
+              text: `Hey,
+wir freuen uns, dass du zum Kult kommst. Deine Reservierung ist jetzt bestätigt:
+
+Datum: ${reservation.startTime.toLocaleDateString('de', {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                timeZone: 'Europe/Berlin',
+              })}
+Uhrzeit: ${reservation.startTime.toLocaleTimeString('de', {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Europe/Berlin',
+              })} bis ${reservation.endTime.toLocaleTimeString('de', {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Europe/Berlin',
+              })} Uhr
+Bereich: ${reservation.table.area.displayName}
+${reservation.otherPersons.length + 1} Personen
+
+Um deine Reservierung zu bearbeiten oder zu stornieren klicke hier: https://table.kulturspektakel.de/reservation/${
+                reservation.token
+              }
+
+Viele Grüße,
+das Kult-Team
+
+`,
               attachments,
             });
           } catch (e) {

@@ -46,7 +46,7 @@ type Mutation {
   confirmReservation(token: String!): Reservation
   createOrder(payment: OrderPayment!, products: [OrderItem!]!, tableId: ID!): Order
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!): Boolean!
-  updateReservation(otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, token: String!): Reservation
+  updateReservation(otherPersons: [String!]!, token: String!): Reservation
 }
 
 interface Node {
@@ -114,6 +114,8 @@ type Query {
 type Reservation {
   endTime: DateTime!
   id: Int!
+  otherPersons: [String!]!
+  primaryPerson: String!
   reservationsFromSamePerson: [Reservation!]!
   startTime: DateTime!
   status: ReservationStatus!

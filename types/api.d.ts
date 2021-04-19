@@ -129,6 +129,8 @@ export interface NexusGenObjects {
   Reservation: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
+    otherPersons: string[]; // [String!]!
+    primaryPerson: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
     status: NexusGenEnums['ReservationStatus']; // ReservationStatus!
     token: string; // String!
@@ -210,6 +212,8 @@ export interface NexusGenFieldTypes {
   Reservation: { // field return type
     endTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
+    otherPersons: string[]; // [String!]!
+    primaryPerson: string; // String!
     reservationsFromSamePerson: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
     startTime: NexusGenScalars['DateTime']; // DateTime!
     status: NexusGenEnums['ReservationStatus']; // ReservationStatus!
@@ -286,6 +290,8 @@ export interface NexusGenFieldTypeNames {
   Reservation: { // field return type name
     endTime: 'DateTime'
     id: 'Int'
+    otherPersons: 'String'
+    primaryPerson: 'String'
     reservationsFromSamePerson: 'Reservation'
     startTime: 'DateTime'
     status: 'ReservationStatus'
@@ -349,8 +355,6 @@ export interface NexusGenArgTypes {
     }
     updateReservation: { // args
       otherPersons: string[]; // [String!]!
-      primaryEmail: string; // String!
-      primaryPerson: string; // String!
       token: string; // String!
     }
   }

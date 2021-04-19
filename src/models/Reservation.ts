@@ -9,5 +9,7 @@ export default objectType({
     t.model.table();
     t.model.startTime();
     t.model.endTime();
+    t.model.primaryPerson();
+    t.model.otherPersons();
   },
 });

@@ -1,6 +1,6 @@
 import {extendType, stringArg, nonNull, list} from 'nexus';
-import isEmail from '../utils/isEmail';
 import {UserInputError} from 'apollo-server-express';
+import {occupancyIntervals} from './requestReservation';
 
 export default extendType({
   type: 'Mutation',
@@ -9,18 +9,16 @@ export default extendType({
       type: 'Reservation',
       args: {
         token: nonNull(stringArg()),
-        primaryEmail: nonNull(stringArg()),
-        primaryPerson: nonNull(stringArg()),
         otherPersons: nonNull(list(nonNull(stringArg()))),
       },
-      resolve: async (
-        _,
-        {token, primaryEmail, primaryPerson, otherPersons},
-        {prismaClient},
-      ) => {
+      resolve: async (_, {token, otherPersons}, {prismaClient}) => {
         const reservation = await prismaClient.reservation.findUnique({
           include: {
-            table: true,
+            table: {
+              include: {
+                area: true,
+              },
+            },
           },
           where: {
             token,
@@ -35,24 +33,46 @@ export default extendType({
           throw new UserInputError('Reservierung kann nicht bearbeitet werden');
         }
 
+        const oldPartySize = reservation.otherPersons.length + 1;
         otherPersons = otherPersons.filter(Boolean);
-        if (!primaryPerson || !isEmail(primaryEmail)) {
-          throw new UserInputError('Name/E-Mail ungültig');
-        }
         const newPartySize = otherPersons.length + 1;
 
         if (newPartySize > reservation.table.maxCapacity) {
           throw new UserInputError('Nicht genügend Platz am Tisch');
         }
-        // TODO party size increased, check with area capacity
-        // areaLimitNotExceeded(slots, otherPersons.length - reservation.otherPersons.length)
+        if (newPartySize > reservation.otherPersons.length + 1) {
+          const reservations = await prismaClient.reservation.findMany({
+            where: {
+              table: {
+                areaId: reservation.table.areaId,
+              },
+              startTime: {
+                lte: reservation.endTime,
+              },
+              endTime: {
+                gte: reservation.startTime,
+              },
+              status: {
+                not: 'Cleared',
+              },
+            },
+          });
+
+          if (
+            occupancyIntervals(reservations).some(
+              ({occupancy}) =>
+                occupancy - oldPartySize + newPartySize >
+                reservation.table.area.maxCapacity,
+            )
+          ) {
+            throw new UserInputError('Nicht genügend Plätze');
+          }
+        }
 
         // TODO maybe downsize table?
 
         return await prismaClient.reservation.update({
           data: {
-            primaryEmail,
-            primaryPerson,
             otherPersons,
           },
           where: {

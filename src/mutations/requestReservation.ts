@@ -121,18 +121,27 @@ export default extendType({
             },
             areaId,
             reservations: {
-              none: {
-                startTime: {
-                  lt: endTime,
-                },
-                endTime: {
-                  gte: startTime,
-                },
+              every: {
+                OR: [
+                  {
+                    startTime: {
+                      gte: endTime,
+                    },
+                  },
+                  {
+                    endTime: {
+                      lte: startTime,
+                    },
+                  },
+                ],
               },
             },
           },
           orderBy: {
             maxCapacity: 'asc',
+          },
+          include: {
+            reservations: true,
           },
         });
 
@@ -158,8 +167,22 @@ export default extendType({
         try {
           const [res] = await sendMail({
             to: primaryEmail,
-            text: `Zum Bestätigen hier klicken: https://table.kulturspektakel.de/reservation/${reservation.token}`,
-            subject: 'Reservierung angefragt',
+            text: `Hey,
+wir freuen uns, dass du zum Kulturspektakel kommst. 
+
+Zum Bestätigen hier klicken: https://table.kulturspektakel.de/reservation/${reservation.token}
+            `,
+            subject: `Reservierung bestätigen: ${reservation.startTime.toLocaleString(
+              'de',
+              {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Europe/Berlin',
+              },
+            )} Uhr`,
           });
           if (res.statusCode > 299) {
             throw new Error(`${res.statusCode}: ${JSON.stringify(res.body)}`);
