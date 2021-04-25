@@ -49,6 +49,7 @@ export async function getPass(
   });
 
   pass.barcodes(String(reservation.id));
+  pass.headerFields?.push({key: 'id', value: `#${reservation.id}`});
   pass.relevantDate(reservation.startTime);
 
   pass.primaryFields?.push(
@@ -59,6 +60,8 @@ export async function getPass(
         weekday: 'long',
         day: '2-digit',
         month: 'short',
+        year: 'numeric',
+        timeZone: 'Europe/Berlin',
       }),
     },
     {
@@ -68,6 +71,7 @@ export async function getPass(
         reservation.startTime.toLocaleTimeString('de', {
           minute: '2-digit',
           hour: '2-digit',
+          timeZone: 'Europe/Berlin',
         }) + ' Uhr',
     },
   );
@@ -90,6 +94,7 @@ export async function getPass(
         reservation.endTime.toLocaleTimeString('de', {
           minute: '2-digit',
           hour: '2-digit',
+          timeZone: 'Europe/Berlin',
         }) + ' Uhr',
     },
   );

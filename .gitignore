@@ -9,3 +9,5 @@ newrelic_agent.log
 .env
 .next
 /yarn-error.log
+.build_local
+artifacts/public/maizzle/**/*

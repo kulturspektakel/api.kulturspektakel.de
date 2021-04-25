@@ -2,6 +2,7 @@ import {Reservation} from '@prisma/client';
 import {UserInputError} from 'apollo-server-errors';
 import {extendType, idArg, list, nonNull, stringArg} from 'nexus';
 import {ArgsValue} from 'nexus/dist/typegenTypeHelpers';
+import confirmReservation from '../maizzle/mails/confirmReservation';
 import {
   hasEnoughTimeLeft,
   isLongEnough,
@@ -167,23 +168,24 @@ export default extendType({
         try {
           const [res] = await sendMail({
             to: primaryEmail,
-            text: `Hey,
-wir freuen uns, dass du zum Kulturspektakel kommst. 
-
-Zum Bestätigen hier klicken: https://table.kulturspektakel.de/reservation/${reservation.token}
-            `,
-            subject: `Reservierung bestätigen: ${reservation.startTime.toLocaleString(
-              'de',
-              {
+            subject: `Reservierungsanfrage #${reservation.id}`,
+            html: confirmReservation({
+              day: reservation.startTime.toLocaleDateString('de', {
                 weekday: 'long',
                 day: '2-digit',
                 month: 'long',
+                timeZone: 'Europe/Berlin',
+              }),
+              startTime: reservation.startTime.toLocaleTimeString('de', {
                 hour: '2-digit',
                 minute: '2-digit',
                 timeZone: 'Europe/Berlin',
-              },
-            )} Uhr`,
+              }),
+              token: reservation.token,
+              number: String(reservation.id),
+            }),
           });
+
           if (res.statusCode > 299) {
             throw new Error(`${res.statusCode}: ${JSON.stringify(res.body)}`);
           }

@@ -1,0 +1,50 @@
+---
+title: "Reservierung #{{ dynamic.number }} bestätigt"
+preheader: "Deine Reservierung für das Kulturspektakel ist bestätigt"
+---
+
+<extends src="master.html">
+  <block name="content">
+    <component src="heading.html">Reservierung #{{ dynamic.number }}</component>
+    <p class="m-0 mb-24">
+      Wir freuen uns, dass du zum Kult kommst. Dein Reservierung ist nun bestätigt.
+    </p>
+
+    <table class="table-auto">
+      <tbody>
+        <tr>
+          <th>Datum</th>
+          <td class="py-4 px-8">{{ dynamic.day }}</td>
+        </tr>
+        <tr>
+          <th>Uhrzeit</th>
+          <td class="py-4 px-8">{{ dynamic.startTime }} bis {{ dynamic.endTime }} Uhr</td>
+        </tr>
+        <tr>
+          <th>Bereich</th>
+          <td class="py-4 px-8">{{ dynamic.area }}</td>
+        </tr>
+        <tr>
+          <th>Gäste</th>
+          <td class="py-4 px-8">{{ dynamic.partySize }} Personen</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p>
+      Bitte kommt pünktlich zum Beginn eurer Reservierung. Nach 15&nbsp;Minuten geben wir den Platz für andere BesucherInnen frei.
+    </p>
+
+    <component src="hr.html"></component>
+
+    <p class="m-0 mb-16">Falls du deine Reservierung ändern oder absagen möchtest, klicke bitte hier.</p>
+    <component src="button.html" locals='{"url": "https://table.kulturspektakel.de/reservation/{{ token }}"}'>
+      Reservierung ändern
+    </component>
+    
+    <p>
+      Viele Grüße,<br>
+      das Kult-Team
+    </p>
+  </block>
+</extends>

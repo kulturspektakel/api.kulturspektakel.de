@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import auth from './routes/auth';
 import passkit from './routes/passkit';
 import ics from './routes/ics';
+import {join} from 'path';
 
 const server = new ApolloServer({
   context,
@@ -32,7 +33,10 @@ app.use(cookieParser());
 auth(app);
 passkit(app);
 ics(app);
-
+app.use(
+  '/public',
+  express.static(join(__dirname, '..', 'artifacts', 'public')),
+);
 server.applyMiddleware({
   app,
   cors: {
