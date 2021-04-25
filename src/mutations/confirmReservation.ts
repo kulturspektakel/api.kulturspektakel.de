@@ -31,72 +31,72 @@ export default extendType({
           throw new Error('Reservation not found');
         }
 
-        // if (reservation.status === 'Pending') {
-        reservation = await prismaClient.reservation.update({
-          data: {
-            status: 'Confirmed',
-          },
-          where: {
-            token,
-          },
-          include: {
-            table: {
-              include: {
-                area: true,
+        if (reservation.status === 'Pending') {
+          reservation = await prismaClient.reservation.update({
+            data: {
+              status: 'Confirmed',
+            },
+            where: {
+              token,
+            },
+            include: {
+              table: {
+                include: {
+                  area: true,
+                },
               },
             },
-          },
-        });
-
-        const ics = await getIcs(prismaClient, token);
-        const attachments = [
-          {
-            content: Buffer.from(ics).toString('base64'),
-            filename: 'reservation.ics',
-            type: 'text/calendar',
-          },
-        ];
-
-        const pass = await getPass(prismaClient, token);
-        if (pass) {
-          attachments.push({
-            content: (await streamToString(pass)).toString('base64'),
-            filename: 'pass.pkpass',
-            type: 'application/vnd.apple.pkpass',
           });
-        }
 
-        try {
-          await sendMail({
-            to: reservation.primaryEmail,
-            subject: `Reservierungsanfrage #${reservation.id}`,
-            attachments,
-            html: reservationConfirmed({
-              day: reservation.startTime.toLocaleDateString('de', {
-                weekday: 'long',
-                day: '2-digit',
-                month: 'long',
-                timeZone: 'Europe/Berlin',
+          const ics = await getIcs(prismaClient, token);
+          const attachments = [
+            {
+              content: Buffer.from(ics).toString('base64'),
+              filename: 'reservation.ics',
+              type: 'text/calendar',
+            },
+          ];
+
+          const pass = await getPass(prismaClient, token);
+          if (pass) {
+            attachments.push({
+              content: (await streamToString(pass)).toString('base64'),
+              filename: 'pass.pkpass',
+              type: 'application/vnd.apple.pkpass',
+            });
+          }
+
+          try {
+            await sendMail({
+              to: reservation.primaryEmail,
+              subject: `Reservierung #${reservation.id} bestätigt`,
+              attachments,
+              html: reservationConfirmed({
+                day: reservation.startTime.toLocaleDateString('de', {
+                  weekday: 'long',
+                  day: '2-digit',
+                  month: 'long',
+                  timeZone: 'Europe/Berlin',
+                }),
+                startTime: reservation.startTime.toLocaleTimeString('de', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  timeZone: 'Europe/Berlin',
+                }),
+                endTime: reservation.endTime.toLocaleTimeString('de', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  timeZone: 'Europe/Berlin',
+                }),
+                number: String(reservation.id),
+                area: reservation.table.area.displayName,
+                partySize: String(reservation.otherPersons.length + 1),
               }),
-              startTime: reservation.startTime.toLocaleTimeString('de', {
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: 'Europe/Berlin',
-              }),
-              endTime: reservation.endTime.toLocaleTimeString('de', {
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: 'Europe/Berlin',
-              }),
-              number: String(reservation.id),
-              area: reservation.table.area.displayName,
-              partySize: String(reservation.otherPersons.length + 1),
-            }),
-          });
-        } catch (e) {
-          console.log(e.response.body);
+            });
+          } catch (e) {
+            console.log(e.response.body);
+          }
         }
-        // }
 
         return reservation;
       },
