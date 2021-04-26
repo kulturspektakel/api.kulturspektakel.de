@@ -46,12 +46,12 @@ module.exports = {
   },
   events: {
     afterTransformers(html) {
-      html = `// auto-generated file using yarn maizzle build production
-      // prettier-ignore
-      export default ({${[...variables].join(', ')}}: {${[...variables]
+      html = `// auto-generated file using yarn generate:mail
+// prettier-ignore
+export default ({${[...variables].join(', ')}}: {${[...variables]
         .map((v) => `${v}: string`)
         .join(', ')}}) => \`${html}\`;
-      `;
+`;
       variables.clear();
       return html;
     },

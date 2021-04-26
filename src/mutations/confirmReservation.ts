@@ -91,6 +91,7 @@ export default extendType({
                 number: String(reservation.id),
                 area: reservation.table.area.displayName,
                 partySize: String(reservation.otherPersons.length + 1),
+                token: reservation.token,
               }),
             });
           } catch (e) {

@@ -1,6 +1,6 @@
-// auto-generated file using yarn maizzle build production
-      // prettier-ignore
-      export default ({number, day, startTime, token}: {number: string, day: string, startTime: string, token: string}) => `<!DOCTYPE html>
+// auto-generated file using yarn generate:mail
+// prettier-ignore
+export default ({number, day, startTime, token}: {number: string, day: string, startTime: string, token: string}) => `<!DOCTYPE html>
 <html lang="de" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="utf-8">
@@ -98,4 +98,3 @@
 </body>
 </html>
 `;
-      

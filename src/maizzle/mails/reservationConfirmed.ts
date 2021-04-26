@@ -1,6 +1,6 @@
-// auto-generated file using yarn maizzle build production
-      // prettier-ignore
-      export default ({number, day, startTime, endTime, area, partySize}: {number: string, day: string, startTime: string, endTime: string, area: string, partySize: string}) => `<!DOCTYPE html>
+// auto-generated file using yarn generate:mail
+// prettier-ignore
+export default ({number, day, startTime, endTime, area, partySize, token}: {number: string, day: string, startTime: string, endTime: string, area: string, partySize: string, token: string}) => `<!DOCTYPE html>
 <html lang="de" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="utf-8">
@@ -92,7 +92,7 @@
 </table>
     <p style="margin: 0; margin-bottom: 16px;">Falls du deine Reservierung ändern oder absagen möchtest, klicke bitte hier.</p>
     <div style="line-height: 100%;">
-    <a href="https://table.kulturspektakel.de/reservation/undefined" class="hover-bg-brand-dark" style="background-color: #e12e2e; border-radius: 4px; display: inline-block; font-weight: 600; font-size: 16px; padding-top: 12px; padding-bottom: 12px; padding-left: 24px; padding-right: 24px; text-align: center; color: #ffffff; text-decoration: none;">
+    <a href="https://table.kulturspektakel.de/reservation/${token}" class="hover-bg-brand-dark" style="background-color: #e12e2e; border-radius: 4px; display: inline-block; font-weight: 600; font-size: 16px; padding-top: 12px; padding-bottom: 12px; padding-left: 24px; padding-right: 24px; text-align: center; color: #ffffff; text-decoration: none;">
         <!--[if mso]><i style="letter-spacing: 24px; mso-font-width: -100%; mso-text-raise:30px;">&#8202;</i><![endif]-->
         <span style="mso-text-raise: 16px;">
       Reservierung ändern
@@ -133,4 +133,3 @@
 </body>
 </html>
 `;
-      
