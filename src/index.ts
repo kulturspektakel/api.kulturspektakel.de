@@ -8,6 +8,7 @@ import auth from './routes/auth';
 import passkit from './routes/passkit';
 import ics from './routes/ics';
 import {join} from 'path';
+import tasks from './tasks';
 
 const server = new ApolloServer({
   context,
@@ -26,30 +27,34 @@ const server = new ApolloServer({
   },
 });
 
-const app = express();
-app.use(cookieParser());
+(async () => {
+  await tasks();
+  const app = express();
+  app.use(cookieParser());
 
-// Routes
-auth(app);
-passkit(app);
-ics(app);
-app.use(
-  '/public',
-  express.static(join(__dirname, '..', 'artifacts', 'public')),
-);
-server.applyMiddleware({
-  app,
-  cors: {
-    origin: [
-      'http://localhost:3000',
-      'https://crew.kulturspektakel.de',
-      'https://table.kulturspektakel.de',
-    ],
-    credentials: true,
-  },
-});
-app.listen({port: env.PORT}, () =>
-  console.log(
-    `🚀 Server ready at http://localhost:${env.PORT}${server.graphqlPath}`,
-  ),
-);
+  // Routes
+  auth(app);
+  passkit(app);
+  ics(app);
+  app.use(
+    '/public',
+    express.static(join(__dirname, '..', 'artifacts', 'public')),
+  );
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: [
+        'http://localhost:3000',
+        'https://crew.kulturspektakel.de',
+        'https://table.kulturspektakel.de',
+      ],
+      credentials: true,
+    },
+  });
+
+  app.listen({port: env.PORT}, () =>
+    console.log(
+      `🚀 Server ready at http://localhost:${env.PORT}${server.graphqlPath}`,
+    ),
+  );
+})();

@@ -34,6 +34,9 @@ import productLists from './queries/productLists';
 import Order from './models/Order';
 import createOrder from './mutations/createOrder';
 import OrderPayment from './models/OrderPayment';
+import orders from './queries/orders';
+import OrderItem from './models/OrderItem';
+import checkInReservation from './mutations/checkInReservation';
 
 export default makeSchema({
   contextType: {
@@ -63,6 +66,7 @@ export default makeSchema({
     Product,
     Order,
     OrderPayment,
+    OrderItem,
 
     // type extensions
     availability,
@@ -73,12 +77,14 @@ export default makeSchema({
     node,
     bandsPlaying,
     productLists,
+    orders,
 
     // mutations
     cancelReservation,
     confirmReservation,
     requestReservation,
     updateReservation,
+    checkInReservation,
     createOrder,
   ],
   plugins: [

@@ -6,6 +6,17 @@ export default objectType({
     t.model.id();
     t.model.payment();
     t.model.tokens();
+    t.model.createdAt();
+    t.model.table();
+    t.nonNull.list.nonNull.field('items', {
+      type: 'OrderItem',
+      resolve: (parent, _, {prismaClient}) =>
+        prismaClient.orderItem.findMany({
+          where: {
+            orderId: parent.id,
+          },
+        }),
+    });
     t.field('total', {
       type: 'Int',
       resolve: async (parent, _, {prismaClient}) => {

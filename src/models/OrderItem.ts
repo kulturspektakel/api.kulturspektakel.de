@@ -1,13 +1,11 @@
 import {objectType} from 'nexus';
 
 export default objectType({
-  name: 'Band',
+  name: 'OrderItem',
   definition(t) {
     t.model.id();
+    t.model.note();
+    t.model.amount();
     t.model.name();
-    t.model.genre();
-    t.model.startTime();
-    t.model.endTime();
-    t.model.description();
   },
 });

@@ -4,11 +4,14 @@
 
 type Area implements Node {
   availability(day: Date!, partySize: Int!): [Availability!]!
+  availableCapacity: Int!
   bandsPlaying(day: Date!): [Band!]!
+  currentCapacity: Int!
   displayName: String!
 
   """Unique identifier for the resource"""
   id: ID!
+  maxCapacity: Int!
   openingHour(day: Date): [Availability!]!
   table(after: TableWhereUniqueInput, before: TableWhereUniqueInput, first: Int, last: Int): [Table!]!
 }
@@ -19,6 +22,7 @@ type Availability {
 }
 
 type Band {
+  description: String
   endTime: DateTime!
   genre: String
   id: Int!
@@ -43,8 +47,9 @@ scalar JSONObject
 
 type Mutation {
   cancelReservation(token: String!): Boolean
+  checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
-  createOrder(payment: OrderPayment!, products: [OrderItem!]!, tableId: ID!): Order
+  createOrder(payment: OrderPayment!, products: [OrderItemInput!]!, tableId: ID!): Order
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!): Boolean!
   updateReservation(otherPersons: [String!]!, token: String!): Reservation
 }
@@ -55,13 +60,23 @@ interface Node {
 }
 
 type Order {
+  createdAt: DateTime!
   id: Int!
+  items: [OrderItem!]!
   payment: OrderPayment!
+  table: Table
   tokens: Int!
   total: Int
 }
 
-input OrderItem {
+type OrderItem {
+  amount: Int!
+  id: Int!
+  name: String!
+  note: String
+}
+
+input OrderItemInput {
   amount: Int!
   note: String
   productId: Int!
@@ -106,6 +121,7 @@ input ProductWhereUniqueInput {
 type Query {
   areas: [Area!]!
   node(id: ID!): Node
+  orders: [Order!]!
   productLists: [ProductList!]!
   reservationForToken(token: String!): Reservation
   viewer: Viewer
@@ -140,6 +156,7 @@ type Table {
   displayName: String!
   id: String!
   maxCapacity: Int!
+  reservations(day: Date): [Reservation!]!
 }
 
 input TableAreaIdDisplayNameCompoundUniqueInput {

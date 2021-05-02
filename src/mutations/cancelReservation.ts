@@ -9,15 +9,14 @@ export default extendType({
         token: nonNull(stringArg()),
       },
       resolve: async (_, {token}, {prismaClient}) => {
-        const reservation = await prismaClient.reservation.delete({
+        const reservation = await prismaClient.reservation.deleteMany({
           where: {
             token,
+            status: 'Confirmed',
           },
         });
 
-        // TODO: send email?
-
-        return Boolean(reservation);
+        return reservation.count > 0;
       },
     });
   },

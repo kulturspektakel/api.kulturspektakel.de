@@ -13,7 +13,7 @@ export default extendType({
           list(
             nonNull(
               inputObjectType({
-                name: 'OrderItem',
+                name: 'OrderItemInput',
                 definition: (t) => {
                   t.nonNull.field('productId', {type: 'Int'});
                   t.nonNull.field('amount', {type: 'Int'});

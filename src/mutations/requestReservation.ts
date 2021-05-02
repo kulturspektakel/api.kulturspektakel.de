@@ -39,7 +39,9 @@ export default extendType({
         },
         {prismaClient},
       ) => {
-        otherPersons = otherPersons.filter(Boolean);
+        primaryPerson = primaryPerson.trim();
+        primaryEmail = primaryEmail.trim();
+        otherPersons = otherPersons.map((p) => p.trim()).filter(Boolean);
         if (!primaryPerson || !isEmail(primaryEmail)) {
           throw new UserInputError('Ungültige Angabe bei Namen/E-Mail');
         }
@@ -166,7 +168,7 @@ export default extendType({
         });
 
         try {
-          const [res] = await sendMail({
+          await sendMail({
             to: primaryEmail,
             subject: `Reservierungsanfrage #${reservation.id}`,
             html: confirmReservation({
@@ -185,11 +187,8 @@ export default extendType({
               number: String(reservation.id),
             }),
           });
-
-          if (res.statusCode > 299) {
-            throw new Error(`${res.statusCode}: ${JSON.stringify(res.body)}`);
-          }
         } catch (e) {
+          console.error(e);
           // clear reservation, because it can't be confirmed
           await prismaClient.reservation.delete({
             where: {

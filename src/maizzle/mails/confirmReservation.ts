@@ -57,7 +57,7 @@ export default ({number, day, startTime, token}: {number: string, day: string, s
                   <tr>
                     <td class="sm-p-24" style="background-color: #ffffff; border-radius: 4px; font-size: 16px; line-height: 24px; padding: 48px; text-align: left; color: #27272a;">
     <h1 class="sm-leading-32" style="font-weight: 600; font-size: 24px; margin: 0; margin-bottom: 24px; color: #000000;">Reservierungsanfrage #${number}</h1>
-    <p>Wir freuen uns, dass du zum am ${day} um ${startTime} Uhr zum Kult kommst. Bitte bestätige deine Reservierung, in dem du den folgenden Link anklickst.</p>
+    <p>Wir freuen uns, dass du am ${day} um ${startTime} Uhr zum Kult kommst. Bitte bestätige deine Reservierung, in dem du den folgenden Link anklickst.</p>
     <div style="line-height: 100%;">
     <a href="https://table.kulturspektakel.de/reservation/${token}" class="hover-bg-brand-dark" style="background-color: #e12e2e; border-radius: 4px; display: inline-block; font-weight: 600; font-size: 16px; padding-top: 12px; padding-bottom: 12px; padding-left: 24px; padding-right: 24px; text-align: center; color: #ffffff; text-decoration: none;">
         <!--[if mso]><i style="letter-spacing: 24px; mso-font-width: -100%; mso-text-raise:30px;">&#8202;</i><![endif]-->

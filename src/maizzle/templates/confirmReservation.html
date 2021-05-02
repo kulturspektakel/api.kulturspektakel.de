@@ -6,7 +6,7 @@ preheader: "Bitte bestätige deine Reservierung für das Kulturspektakel"
 <extends src="master.html">
   <block name="content">
     <component src="heading.html">Reservierungsanfrage #{{ dynamic.number }}</component>
-    <p>Wir freuen uns, dass du zum am {{ dynamic.day }} um {{ dynamic.startTime }} Uhr zum Kult kommst. Bitte bestätige deine Reservierung, in dem du den folgenden Link anklickst.</p>
+    <p>Wir freuen uns, dass du am {{ dynamic.day }} um {{ dynamic.startTime }} Uhr zum Kult kommst. Bitte bestätige deine Reservierung, in dem du den folgenden Link anklickst.</p>
 
     <component src="button.html" locals='{"url": "https://table.kulturspektakel.de/reservation/{{ dynamic.token }}"}'>
       Reservierung bestätigen

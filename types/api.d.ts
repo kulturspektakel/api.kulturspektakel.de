@@ -51,7 +51,7 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  OrderItem: { // input type
+  OrderItemInput: { // input type
     amount: number; // Int!
     note?: string | null; // String
     productId: number; // Int!
@@ -97,12 +97,14 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Area: { // root type
     displayName: string; // String!
+    maxCapacity: number; // Int!
   }
   Availability: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   Band: { // root type
+    description?: string | null; // String
     endTime: NexusGenScalars['DateTime']; // DateTime!
     genre?: string | null; // String
     id: number; // Int!
@@ -111,9 +113,16 @@ export interface NexusGenObjects {
   }
   Mutation: {};
   Order: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     payment: NexusGenEnums['OrderPayment']; // OrderPayment!
     tokens: number; // Int!
+  }
+  OrderItem: { // root type
+    amount: number; // Int!
+    id: number; // Int!
+    name: string; // String!
+    note?: string | null; // String
   }
   Product: { // root type
     id: number; // Int!
@@ -161,9 +170,12 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 export interface NexusGenFieldTypes {
   Area: { // field return type
     availability: NexusGenRootTypes['Availability'][]; // [Availability!]!
+    availableCapacity: number; // Int!
     bandsPlaying: NexusGenRootTypes['Band'][]; // [Band!]!
+    currentCapacity: number; // Int!
     displayName: string; // String!
     id: string; // ID!
+    maxCapacity: number; // Int!
     openingHour: NexusGenRootTypes['Availability'][]; // [Availability!]!
     table: NexusGenRootTypes['Table'][]; // [Table!]!
   }
@@ -172,6 +184,7 @@ export interface NexusGenFieldTypes {
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   Band: { // field return type
+    description: string | null; // String
     endTime: NexusGenScalars['DateTime']; // DateTime!
     genre: string | null; // String
     id: number; // Int!
@@ -180,16 +193,26 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
+    checkInReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     createOrder: NexusGenRootTypes['Order'] | null; // Order
     requestReservation: boolean; // Boolean!
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
   }
   Order: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
+    items: NexusGenRootTypes['OrderItem'][]; // [OrderItem!]!
     payment: NexusGenEnums['OrderPayment']; // OrderPayment!
+    table: NexusGenRootTypes['Table'] | null; // Table
     tokens: number; // Int!
     total: number | null; // Int
+  }
+  OrderItem: { // field return type
+    amount: number; // Int!
+    id: number; // Int!
+    name: string; // String!
+    note: string | null; // String
   }
   Product: { // field return type
     id: number; // Int!
@@ -205,6 +228,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     areas: NexusGenRootTypes['Area'][]; // [Area!]!
     node: NexusGenRootTypes['Node'] | null; // Node
+    orders: NexusGenRootTypes['Order'][]; // [Order!]!
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
     reservationForToken: NexusGenRootTypes['Reservation'] | null; // Reservation
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
@@ -225,6 +249,7 @@ export interface NexusGenFieldTypes {
     displayName: string; // String!
     id: string; // String!
     maxCapacity: number; // Int!
+    reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
   }
   Viewer: { // field return type
     displayName: string; // String!
@@ -239,9 +264,12 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Area: { // field return type name
     availability: 'Availability'
+    availableCapacity: 'Int'
     bandsPlaying: 'Band'
+    currentCapacity: 'Int'
     displayName: 'String'
     id: 'ID'
+    maxCapacity: 'Int'
     openingHour: 'Availability'
     table: 'Table'
   }
@@ -250,6 +278,7 @@ export interface NexusGenFieldTypeNames {
     startTime: 'DateTime'
   }
   Band: { // field return type name
+    description: 'String'
     endTime: 'DateTime'
     genre: 'String'
     id: 'Int'
@@ -258,16 +287,26 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
+    checkInReservation: 'Reservation'
     confirmReservation: 'Reservation'
     createOrder: 'Order'
     requestReservation: 'Boolean'
     updateReservation: 'Reservation'
   }
   Order: { // field return type name
+    createdAt: 'DateTime'
     id: 'Int'
+    items: 'OrderItem'
     payment: 'OrderPayment'
+    table: 'Table'
     tokens: 'Int'
     total: 'Int'
+  }
+  OrderItem: { // field return type name
+    amount: 'Int'
+    id: 'Int'
+    name: 'String'
+    note: 'String'
   }
   Product: { // field return type name
     id: 'Int'
@@ -283,6 +322,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     areas: 'Area'
     node: 'Node'
+    orders: 'Order'
     productLists: 'ProductList'
     reservationForToken: 'Reservation'
     viewer: 'Viewer'
@@ -303,6 +343,7 @@ export interface NexusGenFieldTypeNames {
     displayName: 'String'
     id: 'String'
     maxCapacity: 'Int'
+    reservations: 'Reservation'
   }
   Viewer: { // field return type name
     displayName: 'String'
@@ -337,12 +378,16 @@ export interface NexusGenArgTypes {
     cancelReservation: { // args
       token: string; // String!
     }
+    checkInReservation: { // args
+      checkedInPersons: number; // Int!
+      id: number; // Int!
+    }
     confirmReservation: { // args
       token: string; // String!
     }
     createOrder: { // args
       payment: NexusGenEnums['OrderPayment']; // OrderPayment!
-      products: NexusGenInputs['OrderItem'][]; // [OrderItem!]!
+      products: NexusGenInputs['OrderItemInput'][]; // [OrderItemInput!]!
       tableId: string; // ID!
     }
     requestReservation: { // args
@@ -373,6 +418,11 @@ export interface NexusGenArgTypes {
     }
     reservationForToken: { // args
       token: string; // String!
+    }
+  }
+  Table: {
+    reservations: { // args
+      day?: NexusGenScalars['Date'] | null; // Date
     }
   }
 }

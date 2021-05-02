@@ -6,7 +6,11 @@ export default extendType({
     t.nonNull.list.nonNull.field('areas', {
       type: 'Area',
       resolve: async (_root, _args, {prismaClient}) =>
-        await prismaClient.area.findMany({}),
+        await prismaClient.area.findMany({
+          orderBy: {
+            order: 'asc',
+          },
+        }),
     });
   },
 });

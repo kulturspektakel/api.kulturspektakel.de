@@ -24,6 +24,7 @@ model Area {
   maxCapacity Int
   latitude    Float
   longitude   Float
+  order       Int    @default(0)
 
   table           Table[]
   band            Band[]
@@ -46,17 +47,19 @@ enum ReservationStatus {
 }
 
 model Reservation {
-  id            Int               @id @default(autoincrement())
-  token         String            @unique @default(uuid())
-  primaryEmail  String
-  primaryPerson String
-  otherPersons  String[]
-  startTime     DateTime
-  endTime       DateTime
-  createdAt     DateTime          @default(now())
-  status        ReservationStatus @default(Pending)
-  table         Table             @relation(fields: [tableId], references: [id])
-  tableId       String
+  id               Int               @id @default(autoincrement())
+  token            String            @unique @default(uuid())
+  primaryEmail     String
+  primaryPerson    String
+  otherPersons     String[]
+  startTime        DateTime
+  checkInTime      DateTime?
+  endTime          DateTime
+  createdAt        DateTime          @default(now())
+  status           ReservationStatus @default(Pending)
+  table            Table             @relation(fields: [tableId], references: [id])
+  tableId          String
+  checkedInPersons Int               @default(0)
 
   @@unique([tableId, startTime])
 }
@@ -76,13 +79,14 @@ model Table {
 }
 
 model Band {
-  id        Int      @id @default(autoincrement())
-  name      String
-  genre     String?
-  startTime DateTime
-  endTime   DateTime
-  stage     Area     @relation(fields: [areaId], references: [id])
-  areaId    String
+  id          Int      @id @default(autoincrement())
+  name        String
+  genre       String?
+  startTime   DateTime
+  endTime     DateTime
+  stage       Area     @relation(fields: [areaId], references: [id])
+  areaId      String
+  description String?
 
   @@unique([areaId, startTime])
 }

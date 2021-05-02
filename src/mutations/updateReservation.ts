@@ -34,7 +34,7 @@ export default extendType({
         }
 
         const oldPartySize = reservation.otherPersons.length + 1;
-        otherPersons = otherPersons.filter(Boolean);
+        otherPersons = otherPersons.map((p) => p.trim()).filter(Boolean);
         const newPartySize = otherPersons.length + 1;
 
         if (newPartySize > reservation.table.maxCapacity) {

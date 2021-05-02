@@ -37,6 +37,10 @@ function requestURL(req: Request): URL {
   );
 }
 
+function cookieDomain(req: Request): string {
+  return requestURL(req).hostname.split('.').slice(-2).join('.');
+}
+
 function setCookie(req: Request, res: Response, userId: string) {
   const expiresIn = 60 * 60 * 24 * 30;
 
@@ -50,10 +54,10 @@ function setCookie(req: Request, res: Response, userId: string) {
   });
   res.cookie('token', token, {
     maxAge: expiresIn * 1000,
-    domain: requestURL(req).hostname.split('.').slice(-2).join('.'),
+    domain: cookieDomain(req),
     secure: env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
   });
 
   return token;
@@ -79,9 +83,11 @@ export default function (app: Express) {
     next();
   });
 
-  app.get('/logout', (_req, res) => {
-    res.cookie('token', null, {maxAge: 0});
-    res.send('log out');
+  app.get('/logout', (req, res) => {
+    res.clearCookie('token', {
+      domain: cookieDomain(req),
+    });
+    res.redirect('https://kulturspektakel.de');
   });
 
   app.get<{}, any, any, {code?: string; state?: string}>(

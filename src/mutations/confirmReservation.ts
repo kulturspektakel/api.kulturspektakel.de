@@ -1,4 +1,5 @@
 import {extendType, stringArg, nonNull} from 'nexus';
+import Mail from 'nodemailer/lib/mailer';
 import reservationConfirmed from '../maizzle/mails/reservationConfirmed';
 import {getIcs} from '../routes/ics';
 import {getPass} from '../routes/passkit';
@@ -49,11 +50,12 @@ export default extendType({
           });
 
           const ics = await getIcs(prismaClient, token);
-          const attachments = [
+          const attachments: Mail.Attachment[] = [
             {
               content: Buffer.from(ics).toString('base64'),
               filename: 'reservation.ics',
-              type: 'text/calendar',
+              contentType: 'text/calendar',
+              encoding: 'base64',
             },
           ];
 
@@ -62,7 +64,8 @@ export default extendType({
             attachments.push({
               content: (await streamToString(pass)).toString('base64'),
               filename: 'pass.pkpass',
-              type: 'application/vnd.apple.pkpass',
+              contentType: 'application/vnd.apple.pkpass',
+              encoding: 'base64',
             });
           }
 
@@ -76,6 +79,7 @@ export default extendType({
                   weekday: 'long',
                   day: '2-digit',
                   month: 'long',
+                  year: 'numeric',
                   timeZone: 'Europe/Berlin',
                 }),
                 startTime: reservation.startTime.toLocaleTimeString('de', {
