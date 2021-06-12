@@ -16,7 +16,8 @@ import requestReservation from './mutations/requestReservation';
 import ReservationStatus from './models/ReservationStatus';
 import Node from './models/Node';
 import Reservation from './models/Reservation';
-import Availability from './models/Availability';
+import OpeningHour from './models/OpeningHour';
+import TableAvailability from './models/TableAvailability';
 import confirmReservation from './mutations/confirmReservation';
 import cancelReservation from './mutations/cancelReservation';
 import updateReservation from './mutations/updateReservation';
@@ -57,7 +58,8 @@ export default makeSchema({
     Area,
     Reservation,
     ReservationStatus,
-    Availability,
+    OpeningHour,
+    TableAvailability,
     Table,
     Viewer,
     Node,

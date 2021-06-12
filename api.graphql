@@ -3,21 +3,15 @@
 
 
 type Area implements Node {
-  availability(day: Date!, partySize: Int!): [Availability!]!
+  availability(day: Date!, partySize: Int!): [TableAvailability!]!
   bandsPlaying(day: Date!): [Band!]!
   currentCapacity: Int!
   displayName: String!
 
   """Unique identifier for the resource"""
   id: ID!
-  openingHour(day: Date): [Availability!]!
+  openingHour(day: Date): [OpeningHour!]!
   table(after: TableWhereUniqueInput, before: TableWhereUniqueInput, first: Int, last: Int): [Table!]!
-}
-
-type Availability {
-  endTime: DateTime!
-  startTime: DateTime!
-  tableType: TableType!
 }
 
 type Band {
@@ -56,6 +50,11 @@ type Mutation {
 interface Node {
   """Unique identifier for the resource"""
   id: ID!
+}
+
+type OpeningHour {
+  endTime: DateTime!
+  startTime: DateTime!
 }
 
 type Order {
@@ -157,6 +156,12 @@ type Table {
 input TableAreaIdDisplayNameCompoundUniqueInput {
   areaId: String!
   displayName: String!
+}
+
+type TableAvailability {
+  endTime: DateTime!
+  startTime: DateTime!
+  tableType: TableType!
 }
 
 enum TableType {

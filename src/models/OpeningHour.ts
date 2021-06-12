@@ -1,7 +1,7 @@
 import {objectType} from 'nexus';
 
 export default objectType({
-  name: 'Availability',
+  name: 'OpeningHour',
   definition(t) {
     t.nonNull.field('startTime', {
       type: 'DateTime',
@@ -9,10 +9,6 @@ export default objectType({
 
     t.nonNull.field('endTime', {
       type: 'DateTime',
-    });
-
-    t.nonNull.field('tableType', {
-      type: 'TableType',
     });
   },
 });

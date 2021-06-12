@@ -15,7 +15,7 @@ export default objectType({
     });
 
     t.nonNull.list.nonNull.field('openingHour', {
-      type: 'Availability',
+      type: 'OpeningHour',
       args: {
         day: 'Date',
       },

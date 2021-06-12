@@ -17,7 +17,7 @@ export default extendType({
   type: 'Area',
   definition(t) {
     t.nonNull.list.nonNull.field('availability', {
-      type: 'Availability',
+      type: 'TableAvailability',
       args: {
         partySize: nonNull(intArg()),
         day: nonNull('Date'),
