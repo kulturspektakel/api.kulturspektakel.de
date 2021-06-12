@@ -43,7 +43,7 @@ type Mutation {
   checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
   createOrder(payment: OrderPayment!, products: [OrderItemInput!]!, tableId: ID!): Order
-  requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!): Boolean!
+  requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
   updateReservation(otherPersons: [String!]!, token: String!): Reservation
 }
 

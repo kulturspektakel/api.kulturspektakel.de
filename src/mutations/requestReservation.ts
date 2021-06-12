@@ -26,6 +26,7 @@ export default extendType({
         startTime: nonNull('DateTime'),
         endTime: nonNull('DateTime'),
         areaId: nonNull(idArg()),
+        tableType: 'TableType',
       },
       resolve: async (
         _,
@@ -36,6 +37,7 @@ export default extendType({
           endTime,
           otherPersons,
           areaId,
+          tableType,
         }: ArgsValue<'Mutation', 'requestReservation'> & {
           startTime: Date;
           endTime: Date;
@@ -106,6 +108,7 @@ export default extendType({
             maxCapacity: {
               gte: partySize,
             },
+            type: tableType ?? undefined,
             areaId,
             reservations: {
               every: {
@@ -124,9 +127,7 @@ export default extendType({
               },
             },
           },
-          orderBy: {
-            maxCapacity: 'asc',
-          },
+          orderBy: [{maxCapacity: 'asc'}, {displayName: 'asc'}],
           include: {
             reservations: true,
           },

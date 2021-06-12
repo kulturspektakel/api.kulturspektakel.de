@@ -409,6 +409,7 @@ export interface NexusGenArgTypes {
       primaryEmail: string; // String!
       primaryPerson: string; // String!
       startTime: NexusGenScalars['DateTime']; // DateTime!
+      tableType?: NexusGenEnums['TableType'] | null; // TableType
     }
     updateReservation: { // args
       otherPersons: string[]; // [String!]!
