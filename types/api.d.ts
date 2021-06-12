@@ -97,6 +97,7 @@ export interface NexusGenObjects {
   Availability: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
     startTime: NexusGenScalars['DateTime']; // DateTime!
+    tableType: NexusGenEnums['TableType']; // TableType!
   }
   Band: { // root type
     description?: string | null; // String
@@ -177,6 +178,7 @@ export interface NexusGenFieldTypes {
   Availability: { // field return type
     endTime: NexusGenScalars['DateTime']; // DateTime!
     startTime: NexusGenScalars['DateTime']; // DateTime!
+    tableType: NexusGenEnums['TableType']; // TableType!
   }
   Band: { // field return type
     description: string | null; // String
@@ -271,6 +273,7 @@ export interface NexusGenFieldTypeNames {
   Availability: { // field return type name
     endTime: 'DateTime'
     startTime: 'DateTime'
+    tableType: 'TableType'
   }
   Band: { // field return type name
     description: 'String'

@@ -10,5 +10,9 @@ export default objectType({
     t.nonNull.field('endTime', {
       type: 'DateTime',
     });
+
+    t.nonNull.field('tableType', {
+      type: 'TableType',
+    });
   },
 });

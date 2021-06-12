@@ -6,6 +6,7 @@ import {
   isBefore,
   startOfDay,
 } from 'date-fns';
+import {isEqual} from 'date-fns/esm';
 import {extendType} from 'nexus';
 import {ArgsValue, intArg, nonNull} from 'nexus/dist/core';
 import {occupancyIntervals} from '../mutations/requestReservation';
@@ -86,7 +87,12 @@ export default extendType({
 
         const availability = subtractIntervals(openingHours, overCapacity);
         return tables
-          .flatMap((t) => subtractIntervals(availability, t.reservations))
+          .flatMap((t) =>
+            subtractIntervals(availability, t.reservations).map((i) => ({
+              ...i,
+              tableType: t.type,
+            })),
+          )
           .filter(
             ({startTime, endTime}) =>
               isLongEnough(startTime, endTime) && hasEnoughTimeLeft(endTime),

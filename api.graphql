@@ -17,6 +17,7 @@ type Area implements Node {
 type Availability {
   endTime: DateTime!
   startTime: DateTime!
+  tableType: TableType!
 }
 
 type Band {
