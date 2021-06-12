@@ -1,6 +1,7 @@
 import {extendType, stringArg, nonNull, list} from 'nexus';
 import {UserInputError} from 'apollo-server-express';
 import {occupancyIntervals} from './requestReservation';
+import {getConfig} from '../utils/config';
 
 export default extendType({
   type: 'Mutation',
@@ -41,28 +42,16 @@ export default extendType({
           throw new UserInputError('Nicht genügend Platz am Tisch');
         }
         if (newPartySize > reservation.otherPersons.length + 1) {
-          const reservations = await prismaClient.reservation.findMany({
-            where: {
-              table: {
-                areaId: reservation.table.areaId,
-              },
-              startTime: {
-                lte: reservation.endTime,
-              },
-              endTime: {
-                gte: reservation.startTime,
-              },
-              status: {
-                not: 'Cleared',
-              },
-            },
-          });
-
+          const occupancy = await occupancyIntervals(
+            prismaClient,
+            reservation.startTime,
+            reservation.endTime,
+          );
           if (
-            occupancyIntervals(reservations).some(
+            occupancy.some(
               ({occupancy}) =>
                 occupancy - oldPartySize + newPartySize >
-                reservation.table.area.maxCapacity,
+                getConfig('CAPACITY_LIMIT'),
             )
           ) {
             throw new UserInputError('Nicht genügend Plätze');

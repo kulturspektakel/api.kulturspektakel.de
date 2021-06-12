@@ -9,6 +9,7 @@ import {
 import {extendType} from 'nexus';
 import {ArgsValue, intArg, nonNull} from 'nexus/dist/core';
 import {occupancyIntervals} from '../mutations/requestReservation';
+import {getConfig} from '../utils/config';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 
 export default extendType({
@@ -49,18 +50,6 @@ export default extendType({
           ({startTime, endTime}) => ({startTime, endTime}),
         );
 
-        const reservations = await prismaClient.reservation.findMany({
-          where: {
-            table: {
-              areaId: (parent as Area).id,
-            },
-            startTime: {
-              gte: startOfDay(day),
-              lte: endOfDay(day),
-            },
-          },
-        });
-
         const tables = await prismaClient.table.findMany({
           where: {
             maxCapacity: {
@@ -89,8 +78,10 @@ export default extendType({
           },
         });
 
-        const overCapacity = occupancyIntervals(reservations).filter(
-          ({occupancy}) => occupancy + partySize > area.maxCapacity,
+        const overCapacity = (
+          await occupancyIntervals(prismaClient, startOfDay(day), endOfDay(day))
+        ).filter(
+          ({occupancy}) => occupancy + partySize > getConfig('CAPACITY_LIMIT'),
         );
 
         const availability = subtractIntervals(openingHours, overCapacity);

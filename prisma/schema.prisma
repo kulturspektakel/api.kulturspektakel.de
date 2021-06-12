@@ -21,13 +21,11 @@ model Viewer {
 model Area {
   id          String @id
   displayName String
-  maxCapacity Int
   latitude    Float
   longitude   Float
   order       Int    @default(0)
 
   table           Table[]
-  band            Band[]
   areaOpeningHour AreaOpeningHour[]
 }
 
@@ -64,31 +62,25 @@ model Reservation {
   @@unique([tableId, startTime])
 }
 
+enum TableType {
+  BEER_TABLE
+  BISTRO_TABLE
+  ISLAND
+}
+
 model Table {
-  id           String @id @default(uuid())
+  id           String    @id @default(uuid())
   areaId       String
   maxCapacity  Int
   minOccupancy Int
   displayName  String
+  type         TableType
 
   area Area @relation(fields: [areaId], references: [id])
 
   reservations Reservation[]
   Order        Order[]
   @@unique([areaId, displayName])
-}
-
-model Band {
-  id          Int      @id @default(autoincrement())
-  name        String
-  genre       String?
-  startTime   DateTime
-  endTime     DateTime
-  stage       Area     @relation(fields: [areaId], references: [id])
-  areaId      String
-  description String?
-
-  @@unique([areaId, startTime])
 }
 
 model ProductList {
@@ -106,10 +98,6 @@ model Product {
 
   productList   ProductList @relation(fields: [productListId], references: [id])
   productListId Int
-
-  Order   Order? @relation(fields: [orderId], references: [id])
-  orderId Int?
-  @@unique([productListId, order])
 }
 
 enum OrderPayment {
@@ -136,7 +124,6 @@ model Order {
   device    Device       @relation(fields: [deviceId], references: [id])
   items     OrderItem[]
   deviceId  String
-  product   Product[]
 }
 
 model OrderItem {
@@ -147,4 +134,13 @@ model OrderItem {
   note         String?
   name         String
   perUnitPrice Int
+}
+
+enum ConfigKey {
+  CAPACITY_LIMIT
+}
+
+model Config {
+  key   ConfigKey @id
+  value String
 }

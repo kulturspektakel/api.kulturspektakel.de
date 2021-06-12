@@ -1,5 +1,6 @@
-import {Reservation} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import {UserInputError} from 'apollo-server-errors';
+import {add, isEqual} from 'date-fns';
 import {extendType, idArg, list, nonNull, stringArg} from 'nexus';
 import {ArgsValue} from 'nexus/dist/typegenTypeHelpers';
 import confirmReservation from '../maizzle/mails/confirmReservation';
@@ -8,6 +9,8 @@ import {
   isLongEnough,
   isTooLong,
 } from '../queries/availability';
+import {scheduleTask} from '../tasks';
+import {getConfig} from '../utils/config';
 import isEmail from '../utils/isEmail';
 import sendMail from '../utils/sendMail';
 
@@ -83,29 +86,10 @@ export default extendType({
           throw new UserInputError('Außerhalb der Öffnungszeiten');
         }
 
-        const reservations = await prismaClient.reservation.findMany({
-          where: {
-            table: {
-              areaId,
-            },
-            startTime: {
-              lte: endTime,
-            },
-            endTime: {
-              gte: startTime,
-            },
-            status: {
-              not: 'Cleared',
-            },
-          },
-          orderBy: {
-            startTime: 'asc',
-          },
-        });
-
         if (
-          occupancyIntervals(reservations).some(
-            ({occupancy}) => occupancy + partySize > area.maxCapacity,
+          (await occupancyIntervals(prismaClient, startTime, endTime)).some(
+            ({occupancy}) =>
+              occupancy + partySize > getConfig('CAPACITY_LIMIT'),
           )
         ) {
           // not enough area capacity
@@ -200,6 +184,14 @@ export default extendType({
           );
         }
 
+        await scheduleTask(
+          'clearPendingReservations',
+          {id: reservation.id},
+          {
+            runAt: add(new Date(), {minutes: 30}),
+          },
+        );
+
         if (!reservation) {
           throw new UserInputError('Reserierung konnte nicht bestätigt werden');
         }
@@ -212,29 +204,58 @@ export default extendType({
 
 type OccupancyInterval = {startTime: Date; endTime: Date; occupancy: number};
 
-export function occupancyIntervals(
-  reservations: Reservation[],
-): OccupancyInterval[] {
-  const dateGroups = reservations
+export async function occupancyIntervals(
+  prismaClient: PrismaClient,
+  startTime: Date,
+  endTime: Date,
+): Promise<OccupancyInterval[]> {
+  const reservations = await prismaClient.reservation.findMany({
+    where: {
+      startTime: {
+        gte: startTime,
+        lte: endTime,
+      },
+      endTime: {
+        gte: startTime,
+        lte: endTime,
+      },
+      status: {
+        not: 'Cleared',
+      },
+    },
+    orderBy: {
+      startTime: 'asc',
+    },
+  });
+
+  const result = reservations
     .flatMap((r) => [
-      {date: r.startTime.getTime(), persons: r.otherPersons.length + 1},
-      {date: r.endTime.getTime(), persons: -r.otherPersons.length - 1},
+      {date: r.startTime, persons: r.otherPersons.length + 1},
+      {date: r.endTime, persons: -r.otherPersons.length - 1},
     ])
-    .reduce(
-      (acc, cv) => acc.set(cv.date, (acc.get(cv.date) ?? 0) + cv.persons),
-      new Map<number, number>(),
-    );
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .reduce((acc, {date, persons}) => {
+      const lastEntry: OccupancyInterval | undefined = acc[acc.length - 1];
 
-  const dates = Array.from(dateGroups).sort(([a], [b]) => a - b);
+      if (isEqual(lastEntry?.startTime, date)) {
+        lastEntry.occupancy += persons;
+      } else {
+        if (lastEntry) {
+          lastEntry.endTime = date;
+        }
+        acc.push({
+          startTime: date,
+          endTime: date, // this is wrong, but will be overriden in the next iteration
+          occupancy: (lastEntry?.occupancy ?? 0) + persons,
+        });
+      }
 
-  const result: OccupancyInterval[] = [];
-  for (let i = 0; i < dates.length - 1; i++) {
-    result.push({
-      startTime: new Date(dates[i][0]),
-      endTime: new Date(dates[i + 1][0]),
-      occupancy: dates[i][1],
-    });
+      return acc;
+    }, [] as OccupancyInterval[]);
+
+  if (result.length > 0 && result[result.length - 1].occupancy === 0) {
+    // this should always be true
+    result.pop();
   }
-
   return result;
 }

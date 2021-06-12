@@ -3,11 +3,23 @@ import {objectType} from 'nexus';
 export default objectType({
   name: 'Band',
   definition(t) {
-    t.model.id();
-    t.model.name();
-    t.model.genre();
-    t.model.startTime();
-    t.model.endTime();
-    t.model.description();
+    t.nonNull.field('id', {
+      type: 'ID',
+    });
+    t.nonNull.field('name', {
+      type: 'String',
+    });
+    t.field('genre', {
+      type: 'String',
+    });
+    t.nonNull.field('startTime', {
+      type: 'DateTime',
+    });
+    t.nonNull.field('endTime', {
+      type: 'DateTime',
+    });
+    t.field('description', {
+      type: 'String',
+    });
   },
 });

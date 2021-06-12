@@ -18,6 +18,14 @@ const e = {
     .get('AWS_SECRET_ACCESS_KEY')
     .required(!ci)
     .asString(),
+  KULT_WEBSITE_API_PASSWORD: env
+    .get('KULT_WEBSITE_API_PASSWORD')
+    .required(!ci)
+    .asString(),
+  KULT_WEBSITE_API_EMAIL: env
+    .get('KULT_WEBSITE_API_EMAIL')
+    .required(!ci)
+    .asString(),
 };
 
 export default e;

@@ -1,4 +1,3 @@
-import {Table} from '@prisma/client';
 import {endOfDay, startOfDay} from 'date-fns';
 import {objectType} from 'nexus';
 import requireUserAuthorization from '../utils/requireUserAuthorization';
@@ -9,6 +8,7 @@ export default objectType({
     t.model.id();
     t.model.displayName();
     t.model.maxCapacity();
+    t.model.type();
     t.model.area({
       type: 'Area',
     });
@@ -21,9 +21,7 @@ export default objectType({
       resolve: async (table, {day}, {prismaClient}) =>
         prismaClient.reservation.findMany({
           where: {
-            table: {
-              areaId: (table as Table).areaId,
-            },
+            tableId: table.id,
             startTime: day
               ? {
                   gte: startOfDay(day),

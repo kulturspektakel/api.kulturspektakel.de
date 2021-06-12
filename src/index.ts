@@ -9,6 +9,7 @@ import passkit from './routes/passkit';
 import ics from './routes/ics';
 import {join} from 'path';
 import tasks from './tasks';
+import {initConfig} from './utils/config';
 
 const server = new ApolloServer({
   context,
@@ -31,6 +32,8 @@ const server = new ApolloServer({
   await tasks();
   const app = express();
   app.use(cookieParser());
+
+  await initConfig();
 
   // Routes
   auth(app);

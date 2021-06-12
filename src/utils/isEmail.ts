@@ -1,5 +1,5 @@
-import emailRegex from 'email-regex';
+import {validate} from 'email-validator';
 
 export default function (string: string): boolean {
-  return emailRegex({exact: true}).test(string);
+  return validate(string);
 }
