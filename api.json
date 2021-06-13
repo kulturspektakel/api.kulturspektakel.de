@@ -150,8 +150,8 @@
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "SCALAR",
-                    "name": "NEXUS__UNKNOWN__TYPE",
+                    "kind": "OBJECT",
+                    "name": "OpeningHour",
                     "ofType": null
                   }
                 }
@@ -598,6 +598,14 @@
                 "defaultValue": null,
                 "isDeprecated": false,
                 "deprecationReason": null
+              },
+              {
+                "name": "tableType",
+                "description": null,
+                "type": {"kind": "ENUM", "name": "TableType", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -663,16 +671,6 @@
         "kind": "SCALAR",
         "name": "Boolean",
         "description": "The `Boolean` scalar type represents `true` or `false`.",
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
-        "name": "NEXUS__UNKNOWN__TYPE",
-        "description": "This scalar should never make it into production. It is used as a placeholder for situations\nwhere GraphQL Nexus encounters a missing type. We don't want to error immediately, otherwise\nthe TypeScript definitions will not be updated.",
         "fields": null,
         "inputFields": null,
         "interfaces": null,

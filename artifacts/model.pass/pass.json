@@ -7,12 +7,7 @@
   "authenticationToken": "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdc",
   "relevantDate": "2011-12-08T13:00-08:00",
   "groupingIdentifier": "kult",
-  "locations": [
-    {
-      "longitude": 11.37493,
-      "latitude": 48.077842
-    }
-  ],
+  "locations": [],
   "barcode": {
     "message": "123456789",
     "format": "PKBarcodeFormatQR",

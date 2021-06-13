@@ -21,9 +21,8 @@ model Viewer {
 model Area {
   id          String @id
   displayName String
-  latitude    Float
-  longitude   Float
   order       Int    @default(0)
+  themeColor  String @default("red")
 
   table           Table[]
   areaOpeningHour AreaOpeningHour[]

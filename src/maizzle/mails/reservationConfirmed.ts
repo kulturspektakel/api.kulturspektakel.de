@@ -22,6 +22,9 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
 .hover-underline:hover {
   text-decoration: underline !important;
 }
+.hover-no-underline:hover {
+  text-decoration: none !important;
+}
 @media (max-width: 600px) {
   .sm-leading-32 {
     line-height: 32px !important;
@@ -80,9 +83,30 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
         </tr>
       </tbody>
     </table>
-    <p>
-      Bitte kommt pünktlich zum Beginn eurer Reservierung. Nach 15&nbsp;Minuten geben wir den Platz für andere BesucherInnen frei.
-    </p>
+    <h4 style="margin-bottom: 0;">
+      Wichtige Informationen
+    </h4>
+    <ul style="margin-top: 0.25rem;">
+      <li>
+        Der Zugang zum Festival ist ausschließlich über einen der
+        <a href="https://kulturspektakel.de/angebot" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">beiden Eingänge</a>
+        möglich.
+      </li>
+      <li>
+        Bitte seid pünktlich zum Beginn eurer Reservierung da, sonst
+        verfällt sie.
+      </li>
+      <li>
+        Zur Kontaktverfolgung bitten wir euch die
+        <a href="https://www.coronawarn.app/" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">Corona-Warn-App</a>
+        zu installieren.
+      </li>
+      <li>
+        Außer auf den Wegen zu den Verkaufsständen und Toiletten
+        dürft ihr euch nur an eurem Sitzplatz aufhalten und nicht an
+        andere Tische wechseln.
+      </li>
+    </ul>
     <table style="width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
     <tr>
         <td style="padding-top: 24px; padding-bottom: 24px;">

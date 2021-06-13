@@ -45,12 +45,31 @@ export async function getPass(
     overrides: {
       serialNumber: String(reservation.id),
       authenticationToken: reservation.token,
+      backgroundColor: `rgb(${parseInt(
+        reservation.table.area.themeColor.substr(1, 2),
+        16,
+      )},${parseInt(
+        reservation.table.area.themeColor.substr(3, 2),
+        16,
+      )},${parseInt(reservation.table.area.themeColor.substr(5, 2), 16)})`,
     },
   });
 
   pass.barcodes(String(reservation.id));
   pass.headerFields?.push({key: 'id', value: `#${reservation.id}`});
   pass.relevantDate(reservation.startTime);
+  pass.locations(
+    // Kleine Bühne
+    {
+      latitude: 48.076889,
+      longitude: 11.375802,
+    },
+    // Große Bühne
+    {
+      latitude: 48.078437,
+      longitude: 11.374922,
+    },
+  );
 
   pass.primaryFields?.push(
     {
