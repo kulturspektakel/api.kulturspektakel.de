@@ -64,8 +64,7 @@ model Reservation {
 }
 
 enum TableType {
-  BEER_TABLE
-  BISTRO_TABLE
+  TABLE
   ISLAND
 }
 
@@ -75,7 +74,7 @@ model Table {
   maxCapacity  Int
   minOccupancy Int
   displayName  String
-  type         TableType
+  type         TableType @default(TABLE)
 
   area Area @relation(fields: [areaId], references: [id])
 

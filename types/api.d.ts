@@ -76,7 +76,7 @@ export interface NexusGenEnums {
   OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "SUM_UP" | "VOUCHER"
   ReservationStatus: "CheckedIn" | "Cleared" | "Confirmed" | "Pending"
   SortOrder: "asc" | "desc"
-  TableType: "BEER_TABLE" | "BISTRO_TABLE" | "ISLAND"
+  TableType: "ISLAND" | "TABLE"
 }
 
 export interface NexusGenScalars {

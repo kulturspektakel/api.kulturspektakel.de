@@ -165,9 +165,8 @@ type TableAvailability {
 }
 
 enum TableType {
-  BEER_TABLE
-  BISTRO_TABLE
   ISLAND
+  TABLE
 }
 
 input TableWhereUniqueInput {
