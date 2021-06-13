@@ -58,18 +58,10 @@ export async function getPass(
   pass.barcodes(String(reservation.id));
   pass.headerFields?.push({key: 'id', value: `#${reservation.id}`});
   pass.relevantDate(reservation.startTime);
-  pass.locations(
-    // Kleine Bühne
-    {
-      latitude: 48.076889,
-      longitude: 11.375802,
-    },
-    // Große Bühne
-    {
-      latitude: 48.078437,
-      longitude: 11.374922,
-    },
-  );
+  pass.locations({
+    latitude: reservation.table.area.latitude,
+    longitude: reservation.table.area.longitude,
+  });
 
   pass.primaryFields?.push(
     {
