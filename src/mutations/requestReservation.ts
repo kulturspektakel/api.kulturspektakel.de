@@ -9,8 +9,8 @@ import {
   isLongEnough,
   isTooLong,
 } from '../queries/availability';
+import {config} from '../queries/config';
 import {scheduleTask} from '../tasks';
-import {getConfig} from '../utils/config';
 import isEmail from '../utils/isEmail';
 import sendMail from '../utils/sendMail';
 
@@ -90,8 +90,7 @@ export default extendType({
 
         if (
           (await occupancyIntervals(prismaClient, startTime, endTime)).some(
-            ({occupancy}) =>
-              occupancy + partySize > getConfig('CAPACITY_LIMIT'),
+            ({occupancy}) => occupancy + partySize > config.capacityLimit,
           )
         ) {
           // not enough area capacity

@@ -1,6 +1,6 @@
 import {extendType} from 'nexus';
-import {getConfig} from '../utils/config';
 import requireUserAuthorization from '../utils/requireUserAuthorization';
+import {config} from './config';
 
 export default extendType({
   type: 'Query',
@@ -34,7 +34,7 @@ export default extendType({
         });
 
         return (
-          getConfig('CAPACITY_LIMIT') -
+          config.capacityLimit -
           reservations.reduce(
             (acc, cv) =>
               acc + Math.max(cv.checkedInPersons, cv.otherPersons.length + 1),

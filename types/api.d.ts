@@ -102,6 +102,9 @@ export interface NexusGenObjects {
     name: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
+  Config: { // root type
+    reservationStart?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   Mutation: {};
   OpeningHour: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -187,6 +190,9 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
+  Config: { // field return type
+    reservationStart: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
     checkInReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -227,6 +233,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     areas: NexusGenRootTypes['Area'][]; // [Area!]!
+    config: NexusGenRootTypes['Config'] | null; // Config
     node: NexusGenRootTypes['Node'] | null; // Node
     orders: NexusGenRootTypes['Order'][]; // [Order!]!
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
@@ -286,6 +293,9 @@ export interface NexusGenFieldTypeNames {
     name: 'String'
     startTime: 'DateTime'
   }
+  Config: { // field return type name
+    reservationStart: 'DateTime'
+  }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
     checkInReservation: 'Reservation'
@@ -326,6 +336,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     areas: 'Area'
+    config: 'Config'
     node: 'Node'
     orders: 'Order'
     productLists: 'ProductList'

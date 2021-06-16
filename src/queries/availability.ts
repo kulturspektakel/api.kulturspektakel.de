@@ -10,8 +10,8 @@ import {isEqual} from 'date-fns/esm';
 import {extendType} from 'nexus';
 import {ArgsValue, intArg, nonNull} from 'nexus/dist/core';
 import {occupancyIntervals} from '../mutations/requestReservation';
-import {getConfig} from '../utils/config';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
+import {config} from './config';
 
 export default extendType({
   type: 'Area',
@@ -81,9 +81,7 @@ export default extendType({
 
         const overCapacity = (
           await occupancyIntervals(prismaClient, startOfDay(day), endOfDay(day))
-        ).filter(
-          ({occupancy}) => occupancy + partySize > getConfig('CAPACITY_LIMIT'),
-        );
+        ).filter(({occupancy}) => occupancy + partySize > config.capacityLimit);
 
         const availability = subtractIntervals(openingHours, overCapacity);
         return tables

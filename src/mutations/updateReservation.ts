@@ -1,7 +1,7 @@
 import {extendType, stringArg, nonNull, list} from 'nexus';
 import {UserInputError} from 'apollo-server-express';
 import {occupancyIntervals} from './requestReservation';
-import {getConfig} from '../utils/config';
+import {config} from '../queries/config';
 
 export default extendType({
   type: 'Mutation',
@@ -50,8 +50,7 @@ export default extendType({
           if (
             occupancy.some(
               ({occupancy}) =>
-                occupancy - oldPartySize + newPartySize >
-                getConfig('CAPACITY_LIMIT'),
+                occupancy - oldPartySize + newPartySize > config.capacityLimit,
             )
           ) {
             throw new UserInputError('Nicht genügend Plätze');

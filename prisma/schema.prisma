@@ -135,12 +135,3 @@ model OrderItem {
   name         String
   perUnitPrice Int
 }
-
-enum ConfigKey {
-  CAPACITY_LIMIT
-}
-
-model Config {
-  key   ConfigKey @id
-  value String
-}

@@ -38,6 +38,7 @@ import OrderPayment from './models/OrderPayment';
 import orders from './queries/orders';
 import OrderItem from './models/OrderItem';
 import checkInReservation from './mutations/checkInReservation';
+import config from './queries/config';
 
 export default makeSchema({
   contextType: {
@@ -80,6 +81,7 @@ export default makeSchema({
     bandsPlaying,
     productLists,
     orders,
+    config,
 
     // mutations
     cancelReservation,
