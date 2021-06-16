@@ -1,7 +1,7 @@
 import {extendType, objectType} from 'nexus';
 
 export const config = Object.freeze({
-  reservationStart: new Date(),
+  reservationStart: new Date('2021-07-03T13:00:00.000Z'),
   capacityLimit: 500,
 });
 
