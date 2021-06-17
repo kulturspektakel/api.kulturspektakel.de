@@ -3,6 +3,7 @@ import Mail from 'nodemailer/lib/mailer';
 import reservationConfirmed from '../maizzle/mails/reservationConfirmed';
 import {getIcs} from '../routes/ics';
 import {getPass} from '../routes/passkit';
+import {scheduleTask} from '../tasks';
 import sendMail from '../utils/sendMail';
 import streamToString from '../utils/streamToString';
 
@@ -98,6 +99,7 @@ export default extendType({
                 token: reservation.token,
               }),
             });
+            await scheduleTask('reservationSlackMessage', {id: reservation.id});
           } catch (e) {
             console.log(e.response.body);
           }

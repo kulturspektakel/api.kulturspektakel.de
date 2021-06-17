@@ -1,9 +1,11 @@
 import {run, makeWorkerUtils, WorkerUtils, TaskSpec} from 'graphile-worker';
 import env from '../utils/env';
 import clearPendingReservations from './clearPendingReservations';
+import reservationSlackMessage from './reservationSlackMessage';
 
 const taskList = {
   clearPendingReservations,
+  reservationSlackMessage,
 };
 
 export default async function () {

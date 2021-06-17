@@ -26,6 +26,7 @@ const e = {
     .get('KULT_WEBSITE_API_EMAIL')
     .required(!ci)
     .asString(),
+  SLACK_BOT_TOKEN: env.get('SLACK_BOT_TOKEN').required(!ci).asString(),
 };
 
 export default e;

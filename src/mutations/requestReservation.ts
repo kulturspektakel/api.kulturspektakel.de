@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client';
 import {UserInputError} from 'apollo-server-errors';
-import {add, isEqual} from 'date-fns';
+import {add, isBefore, isEqual} from 'date-fns';
 import {extendType, idArg, list, nonNull, stringArg} from 'nexus';
 import {ArgsValue} from 'nexus/dist/typegenTypeHelpers';
 import confirmReservation from '../maizzle/mails/confirmReservation';
@@ -53,6 +53,9 @@ export default extendType({
 
         const partySize = otherPersons.length + 1;
 
+        if (isBefore(new Date(), config.reservationStart)) {
+          throw new UserInputError('Reservierung noch nicht freigeschalten');
+        }
         if (!hasEnoughTimeLeft(endTime)) {
           throw new UserInputError('Nicht mehr genügend Zeit');
         }
@@ -216,12 +219,10 @@ export async function occupancyIntervals(
   const reservations = await prismaClient.reservation.findMany({
     where: {
       startTime: {
-        gte: startTime,
-        lte: endTime,
+        lt: endTime,
       },
       endTime: {
-        gte: startTime,
-        lte: endTime,
+        gt: startTime,
       },
       status: {
         not: 'Cleared',
