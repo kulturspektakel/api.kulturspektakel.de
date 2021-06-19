@@ -4,14 +4,15 @@
 
 type Area implements Node {
   availability(day: Date!, partySize: Int!): [TableAvailability!]!
+  availableTables(time: DateTime): Int!
   bandsPlaying(day: Date!): [Band!]!
-  currentCapacity: Int!
   displayName: String!
 
   """Unique identifier for the resource"""
   id: ID!
   openingHour(day: Date): [OpeningHour!]!
   table(after: TableWhereUniqueInput, before: TableWhereUniqueInput, first: Int, last: Int): [Table!]!
+  themeColor: String!
 }
 
 type Band {
@@ -116,6 +117,7 @@ input ProductWhereUniqueInput {
 
 type Query {
   areas: [Area!]!
+  availableCapacity(time: DateTime): Int!
   config: Config
   node(id: ID!): Node
   orders: [Order!]!
@@ -125,6 +127,7 @@ type Query {
 }
 
 type Reservation {
+  alternativeTables: [Table]!
   checkedInPersons: Int!
   endTime: DateTime!
   id: Int!

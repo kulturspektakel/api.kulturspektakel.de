@@ -93,6 +93,7 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Area: { // root type
     displayName: string; // String!
+    themeColor: string; // String!
   }
   Band: { // root type
     description?: string | null; // String
@@ -175,12 +176,13 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 export interface NexusGenFieldTypes {
   Area: { // field return type
     availability: NexusGenRootTypes['TableAvailability'][]; // [TableAvailability!]!
+    availableTables: number; // Int!
     bandsPlaying: NexusGenRootTypes['Band'][]; // [Band!]!
-    currentCapacity: number; // Int!
     displayName: string; // String!
     id: string; // ID!
     openingHour: NexusGenRootTypes['OpeningHour'][]; // [OpeningHour!]!
     table: NexusGenRootTypes['Table'][]; // [Table!]!
+    themeColor: string; // String!
   }
   Band: { // field return type
     description: string | null; // String
@@ -233,6 +235,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     areas: NexusGenRootTypes['Area'][]; // [Area!]!
+    availableCapacity: number; // Int!
     config: NexusGenRootTypes['Config'] | null; // Config
     node: NexusGenRootTypes['Node'] | null; // Node
     orders: NexusGenRootTypes['Order'][]; // [Order!]!
@@ -241,6 +244,7 @@ export interface NexusGenFieldTypes {
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
   }
   Reservation: { // field return type
+    alternativeTables: Array<NexusGenRootTypes['Table'] | null>; // [Table]!
     checkedInPersons: number; // Int!
     endTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
@@ -278,12 +282,13 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Area: { // field return type name
     availability: 'TableAvailability'
+    availableTables: 'Int'
     bandsPlaying: 'Band'
-    currentCapacity: 'Int'
     displayName: 'String'
     id: 'ID'
     openingHour: 'OpeningHour'
     table: 'Table'
+    themeColor: 'String'
   }
   Band: { // field return type name
     description: 'String'
@@ -336,6 +341,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     areas: 'Area'
+    availableCapacity: 'Int'
     config: 'Config'
     node: 'Node'
     orders: 'Order'
@@ -344,6 +350,7 @@ export interface NexusGenFieldTypeNames {
     viewer: 'Viewer'
   }
   Reservation: { // field return type name
+    alternativeTables: 'Table'
     checkedInPersons: 'Int'
     endTime: 'DateTime'
     id: 'Int'
@@ -383,6 +390,9 @@ export interface NexusGenArgTypes {
     availability: { // args
       day: NexusGenScalars['Date']; // Date!
       partySize: number; // Int!
+    }
+    availableTables: { // args
+      time?: NexusGenScalars['DateTime'] | null; // DateTime
     }
     bandsPlaying: { // args
       day: NexusGenScalars['Date']; // Date!
@@ -437,6 +447,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    availableCapacity: { // args
+      time?: NexusGenScalars['DateTime'] | null; // DateTime
+    }
     node: { // args
       id: string; // ID!
     }

@@ -1,5 +1,4 @@
 import {extendType} from 'nexus';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
 import {config} from './config';
 
 export default extendType({
@@ -7,28 +6,30 @@ export default extendType({
   definition: (t) => {
     t.nonNull.field('availableCapacity', {
       type: 'Int',
-      ...requireUserAuthorization,
-      resolve: async (_parent, _args, {prismaClient}) => {
-        const now = new Date();
+      args: {
+        time: 'DateTime',
+      },
+      resolve: async (_parent, args, {prismaClient}) => {
+        const time = args.time ?? new Date();
         const reservations = await prismaClient.reservation.findMany({
           where: {
             OR: [
               {
                 checkInTime: {
-                  lte: now,
+                  lte: time,
                 },
               },
               {
                 startTime: {
-                  lte: now,
+                  lte: time,
                 },
               },
             ],
             endTime: {
-              gte: now,
+              gte: time,
             },
             status: {
-              in: ['Confirmed', 'CheckedIn'],
+              not: 'Cleared',
             },
           },
         });

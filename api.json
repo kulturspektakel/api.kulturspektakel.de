@@ -59,6 +59,27 @@
             "deprecationReason": null
           },
           {
+            "name": "availableTables",
+            "description": null,
+            "args": [
+              {
+                "name": "time",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "bandsPlaying",
             "description": null,
             "args": [
@@ -87,18 +108,6 @@
                   "ofType": {"kind": "OBJECT", "name": "Band", "ofType": null}
                 }
               }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "currentCapacity",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1232,6 +1241,27 @@
                   "ofType": {"kind": "OBJECT", "name": "Area", "ofType": null}
                 }
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "availableCapacity",
+            "description": null,
+            "args": [
+              {
+                "name": "time",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
             },
             "isDeprecated": false,
             "deprecationReason": null

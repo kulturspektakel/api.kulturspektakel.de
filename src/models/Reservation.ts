@@ -1,3 +1,4 @@
+import {Reservation} from '@prisma/client';
 import {objectType} from 'nexus';
 import requireUserAuthorization from '../utils/requireUserAuthorization';
 
@@ -14,6 +15,32 @@ export default objectType({
     t.model.otherPersons();
     t.model.checkedInPersons({
       ...requireUserAuthorization,
+    });
+
+    t.nonNull.list.field('alternativeTables', {
+      type: 'Table',
+      ...requireUserAuthorization,
+      resolve: async (reservation, _args, {prismaClient}) => {
+        return prismaClient.table.findMany({
+          where: {
+            maxCapacity: {
+              gte: Math.max(
+                reservation.checkedInPersons,
+                reservation.otherPersons.length + 1,
+              ),
+            },
+            id: {
+              not: (reservation as Reservation).tableId,
+            },
+            reservations: {
+              none: {
+                startTime: {},
+                endTime: {},
+              },
+            },
+          },
+        });
+      },
     });
   },
 });

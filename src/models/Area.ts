@@ -10,6 +10,7 @@ export default objectType({
   definition(t) {
     t.implements(Node);
     t.model.displayName();
+    t.model.themeColor();
     t.model.table({
       ...requireUserAuthorization,
     });
@@ -19,8 +20,9 @@ export default objectType({
       args: {
         day: 'Date',
       },
-      resolve: (area, {day}, {prismaClient}) =>
-        prismaClient.areaOpeningHour.findMany({
+      resolve: (area, args, {prismaClient}) => {
+        const day = args.day ?? new Date();
+        return prismaClient.areaOpeningHour.findMany({
           where: {
             areaId: (area as Area).id,
             startTime: {
@@ -31,33 +33,53 @@ export default objectType({
           orderBy: {
             startTime: 'asc',
           },
-        }),
+        });
+      },
     });
 
-    t.nonNull.field('currentCapacity', {
+    t.nonNull.field('availableTables', {
       type: 'Int',
-      ...requireUserAuthorization,
-      resolve: async (area, _args, {prismaClient}) => {
-        const now = new Date();
-        const {sum} = await prismaClient.reservation.aggregate({
-          sum: {
-            checkedInPersons: true,
-          },
+      args: {
+        time: 'DateTime',
+      },
+      resolve: async (area, args, {prismaClient}) => {
+        const time = new Date() ?? args;
+        const table = await prismaClient.table.findMany({
           where: {
-            table: {
-              areaId: (area as Area).id,
+            area: {
+              id: (area as Area).id,
             },
-            checkInTime: {
-              lte: now,
+          },
+          include: {
+            reservations: {
+              where: {
+                OR: [
+                  {
+                    checkInTime: {
+                      lte: time,
+                    },
+                  },
+                  {
+                    startTime: {
+                      lte: time,
+                    },
+                  },
+                ],
+                endTime: {
+                  gte: time,
+                },
+                status: {
+                  not: 'Cleared',
+                },
+              },
             },
-            endTime: {
-              gte: now,
-            },
-            status: 'CheckedIn',
           },
         });
 
-        return sum.checkedInPersons ?? 0;
+        return table.reduce(
+          (acc, cv) => acc + (cv.reservations.length > 0 ? 0 : 1),
+          0,
+        );
       },
     });
   },

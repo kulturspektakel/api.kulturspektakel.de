@@ -106,6 +106,10 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
         dürft ihr euch nur an eurem Sitzplatz aufhalten und nicht an
         andere Tische wechseln.
       </li>
+      <li>
+        Unser Hygienekonzept findet ihr auf <a href="https://kulturspektakel.de/hygiene/" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">kulturspektakel.de/hygiene</a>
+.
+      </li>
     </ul>
     <table style="width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
     <tr>
