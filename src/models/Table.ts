@@ -28,9 +28,6 @@ export default objectType({
                   lte: endOfDay(day),
                 }
               : undefined,
-            status: {
-              not: 'Cleared',
-            },
           },
           orderBy: {
             startTime: 'asc',

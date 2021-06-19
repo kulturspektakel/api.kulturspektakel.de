@@ -20,15 +20,16 @@ export default objectType({
       args: {
         day: 'Date',
       },
-      resolve: (area, args, {prismaClient}) => {
-        const day = args.day ?? new Date();
+      resolve: (area, {day}, {prismaClient}) => {
         return prismaClient.areaOpeningHour.findMany({
           where: {
             areaId: (area as Area).id,
-            startTime: {
-              gte: startOfDay(day),
-              lte: endOfDay(day),
-            },
+            startTime: day
+              ? {
+                  gte: startOfDay(day),
+                  lte: endOfDay(day),
+                }
+              : undefined,
           },
           orderBy: {
             startTime: 'asc',
@@ -67,9 +68,6 @@ export default objectType({
                 ],
                 endTime: {
                   gte: time,
-                },
-                status: {
-                  not: 'Cleared',
                 },
               },
             },

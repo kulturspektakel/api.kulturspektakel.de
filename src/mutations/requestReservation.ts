@@ -224,9 +224,6 @@ export async function occupancyIntervals(
       endTime: {
         gt: startTime,
       },
-      status: {
-        not: 'Cleared',
-      },
     },
     orderBy: {
       startTime: 'asc',
@@ -234,10 +231,13 @@ export async function occupancyIntervals(
   });
 
   const result = reservations
-    .flatMap((r) => [
-      {date: r.startTime, persons: r.otherPersons.length + 1},
-      {date: r.endTime, persons: -r.otherPersons.length - 1},
-    ])
+    .flatMap((r) => {
+      const persons = Math.max(r.checkedInPersons, r.otherPersons.length + 1);
+      return [
+        {date: r.startTime, persons},
+        {date: r.endTime, persons: -persons},
+      ];
+    })
     .sort((a, b) => a.date.getTime() - b.date.getTime())
     .reduce((acc, {date, persons}) => {
       const lastEntry: OccupancyInterval | undefined = acc[acc.length - 1];

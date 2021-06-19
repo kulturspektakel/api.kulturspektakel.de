@@ -13,10 +13,15 @@ export default extendType({
         return prismaClient.reservation.findMany({
           where: {
             primaryEmail: (parent as Reservation).primaryEmail,
-            status: 'Confirmed',
+            status: {
+              in: ['Confirmed', 'CheckedIn'],
+            },
             id: {
               not: parent.id,
             },
+          },
+          orderBy: {
+            startTime: 'asc',
           },
         });
       },

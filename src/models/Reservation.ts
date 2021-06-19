@@ -16,6 +16,9 @@ export default objectType({
     t.model.checkedInPersons({
       ...requireUserAuthorization,
     });
+    t.model.note({
+      ...requireUserAuthorization,
+    });
 
     t.nonNull.list.field('alternativeTables', {
       type: 'Table',
@@ -33,6 +36,7 @@ export default objectType({
               not: (reservation as Reservation).tableId,
             },
             reservations: {
+              // TODO
               none: {
                 startTime: {},
                 endTime: {},

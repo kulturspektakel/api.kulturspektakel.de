@@ -68,9 +68,6 @@ export default extendType({
                   gte: startOfDay(day),
                   lte: endOfDay(day),
                 },
-                status: {
-                  not: 'Cleared',
-                },
               },
               orderBy: {
                 startTime: 'asc',

@@ -1,3 +1,4 @@
+import {UserInputError} from 'apollo-server-express';
 import {extendType, stringArg, nonNull} from 'nexus';
 
 export default extendType({
@@ -8,15 +9,43 @@ export default extendType({
       args: {
         token: nonNull(stringArg()),
       },
-      resolve: async (_, {token}, {prismaClient}) => {
-        const reservation = await prismaClient.reservation.deleteMany({
+      resolve: async (_, {token}, {prismaClient, token: auth}) => {
+        const reservation = await prismaClient.reservation.findUnique({
           where: {
             token,
-            status: 'Confirmed',
           },
         });
 
-        return reservation.count > 0;
+        if (!reservation) {
+          throw new UserInputError(
+            'Reservierung konnte nicht gefunden werden.',
+          );
+        }
+        if (auth?.type !== 'user' && reservation.status !== 'Confirmed') {
+          throw new UserInputError('Reservierung kann nicht gelöscht werden.');
+        }
+
+        await prismaClient.reservation.delete({
+          where: {
+            token,
+          },
+        });
+        await prismaClient.clearedReservation.create({
+          data: {
+            id: reservation.id,
+            data: JSON.stringify(reservation),
+            clearedBy:
+              auth?.type === 'user'
+                ? {
+                    connect: {
+                      id: auth.userId,
+                    },
+                  }
+                : undefined,
+          },
+        });
+
+        return true;
       },
     });
   },

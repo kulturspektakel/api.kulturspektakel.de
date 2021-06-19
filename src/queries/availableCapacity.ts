@@ -28,9 +28,6 @@ export default extendType({
             endTime: {
               gte: time,
             },
-            status: {
-              not: 'Cleared',
-            },
           },
         });
 

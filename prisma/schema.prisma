@@ -9,13 +9,14 @@ datasource db {
 }
 
 model Viewer {
-  id             String   @id @default(uuid())
-  displayName    String
-  email          String
-  profilePicture String?
-  slackToken     String
-  slackScopes    String[]
-  updatedAt      DateTime @default(now()) @updatedAt
+  id                 String               @id @default(uuid())
+  displayName        String
+  email              String
+  profilePicture     String?
+  slackToken         String
+  slackScopes        String[]
+  updatedAt          DateTime             @default(now()) @updatedAt
+  ClearedReservation ClearedReservation[]
 }
 
 model Area {
@@ -42,7 +43,6 @@ enum ReservationStatus {
   Pending
   Confirmed
   CheckedIn
-  Cleared
 }
 
 model Reservation {
@@ -59,8 +59,16 @@ model Reservation {
   table            Table             @relation(fields: [tableId], references: [id])
   tableId          String
   checkedInPersons Int               @default(0)
+  note             String
 
   @@unique([tableId, startTime])
+}
+
+model ClearedReservation {
+  id        Int     @id
+  data      Json
+  clearedBy Viewer? @relation(fields: [viewerId], references: [id])
+  viewerId  String?
 }
 
 enum TableType {

@@ -1,3 +1,4 @@
+import {UserInputError} from 'apollo-server-express';
 import {extendType, nonNull, intArg} from 'nexus';
 import requireUserAuthorization from '../utils/requireUserAuthorization';
 
