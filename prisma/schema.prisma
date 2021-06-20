@@ -65,9 +65,10 @@ model Reservation {
 }
 
 model ClearedReservation {
-  id        Int     @id
+  id        Int      @id
   data      Json
-  clearedBy Viewer? @relation(fields: [viewerId], references: [id])
+  clearedBy Viewer?  @relation(fields: [viewerId], references: [id])
+  clearedAt DateTime @default(now())
   viewerId  String?
 }
 

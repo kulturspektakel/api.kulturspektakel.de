@@ -1,6 +1,7 @@
-import {PrismaClient} from '@prisma/client';
+import {PrismaClient, Reservation} from '@prisma/client';
 import {UserInputError} from 'apollo-server-errors';
 import {add, isBefore, isEqual} from 'date-fns';
+import endOfDay from 'date-fns/endOfDay';
 import {extendType, idArg, list, nonNull, stringArg} from 'nexus';
 import {ArgsValue} from 'nexus/dist/typegenTypeHelpers';
 import confirmReservation from '../maizzle/mails/confirmReservation';
@@ -91,16 +92,7 @@ export default extendType({
           throw new UserInputError('Außerhalb der Öffnungszeiten');
         }
 
-        if (
-          (await occupancyIntervals(prismaClient, startTime, endTime)).some(
-            ({occupancy}) => occupancy + partySize > config.capacityLimit,
-          )
-        ) {
-          // not enough area capacity
-          throw new UserInputError(
-            'Besucherzahllimit für diesen Zeitraum erreicht.',
-          );
-        }
+        await checkOccupancy(prismaClient, startTime, endTime, partySize);
 
         const table = await prismaClient.table.findFirst({
           where: {
@@ -112,22 +104,7 @@ export default extendType({
             },
             type: tableType ?? undefined,
             areaId,
-            reservations: {
-              every: {
-                OR: [
-                  {
-                    startTime: {
-                      gte: endTime,
-                    },
-                  },
-                  {
-                    endTime: {
-                      lte: startTime,
-                    },
-                  },
-                ],
-              },
-            },
+            reservations: whereHasNoOverlappingReservation(startTime, endTime),
           },
           orderBy: [
             {type: 'asc'}, // prefer TABLE over ISLAND
@@ -159,25 +136,7 @@ export default extendType({
         });
 
         try {
-          await sendMail({
-            to: primaryEmail,
-            subject: `Reservierungsanfrage #${reservation.id}`,
-            html: confirmReservation({
-              day: reservation.startTime.toLocaleDateString('de', {
-                weekday: 'long',
-                day: '2-digit',
-                month: 'long',
-                timeZone: 'Europe/Berlin',
-              }),
-              startTime: reservation.startTime.toLocaleTimeString('de', {
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: 'Europe/Berlin',
-              }),
-              token: reservation.token,
-              number: String(reservation.id),
-            }),
-          });
+          await sendReservationConfirmation(primaryEmail, reservation);
         } catch (e) {
           console.error(e);
           // clear reservation, because it can't be confirmed
@@ -208,6 +167,69 @@ export default extendType({
     });
   },
 });
+
+export async function checkOccupancy(
+  prismaClient: PrismaClient,
+  startTime: Date,
+  endTime: Date,
+  partySize: number,
+) {
+  if (
+    (await occupancyIntervals(prismaClient, startTime, endTime)).some(
+      ({occupancy}) => occupancy + partySize > config.capacityLimit,
+    )
+  ) {
+    // not enough area capacity
+    throw new UserInputError('Besucherzahllimit für diesen Zeitraum erreicht.');
+  }
+}
+
+export function whereHasNoOverlappingReservation(
+  startTime: Date,
+  endTime: Date,
+) {
+  return {
+    every: {
+      OR: [
+        {
+          startTime: {
+            gte: endTime,
+          },
+        },
+        {
+          endTime: {
+            lte: startTime,
+          },
+        },
+      ],
+    },
+  };
+}
+
+export async function sendReservationConfirmation(
+  email: string,
+  reservation: Reservation,
+) {
+  return sendMail({
+    to: email,
+    subject: `Reservierungsanfrage #${reservation.id}`,
+    html: confirmReservation({
+      day: reservation.startTime.toLocaleDateString('de', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        timeZone: 'Europe/Berlin',
+      }),
+      startTime: reservation.startTime.toLocaleTimeString('de', {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'Europe/Berlin',
+      }),
+      token: reservation.token,
+      number: String(reservation.id),
+    }),
+  });
+}
 
 type OccupancyInterval = {startTime: Date; endTime: Date; occupancy: number};
 

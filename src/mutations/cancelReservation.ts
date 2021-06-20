@@ -22,6 +22,7 @@ export default extendType({
           );
         }
         if (auth?.type !== 'user' && reservation.status !== 'Confirmed') {
+          // user can only clear confirmed reservations
           throw new UserInputError('Reservierung kann nicht gelöscht werden.');
         }
 
