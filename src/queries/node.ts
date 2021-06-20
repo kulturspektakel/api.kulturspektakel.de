@@ -31,6 +31,9 @@ export default extendType({
           case 'Area':
             delegate = prismaClient.area;
             break;
+          case 'Table':
+            delegate = prismaClient.table;
+            break;
           default:
             new UnreachableCaseError(__typename);
             return null;
