@@ -147,7 +147,6 @@ export interface NexusGenObjects {
   }
   Table: { // root type
     displayName: string; // String!
-    id: string; // String!
     maxCapacity: number; // Int!
     type: NexusGenEnums['TableType']; // TableType!
   }
@@ -164,7 +163,7 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
-  Node: NexusGenRootTypes['Area'];
+  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['Table'];
 }
 
 export interface NexusGenUnions {
@@ -262,7 +261,7 @@ export interface NexusGenFieldTypes {
   Table: { // field return type
     area: NexusGenRootTypes['Area']; // Area!
     displayName: string; // String!
-    id: string; // String!
+    id: string; // ID!
     maxCapacity: number; // Int!
     reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
     type: NexusGenEnums['TableType']; // TableType!
@@ -370,7 +369,7 @@ export interface NexusGenFieldTypeNames {
   Table: { // field return type name
     area: 'Area'
     displayName: 'String'
-    id: 'String'
+    id: 'ID'
     maxCapacity: 'Int'
     reservations: 'Reservation'
     type: 'TableType'
@@ -478,11 +477,12 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
-  Node: "Area"
+  Node: "Area" | "Table"
 }
 
 export interface NexusGenTypeInterfaces {
   Area: "Node"
+  Table: "Node"
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;

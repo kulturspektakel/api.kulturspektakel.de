@@ -153,10 +153,12 @@ enum SortOrder {
   desc
 }
 
-type Table {
+type Table implements Node {
   area: Area!
   displayName: String!
-  id: String!
+
+  """Unique identifier for the resource"""
+  id: ID!
   maxCapacity: Int!
   reservations(day: Date): [Reservation!]!
   type: TableType!

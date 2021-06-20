@@ -799,7 +799,10 @@
         "inputFields": null,
         "interfaces": [],
         "enumValues": null,
-        "possibleTypes": [{"kind": "OBJECT", "name": "Area", "ofType": null}]
+        "possibleTypes": [
+          {"kind": "OBJECT", "name": "Area", "ofType": null},
+          {"kind": "OBJECT", "name": "Table", "ofType": null}
+        ]
       },
       {
         "kind": "OBJECT",
@@ -1709,12 +1712,12 @@
           },
           {
             "name": "id",
-            "description": null,
+            "description": "Unique identifier for the resource",
             "args": [],
             "type": {
               "kind": "NON_NULL",
               "name": null,
-              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+              "ofType": {"kind": "SCALAR", "name": "ID", "ofType": null}
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1778,7 +1781,7 @@
           }
         ],
         "inputFields": null,
-        "interfaces": [],
+        "interfaces": [{"kind": "INTERFACE", "name": "Node", "ofType": null}],
         "enumValues": null,
         "possibleTypes": null
       },
