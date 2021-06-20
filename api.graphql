@@ -49,7 +49,8 @@ type Mutation {
   confirmReservation(token: String!): Reservation
   createOrder(payment: OrderPayment!, products: [OrderItemInput!]!, tableId: ID!): Order
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
-  updateReservation(otherPersons: [String!]!, token: String!): Reservation
+  updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, startTime: DateTime, tableId: ID): Reservation
+  updateReservationOtherPersons(otherPersons: [String!]!, token: String!): Reservation
 }
 
 interface Node {
@@ -131,6 +132,7 @@ type Reservation {
   checkedInPersons: Int!
   endTime: DateTime!
   id: Int!
+  note: String
   otherPersons: [String!]!
   primaryPerson: String!
   reservationsFromSamePerson: [Reservation!]!
@@ -142,7 +144,6 @@ type Reservation {
 
 enum ReservationStatus {
   CheckedIn
-  Cleared
   Confirmed
   Pending
 }

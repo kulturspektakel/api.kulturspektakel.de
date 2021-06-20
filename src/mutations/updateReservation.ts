@@ -1,7 +1,6 @@
-import {extendType, stringArg, nonNull, list} from 'nexus';
+import {extendType, nonNull, intArg} from 'nexus';
 import {UserInputError} from 'apollo-server-express';
-import {occupancyIntervals} from './requestReservation';
-import {config} from '../queries/config';
+import requireUserAuthorization from '../utils/requireUserAuthorization';
 import {ReservationStatus} from '@prisma/client';
 
 export default extendType({
@@ -10,26 +9,18 @@ export default extendType({
     t.field('updateReservation', {
       type: 'Reservation',
       args: {
-        token: nonNull(stringArg()),
-        otherPersons: list(nonNull(stringArg())),
+        id: nonNull(intArg()),
         startTime: 'DateTime',
         endTime: 'DateTime',
         tableId: 'ID',
         checkedInPersons: 'Int',
         note: 'String',
       },
+      ...requireUserAuthorization,
       resolve: async (
         _,
-        {
-          token,
-          otherPersons,
-          startTime,
-          endTime,
-          tableId,
-          checkedInPersons,
-          note,
-        },
-        {prismaClient, token: auth},
+        {id, startTime, endTime, tableId, checkedInPersons, note},
+        {prismaClient},
       ) => {
         const reservation = await prismaClient.reservation.findUnique({
           include: {
@@ -41,7 +32,7 @@ export default extendType({
             },
           },
           where: {
-            token,
+            id,
           },
         });
 
@@ -49,43 +40,7 @@ export default extendType({
           throw new UserInputError('Reservierung konnte nicht gefunden werden');
         }
 
-        if (auth?.type !== 'user' && reservation.status !== 'Confirmed') {
-          // only authenticated users can change other reservations
-          throw new UserInputError('Reservierung kann nicht bearbeitet werden');
-        }
-
-        if (otherPersons) {
-          const oldPartySize = reservation.otherPersons.length + 1;
-          otherPersons = otherPersons.map((p) => p.trim()).filter(Boolean);
-          const newPartySize = otherPersons.length + 1;
-
-          if (newPartySize > reservation.table.maxCapacity) {
-            throw new UserInputError('Nicht genügend Platz am Tisch');
-          }
-          if (newPartySize > reservation.otherPersons.length + 1) {
-            const occupancy = await occupancyIntervals(
-              prismaClient,
-              reservation.startTime,
-              reservation.endTime,
-            );
-            if (
-              occupancy.some(
-                ({occupancy}) =>
-                  occupancy - oldPartySize + newPartySize >
-                  config.capacityLimit,
-              )
-            ) {
-              throw new UserInputError('Nicht genügend Plätze');
-            }
-          }
-        }
-
         if (startTime) {
-          if (auth?.type !== 'user') {
-            throw new UserInputError(
-              'Reservierung kann nicht bearbeitet werden',
-            );
-          }
           if (
             // TODO
             reservation.table.reservations.some((r) => r.id != reservation.id)
@@ -95,11 +50,6 @@ export default extendType({
         }
 
         if (endTime) {
-          if (auth?.type !== 'user') {
-            throw new UserInputError(
-              'Reservierung kann nicht bearbeitet werden',
-            );
-          }
           if (
             // TODO
             reservation.table.reservations.some((r) => r.id != reservation.id)
@@ -109,18 +59,13 @@ export default extendType({
         }
 
         if (tableId) {
-          if (auth?.type !== 'user') {
-            throw new UserInputError(
-              'Reservierung kann nicht bearbeitet werden',
-            );
-          }
           const table = await prismaClient.table.findFirst({
             where: {
               id: tableId,
               maxCapacity: {
                 gte: Math.max(
                   reservation.checkedInPersons,
-                  (otherPersons?.length ?? reservation.otherPersons.length) + 1,
+                  reservation.otherPersons.length + 1,
                 ),
               },
               reservations: {
@@ -149,11 +94,6 @@ export default extendType({
         let status: ReservationStatus | undefined;
         let checkInTime: Date | undefined;
         if (checkedInPersons) {
-          if (auth?.type !== 'user') {
-            throw new UserInputError(
-              'Reservierung kann nicht bearbeitet werden',
-            );
-          }
           if (checkedInPersons > reservation.table.maxCapacity) {
             throw new UserInputError('Tisch zu klein');
           }
@@ -161,25 +101,18 @@ export default extendType({
           checkInTime = reservation?.checkInTime ?? new Date();
         }
 
-        if (note && auth?.type !== 'user') {
-          throw new UserInputError('Reservierung kann nicht bearbeitet werden');
-        }
-
-        // TODO maybe downsize table?
-
         return await prismaClient.reservation.update({
           data: {
-            otherPersons,
-            tableId,
+            tableId: tableId ?? undefined,
             startTime,
             endTime,
             status,
             checkInTime,
-            checkedInPersons,
+            checkedInPersons: checkedInPersons ?? undefined,
             note,
           },
           where: {
-            token,
+            id,
           },
         });
       },

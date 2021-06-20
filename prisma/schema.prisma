@@ -59,7 +59,7 @@ model Reservation {
   table            Table             @relation(fields: [tableId], references: [id])
   tableId          String
   checkedInPersons Int               @default(0)
-  note             String
+  note             String?
 
   @@unique([tableId, startTime])
 }

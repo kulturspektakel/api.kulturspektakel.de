@@ -40,6 +40,7 @@ import OrderItem from './models/OrderItem';
 import checkInReservation from './mutations/checkInReservation';
 import config from './queries/config';
 import availableCapacity from './queries/availableCapacity';
+import updateReservationOtherPersons from './mutations/updateReservationOtherPersons';
 
 export default makeSchema({
   contextType: {
@@ -84,6 +85,7 @@ export default makeSchema({
     orders,
     config,
     availableCapacity,
+    updateReservationOtherPersons,
 
     // mutations
     cancelReservation,

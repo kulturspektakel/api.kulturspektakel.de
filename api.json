@@ -661,6 +661,67 @@
             "description": null,
             "args": [
               {
+                "name": "checkedInPersons",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "Int", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "endTime",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "note",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "startTime",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "tableId",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "ID", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {"kind": "OBJECT", "name": "Reservation", "ofType": null},
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updateReservationOtherPersons",
+            "description": null,
+            "args": [
+              {
                 "name": "otherPersons",
                 "description": null,
                 "type": {
@@ -1444,6 +1505,14 @@
             "deprecationReason": null
           },
           {
+            "name": "note",
+            "description": null,
+            "args": [],
+            "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "otherPersons",
             "description": null,
             "args": [],
@@ -1567,12 +1636,6 @@
         "enumValues": [
           {
             "name": "CheckedIn",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "Cleared",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

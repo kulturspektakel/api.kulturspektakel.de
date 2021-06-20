@@ -74,7 +74,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "SUM_UP" | "VOUCHER"
-  ReservationStatus: "CheckedIn" | "Cleared" | "Confirmed" | "Pending"
+  ReservationStatus: "CheckedIn" | "Confirmed" | "Pending"
   SortOrder: "asc" | "desc"
   TableType: "ISLAND" | "TABLE"
 }
@@ -138,6 +138,7 @@ export interface NexusGenObjects {
     checkedInPersons: number; // Int!
     endTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
+    note?: string | null; // String
     otherPersons: string[]; // [String!]!
     primaryPerson: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
@@ -202,6 +203,7 @@ export interface NexusGenFieldTypes {
     createOrder: NexusGenRootTypes['Order'] | null; // Order
     requestReservation: boolean; // Boolean!
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    updateReservationOtherPersons: NexusGenRootTypes['Reservation'] | null; // Reservation
   }
   OpeningHour: { // field return type
     endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -248,6 +250,7 @@ export interface NexusGenFieldTypes {
     checkedInPersons: number; // Int!
     endTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
+    note: string | null; // String
     otherPersons: string[]; // [String!]!
     primaryPerson: string; // String!
     reservationsFromSamePerson: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
@@ -308,6 +311,7 @@ export interface NexusGenFieldTypeNames {
     createOrder: 'Order'
     requestReservation: 'Boolean'
     updateReservation: 'Reservation'
+    updateReservationOtherPersons: 'Reservation'
   }
   OpeningHour: { // field return type name
     endTime: 'DateTime'
@@ -354,6 +358,7 @@ export interface NexusGenFieldTypeNames {
     checkedInPersons: 'Int'
     endTime: 'DateTime'
     id: 'Int'
+    note: 'String'
     otherPersons: 'String'
     primaryPerson: 'String'
     reservationsFromSamePerson: 'Reservation'
@@ -433,6 +438,14 @@ export interface NexusGenArgTypes {
       tableType?: NexusGenEnums['TableType'] | null; // TableType
     }
     updateReservation: { // args
+      checkedInPersons?: number | null; // Int
+      endTime?: NexusGenScalars['DateTime'] | null; // DateTime
+      id: number; // Int!
+      note?: string | null; // String
+      startTime?: NexusGenScalars['DateTime'] | null; // DateTime
+      tableId?: string | null; // ID
+    }
+    updateReservationOtherPersons: { // args
       otherPersons: string[]; // [String!]!
       token: string; // String!
     }
