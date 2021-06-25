@@ -63,7 +63,9 @@ export default extendType({
         });
 
         if (reservation) {
-          await sendReservationConfirmation(primaryEmail, reservation);
+          try {
+            await sendReservationConfirmation(primaryEmail, reservation);
+          } catch (e) {}
         }
 
         return reservation;
