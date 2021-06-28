@@ -1,5 +1,6 @@
 import {Reservation} from '@prisma/client';
 import {objectType} from 'nexus';
+import {config} from '../queries/config';
 import requireUserAuthorization from '../utils/requireUserAuthorization';
 
 export default objectType({
@@ -17,6 +18,9 @@ export default objectType({
       ...requireUserAuthorization,
     });
     t.model.note({
+      ...requireUserAuthorization,
+    });
+    t.model.checkInTime({
       ...requireUserAuthorization,
     });
 
@@ -44,6 +48,30 @@ export default objectType({
             },
           },
         });
+      },
+    });
+
+    t.nonNull.field('availableToCheckIn', {
+      type: 'Int',
+      ...requireUserAuthorization,
+      resolve: async (reservation, _args, {prismaClient}) => {
+        const query = await prismaClient.reservation.aggregate({
+          _sum: {
+            checkedInPersons: true,
+          },
+          where: {
+            endTime: {
+              gte: reservation.startTime,
+            },
+            checkInTime: {
+              lt: reservation.endTime,
+            },
+            id: {
+              not: reservation.id,
+            },
+          },
+        });
+        return config.capacityLimit - (query?._sum.checkedInPersons ?? 0);
       },
     });
   },
