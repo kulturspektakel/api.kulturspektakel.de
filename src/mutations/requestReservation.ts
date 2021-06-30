@@ -136,7 +136,7 @@ export default extendType({
         });
 
         try {
-          await sendReservationConfirmation(primaryEmail, reservation);
+          await sendReservationRequest(primaryEmail, reservation);
         } catch (e) {
           console.error(e);
           // clear reservation, because it can't be confirmed
@@ -206,10 +206,7 @@ export function whereHasNoOverlappingReservation(
   };
 }
 
-export async function sendReservationConfirmation(
-  email: string,
-  reservation: Reservation,
-) {
+async function sendReservationRequest(email: string, reservation: Reservation) {
   return sendMail({
     to: email,
     subject: `Reservierungsanfrage #${reservation.id}`,

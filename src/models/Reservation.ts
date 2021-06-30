@@ -40,10 +40,19 @@ export default objectType({
               not: (reservation as Reservation).tableId,
             },
             reservations: {
-              // TODO
-              none: {
-                startTime: {},
-                endTime: {},
+              every: {
+                OR: [
+                  {
+                    startTime: {
+                      gte: reservation.endTime,
+                    },
+                  },
+                  {
+                    endTime: {
+                      lte: reservation.startTime,
+                    },
+                  },
+                ],
               },
             },
           },

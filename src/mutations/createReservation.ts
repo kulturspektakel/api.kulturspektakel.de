@@ -1,9 +1,9 @@
 import {UserInputError} from 'apollo-server-express';
 import {extendType, idArg, stringArg, nonNull, list} from 'nexus';
 import requireUserAuthorization from '../utils/requireUserAuthorization';
+import {sendConfirmationMail} from './confirmReservation';
 import {
   checkOccupancy,
-  sendReservationConfirmation,
   whereHasNoOverlappingReservation,
 } from './requestReservation';
 
@@ -60,13 +60,16 @@ export default extendType({
             tableId,
             status: 'Confirmed',
           },
+          include: {
+            table: {
+              include: {
+                area: true,
+              },
+            },
+          },
         });
 
-        if (reservation) {
-          try {
-            await sendReservationConfirmation(primaryEmail, reservation);
-          } catch (e) {}
-        }
+        await sendConfirmationMail(prismaClient, reservation);
 
         return reservation;
       },

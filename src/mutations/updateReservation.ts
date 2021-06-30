@@ -2,6 +2,7 @@ import {extendType, nonNull, intArg} from 'nexus';
 import {UserInputError} from 'apollo-server-express';
 import requireUserAuthorization from '../utils/requireUserAuthorization';
 import {ReservationStatus} from '@prisma/client';
+import {isAfter, isBefore} from 'date-fns';
 
 export default extendType({
   type: 'Mutation',
@@ -42,8 +43,12 @@ export default extendType({
 
         if (startTime) {
           if (
-            // TODO
-            reservation.table.reservations.some((r) => r.id != reservation.id)
+            reservation.table.reservations.some(
+              (r) =>
+                r.id != reservation.id &&
+                isBefore(r.startTime, reservation.endTime) &&
+                isAfter(r.endTime, startTime),
+            )
           ) {
             throw new UserInputError('Nicht verfügbar');
           }
@@ -51,8 +56,12 @@ export default extendType({
 
         if (endTime) {
           if (
-            // TODO
-            reservation.table.reservations.some((r) => r.id != reservation.id)
+            reservation.table.reservations.some(
+              (r) =>
+                r.id != reservation.id &&
+                isBefore(r.startTime, endTime) &&
+                isAfter(r.endTime, reservation.startTime),
+            )
           ) {
             throw new UserInputError('Nicht verfügbar');
           }

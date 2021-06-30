@@ -135,6 +135,7 @@ export interface NexusGenObjects {
   }
   Query: {};
   Reservation: { // root type
+    checkInTime?: NexusGenScalars['DateTime'] | null; // DateTime
     checkedInPersons: number; // Int!
     endTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
@@ -200,6 +201,7 @@ export interface NexusGenFieldTypes {
     checkInReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     createOrder: NexusGenRootTypes['Order'] | null; // Order
+    createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     requestReservation: boolean; // Boolean!
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     updateReservationOtherPersons: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -246,6 +248,8 @@ export interface NexusGenFieldTypes {
   }
   Reservation: { // field return type
     alternativeTables: Array<NexusGenRootTypes['Table'] | null>; // [Table]!
+    availableToCheckIn: number; // Int!
+    checkInTime: NexusGenScalars['DateTime'] | null; // DateTime
     checkedInPersons: number; // Int!
     endTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
@@ -308,6 +312,7 @@ export interface NexusGenFieldTypeNames {
     checkInReservation: 'Reservation'
     confirmReservation: 'Reservation'
     createOrder: 'Order'
+    createReservation: 'Reservation'
     requestReservation: 'Boolean'
     updateReservation: 'Reservation'
     updateReservationOtherPersons: 'Reservation'
@@ -354,6 +359,8 @@ export interface NexusGenFieldTypeNames {
   }
   Reservation: { // field return type name
     alternativeTables: 'Table'
+    availableToCheckIn: 'Int'
+    checkInTime: 'DateTime'
     checkedInPersons: 'Int'
     endTime: 'DateTime'
     id: 'Int'
@@ -425,6 +432,15 @@ export interface NexusGenArgTypes {
     createOrder: { // args
       payment: NexusGenEnums['OrderPayment']; // OrderPayment!
       products: NexusGenInputs['OrderItemInput'][]; // [OrderItemInput!]!
+      tableId: string; // ID!
+    }
+    createReservation: { // args
+      endTime: NexusGenScalars['DateTime']; // DateTime!
+      note?: string | null; // String
+      otherPersons: string[]; // [String!]!
+      primaryEmail: string; // String!
+      primaryPerson: string; // String!
+      startTime: NexusGenScalars['DateTime']; // DateTime!
       tableId: string; // ID!
     }
     requestReservation: { // args

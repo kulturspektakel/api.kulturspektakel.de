@@ -48,6 +48,7 @@ type Mutation {
   checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
   createOrder(payment: OrderPayment!, products: [OrderItemInput!]!, tableId: ID!): Order
+  createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
   updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, startTime: DateTime, tableId: ID): Reservation
   updateReservationOtherPersons(otherPersons: [String!]!, token: String!): Reservation
@@ -129,6 +130,8 @@ type Query {
 
 type Reservation {
   alternativeTables: [Table]!
+  availableToCheckIn: Int!
+  checkInTime: DateTime
   checkedInPersons: Int!
   endTime: DateTime!
   id: Int!
