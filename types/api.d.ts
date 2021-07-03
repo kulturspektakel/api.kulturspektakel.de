@@ -51,6 +51,9 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  AreaTableOrderByInput: { // input type
+    id?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
   OrderItemInput: { // input type
     amount: number; // Int!
     note?: string | null; // String
@@ -416,6 +419,7 @@ export interface NexusGenArgTypes {
       before?: NexusGenInputs['TableWhereUniqueInput'] | null; // TableWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
+      orderBy?: NexusGenInputs['AreaTableOrderByInput'][] | null; // [AreaTableOrderByInput!]
     }
   }
   Mutation: {

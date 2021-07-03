@@ -1,4 +1,4 @@
-import {Area} from '@prisma/client';
+import {Area, prisma} from '@prisma/client';
 import {endOfDay} from 'date-fns';
 import startOfDay from 'date-fns/startOfDay';
 import {objectType} from 'nexus';
@@ -13,6 +13,9 @@ export default objectType({
     t.model.themeColor();
     t.model.table({
       ...requireUserAuthorization,
+      ordering: {
+        id: true,
+      },
     });
 
     t.nonNull.list.nonNull.field('openingHour', {

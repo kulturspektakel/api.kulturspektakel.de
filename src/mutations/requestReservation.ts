@@ -109,7 +109,7 @@ export default extendType({
           orderBy: [
             {type: 'asc'}, // prefer TABLE over ISLAND
             {maxCapacity: 'asc'}, // prefer smaller tables
-            {displayName: 'asc'}, // prefer smaller table numbers
+            {id: 'asc'}, // prefer smaller table numbers
           ],
           include: {
             reservations: true,
