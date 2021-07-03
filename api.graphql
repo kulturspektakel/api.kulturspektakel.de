@@ -11,12 +11,8 @@ type Area implements Node {
   """Unique identifier for the resource"""
   id: ID!
   openingHour(day: Date): [OpeningHour!]!
-  table(after: TableWhereUniqueInput, before: TableWhereUniqueInput, first: Int, last: Int, orderBy: [AreaTableOrderByInput!]): [Table!]!
+  table: [Table!]!
   themeColor: String!
-}
-
-input AreaTableOrderByInput {
-  id: SortOrder
 }
 
 type Band {
@@ -171,11 +167,6 @@ type Table implements Node {
   type: TableType!
 }
 
-input TableAreaIdDisplayNameCompoundUniqueInput {
-  areaId: String!
-  displayName: String!
-}
-
 type TableAvailability {
   endTime: DateTime!
   startTime: DateTime!
@@ -185,11 +176,6 @@ type TableAvailability {
 enum TableType {
   ISLAND
   TABLE
-}
-
-input TableWhereUniqueInput {
-  areaId_displayName: TableAreaIdDisplayNameCompoundUniqueInput
-  id: String
 }
 
 type Viewer {

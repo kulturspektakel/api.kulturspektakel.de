@@ -11,11 +11,18 @@ export default objectType({
     t.implements(Node);
     t.model.displayName();
     t.model.themeColor();
-    t.model.table({
+    t.nonNull.list.nonNull.field('table', {
+      type: 'Table',
       ...requireUserAuthorization,
-      ordering: {
-        id: true,
-      },
+      resolve: (area, _, {prismaClient}) =>
+        prismaClient.table.findMany({
+          where: {
+            areaId: (area as Area).id,
+          },
+          orderBy: {
+            id: 'asc',
+          },
+        }),
     });
 
     t.nonNull.list.nonNull.field('openingHour', {

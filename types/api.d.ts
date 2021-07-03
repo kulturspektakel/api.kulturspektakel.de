@@ -51,9 +51,6 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  AreaTableOrderByInput: { // input type
-    id?: NexusGenEnums['SortOrder'] | null; // SortOrder
-  }
   OrderItemInput: { // input type
     amount: number; // Int!
     note?: string | null; // String
@@ -64,14 +61,6 @@ export interface NexusGenInputs {
   }
   ProductWhereUniqueInput: { // input type
     id?: number | null; // Int
-  }
-  TableAreaIdDisplayNameCompoundUniqueInput: { // input type
-    areaId: string; // String!
-    displayName: string; // String!
-  }
-  TableWhereUniqueInput: { // input type
-    areaId_displayName?: NexusGenInputs['TableAreaIdDisplayNameCompoundUniqueInput'] | null; // TableAreaIdDisplayNameCompoundUniqueInput
-    id?: string | null; // String
   }
 }
 
@@ -413,13 +402,6 @@ export interface NexusGenArgTypes {
     }
     openingHour: { // args
       day?: NexusGenScalars['Date'] | null; // Date
-    }
-    table: { // args
-      after?: NexusGenInputs['TableWhereUniqueInput'] | null; // TableWhereUniqueInput
-      before?: NexusGenInputs['TableWhereUniqueInput'] | null; // TableWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
-      orderBy?: NexusGenInputs['AreaTableOrderByInput'][] | null; // [AreaTableOrderByInput!]
     }
   }
   Mutation: {
