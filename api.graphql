@@ -125,6 +125,7 @@ type Query {
   orders: [Order!]!
   productLists: [ProductList!]!
   reservationForToken(token: String!): Reservation
+  reservationsByPerson: [ReservationByPerson!]!
   viewer: Viewer
 }
 
@@ -143,6 +144,11 @@ type Reservation {
   status: ReservationStatus!
   table: Table!
   token: String!
+}
+
+type ReservationByPerson {
+  email: String!
+  reservations: [Reservation!]!
 }
 
 enum ReservationStatus {

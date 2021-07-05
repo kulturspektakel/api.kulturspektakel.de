@@ -138,6 +138,10 @@ export interface NexusGenObjects {
     status: NexusGenEnums['ReservationStatus']; // ReservationStatus!
     token: string; // String!
   }
+  ReservationByPerson: { // root type
+    email: string; // String!
+    reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
+  }
   Table: { // root type
     displayName: string; // String!
     maxCapacity: number; // Int!
@@ -236,6 +240,7 @@ export interface NexusGenFieldTypes {
     orders: NexusGenRootTypes['Order'][]; // [Order!]!
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
     reservationForToken: NexusGenRootTypes['Reservation'] | null; // Reservation
+    reservationsByPerson: NexusGenRootTypes['ReservationByPerson'][]; // [ReservationByPerson!]!
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
   }
   Reservation: { // field return type
@@ -253,6 +258,10 @@ export interface NexusGenFieldTypes {
     status: NexusGenEnums['ReservationStatus']; // ReservationStatus!
     table: NexusGenRootTypes['Table']; // Table!
     token: string; // String!
+  }
+  ReservationByPerson: { // field return type
+    email: string; // String!
+    reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
   }
   Table: { // field return type
     area: NexusGenRootTypes['Area']; // Area!
@@ -347,6 +356,7 @@ export interface NexusGenFieldTypeNames {
     orders: 'Order'
     productLists: 'ProductList'
     reservationForToken: 'Reservation'
+    reservationsByPerson: 'ReservationByPerson'
     viewer: 'Viewer'
   }
   Reservation: { // field return type name
@@ -364,6 +374,10 @@ export interface NexusGenFieldTypeNames {
     status: 'ReservationStatus'
     table: 'Table'
     token: 'String'
+  }
+  ReservationByPerson: { // field return type name
+    email: 'String'
+    reservations: 'Reservation'
   }
   Table: { // field return type name
     area: 'Area'

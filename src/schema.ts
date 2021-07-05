@@ -42,6 +42,7 @@ import config from './queries/config';
 import availableCapacity from './queries/availableCapacity';
 import updateReservationOtherPersons from './mutations/updateReservationOtherPersons';
 import createReservation from './mutations/createReservation';
+import reservationsByPerson from './queries/reservationsByPerson';
 
 export default makeSchema({
   contextType: {
@@ -87,6 +88,7 @@ export default makeSchema({
     config,
     availableCapacity,
     updateReservationOtherPersons,
+    reservationsByPerson,
 
     // mutations
     cancelReservation,
