@@ -26,9 +26,8 @@ export default extendType({
       resolve: async (_, {id, name, emoji, products}, {prismaClient}) =>
         prismaClient.productList.upsert({
           create: {
-            name: name!,
+            name: name ?? '',
             emoji,
-
             product: {
               createMany: {
                 data: products?.map((p, order) => ({...p, order})) ?? [],
