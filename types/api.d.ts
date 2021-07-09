@@ -217,7 +217,6 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     items: NexusGenRootTypes['OrderItem'][]; // [OrderItem!]!
     payment: NexusGenEnums['OrderPayment']; // OrderPayment!
-    table: NexusGenRootTypes['Table'] | null; // Table
     tokens: number; // Int!
     total: number | null; // Int
   }
@@ -243,6 +242,7 @@ export interface NexusGenFieldTypes {
     availableCapacity: number; // Int!
     config: NexusGenRootTypes['Config'] | null; // Config
     node: NexusGenRootTypes['Node'] | null; // Node
+    orderItems: NexusGenRootTypes['OrderItem'][]; // [OrderItem!]!
     orders: NexusGenRootTypes['Order'][]; // [Order!]!
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
     reservationForToken: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -335,7 +335,6 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     items: 'OrderItem'
     payment: 'OrderPayment'
-    table: 'Table'
     tokens: 'Int'
     total: 'Int'
   }
@@ -361,6 +360,7 @@ export interface NexusGenFieldTypeNames {
     availableCapacity: 'Int'
     config: 'Config'
     node: 'Node'
+    orderItems: 'OrderItem'
     orders: 'Order'
     productLists: 'ProductList'
     reservationForToken: 'Reservation'
@@ -440,7 +440,6 @@ export interface NexusGenArgTypes {
     createOrder: { // args
       payment: NexusGenEnums['OrderPayment']; // OrderPayment!
       products: NexusGenInputs['OrderItemInput'][]; // [OrderItemInput!]!
-      tableId: string; // ID!
     }
     createReservation: { // args
       endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -497,6 +496,11 @@ export interface NexusGenArgTypes {
     }
     node: { // args
       id: string; // ID!
+    }
+    orderItems: { // args
+      from?: NexusGenScalars['DateTime'] | null; // DateTime
+      productListId?: number | null; // Int
+      until?: NexusGenScalars['DateTime'] | null; // DateTime
     }
     reservationForToken: { // args
       token: string; // String!

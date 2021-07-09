@@ -10,8 +10,9 @@ export default extendType({
       args: {
         from: 'DateTime',
         until: 'DateTime',
+        productListId: 'Int',
       },
-      resolve: async (_root, {from, until}, {prismaClient}) =>
+      resolve: async (_root, {from, until, productListId}, {prismaClient}) =>
         await prismaClient.orderItem.findMany({
           where: {
             order: {
@@ -20,6 +21,7 @@ export default extendType({
                 lte: until,
               },
             },
+            listId: productListId,
           },
         }),
     });

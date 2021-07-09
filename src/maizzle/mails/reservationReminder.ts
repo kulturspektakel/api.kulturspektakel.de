@@ -62,7 +62,7 @@ export default ({reservations}: {reservations: string}) => `<!DOCTYPE html>
       Zur Kontaktverfolgung benötigen wir die korrekten Namen aller Gäste. Falls sich an deiner Gästeliste etwas geändert hat, aktualisiere bitte die Namen.
     </p>
     <p>
-      Falls du eine Reservierung(en) nicht wahrnehmen kannst, sage bitte ab in dem du auf Bearbeiten klickst.
+      Falls du eine Reservierung(en) nicht wahrnehmen kannst, sage bitte ab, in dem du auf Bearbeiten klickst.
     </p>
     <h4>
       Du hast folgende Reservierungen für das Kult:
@@ -71,11 +71,11 @@ export default ({reservations}: {reservations: string}) => `<!DOCTYPE html>
         ${reservations}
     </ul>
     <p>
-      Der Besuch der Kulturspektakels ist nur mit einer gültigen Reservierung möglich. Bitte kommt pünktlich zum Beginn eurer Reservierung, da sie sonst verfällt.
+      Der Besuch des Kulturspektakels ist nur mit einer gültigen Reservierung möglich. Bitte kommt pünktlich zum Beginn eurer Reservierung, da sie sonst verfällt.
     </p>
     <p>
       Bitte schau dir auch nochmal unser <a href="https://kulturspektakel.de/hygiene/" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">Hygienekonzept</a>
- an. Dort sind alle notwendigen Corona-Maßnahmen an die sich Gäste unserer Veranstaltung halten müssen erläutert.
+ an. Dort sind alle notwendigen Corona-Maßnahmen, an die sich Gäste unserer Veranstaltung halten müssen erläutert.
     </p>
     <p style="margin: 0;">Viele Grüße,<br>Das Kult-Team</p>
                     </td>

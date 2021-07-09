@@ -47,7 +47,7 @@ type Mutation {
   cancelReservation(token: String!): Boolean
   checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
-  createOrder(payment: OrderPayment!, products: [OrderItemInput!]!, tableId: ID!): Order
+  createOrder(payment: OrderPayment!, products: [OrderItemInput!]!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
   deleteProductList(id: Int!): Boolean
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
@@ -71,7 +71,6 @@ type Order {
   id: Int!
   items: [OrderItem!]!
   payment: OrderPayment!
-  table: Table
   tokens: Int!
   total: Int
 }
@@ -129,6 +128,7 @@ type Query {
   availableCapacity(time: DateTime): Int!
   config: Config
   node(id: ID!): Node
+  orderItems(from: DateTime, productListId: Int, until: DateTime): [OrderItem!]!
   orders: [Order!]!
   productLists: [ProductList!]!
   reservationForToken(token: String!): Reservation
