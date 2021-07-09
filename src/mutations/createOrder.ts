@@ -8,7 +8,6 @@ export default extendType({
     t.field('createOrder', {
       type: 'Order',
       args: {
-        tableId: nonNull(idArg()),
         products: nonNull(
           list(
             nonNull(
@@ -26,11 +25,7 @@ export default extendType({
         payment: nonNull('OrderPayment'),
       },
       authorize: authorization('device'),
-      resolve: async (
-        _,
-        {tableId, products, payment},
-        {prismaClient, token},
-      ) => {
+      resolve: async (_, {products, payment}, {prismaClient, token}) => {
         if (token?.type !== 'device') {
           throw new Error('No device authentication');
         }
@@ -50,7 +45,6 @@ export default extendType({
         return await prismaClient.order.create({
           data: {
             payment,
-            tableId,
             deviceId: token.deviceId!,
             items: {
               createMany: {

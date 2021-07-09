@@ -88,15 +88,15 @@ model Table {
   area Area @relation(fields: [areaId], references: [id])
 
   reservations Reservation[]
-  Order        Order[]
   @@unique([areaId, displayName])
 }
 
 model ProductList {
-  id      Int       @id @default(autoincrement())
-  name    String
-  emoji   String?
-  product Product[]
+  id        Int         @id @default(autoincrement())
+  name      String
+  emoji     String?
+  product   Product[]
+  OrderItem OrderItem[]
 }
 
 model Product {
@@ -128,19 +128,19 @@ model Order {
   createdAt DateTime     @default(now())
   payment   OrderPayment
   tokens    Int          @default(0)
-  table     Table?       @relation(fields: [tableId], references: [id])
-  tableId   String?
   device    Device       @relation(fields: [deviceId], references: [id])
   items     OrderItem[]
   deviceId  String
 }
 
 model OrderItem {
-  id           Int     @id @default(autoincrement())
-  order        Order   @relation(fields: [orderId], references: [id])
+  id           Int          @id @default(autoincrement())
+  order        Order        @relation(fields: [orderId], references: [id])
   orderId      Int
   amount       Int
   note         String?
   name         String
   perUnitPrice Int
+  list         ProductList? @relation(fields: [listId], references: [id])
+  listId       Int?
 }
