@@ -37,16 +37,16 @@ export default extendType({
           update: {
             name: name ?? undefined,
             emoji,
-            product: {
-              deleteMany: id
-                ? {
-                    productListId: id,
-                  }
-                : undefined,
-              createMany: {
-                data: products?.map((p, order) => ({...p, order})) ?? [],
-              },
-            },
+            product: products
+              ? {
+                  deleteMany: {
+                    productListId: id ?? -1,
+                  },
+                  createMany: {
+                    data: products.map((p, order) => ({...p, order})),
+                  },
+                }
+              : undefined,
           },
           where: {
             id: id ?? -1,
