@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server-express';
 import {extendType, idArg, stringArg, nonNull, list} from 'nexus';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
+import authorization from '../utils/authorization';
 import {sendConfirmationMail} from './confirmReservation';
 import {
   checkOccupancy,
@@ -12,7 +12,7 @@ export default extendType({
   definition: (t) => {
     t.field('createReservation', {
       type: 'Reservation',
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       args: {
         tableId: nonNull(idArg()),
         primaryEmail: nonNull(stringArg()),

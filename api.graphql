@@ -49,9 +49,11 @@ type Mutation {
   confirmReservation(token: String!): Reservation
   createOrder(payment: OrderPayment!, products: [OrderItemInput!]!, tableId: ID!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
+  deleteProductList(id: Int!): Boolean
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
   updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, startTime: DateTime, tableId: ID): Reservation
   updateReservationOtherPersons(otherPersons: [String!]!, token: String!): Reservation
+  upsertProductList(emoji: String, id: Int, name: String, products: [ProductInput!]): ProductList
 }
 
 interface Node {
@@ -98,6 +100,11 @@ enum OrderPayment {
 
 type Product {
   id: Int!
+  name: String!
+  price: Int!
+}
+
+input ProductInput {
   name: String!
   price: Int!
 }

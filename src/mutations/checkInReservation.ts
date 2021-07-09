@@ -1,6 +1,5 @@
-import {UserInputError} from 'apollo-server-express';
 import {extendType, nonNull, intArg} from 'nexus';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
+import authorization from '../utils/authorization';
 
 export default extendType({
   type: 'Mutation',
@@ -11,7 +10,7 @@ export default extendType({
         id: nonNull(intArg()),
         checkedInPersons: nonNull(intArg()),
       },
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       resolve: async (_, {id, checkedInPersons}, {prismaClient}) => {
         const reservation = await prismaClient.reservation.findUnique({
           where: {id},

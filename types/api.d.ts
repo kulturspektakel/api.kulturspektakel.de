@@ -56,6 +56,10 @@ export interface NexusGenInputs {
     note?: string | null; // String
     productId: number; // Int!
   }
+  ProductInput: { // input type
+    name: string; // String!
+    price: number; // Int!
+  }
   ProductListProductOrderByInput: { // input type
     order?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
@@ -198,9 +202,11 @@ export interface NexusGenFieldTypes {
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     createOrder: NexusGenRootTypes['Order'] | null; // Order
     createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    deleteProductList: boolean | null; // Boolean
     requestReservation: boolean; // Boolean!
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     updateReservationOtherPersons: NexusGenRootTypes['Reservation'] | null; // Reservation
+    upsertProductList: NexusGenRootTypes['ProductList'] | null; // ProductList
   }
   OpeningHour: { // field return type
     endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -314,9 +320,11 @@ export interface NexusGenFieldTypeNames {
     confirmReservation: 'Reservation'
     createOrder: 'Order'
     createReservation: 'Reservation'
+    deleteProductList: 'Boolean'
     requestReservation: 'Boolean'
     updateReservation: 'Reservation'
     updateReservationOtherPersons: 'Reservation'
+    upsertProductList: 'ProductList'
   }
   OpeningHour: { // field return type name
     endTime: 'DateTime'
@@ -443,6 +451,9 @@ export interface NexusGenArgTypes {
       startTime: NexusGenScalars['DateTime']; // DateTime!
       tableId: string; // ID!
     }
+    deleteProductList: { // args
+      id: number; // Int!
+    }
     requestReservation: { // args
       areaId: string; // ID!
       endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -463,6 +474,12 @@ export interface NexusGenArgTypes {
     updateReservationOtherPersons: { // args
       otherPersons: string[]; // [String!]!
       token: string; // String!
+    }
+    upsertProductList: { // args
+      emoji?: string | null; // String
+      id?: number | null; // Int
+      name?: string | null; // String
+      products?: NexusGenInputs['ProductInput'][] | null; // [ProductInput!]
     }
   }
   ProductList: {

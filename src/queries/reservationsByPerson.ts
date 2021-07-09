@@ -1,12 +1,12 @@
 import {Reservation} from '@prisma/client';
 import {extendType, objectType} from 'nexus';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
+import authorization from '../utils/authorization';
 
 export default extendType({
   type: 'Query',
   definition: (t) => {
     t.nonNull.list.nonNull.field('reservationsByPerson', {
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       type: objectType({
         name: 'ReservationByPerson',
         definition: (t) => {

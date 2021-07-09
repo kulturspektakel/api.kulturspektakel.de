@@ -2,7 +2,7 @@ import {Area, prisma} from '@prisma/client';
 import {endOfDay} from 'date-fns';
 import startOfDay from 'date-fns/startOfDay';
 import {objectType} from 'nexus';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
+import authorization from '../utils/authorization';
 import Node from './Node';
 
 export default objectType({
@@ -13,7 +13,7 @@ export default objectType({
     t.model.themeColor();
     t.nonNull.list.nonNull.field('table', {
       type: 'Table',
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       resolve: (area, _, {prismaClient}) =>
         prismaClient.table.findMany({
           where: {

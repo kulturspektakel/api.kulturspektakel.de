@@ -1,6 +1,6 @@
 import {Product} from '.prisma/client';
 import {extendType, nonNull, list, idArg, inputObjectType} from 'nexus';
-import requireDeviceAuthorization from '../utils/requireDeviceAuthorization';
+import authorization from '../utils/authorization';
 
 export default extendType({
   type: 'Mutation',
@@ -25,7 +25,7 @@ export default extendType({
         ),
         payment: nonNull('OrderPayment'),
       },
-      ...requireDeviceAuthorization,
+      authorize: authorization('device'),
       resolve: async (
         _,
         {tableId, products, payment},

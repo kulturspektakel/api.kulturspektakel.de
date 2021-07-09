@@ -7,7 +7,7 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import {add} from 'date-fns';
 
-type TokenInput =
+export type TokenInput =
   | {
       type: 'user';
       userId: string;

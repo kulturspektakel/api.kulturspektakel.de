@@ -1,0 +1,30 @@
+---
+title: "Reservierung Kulturspektakel"
+preheader: "Deine Reservierungen für das Kulturspektakel"
+---
+
+<extends src="master.html">
+  <block name="content">
+    <component src="heading.html">Dein Besuch auf dem Kulturspektakel</component>
+    <p>Wir freuen uns, dass du zum Kulturspektakel kommst.</p>
+    <p>
+      Zur Kontaktverfolgung benötigen wir die korrekten Namen aller Gäste. Falls sich an deiner Gästeliste etwas geändert hat, aktualisiere bitte die Namen.
+    </p>
+    <p>
+      Falls du eine Reservierung(en) nicht wahrnehmen kannst, sage bitte ab, in dem du auf Bearbeiten klickst.
+    </p>
+    <h4>
+      Du hast folgende Reservierungen für das Kult:
+    </h4>
+    <ul class="mt-1">
+        {{ dynamic.reservations }}
+    </ul>
+    <p>
+      Der Besuch des Kulturspektakels ist nur mit einer gültigen Reservierung möglich. Bitte kommt pünktlich zum Beginn eurer Reservierung, da sie sonst verfällt.
+    </p>
+    <p>
+      Bitte schau dir auch nochmal unser <component src="a.html" locals='{"url": "https://kulturspektakel.de/hygiene/"}'>Hygienekonzept</component> an. Dort sind alle notwendigen Corona-Maßnahmen, an die sich Gäste unserer Veranstaltung halten müssen erläutert.
+    </p>
+    <p class="m-0">Viele Grüße,<br>Das Kult-Team</p>
+  </block>
+</extends>

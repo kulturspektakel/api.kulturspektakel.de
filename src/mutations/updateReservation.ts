@@ -1,6 +1,6 @@
 import {extendType, nonNull, intArg} from 'nexus';
 import {UserInputError} from 'apollo-server-express';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
+import authorization from '../utils/authorization';
 import {ReservationStatus} from '@prisma/client';
 import {isAfter, isBefore} from 'date-fns';
 
@@ -17,7 +17,7 @@ export default extendType({
         checkedInPersons: 'Int',
         note: 'String',
       },
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       resolve: async (
         _,
         {id, startTime, endTime, tableId, checkedInPersons, note},

@@ -1,7 +1,7 @@
 import {Reservation} from '@prisma/client';
 import {objectType} from 'nexus';
 import {config} from '../queries/config';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
+import authorization from '../utils/authorization';
 
 export default objectType({
   name: 'Reservation',
@@ -15,18 +15,18 @@ export default objectType({
     t.model.primaryPerson();
     t.model.otherPersons();
     t.model.checkedInPersons({
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
     });
     t.model.note({
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
     });
     t.model.checkInTime({
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
     });
 
     t.nonNull.list.field('alternativeTables', {
       type: 'Table',
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       resolve: async (reservation, _args, {prismaClient}) => {
         return prismaClient.table.findMany({
           where: {
@@ -62,7 +62,7 @@ export default objectType({
 
     t.nonNull.field('availableToCheckIn', {
       type: 'Int',
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       resolve: async (reservation, _args, {prismaClient}) => {
         const query = await prismaClient.reservation.aggregate({
           _sum: {

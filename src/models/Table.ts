@@ -1,7 +1,7 @@
 import {Table} from '@prisma/client';
 import {endOfDay, startOfDay} from 'date-fns';
 import {objectType} from 'nexus';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
+import authorization from '../utils/authorization';
 import Node from './Node';
 
 export default objectType({
@@ -19,7 +19,7 @@ export default objectType({
       args: {
         day: 'Date',
       },
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       resolve: async (table, {day}, {prismaClient}) =>
         prismaClient.reservation.findMany({
           where: {

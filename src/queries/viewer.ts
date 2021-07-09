@@ -1,12 +1,12 @@
 import {extendType} from 'nexus';
-import requireUserAuthorization from '../utils/requireUserAuthorization';
+import authorization from '../utils/authorization';
 
 export default extendType({
   type: 'Query',
   definition: (t) => {
     t.field('viewer', {
       type: 'Viewer',
-      ...requireUserAuthorization,
+      authorize: authorization('user'),
       resolve: async (_root, _args, {prismaClient, token}) => {
         if (token?.type !== 'user') {
           return null;
