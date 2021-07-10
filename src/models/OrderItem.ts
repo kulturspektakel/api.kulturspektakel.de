@@ -7,5 +7,6 @@ export default objectType({
     t.model.note();
     t.model.amount();
     t.model.name();
+    t.model.list();
   },
 });

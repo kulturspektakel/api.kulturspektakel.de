@@ -223,6 +223,7 @@ export interface NexusGenFieldTypes {
   OrderItem: { // field return type
     amount: number; // Int!
     id: number; // Int!
+    list: NexusGenRootTypes['ProductList'] | null; // ProductList
     name: string; // String!
     note: string | null; // String
   }
@@ -341,6 +342,7 @@ export interface NexusGenFieldTypeNames {
   OrderItem: { // field return type name
     amount: 'Int'
     id: 'Int'
+    list: 'ProductList'
     name: 'String'
     note: 'String'
   }
@@ -467,6 +469,7 @@ export interface NexusGenArgTypes {
       endTime?: NexusGenScalars['DateTime'] | null; // DateTime
       id: number; // Int!
       note?: string | null; // String
+      primaryPerson?: string | null; // String
       startTime?: NexusGenScalars['DateTime'] | null; // DateTime
       tableId?: string | null; // ID
     }

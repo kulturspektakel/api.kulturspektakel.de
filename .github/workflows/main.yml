@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-    - master
+      - master
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -21,6 +21,8 @@ jobs:
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
           if_key_exists: replace
       - name: install
-        run: yarn 
+        run: yarn
+      - name: typecheck
+        run: yarn tsc
       - name: deploy
         run: ./scripts/deploy.sh

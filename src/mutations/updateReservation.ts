@@ -16,11 +16,20 @@ export default extendType({
         tableId: 'ID',
         checkedInPersons: 'Int',
         note: 'String',
+        primaryPerson: 'String',
       },
       authorize: authorization('user'),
       resolve: async (
         _,
-        {id, startTime, endTime, tableId, checkedInPersons, note},
+        {
+          id,
+          startTime,
+          endTime,
+          tableId,
+          checkedInPersons,
+          note,
+          primaryPerson,
+        },
         {prismaClient},
       ) => {
         const reservation = await prismaClient.reservation.findUnique({
@@ -119,6 +128,7 @@ export default extendType({
             checkInTime,
             checkedInPersons: checkedInPersons ?? undefined,
             note,
+            primaryPerson: primaryPerson ?? undefined,
           },
           where: {
             id,

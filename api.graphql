@@ -51,7 +51,7 @@ type Mutation {
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
   deleteProductList(id: Int!): Boolean
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
-  updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, startTime: DateTime, tableId: ID): Reservation
+  updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, primaryPerson: String, startTime: DateTime, tableId: ID): Reservation
   updateReservationOtherPersons(otherPersons: [String!]!, token: String!): Reservation
   upsertProductList(emoji: String, id: Int, name: String, products: [ProductInput!]): ProductList
 }
@@ -78,6 +78,7 @@ type Order {
 type OrderItem {
   amount: Int!
   id: Int!
+  list: ProductList
   name: String!
   note: String
 }
