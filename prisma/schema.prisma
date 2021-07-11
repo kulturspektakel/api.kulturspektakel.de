@@ -100,10 +100,11 @@ model ProductList {
 }
 
 model Product {
-  id    Int    @id @default(autoincrement())
-  name  String
-  price Int
-  order Int
+  id              Int     @id @default(autoincrement())
+  name            String
+  price           Int
+  order           Int
+  requiresDeposit Boolean @default(false)
 
   productList   ProductList @relation(fields: [productListId], references: [id])
   productListId Int

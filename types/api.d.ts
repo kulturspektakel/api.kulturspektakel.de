@@ -59,6 +59,7 @@ export interface NexusGenInputs {
   ProductInput: { // input type
     name: string; // String!
     price: number; // Int!
+    requireDeposit?: boolean | null; // Boolean
   }
   ProductListProductOrderByInput: { // input type
     order?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -100,7 +101,8 @@ export interface NexusGenObjects {
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   Config: { // root type
-    reservationStart?: NexusGenScalars['DateTime'] | null; // DateTime
+    reservationStart: NexusGenScalars['DateTime']; // DateTime!
+    tokenValue: number; // Int!
   }
   Mutation: {};
   OpeningHour: { // root type
@@ -123,6 +125,7 @@ export interface NexusGenObjects {
     id: number; // Int!
     name: string; // String!
     price: number; // Int!
+    requiresDeposit: boolean; // Boolean!
   }
   ProductList: { // root type
     emoji?: string | null; // String
@@ -194,7 +197,8 @@ export interface NexusGenFieldTypes {
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   Config: { // field return type
-    reservationStart: NexusGenScalars['DateTime'] | null; // DateTime
+    reservationStart: NexusGenScalars['DateTime']; // DateTime!
+    tokenValue: number; // Int!
   }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
@@ -231,6 +235,7 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     name: string; // String!
     price: number; // Int!
+    requiresDeposit: boolean; // Boolean!
   }
   ProductList: { // field return type
     emoji: string | null; // String
@@ -314,6 +319,7 @@ export interface NexusGenFieldTypeNames {
   }
   Config: { // field return type name
     reservationStart: 'DateTime'
+    tokenValue: 'Int'
   }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
@@ -350,6 +356,7 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     name: 'String'
     price: 'Int'
+    requiresDeposit: 'Boolean'
   }
   ProductList: { // field return type name
     emoji: 'String'

@@ -7,5 +7,6 @@ export default objectType({
     t.model.id();
     t.model.name();
     t.model.price();
+    t.model.requiresDeposit();
   },
 });

@@ -25,7 +25,8 @@ type Band {
 }
 
 type Config {
-  reservationStart: DateTime
+  reservationStart: DateTime!
+  tokenValue: Int!
 }
 
 """
@@ -102,11 +103,13 @@ type Product {
   id: Int!
   name: String!
   price: Int!
+  requiresDeposit: Boolean!
 }
 
 input ProductInput {
   name: String!
   price: Int!
+  requireDeposit: Boolean
 }
 
 type ProductList {
