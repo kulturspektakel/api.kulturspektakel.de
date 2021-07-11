@@ -109,7 +109,7 @@ type Product {
 input ProductInput {
   name: String!
   price: Int!
-  requireDeposit: Boolean
+  requiresDeposit: Boolean
 }
 
 type ProductList {

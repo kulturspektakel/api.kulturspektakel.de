@@ -17,7 +17,7 @@ export default extendType({
               definition: (t) => {
                 t.nonNull.field('name', {type: 'String'});
                 t.nonNull.field('price', {type: 'Int'});
-                t.field('requireDeposit', {type: 'Boolean'});
+                t.field('requiresDeposit', {type: 'Boolean'});
               },
             }),
           ),

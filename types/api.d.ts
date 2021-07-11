@@ -59,7 +59,7 @@ export interface NexusGenInputs {
   ProductInput: { // input type
     name: string; // String!
     price: number; // Int!
-    requireDeposit?: boolean | null; // Boolean
+    requiresDeposit?: boolean | null; // Boolean
   }
   ProductListProductOrderByInput: { // input type
     order?: NexusGenEnums['SortOrder'] | null; // SortOrder
