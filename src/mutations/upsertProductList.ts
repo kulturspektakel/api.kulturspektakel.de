@@ -31,7 +31,12 @@ export default extendType({
             emoji,
             product: {
               createMany: {
-                data: products?.map((p, order) => ({...p, order})) ?? [],
+                data:
+                  products?.map((p, order) => ({
+                    ...p,
+                    order,
+                    requiresDeposit: p.requiresDeposit ?? false,
+                  })) ?? [],
               },
             },
           },
@@ -44,7 +49,11 @@ export default extendType({
                     productListId: id ?? -1,
                   },
                   createMany: {
-                    data: products.map((p, order) => ({...p, order})),
+                    data: products.map((p, order) => ({
+                      ...p,
+                      order,
+                      requiresDeposit: p.requiresDeposit ?? false,
+                    })),
                   },
                 }
               : undefined,
