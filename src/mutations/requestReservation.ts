@@ -174,6 +174,8 @@ export async function checkOccupancy(
   endTime: Date,
   partySize: number,
 ) {
+  // don't check capacity limit anymore
+  return;
   if (
     (await occupancyIntervals(prismaClient, startTime, endTime)).some(
       ({occupancy}) => occupancy + partySize > config.capacityLimit,

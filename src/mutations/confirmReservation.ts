@@ -117,8 +117,8 @@ export async function sendConfirmationMail(
         token: reservation.token,
       }),
     });
-    await scheduleTask('reservationSlackMessage', {id: reservation.id});
   } catch (e) {
-    console.log(e.response.body);
+    console.error(e);
   }
+  await scheduleTask('reservationSlackMessage', {id: reservation.id});
 }
