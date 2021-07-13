@@ -39,6 +39,18 @@ export default objectType({
             id: {
               not: (reservation as Reservation).tableId,
             },
+            area: {
+              areaOpeningHour: {
+                some: {
+                  startTime: {
+                    lte: reservation.startTime,
+                  },
+                  endTime: {
+                    gte: reservation.endTime,
+                  },
+                },
+              },
+            },
             reservations: {
               every: {
                 OR: [
