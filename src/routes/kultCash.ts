@@ -2,14 +2,10 @@ import prismaClient from '../utils/prismaClient';
 import {crc32} from 'crc';
 import {Express, Request, Response} from 'express';
 import asciinize from '../utils/asciinize';
-import {
-  ConfigMessage,
-  IConfigMessage,
-  ITransactionMessage,
-  TransactionMessage,
-} from '../proto';
+import {ConfigMessage, TransactionMessage} from '../proto';
 import {createHash} from 'crypto';
 import env from '../utils/env';
+import {IConfigMessage} from '../../types/proto';
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
