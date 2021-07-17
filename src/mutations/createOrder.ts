@@ -1,5 +1,4 @@
-import {Product} from '.prisma/client';
-import {extendType, nonNull, list, idArg, inputObjectType} from 'nexus';
+import {extendType, nonNull, list, inputObjectType} from 'nexus';
 import authorization from '../utils/authorization';
 
 export default extendType({
@@ -14,8 +13,10 @@ export default extendType({
               inputObjectType({
                 name: 'OrderItemInput',
                 definition: (t) => {
-                  t.nonNull.field('productId', {type: 'Int'});
+                  t.nonNull.field('perUnitPrice', {type: 'Int'});
+                  t.nonNull.field('name', {type: 'String'});
                   t.nonNull.field('amount', {type: 'Int'});
+                  t.field('listId', {type: 'Int'});
                   t.field('note', {type: 'String'});
                 },
               }),
@@ -23,37 +24,30 @@ export default extendType({
           ),
         ),
         payment: nonNull('OrderPayment'),
+        clientId: 'String',
+        deposit: nonNull('Int'),
+        deviceTime: nonNull('DateTime'),
       },
       authorize: authorization('device'),
-      resolve: async (_, {products, payment}, {prismaClient, token}) => {
+      resolve: async (
+        _,
+        {products, payment, deposit, deviceTime, clientId},
+        {prismaClient, token},
+      ) => {
         if (token?.type !== 'device') {
           throw new Error('No device authentication');
         }
-        const productItems = await prismaClient.product.findMany({
-          where: {
-            id: {
-              in: products.map(({productId}) => productId),
-            },
-          },
-        });
-
-        const productMap = productItems.reduce(
-          (acc, cv) => acc.set(cv.id, cv),
-          new Map<number, Product>(),
-        );
 
         return await prismaClient.order.create({
           data: {
             payment,
             deviceId: token.deviceId!,
+            tokens: deposit,
+            deviceTime,
+            clientId,
             items: {
               createMany: {
-                data: products.map((p) => ({
-                  amount: p.amount,
-                  name: productMap.get(p.productId)!.name,
-                  perUnitPrice: productMap.get(p.productId)!.price,
-                  note: p.note,
-                })),
+                data: products,
               },
             },
           },

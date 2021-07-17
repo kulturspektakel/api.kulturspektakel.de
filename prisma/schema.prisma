@@ -97,6 +97,7 @@ model ProductList {
   emoji     String?
   product   Product[]
   OrderItem OrderItem[]
+  Device    Device[]
 }
 
 model Product {
@@ -120,18 +121,23 @@ enum OrderPayment {
 }
 
 model Device {
-  id    String  @id
-  Order Order[]
+  id            String       @id
+  Order         Order[]
+  lastSeen      DateTime?
+  productList   ProductList? @relation(fields: [productListId], references: [id])
+  productListId Int?
 }
 
 model Order {
-  id        Int          @id @default(autoincrement())
-  createdAt DateTime     @default(now())
-  payment   OrderPayment
-  tokens    Int          @default(0)
-  device    Device       @relation(fields: [deviceId], references: [id])
-  items     OrderItem[]
-  deviceId  String
+  id         Int          @id @default(autoincrement())
+  clientId   String?
+  createdAt  DateTime     @default(now())
+  deviceTime DateTime
+  payment    OrderPayment
+  tokens     Int          @default(0)
+  device     Device       @relation(fields: [deviceId], references: [id])
+  items      OrderItem[]
+  deviceId   String
 }
 
 model OrderItem {
