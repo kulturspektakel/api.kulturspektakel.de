@@ -7,6 +7,8 @@ export default objectType({
     t.model.payment();
     t.model.tokens();
     t.model.createdAt();
+    t.model.deviceTime();
+    t.model.deviceId();
     t.nonNull.list.nonNull.field('items', {
       type: 'OrderItem',
       resolve: (parent, _, {prismaClient}) =>
