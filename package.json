@@ -30,6 +30,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/node-fetch": "^2.5.10",
     "@types/nodemailer": "^6.4.1",
+    "pbjs": "^0.0.14",
     "prettier": "^2.0.5",
     "prisma": "^2.24.1",
     "ts-node-dev": "^1.0.0",
@@ -57,6 +58,7 @@
     "nexus-plugin-prisma": "^0.35.0",
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.6.0",
-    "passkit-generator": "^2.0.6"
+    "passkit-generator": "^2.0.6",
+    "protobufjs": "^6.11.2"
   }
 }
