@@ -9,7 +9,6 @@ import passkit from './routes/passkit';
 import ics from './routes/ics';
 import {join} from 'path';
 import tasks from './tasks';
-import kultCash from './routes/kultCash';
 
 const server = new ApolloServer({
   context,
@@ -37,7 +36,6 @@ const server = new ApolloServer({
   auth(app);
   passkit(app);
   ics(app);
-  kultCash(app);
   app.use(
     '/public',
     express.static(join(__dirname, '..', 'artifacts', 'public')),

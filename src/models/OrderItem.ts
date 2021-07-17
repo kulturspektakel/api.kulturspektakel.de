@@ -8,6 +8,5 @@ export default objectType({
     t.model.amount();
     t.model.name();
     t.model.list();
-    t.model.perUnitPrice();
   },
 });

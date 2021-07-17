@@ -321,23 +321,7 @@
             "name": "reservationStart",
             "description": null,
             "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {"kind": "SCALAR", "name": "DateTime", "ofType": null}
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "tokenValue",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
-            },
+            "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -461,42 +445,6 @@
             "name": "createOrder",
             "description": null,
             "args": [
-              {
-                "name": "clientId",
-                "description": null,
-                "type": {"kind": "SCALAR", "name": "String", "ofType": null},
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "deposit",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "deviceTime",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "DateTime",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
               {
                 "name": "payment",
                 "description": null,
@@ -826,14 +774,6 @@
                 "deprecationReason": null
               },
               {
-                "name": "primaryPerson",
-                "description": null,
-                "type": {"kind": "SCALAR", "name": "String", "ofType": null},
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
                 "name": "startTime",
                 "description": null,
                 "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
@@ -1047,30 +987,6 @@
             "deprecationReason": null
           },
           {
-            "name": "deviceId",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "deviceTime",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {"kind": "SCALAR", "name": "DateTime", "ofType": null}
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "id",
             "description": null,
             "args": [],
@@ -1174,14 +1090,6 @@
             "deprecationReason": null
           },
           {
-            "name": "list",
-            "description": null,
-            "args": [],
-            "type": {"kind": "OBJECT", "name": "ProductList", "ofType": null},
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "name",
             "description": null,
             "args": [],
@@ -1198,18 +1106,6 @@
             "description": null,
             "args": [],
             "type": {"kind": "SCALAR", "name": "String", "ofType": null},
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "perUnitPrice",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
-            },
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -1238,26 +1134,6 @@
             "deprecationReason": null
           },
           {
-            "name": "listId",
-            "description": null,
-            "type": {"kind": "SCALAR", "name": "Int", "ofType": null},
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "name",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "note",
             "description": null,
             "type": {"kind": "SCALAR", "name": "String", "ofType": null},
@@ -1266,7 +1142,7 @@
             "deprecationReason": null
           },
           {
-            "name": "perUnitPrice",
+            "name": "productId",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -1369,18 +1245,6 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
-          },
-          {
-            "name": "requiresDeposit",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {"kind": "SCALAR", "name": "Boolean", "ofType": null}
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -1414,14 +1278,6 @@
               "name": null,
               "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
             },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "requiresDeposit",
-            "description": null,
-            "type": {"kind": "SCALAR", "name": "Boolean", "ofType": null},
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1680,14 +1536,6 @@
                 "name": "from",
                 "description": null,
                 "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "productListId",
-                "description": null,
-                "type": {"kind": "SCALAR", "name": "Int", "ofType": null},
                 "defaultValue": null,
                 "isDeprecated": false,
                 "deprecationReason": null

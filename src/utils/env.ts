@@ -27,7 +27,6 @@ const e = {
     .required(!ci)
     .asString(),
   SLACK_BOT_TOKEN: env.get('SLACK_BOT_TOKEN').required(!ci).asString(),
-  KULT_CASH_SALT: env.get('KULT_CASH_SALT').required(!ci).asString(),
 };
 
 export default e;

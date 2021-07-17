@@ -13,7 +13,6 @@ export default objectType({
     t.model.startTime();
     t.model.endTime();
     t.model.primaryPerson();
-    t.model.primaryEmail();
     t.model.otherPersons();
     t.model.checkedInPersons({
       authorize: authorization('user'),

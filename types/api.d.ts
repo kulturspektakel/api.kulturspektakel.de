@@ -53,10 +53,8 @@ declare global {
 export interface NexusGenInputs {
   OrderItemInput: { // input type
     amount: number; // Int!
-    listId?: number | null; // Int
-    name: string; // String!
     note?: string | null; // String
-    perUnitPrice: number; // Int!
+    productId: number; // Int!
   }
   ProductInput: { // input type
     name: string; // String!
@@ -113,8 +111,6 @@ export interface NexusGenObjects {
   }
   Order: { // root type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    deviceId: string; // String!
-    deviceTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     payment: NexusGenEnums['OrderPayment']; // OrderPayment!
     tokens: number; // Int!
@@ -124,7 +120,6 @@ export interface NexusGenObjects {
     id: number; // Int!
     name: string; // String!
     note?: string | null; // String
-    perUnitPrice: number; // Int!
   }
   Product: { // root type
     id: number; // Int!
@@ -145,7 +140,6 @@ export interface NexusGenObjects {
     id: number; // Int!
     note?: string | null; // String
     otherPersons: string[]; // [String!]!
-    primaryEmail: string; // String!
     primaryPerson: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
     status: NexusGenEnums['ReservationStatus']; // ReservationStatus!
@@ -224,8 +218,6 @@ export interface NexusGenFieldTypes {
   }
   Order: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    deviceId: string; // String!
-    deviceTime: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     items: NexusGenRootTypes['OrderItem'][]; // [OrderItem!]!
     payment: NexusGenEnums['OrderPayment']; // OrderPayment!
@@ -238,7 +230,6 @@ export interface NexusGenFieldTypes {
     list: NexusGenRootTypes['ProductList'] | null; // ProductList
     name: string; // String!
     note: string | null; // String
-    perUnitPrice: number; // Int!
   }
   Product: { // field return type
     id: number; // Int!
@@ -273,7 +264,6 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     note: string | null; // String
     otherPersons: string[]; // [String!]!
-    primaryEmail: string; // String!
     primaryPerson: string; // String!
     reservationsFromSamePerson: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
     startTime: NexusGenScalars['DateTime']; // DateTime!
@@ -349,8 +339,6 @@ export interface NexusGenFieldTypeNames {
   }
   Order: { // field return type name
     createdAt: 'DateTime'
-    deviceId: 'String'
-    deviceTime: 'DateTime'
     id: 'Int'
     items: 'OrderItem'
     payment: 'OrderPayment'
@@ -363,7 +351,6 @@ export interface NexusGenFieldTypeNames {
     list: 'ProductList'
     name: 'String'
     note: 'String'
-    perUnitPrice: 'Int'
   }
   Product: { // field return type name
     id: 'Int'
@@ -398,7 +385,6 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     note: 'String'
     otherPersons: 'String'
-    primaryEmail: 'String'
     primaryPerson: 'String'
     reservationsFromSamePerson: 'Reservation'
     startTime: 'DateTime'
@@ -461,9 +447,6 @@ export interface NexusGenArgTypes {
       token: string; // String!
     }
     createOrder: { // args
-      clientId?: string | null; // String
-      deposit: number; // Int!
-      deviceTime: NexusGenScalars['DateTime']; // DateTime!
       payment: NexusGenEnums['OrderPayment']; // OrderPayment!
       products: NexusGenInputs['OrderItemInput'][]; // [OrderItemInput!]!
     }

@@ -48,7 +48,7 @@ type Mutation {
   cancelReservation(token: String!): Boolean
   checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
-  createOrder(clientId: String, deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order
+  createOrder(payment: OrderPayment!, products: [OrderItemInput!]!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
   deleteProductList(id: Int!): Boolean
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
@@ -69,8 +69,6 @@ type OpeningHour {
 
 type Order {
   createdAt: DateTime!
-  deviceId: String!
-  deviceTime: DateTime!
   id: Int!
   items: [OrderItem!]!
   payment: OrderPayment!
@@ -84,15 +82,12 @@ type OrderItem {
   list: ProductList
   name: String!
   note: String
-  perUnitPrice: Int!
 }
 
 input OrderItemInput {
   amount: Int!
-  listId: Int
-  name: String!
   note: String
-  perUnitPrice: Int!
+  productId: Int!
 }
 
 enum OrderPayment {
@@ -154,7 +149,6 @@ type Reservation {
   id: Int!
   note: String
   otherPersons: [String!]!
-  primaryEmail: String!
   primaryPerson: String!
   reservationsFromSamePerson: [Reservation!]!
   startTime: DateTime!
