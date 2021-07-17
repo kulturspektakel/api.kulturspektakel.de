@@ -35,6 +35,7 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
      * @property {string|null} [product9] ConfigMessage product9
      * @property {number|null} [price9] ConfigMessage price9
      * @property {number} checksum ConfigMessage checksum
+     * @property {number} listId ConfigMessage listId
      */
 
     /**
@@ -213,6 +214,14 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
     ConfigMessage.prototype.checksum = 0;
 
     /**
+     * ConfigMessage listId.
+     * @member {number} listId
+     * @memberof ConfigMessage
+     * @instance
+     */
+    ConfigMessage.prototype.listId = 0;
+
+    /**
      * Creates a new ConfigMessage instance using the specified properties.
      * @function create
      * @memberof ConfigMessage
@@ -274,6 +283,7 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
         if (message.price9 != null && Object.hasOwnProperty.call(message, "price9"))
             writer.uint32(/* id 19, wireType 0 =*/152).int32(message.price9);
         writer.uint32(/* id 20, wireType 0 =*/160).int32(message.checksum);
+        writer.uint32(/* id 21, wireType 0 =*/168).int32(message.listId);
         return writer;
     };
 
@@ -368,6 +378,9 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
             case 20:
                 message.checksum = reader.int32();
                 break;
+            case 21:
+                message.listId = reader.int32();
+                break;
             default:
                 reader.skipType(tag & 7);
                 break;
@@ -377,6 +390,8 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
             throw $util.ProtocolError("missing required 'name'", { instance: message });
         if (!message.hasOwnProperty("checksum"))
             throw $util.ProtocolError("missing required 'checksum'", { instance: message });
+        if (!message.hasOwnProperty("listId"))
+            throw $util.ProtocolError("missing required 'listId'", { instance: message });
         return message;
     };
 
@@ -465,6 +480,8 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
                 return "price9: integer expected";
         if (!$util.isInteger(message.checksum))
             return "checksum: integer expected";
+        if (!$util.isInteger(message.listId))
+            return "listId: integer expected";
         return null;
     };
 
@@ -520,6 +537,8 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
             message.price9 = object.price9 | 0;
         if (object.checksum != null)
             message.checksum = object.checksum | 0;
+        if (object.listId != null)
+            message.listId = object.listId | 0;
         return message;
     };
 
@@ -557,6 +576,7 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
             object.product9 = "";
             object.price9 = 0;
             object.checksum = 0;
+            object.listId = 0;
         }
         if (message.name != null && message.hasOwnProperty("name"))
             object.name = message.name;
@@ -598,6 +618,8 @@ export const ConfigMessage = $root.ConfigMessage = (() => {
             object.price9 = message.price9;
         if (message.checksum != null && message.hasOwnProperty("checksum"))
             object.checksum = message.checksum;
+        if (message.listId != null && message.hasOwnProperty("listId"))
+            object.listId = message.listId;
         return object;
     };
 
@@ -625,13 +647,12 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
      * @property {string} deviceId TransactionMessage deviceId
      * @property {TransactionMessage.Mode} mode TransactionMessage mode
      * @property {number} deviceTime TransactionMessage deviceTime
-     * @property {string} card TransactionMessage card
-     * @property {number} balanceBefore TransactionMessage balanceBefore
-     * @property {number} tokensBefore TransactionMessage tokensBefore
-     * @property {number} balanceAfter TransactionMessage balanceAfter
-     * @property {number} tokensAfter TransactionMessage tokensAfter
-     * @property {string|null} [listName] TransactionMessage listName
+     * @property {string|null} [card] TransactionMessage card
+     * @property {number} deposit TransactionMessage deposit
+     * @property {number} total TransactionMessage total
      * @property {Array.<TransactionMessage.ICartItemMessage>|null} [cartItems] TransactionMessage cartItems
+     * @property {TransactionMessage.Payment} payment TransactionMessage payment
+     * @property {number|null} [listId] TransactionMessage listId
      */
 
     /**
@@ -691,44 +712,20 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
     TransactionMessage.prototype.card = "";
 
     /**
-     * TransactionMessage balanceBefore.
-     * @member {number} balanceBefore
+     * TransactionMessage deposit.
+     * @member {number} deposit
      * @memberof TransactionMessage
      * @instance
      */
-    TransactionMessage.prototype.balanceBefore = 0;
+    TransactionMessage.prototype.deposit = 0;
 
     /**
-     * TransactionMessage tokensBefore.
-     * @member {number} tokensBefore
+     * TransactionMessage total.
+     * @member {number} total
      * @memberof TransactionMessage
      * @instance
      */
-    TransactionMessage.prototype.tokensBefore = 0;
-
-    /**
-     * TransactionMessage balanceAfter.
-     * @member {number} balanceAfter
-     * @memberof TransactionMessage
-     * @instance
-     */
-    TransactionMessage.prototype.balanceAfter = 0;
-
-    /**
-     * TransactionMessage tokensAfter.
-     * @member {number} tokensAfter
-     * @memberof TransactionMessage
-     * @instance
-     */
-    TransactionMessage.prototype.tokensAfter = 0;
-
-    /**
-     * TransactionMessage listName.
-     * @member {string} listName
-     * @memberof TransactionMessage
-     * @instance
-     */
-    TransactionMessage.prototype.listName = "";
+    TransactionMessage.prototype.total = 0;
 
     /**
      * TransactionMessage cartItems.
@@ -737,6 +734,22 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
      * @instance
      */
     TransactionMessage.prototype.cartItems = $util.emptyArray;
+
+    /**
+     * TransactionMessage payment.
+     * @member {TransactionMessage.Payment} payment
+     * @memberof TransactionMessage
+     * @instance
+     */
+    TransactionMessage.prototype.payment = 0;
+
+    /**
+     * TransactionMessage listId.
+     * @member {number} listId
+     * @memberof TransactionMessage
+     * @instance
+     */
+    TransactionMessage.prototype.listId = 0;
 
     /**
      * Creates a new TransactionMessage instance using the specified properties.
@@ -766,16 +779,16 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
         writer.uint32(/* id 2, wireType 2 =*/18).string(message.deviceId);
         writer.uint32(/* id 3, wireType 0 =*/24).int32(message.mode);
         writer.uint32(/* id 4, wireType 0 =*/32).int32(message.deviceTime);
-        writer.uint32(/* id 5, wireType 2 =*/42).string(message.card);
-        writer.uint32(/* id 6, wireType 0 =*/48).int32(message.balanceBefore);
-        writer.uint32(/* id 7, wireType 0 =*/56).int32(message.tokensBefore);
-        writer.uint32(/* id 8, wireType 0 =*/64).int32(message.balanceAfter);
-        writer.uint32(/* id 9, wireType 0 =*/72).int32(message.tokensAfter);
-        if (message.listName != null && Object.hasOwnProperty.call(message, "listName"))
-            writer.uint32(/* id 10, wireType 2 =*/82).string(message.listName);
+        if (message.card != null && Object.hasOwnProperty.call(message, "card"))
+            writer.uint32(/* id 5, wireType 2 =*/42).string(message.card);
+        writer.uint32(/* id 6, wireType 0 =*/48).sint32(message.deposit);
+        writer.uint32(/* id 7, wireType 0 =*/56).sint32(message.total);
         if (message.cartItems != null && message.cartItems.length)
             for (let i = 0; i < message.cartItems.length; ++i)
-                $root.TransactionMessage.CartItemMessage.encode(message.cartItems[i], writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                $root.TransactionMessage.CartItemMessage.encode(message.cartItems[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+        writer.uint32(/* id 9, wireType 0 =*/72).int32(message.payment);
+        if (message.listId != null && Object.hasOwnProperty.call(message, "listId"))
+            writer.uint32(/* id 10, wireType 0 =*/80).int32(message.listId);
         return writer;
     };
 
@@ -826,24 +839,21 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
                 message.card = reader.string();
                 break;
             case 6:
-                message.balanceBefore = reader.int32();
+                message.deposit = reader.sint32();
                 break;
             case 7:
-                message.tokensBefore = reader.int32();
+                message.total = reader.sint32();
                 break;
             case 8:
-                message.balanceAfter = reader.int32();
-                break;
-            case 9:
-                message.tokensAfter = reader.int32();
-                break;
-            case 10:
-                message.listName = reader.string();
-                break;
-            case 11:
                 if (!(message.cartItems && message.cartItems.length))
                     message.cartItems = [];
                 message.cartItems.push($root.TransactionMessage.CartItemMessage.decode(reader, reader.uint32()));
+                break;
+            case 9:
+                message.payment = reader.int32();
+                break;
+            case 10:
+                message.listId = reader.int32();
                 break;
             default:
                 reader.skipType(tag & 7);
@@ -858,16 +868,12 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
             throw $util.ProtocolError("missing required 'mode'", { instance: message });
         if (!message.hasOwnProperty("deviceTime"))
             throw $util.ProtocolError("missing required 'deviceTime'", { instance: message });
-        if (!message.hasOwnProperty("card"))
-            throw $util.ProtocolError("missing required 'card'", { instance: message });
-        if (!message.hasOwnProperty("balanceBefore"))
-            throw $util.ProtocolError("missing required 'balanceBefore'", { instance: message });
-        if (!message.hasOwnProperty("tokensBefore"))
-            throw $util.ProtocolError("missing required 'tokensBefore'", { instance: message });
-        if (!message.hasOwnProperty("balanceAfter"))
-            throw $util.ProtocolError("missing required 'balanceAfter'", { instance: message });
-        if (!message.hasOwnProperty("tokensAfter"))
-            throw $util.ProtocolError("missing required 'tokensAfter'", { instance: message });
+        if (!message.hasOwnProperty("deposit"))
+            throw $util.ProtocolError("missing required 'deposit'", { instance: message });
+        if (!message.hasOwnProperty("total"))
+            throw $util.ProtocolError("missing required 'total'", { instance: message });
+        if (!message.hasOwnProperty("payment"))
+            throw $util.ProtocolError("missing required 'payment'", { instance: message });
         return message;
     };
 
@@ -914,19 +920,13 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
         }
         if (!$util.isInteger(message.deviceTime))
             return "deviceTime: integer expected";
-        if (!$util.isString(message.card))
-            return "card: string expected";
-        if (!$util.isInteger(message.balanceBefore))
-            return "balanceBefore: integer expected";
-        if (!$util.isInteger(message.tokensBefore))
-            return "tokensBefore: integer expected";
-        if (!$util.isInteger(message.balanceAfter))
-            return "balanceAfter: integer expected";
-        if (!$util.isInteger(message.tokensAfter))
-            return "tokensAfter: integer expected";
-        if (message.listName != null && message.hasOwnProperty("listName"))
-            if (!$util.isString(message.listName))
-                return "listName: string expected";
+        if (message.card != null && message.hasOwnProperty("card"))
+            if (!$util.isString(message.card))
+                return "card: string expected";
+        if (!$util.isInteger(message.deposit))
+            return "deposit: integer expected";
+        if (!$util.isInteger(message.total))
+            return "total: integer expected";
         if (message.cartItems != null && message.hasOwnProperty("cartItems")) {
             if (!Array.isArray(message.cartItems))
                 return "cartItems: array expected";
@@ -936,6 +936,20 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
                     return "cartItems." + error;
             }
         }
+        switch (message.payment) {
+        default:
+            return "payment: enum value expected";
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            break;
+        }
+        if (message.listId != null && message.hasOwnProperty("listId"))
+            if (!$util.isInteger(message.listId))
+                return "listId: integer expected";
         return null;
     };
 
@@ -981,16 +995,10 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
             message.deviceTime = object.deviceTime | 0;
         if (object.card != null)
             message.card = String(object.card);
-        if (object.balanceBefore != null)
-            message.balanceBefore = object.balanceBefore | 0;
-        if (object.tokensBefore != null)
-            message.tokensBefore = object.tokensBefore | 0;
-        if (object.balanceAfter != null)
-            message.balanceAfter = object.balanceAfter | 0;
-        if (object.tokensAfter != null)
-            message.tokensAfter = object.tokensAfter | 0;
-        if (object.listName != null)
-            message.listName = String(object.listName);
+        if (object.deposit != null)
+            message.deposit = object.deposit | 0;
+        if (object.total != null)
+            message.total = object.total | 0;
         if (object.cartItems) {
             if (!Array.isArray(object.cartItems))
                 throw TypeError(".TransactionMessage.cartItems: array expected");
@@ -1001,6 +1009,34 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
                 message.cartItems[i] = $root.TransactionMessage.CartItemMessage.fromObject(object.cartItems[i]);
             }
         }
+        switch (object.payment) {
+        case "CASH":
+        case 0:
+            message.payment = 0;
+            break;
+        case "BON":
+        case 1:
+            message.payment = 1;
+            break;
+        case "SUM_UP":
+        case 2:
+            message.payment = 2;
+            break;
+        case "VOUCHER":
+        case 3:
+            message.payment = 3;
+            break;
+        case "FREE_CREW":
+        case 4:
+            message.payment = 4;
+            break;
+        case "FREE_BAND":
+        case 5:
+            message.payment = 5;
+            break;
+        }
+        if (object.listId != null)
+            message.listId = object.listId | 0;
         return message;
     };
 
@@ -1025,11 +1061,10 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
             object.mode = options.enums === String ? "TIME_ENTRY" : 0;
             object.deviceTime = 0;
             object.card = "";
-            object.balanceBefore = 0;
-            object.tokensBefore = 0;
-            object.balanceAfter = 0;
-            object.tokensAfter = 0;
-            object.listName = "";
+            object.deposit = 0;
+            object.total = 0;
+            object.payment = options.enums === String ? "CASH" : 0;
+            object.listId = 0;
         }
         if (message.id != null && message.hasOwnProperty("id"))
             object.id = message.id;
@@ -1041,21 +1076,19 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
             object.deviceTime = message.deviceTime;
         if (message.card != null && message.hasOwnProperty("card"))
             object.card = message.card;
-        if (message.balanceBefore != null && message.hasOwnProperty("balanceBefore"))
-            object.balanceBefore = message.balanceBefore;
-        if (message.tokensBefore != null && message.hasOwnProperty("tokensBefore"))
-            object.tokensBefore = message.tokensBefore;
-        if (message.balanceAfter != null && message.hasOwnProperty("balanceAfter"))
-            object.balanceAfter = message.balanceAfter;
-        if (message.tokensAfter != null && message.hasOwnProperty("tokensAfter"))
-            object.tokensAfter = message.tokensAfter;
-        if (message.listName != null && message.hasOwnProperty("listName"))
-            object.listName = message.listName;
+        if (message.deposit != null && message.hasOwnProperty("deposit"))
+            object.deposit = message.deposit;
+        if (message.total != null && message.hasOwnProperty("total"))
+            object.total = message.total;
         if (message.cartItems && message.cartItems.length) {
             object.cartItems = [];
             for (let j = 0; j < message.cartItems.length; ++j)
                 object.cartItems[j] = $root.TransactionMessage.CartItemMessage.toObject(message.cartItems[j], options);
         }
+        if (message.payment != null && message.hasOwnProperty("payment"))
+            object.payment = options.enums === String ? $root.TransactionMessage.Payment[message.payment] : message.payment;
+        if (message.listId != null && message.hasOwnProperty("listId"))
+            object.listId = message.listId;
         return object;
     };
 
@@ -1298,6 +1331,28 @@ export const TransactionMessage = $root.TransactionMessage = (() => {
         };
 
         return CartItemMessage;
+    })();
+
+    /**
+     * Payment enum.
+     * @name TransactionMessage.Payment
+     * @enum {number}
+     * @property {number} CASH=0 CASH value
+     * @property {number} BON=1 BON value
+     * @property {number} SUM_UP=2 SUM_UP value
+     * @property {number} VOUCHER=3 VOUCHER value
+     * @property {number} FREE_CREW=4 FREE_CREW value
+     * @property {number} FREE_BAND=5 FREE_BAND value
+     */
+    TransactionMessage.Payment = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "CASH"] = 0;
+        values[valuesById[1] = "BON"] = 1;
+        values[valuesById[2] = "SUM_UP"] = 2;
+        values[valuesById[3] = "VOUCHER"] = 3;
+        values[valuesById[4] = "FREE_CREW"] = 4;
+        values[valuesById[5] = "FREE_BAND"] = 5;
+        return values;
     })();
 
     return TransactionMessage;

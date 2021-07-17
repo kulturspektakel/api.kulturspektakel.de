@@ -21,4 +21,5 @@ message ConfigMessage {
   optional string product9 = 18;
   optional int32 price9 = 19;
   required int32 checksum = 20;
+  required int32 list_id = 21;
 }

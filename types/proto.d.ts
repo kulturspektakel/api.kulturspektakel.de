@@ -61,6 +61,9 @@ export interface IConfigMessage {
 
     /** ConfigMessage checksum */
     checksum: number;
+
+    /** ConfigMessage listId */
+    listId: number;
 }
 
 /** Represents a ConfigMessage. */
@@ -131,6 +134,9 @@ export class ConfigMessage implements IConfigMessage {
 
     /** ConfigMessage checksum. */
     public checksum: number;
+
+    /** ConfigMessage listId. */
+    public listId: number;
 
     /**
      * Creates a new ConfigMessage instance using the specified properties.
@@ -219,25 +225,22 @@ export interface ITransactionMessage {
     deviceTime: number;
 
     /** TransactionMessage card */
-    card: string;
+    card?: (string|null);
 
-    /** TransactionMessage balanceBefore */
-    balanceBefore: number;
+    /** TransactionMessage deposit */
+    deposit: number;
 
-    /** TransactionMessage tokensBefore */
-    tokensBefore: number;
-
-    /** TransactionMessage balanceAfter */
-    balanceAfter: number;
-
-    /** TransactionMessage tokensAfter */
-    tokensAfter: number;
-
-    /** TransactionMessage listName */
-    listName?: (string|null);
+    /** TransactionMessage total */
+    total: number;
 
     /** TransactionMessage cartItems */
     cartItems?: (TransactionMessage.ICartItemMessage[]|null);
+
+    /** TransactionMessage payment */
+    payment: TransactionMessage.Payment;
+
+    /** TransactionMessage listId */
+    listId?: (number|null);
 }
 
 /** Represents a TransactionMessage. */
@@ -264,23 +267,20 @@ export class TransactionMessage implements ITransactionMessage {
     /** TransactionMessage card. */
     public card: string;
 
-    /** TransactionMessage balanceBefore. */
-    public balanceBefore: number;
+    /** TransactionMessage deposit. */
+    public deposit: number;
 
-    /** TransactionMessage tokensBefore. */
-    public tokensBefore: number;
-
-    /** TransactionMessage balanceAfter. */
-    public balanceAfter: number;
-
-    /** TransactionMessage tokensAfter. */
-    public tokensAfter: number;
-
-    /** TransactionMessage listName. */
-    public listName: string;
+    /** TransactionMessage total. */
+    public total: number;
 
     /** TransactionMessage cartItems. */
     public cartItems: TransactionMessage.ICartItemMessage[];
+
+    /** TransactionMessage payment. */
+    public payment: TransactionMessage.Payment;
+
+    /** TransactionMessage listId. */
+    public listId: number;
 
     /**
      * Creates a new TransactionMessage instance using the specified properties.
@@ -458,5 +458,15 @@ export namespace TransactionMessage {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+    }
+
+    /** Payment enum. */
+    enum Payment {
+        CASH = 0,
+        BON = 1,
+        SUM_UP = 2,
+        VOUCHER = 3,
+        FREE_CREW = 4,
+        FREE_BAND = 5
     }
 }

@@ -26,11 +26,15 @@ function auth(req: Request, res: Response): {id: string; version?: string} {
 export default function (app: Express) {
   app.get('/\\$\\$\\$/config', async (req, res) => {
     const {id} = auth(req, res);
-    const device = await prismaClient.device.update({
+    const device = await prismaClient.device.upsert({
       where: {
         id,
       },
-      data: {
+      create: {
+        id,
+        lastSeen: new Date(),
+      },
+      update: {
         lastSeen: new Date(),
       },
       include: {
@@ -54,11 +58,12 @@ export default function (app: Express) {
 
     const partialList: Omit<IConfigMessage, 'checksum'> = {
       name: asciinize(list.name, 16),
+      listId: list.id,
       ...list.product.reduce<Partial<IConfigMessage>>(
         (acc, {name, price}, i) => ({
           ...acc,
-          [`product${i}`]: asciinize(name, 16),
-          [`price${i}`]: price,
+          [`product${i + 1}`]: asciinize(name, 16),
+          [`price${i + 1}`]: price,
         }),
         {},
       ),
@@ -83,11 +88,29 @@ export default function (app: Express) {
       const {id} = auth(req, res);
 
       const message = TransactionMessage.decode(buffer);
-      // TODO
-      console.log(message);
 
-      // return res.status(201).send('Created');
-      return res.status(400).send('Bad Request');
+      await prismaClient.order.create({
+        data: {
+          deviceTime: new Date(message.deviceTime * 1000),
+          tokens: message.deposit,
+          clientId: message.id,
+          payment: 'CASH', // TODO
+          device: {
+            connectOrCreate: {
+              create: {
+                id,
+                lastSeen: new Date(),
+              },
+              where: {
+                id,
+              },
+            },
+          },
+        },
+      });
+
+      return res.status(201).send('Created');
+      // return res.status(400).send('Bad Request');
     });
   });
 

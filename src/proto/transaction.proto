@@ -12,15 +12,22 @@ message TransactionMessage {
   }
   required Mode mode = 3;
   required int32 device_time = 4;
-  required string card = 5;
-  required int32 balanceBefore = 6;
-  required int32 tokensBefore = 7;
-  required int32 balanceAfter = 8;
-  required int32 tokensAfter = 9;
-  optional string list_name = 10;
+  optional string card = 5;
+  required sint32 deposit = 6;
+  required sint32 total = 7;
   message CartItemMessage {
     required int32 price = 1;
     required string product = 2;
   }
-  repeated CartItemMessage cart_items = 11;
+  repeated CartItemMessage cart_items = 8;
+  enum Payment {
+    CASH = 0;
+    BON = 1;
+    SUM_UP = 2;
+    VOUCHER = 3;
+    FREE_CREW = 4;
+    FREE_BAND = 5;
+  }
+  required Payment payment = 9;
+  optional int32 list_id = 10;
 }
