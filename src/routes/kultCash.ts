@@ -5,7 +5,13 @@ import asciinize from '../utils/asciinize';
 import {ConfigMessage, TransactionMessage} from '../proto';
 import {createHash} from 'crypto';
 import env from '../utils/env';
-import {IConfigMessage} from '../../types/proto';
+import {
+  IConfigMessage,
+  ITransactionMessage,
+  TransactionMessage as TransactionMessageT,
+} from '../../types/proto';
+import {OrderPayment} from '@prisma/client';
+import UnreachableCaseError from '../utils/UnreachableCaseError';
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
@@ -21,6 +27,25 @@ function auth(req: Request, res: Response): {id: string; version?: string} {
     }
   }
   throw res.status(401).send('Unauthorizeed');
+}
+
+function mapPayment(payment: TransactionMessageT.Payment): OrderPayment {
+  switch (payment) {
+    case TransactionMessageT.Payment.CASH:
+      return OrderPayment.CASH;
+    case TransactionMessageT.Payment.BON:
+      return OrderPayment.BON;
+    case TransactionMessageT.Payment.FREE_BAND:
+      return OrderPayment.FREE_BAND;
+    case TransactionMessageT.Payment.FREE_CREW:
+      return OrderPayment.FREE_CREW;
+    case TransactionMessageT.Payment.SUM_UP:
+      return OrderPayment.SUM_UP;
+    case TransactionMessageT.Payment.VOUCHER:
+      return OrderPayment.VOUCHER;
+    default:
+      throw new UnreachableCaseError(payment);
+  }
 }
 
 export default function (app: Express) {
@@ -87,14 +112,25 @@ export default function (app: Express) {
     req.on('end', async () => {
       const {id} = auth(req, res);
 
-      const message = TransactionMessage.decode(buffer);
+      const message: ITransactionMessage = TransactionMessage.decode(buffer);
 
       await prismaClient.order.create({
         data: {
           deviceTime: new Date(message.deviceTime * 1000),
           tokens: message.deposit,
           clientId: message.id,
-          payment: 'CASH', // TODO
+          payment: mapPayment(message.payment),
+          items: {
+            createMany: {
+              data:
+                message.cartItems?.map((c) => ({
+                  listId: message.listId,
+                  amount: 1,
+                  name: c.product,
+                  perUnitPrice: c.price,
+                })) ?? [],
+            },
+          },
           device: {
             connectOrCreate: {
               create: {
