@@ -12,7 +12,7 @@
     "generate:prisma": "prisma generate",
     "generate:mail": "maizzle build production",
     "generate:proto": "rm -f src/proto/index.js types/proto.d.ts && yarn pbjs -t static-module -w commonjs -o src/proto/index.js src/proto/* --es6 && yarn pbts -o types/proto.d.ts src/proto/index.js",
-    "update:db": "export $(cat .env | xargs) && prisma db push --accept-data-loss",
+    "update:db": "export $(cat .env | xargs) && prisma db push",
     "mail": "maizzle serve"
   },
   "devDependencies": {

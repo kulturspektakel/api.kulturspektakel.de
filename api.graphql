@@ -52,6 +52,7 @@ type Mutation {
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
   deleteProductList(id: Int!): Boolean
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
+  swapReservations(a: Int!, b: Int!): Boolean
   updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, primaryPerson: String, startTime: DateTime, tableId: ID): Reservation
   updateReservationOtherPersons(otherPersons: [String!]!, token: String!): Reservation
   upsertProductList(emoji: String, id: Int, name: String, products: [ProductInput!]): ProductList
@@ -159,6 +160,7 @@ type Reservation {
   reservationsFromSamePerson: [Reservation!]!
   startTime: DateTime!
   status: ReservationStatus!
+  swappableWith: [Reservation]!
   table: Table!
   token: String!
 }

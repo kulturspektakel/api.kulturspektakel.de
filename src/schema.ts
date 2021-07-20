@@ -46,6 +46,7 @@ import reservationsByPerson from './queries/reservationsByPerson';
 import upsertProductList from './mutations/upsertProductList';
 import deleteProductList from './mutations/deleteProductList';
 import orderItems from './queries/orderItems';
+import swapReservations from './mutations/swapReservations';
 
 export default makeSchema({
   contextType: {
@@ -104,6 +105,7 @@ export default makeSchema({
     createReservation,
     upsertProductList,
     deleteProductList,
+    swapReservations,
   ],
   plugins: [
     nexusPrisma({

@@ -89,6 +89,8 @@ export default function (app: Express) {
         const {id} = auth(req, res);
         const message: ITransactionMessage = TransactionMessage.decode(buffer);
 
+        console.log(message);
+
         await prismaClient.order.create({
           data: {
             deviceTime: new Date(message.deviceTime * 1000),
@@ -102,7 +104,7 @@ export default function (app: Express) {
               createMany: {
                 data:
                   message.cartItems?.map((c) => ({
-                    listId: message.listId,
+                    listId: message.listId ?? null,
                     amount: 1,
                     name: c.product,
                     perUnitPrice: c.price,

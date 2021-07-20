@@ -57,12 +57,12 @@ export default ({reservations}: {reservations: string}) => `<!DOCTYPE html>
                   <tr>
                     <td class="sm-p-24" style="background-color: #ffffff; border-radius: 4px; font-size: 16px; line-height: 24px; padding: 48px; text-align: left; color: #27272a;">
     <h1 class="sm-leading-32" style="font-weight: 600; font-size: 24px; margin: 0; margin-bottom: 24px; color: #000000;">Dein Besuch auf dem Kulturspektakel</h1>
-    <p>Wir freuen uns, dass du zum Kulturspektakel kommst.</p>
+    <p>Wir freuen uns, dass du zum Kult 2021 kommst.</p>
     <p>
-      Zur Kontaktverfolgung benötigen wir die korrekten Namen aller Gäste. Falls sich an deiner Gästeliste etwas geändert hat, aktualisiere bitte die Namen.
+      Zur Kontaktverfolgung benötigen wir bereits in deiner Reservierung die korrekten Vor- und Nachnamen aller Gäste. Wenn sich an deiner Gästeliste etwas geändert hat, aktualisiere sie bitte entsprechend.
     </p>
     <p>
-      Falls du eine Reservierung(en) nicht wahrnehmen kannst, sage bitte ab, in dem du auf Bearbeiten klickst.
+      Falls du deine Reservierung(en) nicht wahrnehmen kannst, sei bitte so fair und sage sie rechtzeitig ab indem du auf “Reservierung bearbeiten” klickst und sie dort stornierst.
     </p>
     <h4>
       Du hast folgende Reservierungen für das Kult:
@@ -74,8 +74,12 @@ export default ({reservations}: {reservations: string}) => `<!DOCTYPE html>
       Der Besuch des Kulturspektakels ist nur mit einer gültigen Reservierung möglich. Bitte kommt pünktlich zum Beginn eurer Reservierung, da sie sonst verfällt.
     </p>
     <p>
-      Bitte schau dir auch nochmal unser <a href="https://kulturspektakel.de/hygiene/" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">Hygienekonzept</a>
- an. Dort sind alle notwendigen Corona-Maßnahmen, an die sich Gäste unserer Veranstaltung halten müssen erläutert.
+      Am Einlass werden die Kontaktdaten aller Gäste erfasst - entweder via Check-In bei <a href="http://darfichrein.de/" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">darfichrein.de</a>
+ mit eurem Smartphone oder über ein Formular, das vor Ort bereitliegt. Zusätzlich empfehlen wir euch die Nutzung der offiziellen <a href="http://corona-warn-app.de/" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">Corona-Warn-App.</a>
+    </p>
+    <p>
+      Damit ein Festival in der aktuellen Situation stattfinden kann, ist es wichtig, dass sich alle Gäste an die notwendigen Corona-Maßnahmen halten. Lies die <a href="https://kulturspektakel.de/hygiene/" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">Hygiene-Hinweise</a>
+ vor eurem Besuch noch Mal durch und stelle dich darauf ein, welche Regeln auf unserem Gelände gelten. An die Vorgaben müssen sich alle Gäste halten, leite sie bitte auch an die Personen weiter, für die du reserviert hast.
     </p>
     <p style="margin: 0;">Viele Grüße,<br>Das Kult-Team</p>
                     </td>

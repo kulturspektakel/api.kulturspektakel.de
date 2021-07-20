@@ -60,8 +60,12 @@ model Reservation {
   tableId          String
   checkedInPersons Int               @default(0)
   note             String?
+}
 
-  @@unique([tableId, startTime])
+model ReservationReminderSent {
+  email                String   @id
+  numberOfReservations Int
+  sentAt               DateTime @default(now())
 }
 
 model ClearedReservation {

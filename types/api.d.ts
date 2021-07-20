@@ -214,6 +214,7 @@ export interface NexusGenFieldTypes {
     createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     deleteProductList: boolean | null; // Boolean
     requestReservation: boolean; // Boolean!
+    swapReservations: boolean | null; // Boolean
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     updateReservationOtherPersons: NexusGenRootTypes['Reservation'] | null; // Reservation
     upsertProductList: NexusGenRootTypes['ProductList'] | null; // ProductList
@@ -278,6 +279,7 @@ export interface NexusGenFieldTypes {
     reservationsFromSamePerson: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
     startTime: NexusGenScalars['DateTime']; // DateTime!
     status: NexusGenEnums['ReservationStatus']; // ReservationStatus!
+    swappableWith: Array<NexusGenRootTypes['Reservation'] | null>; // [Reservation]!
     table: NexusGenRootTypes['Table']; // Table!
     token: string; // String!
   }
@@ -339,6 +341,7 @@ export interface NexusGenFieldTypeNames {
     createReservation: 'Reservation'
     deleteProductList: 'Boolean'
     requestReservation: 'Boolean'
+    swapReservations: 'Boolean'
     updateReservation: 'Reservation'
     updateReservationOtherPersons: 'Reservation'
     upsertProductList: 'ProductList'
@@ -403,6 +406,7 @@ export interface NexusGenFieldTypeNames {
     reservationsFromSamePerson: 'Reservation'
     startTime: 'DateTime'
     status: 'ReservationStatus'
+    swappableWith: 'Reservation'
     table: 'Table'
     token: 'String'
   }
@@ -487,6 +491,10 @@ export interface NexusGenArgTypes {
       primaryPerson: string; // String!
       startTime: NexusGenScalars['DateTime']; // DateTime!
       tableType?: NexusGenEnums['TableType'] | null; // TableType
+    }
+    swapReservations: { // args
+      a: number; // Int!
+      b: number; // Int!
     }
     updateReservation: { // args
       checkedInPersons?: number | null; // Int
