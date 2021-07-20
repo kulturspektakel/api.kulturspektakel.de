@@ -2,12 +2,11 @@ import {objectType} from 'nexus';
 import Billable from './Billable';
 
 export default objectType({
-  name: 'Product',
+  name: 'Device',
   definition(t) {
     t.model.id();
-    t.model.name();
-    t.model.price();
-    t.model.requiresDeposit();
     t.implements(Billable);
+    t.model.productList();
+    t.model.lastSeen();
   },
 });

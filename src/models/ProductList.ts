@@ -1,5 +1,5 @@
 import {objectType} from 'nexus';
-import Node from './Node';
+import Billable from './Billable';
 
 export default objectType({
   name: 'ProductList',
@@ -12,5 +12,6 @@ export default objectType({
         order: true,
       },
     });
+    t.implements(Billable);
   },
 });

@@ -35,7 +35,6 @@ import productLists from './queries/productLists';
 import Order from './models/Order';
 import createOrder from './mutations/createOrder';
 import OrderPayment from './models/OrderPayment';
-import orders from './queries/orders';
 import OrderItem from './models/OrderItem';
 import checkInReservation from './mutations/checkInReservation';
 import config from './queries/config';
@@ -45,8 +44,9 @@ import createReservation from './mutations/createReservation';
 import reservationsByPerson from './queries/reservationsByPerson';
 import upsertProductList from './mutations/upsertProductList';
 import deleteProductList from './mutations/deleteProductList';
-import orderItems from './queries/orderItems';
 import swapReservations from './mutations/swapReservations';
+import Device from './models/Device';
+import devices from './queries/devices';
 
 export default makeSchema({
   contextType: {
@@ -78,6 +78,7 @@ export default makeSchema({
     Order,
     OrderPayment,
     OrderItem,
+    Device,
 
     // type extensions
     availability,
@@ -88,12 +89,11 @@ export default makeSchema({
     node,
     bandsPlaying,
     productLists,
-    orders,
     config,
     availableCapacity,
     updateReservationOtherPersons,
     reservationsByPerson,
-    orderItems,
+    devices,
 
     // mutations
     cancelReservation,

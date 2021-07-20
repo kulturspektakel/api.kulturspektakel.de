@@ -106,6 +106,10 @@ export interface NexusGenObjects {
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
     tokenValue: number; // Int!
   }
+  Device: { // root type
+    id: string; // String!
+    lastSeen?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   Mutation: {};
   OpeningHour: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -155,6 +159,10 @@ export interface NexusGenObjects {
     email: string; // String!
     reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
   }
+  SalesNumber: { // root type
+    count: number; // Int!
+    total: number; // Float!
+  }
   Table: { // root type
     displayName: string; // String!
     maxCapacity: number; // Int!
@@ -173,6 +181,7 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
+  Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
   Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['Table'];
 }
 
@@ -205,6 +214,12 @@ export interface NexusGenFieldTypes {
   Config: { // field return type
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
     tokenValue: number; // Int!
+  }
+  Device: { // field return type
+    id: string; // String!
+    lastSeen: NexusGenScalars['DateTime'] | null; // DateTime
+    productList: NexusGenRootTypes['ProductList'] | null; // ProductList
+    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
@@ -246,20 +261,21 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     price: number; // Int!
     requiresDeposit: boolean; // Boolean!
+    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
   ProductList: { // field return type
     emoji: string | null; // String
     id: number; // Int!
     name: string; // String!
     product: NexusGenRootTypes['Product'][]; // [Product!]!
+    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
   Query: { // field return type
     areas: NexusGenRootTypes['Area'][]; // [Area!]!
     availableCapacity: number; // Int!
     config: NexusGenRootTypes['Config'] | null; // Config
+    devices: NexusGenRootTypes['Device'][]; // [Device!]!
     node: NexusGenRootTypes['Node'] | null; // Node
-    orderItems: NexusGenRootTypes['OrderItem'][]; // [OrderItem!]!
-    orders: NexusGenRootTypes['Order'][]; // [Order!]!
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
     reservationForToken: NexusGenRootTypes['Reservation'] | null; // Reservation
     reservationsByPerson: NexusGenRootTypes['ReservationByPerson'][]; // [ReservationByPerson!]!
@@ -287,6 +303,10 @@ export interface NexusGenFieldTypes {
     email: string; // String!
     reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
   }
+  SalesNumber: { // field return type
+    count: number; // Int!
+    total: number; // Float!
+  }
   Table: { // field return type
     area: NexusGenRootTypes['Area']; // Area!
     displayName: string; // String!
@@ -304,6 +324,9 @@ export interface NexusGenFieldTypes {
     displayName: string; // String!
     email: string; // String!
     profilePicture: string | null; // String
+  }
+  Billable: { // field return type
+    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
   Node: { // field return type
     id: string; // ID!
@@ -332,6 +355,12 @@ export interface NexusGenFieldTypeNames {
   Config: { // field return type name
     reservationStart: 'DateTime'
     tokenValue: 'Int'
+  }
+  Device: { // field return type name
+    id: 'String'
+    lastSeen: 'DateTime'
+    productList: 'ProductList'
+    salesNumbers: 'SalesNumber'
   }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
@@ -373,20 +402,21 @@ export interface NexusGenFieldTypeNames {
     name: 'String'
     price: 'Int'
     requiresDeposit: 'Boolean'
+    salesNumbers: 'SalesNumber'
   }
   ProductList: { // field return type name
     emoji: 'String'
     id: 'Int'
     name: 'String'
     product: 'Product'
+    salesNumbers: 'SalesNumber'
   }
   Query: { // field return type name
     areas: 'Area'
     availableCapacity: 'Int'
     config: 'Config'
+    devices: 'Device'
     node: 'Node'
-    orderItems: 'OrderItem'
-    orders: 'Order'
     productLists: 'ProductList'
     reservationForToken: 'Reservation'
     reservationsByPerson: 'ReservationByPerson'
@@ -414,6 +444,10 @@ export interface NexusGenFieldTypeNames {
     email: 'String'
     reservations: 'Reservation'
   }
+  SalesNumber: { // field return type name
+    count: 'Int'
+    total: 'Float'
+  }
   Table: { // field return type name
     area: 'Area'
     displayName: 'String'
@@ -431,6 +465,9 @@ export interface NexusGenFieldTypeNames {
     displayName: 'String'
     email: 'String'
     profilePicture: 'String'
+  }
+  Billable: { // field return type name
+    salesNumbers: 'SalesNumber'
   }
   Node: { // field return type name
     id: 'ID'
@@ -451,6 +488,12 @@ export interface NexusGenArgTypes {
     }
     openingHour: { // args
       day?: NexusGenScalars['Date'] | null; // Date
+    }
+  }
+  Device: {
+    salesNumbers: { // args
+      after?: NexusGenScalars['DateTime'] | null; // DateTime
+      before?: NexusGenScalars['DateTime'] | null; // DateTime
     }
   }
   Mutation: {
@@ -516,6 +559,12 @@ export interface NexusGenArgTypes {
       products?: NexusGenInputs['ProductInput'][] | null; // [ProductInput!]
     }
   }
+  Product: {
+    salesNumbers: { // args
+      after?: NexusGenScalars['DateTime'] | null; // DateTime
+      before?: NexusGenScalars['DateTime'] | null; // DateTime
+    }
+  }
   ProductList: {
     product: { // args
       after?: NexusGenInputs['ProductWhereUniqueInput'] | null; // ProductWhereUniqueInput
@@ -524,6 +573,10 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       orderBy?: NexusGenInputs['ProductListProductOrderByInput'][] | null; // [ProductListProductOrderByInput!]
     }
+    salesNumbers: { // args
+      after?: NexusGenScalars['DateTime'] | null; // DateTime
+      before?: NexusGenScalars['DateTime'] | null; // DateTime
+    }
   }
   Query: {
     availableCapacity: { // args
@@ -531,11 +584,6 @@ export interface NexusGenArgTypes {
     }
     node: { // args
       id: string; // ID!
-    }
-    orderItems: { // args
-      from?: NexusGenScalars['DateTime'] | null; // DateTime
-      productListId?: number | null; // Int
-      until?: NexusGenScalars['DateTime'] | null; // DateTime
     }
     reservationForToken: { // args
       token: string; // String!
@@ -546,14 +594,24 @@ export interface NexusGenArgTypes {
       day?: NexusGenScalars['Date'] | null; // Date
     }
   }
+  Billable: {
+    salesNumbers: { // args
+      after?: NexusGenScalars['DateTime'] | null; // DateTime
+      before?: NexusGenScalars['DateTime'] | null; // DateTime
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {
+  Billable: "Device" | "Product" | "ProductList"
   Node: "Area" | "Table"
 }
 
 export interface NexusGenTypeInterfaces {
   Area: "Node"
+  Device: "Billable"
+  Product: "Billable"
+  ProductList: "Billable"
   Table: "Node"
 }
 
@@ -571,7 +629,7 @@ export type NexusGenUnionNames = never;
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = "Node";
+export type NexusGenAbstractsUsingStrategyResolveType = "Billable" | "Node";
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {
