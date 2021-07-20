@@ -7,7 +7,7 @@
     "start": "node -r dotenv/config dist/index.js",
     "dev": "ts-node-dev --transpile-only --no-notify -r dotenv/config src/index.ts",
     "build": "yarn generate && tsc",
-    "generate": "yarn generate:prisma && yarn generate:graphql && yarn generate:mail && yarn generate:proto",
+    "generate": "yarn generate:prisma && yarn generate:graphql && yarn generate:mail",
     "generate:graphql": "graphql-codegen -r dotenv/config",
     "generate:prisma": "prisma generate",
     "generate:mail": "maizzle build production",
