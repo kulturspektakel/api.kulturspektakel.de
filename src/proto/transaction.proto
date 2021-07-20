@@ -1,8 +1,9 @@
-syntax = "proto2";
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
 
 message TransactionMessage {
-  required string id = 1;
-  required string device_id = 2;
+  string id = 1;
+  string device_id = 2;
   enum Mode {
     TIME_ENTRY = 0;
     TOP_UP = 1;
@@ -10,14 +11,14 @@ message TransactionMessage {
     CASHOUT = 3;
     INIT_CARD = 4;
   }
-  required Mode mode = 3;
-  required int32 device_time = 4;
+  Mode mode = 3;
+  google.protobuf.Timestamp device_time = 4;
   optional string card = 5;
-  required sint32 deposit = 6;
-  required sint32 total = 7;
+  sint32 deposit = 6;
+  sint32 total = 7;
   message CartItemMessage {
-    required int32 price = 1;
-    required string product = 2;
+    int32 price = 1;
+    string product = 2;
   }
   repeated CartItemMessage cart_items = 8;
   enum Payment {
@@ -28,6 +29,6 @@ message TransactionMessage {
     FREE_CREW = 4;
     FREE_BAND = 5;
   }
-  required Payment payment = 9;
+  Payment payment = 9;
   optional int32 list_id = 10;
 }

@@ -97,9 +97,9 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
         verfällt sie.
       </li>
       <li>
-        Zur Kontaktverfolgung bitten wir euch die
-        <a href="https://www.coronawarn.app/" class="hover-no-underline" style="color: #e12e2e; text-decoration: underline;">Corona-Warn-App</a>
-        zu installieren.
+        Am Einlass werden die Kontaktdaten aller Gäste erfasst -
+        entweder via Check-In bei darfichrein.de mit eurem Smartphone
+        oder über ein Formular zur Gästeregistrierung
       </li>
       <li>
         Außer auf den Wegen zu den Verkaufsständen und Toiletten

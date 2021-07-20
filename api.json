@@ -313,6 +313,54 @@
         "possibleTypes": null
       },
       {
+        "kind": "INTERFACE",
+        "name": "Billable",
+        "description": null,
+        "fields": [
+          {
+            "name": "salesNumbers",
+            "description": null,
+            "args": [
+              {
+                "name": "after",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SalesNumber",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": [
+          {"kind": "OBJECT", "name": "Device", "ofType": null},
+          {"kind": "OBJECT", "name": "Product", "ofType": null},
+          {"kind": "OBJECT", "name": "ProductList", "ofType": null}
+        ]
+      },
+      {
         "kind": "OBJECT",
         "name": "Config",
         "description": null,
@@ -364,6 +412,80 @@
         "fields": null,
         "inputFields": null,
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Device",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lastSeen",
+            "description": null,
+            "args": [],
+            "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "productList",
+            "description": null,
+            "args": [],
+            "type": {"kind": "OBJECT", "name": "ProductList", "ofType": null},
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "salesNumbers",
+            "description": null,
+            "args": [
+              {
+                "name": "after",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SalesNumber",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {"kind": "INTERFACE", "name": "Billable", "ofType": null}
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -782,6 +904,39 @@
               "name": null,
               "ofType": {"kind": "SCALAR", "name": "Boolean", "ofType": null}
             },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "swapReservations",
+            "description": null,
+            "args": [
+              {
+                "name": "a",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "b",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {"kind": "SCALAR", "name": "Boolean", "ofType": null},
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -1381,10 +1536,45 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "salesNumbers",
+            "description": null,
+            "args": [
+              {
+                "name": "after",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SalesNumber",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
-        "interfaces": [],
+        "interfaces": [
+          {"kind": "INTERFACE", "name": "Billable", "ofType": null}
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -1552,10 +1742,45 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "salesNumbers",
+            "description": null,
+            "args": [
+              {
+                "name": "after",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SalesNumber",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
-        "interfaces": [],
+        "interfaces": [
+          {"kind": "INTERFACE", "name": "Billable", "ofType": null}
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -1652,6 +1877,26 @@
             "deprecationReason": null
           },
           {
+            "name": "devices",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {"kind": "OBJECT", "name": "Device", "ofType": null}
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "node",
             "description": null,
             "args": [
@@ -1669,75 +1914,6 @@
               }
             ],
             "type": {"kind": "INTERFACE", "name": "Node", "ofType": null},
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "orderItems",
-            "description": null,
-            "args": [
-              {
-                "name": "from",
-                "description": null,
-                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "productListId",
-                "description": null,
-                "type": {"kind": "SCALAR", "name": "Int", "ofType": null},
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "until",
-                "description": null,
-                "type": {"kind": "SCALAR", "name": "DateTime", "ofType": null},
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "OrderItem",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "orders",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {"kind": "OBJECT", "name": "Order", "ofType": null}
-                }
-              }
-            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -2006,6 +2182,26 @@
             "deprecationReason": null
           },
           {
+            "name": "swappableWith",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Reservation",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "table",
             "description": null,
             "args": [],
@@ -2109,6 +2305,51 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "SalesNumber",
+        "description": null,
+        "fields": [
+          {
+            "name": "count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "Int", "ofType": null}
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "total",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "Float", "ofType": null}
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Float",
+        "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
         "possibleTypes": null
       },
       {

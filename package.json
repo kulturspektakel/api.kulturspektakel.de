@@ -11,7 +11,7 @@
     "generate:graphql": "graphql-codegen -r dotenv/config",
     "generate:prisma": "prisma generate",
     "generate:mail": "maizzle build production",
-    "generate:proto": "rm -f src/proto/index.js types/proto.d.ts && yarn pbjs -t static-module -w commonjs -o src/proto/index.js src/proto/* --es6 && yarn pbts -o types/proto.d.ts src/proto/index.js",
+    "generate:proto": "cd src/proto && protoc --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=. ./*.proto --ts_proto_opt=esModuleInterop=true",
     "update:db": "export $(cat .env | xargs) && prisma db push",
     "mail": "maizzle serve"
   },
@@ -31,7 +31,6 @@
     "@types/lodash.merge": "^4.6.6",
     "@types/node-fetch": "^2.5.10",
     "@types/nodemailer": "^6.4.1",
-    "pbjs": "^0.0.14",
     "prettier": "^2.0.5",
     "prisma": "^2.24.1",
     "ts-node-dev": "^1.0.0",
@@ -61,6 +60,6 @@
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.6.0",
     "passkit-generator": "^2.0.6",
-    "protobufjs": "^6.11.2"
+    "ts-proto": "^1.82.2"
   }
 }

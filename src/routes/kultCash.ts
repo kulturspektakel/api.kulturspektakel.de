@@ -2,10 +2,14 @@ import prismaClient from '../utils/prismaClient';
 import {crc32} from 'crc';
 import {Express, Request, Response} from 'express';
 import asciinize from '../utils/asciinize';
-import {ConfigMessage, TransactionMessage} from '../proto';
 import {createHash} from 'crypto';
 import env from '../utils/env';
-import {IConfigMessage, ITransactionMessage} from '../../types/proto';
+import {
+  TransactionMessage,
+  TransactionMessage_Payment,
+} from '../proto/transaction';
+import {ConfigMessage} from '../proto/config';
+import {OrderPayment} from '@prisma/client';
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
@@ -20,7 +24,7 @@ function auth(req: Request, res: Response): {id: string; version?: string} {
       return {id, version: req.headers['x-esp8266-version']?.toString()};
     }
   }
-  throw res.status(401).send('Unauthorizeed');
+  throw res.status(401).send('Unauthorized');
 }
 
 export default function (app: Express) {
@@ -56,10 +60,10 @@ export default function (app: Express) {
       return res.status(204).send('No Content');
     }
 
-    const partialList: Omit<IConfigMessage, 'checksum'> = {
+    const partialList: Omit<ConfigMessage, 'checksum'> = {
       name: asciinize(list.name, 16),
       listId: list.id,
-      ...list.product.reduce<Partial<IConfigMessage>>(
+      ...list.product.reduce<Partial<ConfigMessage>>(
         (acc, {name, price}, i) => ({
           ...acc,
           [`product${i + 1}`]: asciinize(name, 16),
@@ -87,24 +91,20 @@ export default function (app: Express) {
     req.on('end', async () => {
       try {
         const {id} = auth(req, res);
-        const message: ITransactionMessage = TransactionMessage.decode(buffer);
-
+        const message = TransactionMessage.decode(buffer);
         console.log(message);
 
         await prismaClient.order.create({
           data: {
-            deviceTime: new Date(message.deviceTime * 1000),
+            deviceTime: message.deviceTime ?? new Date(),
             tokens: message.deposit,
             clientId: message.id,
-            payment:
-              (Object.entries(TransactionMessage.Payment)
-                .find(([_, v]) => v == message.payment)
-                ?.shift() as any) ?? 'CASH',
+            payment: mapPayment(message.payment),
             items: {
               createMany: {
                 data:
                   message.cartItems?.map((c) => ({
-                    listId: message.listId ?? null,
+                    listId: message.listId,
                     amount: 1,
                     name: c.product,
                     perUnitPrice: c.price,
@@ -138,4 +138,23 @@ export default function (app: Express) {
     // TODO
     return res.status(204).send('No Content');
   });
+}
+
+function mapPayment(payment: TransactionMessage_Payment): OrderPayment {
+  switch (payment) {
+    case TransactionMessage_Payment.CASH:
+      return OrderPayment.CASH;
+    case TransactionMessage_Payment.BON:
+      return OrderPayment.BON;
+    case TransactionMessage_Payment.FREE_BAND:
+      return OrderPayment.FREE_BAND;
+    case TransactionMessage_Payment.FREE_CREW:
+      return OrderPayment.FREE_CREW;
+    case TransactionMessage_Payment.SUM_UP:
+      return OrderPayment.SUM_UP;
+    case TransactionMessage_Payment.VOUCHER:
+      return OrderPayment.VOUCHER;
+    default:
+      return OrderPayment.CASH;
+  }
 }
