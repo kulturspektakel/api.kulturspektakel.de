@@ -43,7 +43,6 @@ import updateReservationOtherPersons from './mutations/updateReservationOtherPer
 import createReservation from './mutations/createReservation';
 import reservationsByPerson from './queries/reservationsByPerson';
 import upsertProductList from './mutations/upsertProductList';
-import deleteProductList from './mutations/deleteProductList';
 import swapReservations from './mutations/swapReservations';
 import Device from './models/Device';
 import devices from './queries/devices';
@@ -104,7 +103,6 @@ export default makeSchema({
     createOrder,
     createReservation,
     upsertProductList,
-    deleteProductList,
     swapReservations,
   ],
   plugins: [

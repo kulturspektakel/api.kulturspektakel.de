@@ -10,6 +10,7 @@ export default extendType({
         id: 'Int',
         name: 'String',
         emoji: 'String',
+        active: 'Boolean',
         products: list(
           nonNull(
             inputObjectType({
@@ -24,11 +25,12 @@ export default extendType({
         ),
       },
       authorize: authorization('user'),
-      resolve: async (_, {id, name, emoji, products}, {prismaClient}) =>
+      resolve: async (_, {id, name, emoji, products, active}, {prismaClient}) =>
         prismaClient.productList.upsert({
           create: {
             name: name ?? '',
             emoji,
+            active: active ?? undefined,
             product: {
               createMany: {
                 data:
@@ -43,6 +45,7 @@ export default extendType({
           update: {
             name: name ?? undefined,
             emoji,
+            active: active ?? undefined,
             product: products
               ? {
                   deleteMany: {

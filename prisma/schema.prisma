@@ -102,6 +102,7 @@ model ProductList {
   product   Product[]
   OrderItem OrderItem[]
   Device    Device[]
+  active    Boolean     @default(true)
 }
 
 model Product {

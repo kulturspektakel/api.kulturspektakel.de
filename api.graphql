@@ -50,6 +50,11 @@ type Device implements Billable {
   salesNumbers(after: DateTime, before: DateTime): SalesNumber!
 }
 
+type HistoricalProduct implements Billable {
+  name: String!
+  salesNumbers(after: DateTime, before: DateTime): SalesNumber!
+}
+
 """
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -61,12 +66,11 @@ type Mutation {
   confirmReservation(token: String!): Reservation
   createOrder(clientId: String, deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
-  deleteProductList(id: Int!): Boolean
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
   swapReservations(a: Int!, b: Int!): Boolean
   updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, primaryPerson: String, startTime: DateTime, tableId: ID): Reservation
   updateReservationOtherPersons(otherPersons: [String!]!, token: String!): Reservation
-  upsertProductList(emoji: String, id: Int, name: String, products: [ProductInput!]): ProductList
+  upsertProductList(active: Boolean, emoji: String, id: Int, name: String, products: [ProductInput!]): ProductList
 }
 
 interface Node {
@@ -132,6 +136,7 @@ input ProductInput {
 
 type ProductList implements Billable {
   emoji: String
+  historicalProducts: [HistoricalProduct!]!
   id: Int!
   name: String!
   product(after: ProductWhereUniqueInput, before: ProductWhereUniqueInput, first: Int, last: Int, orderBy: [ProductListProductOrderByInput!]): [Product!]!

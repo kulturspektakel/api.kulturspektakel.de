@@ -5,7 +5,7 @@ import {Express, Request, Response} from 'express';
 import {URL} from 'url';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
-import {add} from 'date-fns';
+import {add, endOfDay} from 'date-fns';
 
 export type TokenInput =
   | {

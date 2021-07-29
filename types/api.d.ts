@@ -4,9 +4,9 @@
  */
 
 
-import { Context as ctx } from "./../src/context"
-import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
-import { core } from "nexus"
+import type { Context as ctx } from "./../src/context"
+import type { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
+import type { core } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     /**
@@ -110,6 +110,9 @@ export interface NexusGenObjects {
     id: string; // String!
     lastSeen?: NexusGenScalars['DateTime'] | null; // DateTime
   }
+  HistoricalProduct: { // root type
+    name: string; // String!
+  }
   Mutation: {};
   OpeningHour: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -181,7 +184,7 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
-  Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
+  Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
   Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['Table'];
 }
 
@@ -221,13 +224,16 @@ export interface NexusGenFieldTypes {
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
+  HistoricalProduct: { // field return type
+    name: string; // String!
+    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+  }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
     checkInReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     createOrder: NexusGenRootTypes['Order'] | null; // Order
     createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
-    deleteProductList: boolean | null; // Boolean
     requestReservation: boolean; // Boolean!
     swapReservations: boolean | null; // Boolean
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -265,6 +271,7 @@ export interface NexusGenFieldTypes {
   }
   ProductList: { // field return type
     emoji: string | null; // String
+    historicalProducts: NexusGenRootTypes['HistoricalProduct'][]; // [HistoricalProduct!]!
     id: number; // Int!
     name: string; // String!
     product: NexusGenRootTypes['Product'][]; // [Product!]!
@@ -362,13 +369,16 @@ export interface NexusGenFieldTypeNames {
     productList: 'ProductList'
     salesNumbers: 'SalesNumber'
   }
+  HistoricalProduct: { // field return type name
+    name: 'String'
+    salesNumbers: 'SalesNumber'
+  }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
     checkInReservation: 'Reservation'
     confirmReservation: 'Reservation'
     createOrder: 'Order'
     createReservation: 'Reservation'
-    deleteProductList: 'Boolean'
     requestReservation: 'Boolean'
     swapReservations: 'Boolean'
     updateReservation: 'Reservation'
@@ -406,6 +416,7 @@ export interface NexusGenFieldTypeNames {
   }
   ProductList: { // field return type name
     emoji: 'String'
+    historicalProducts: 'HistoricalProduct'
     id: 'Int'
     name: 'String'
     product: 'Product'
@@ -496,6 +507,12 @@ export interface NexusGenArgTypes {
       before?: NexusGenScalars['DateTime'] | null; // DateTime
     }
   }
+  HistoricalProduct: {
+    salesNumbers: { // args
+      after?: NexusGenScalars['DateTime'] | null; // DateTime
+      before?: NexusGenScalars['DateTime'] | null; // DateTime
+    }
+  }
   Mutation: {
     cancelReservation: { // args
       token: string; // String!
@@ -522,9 +539,6 @@ export interface NexusGenArgTypes {
       primaryPerson: string; // String!
       startTime: NexusGenScalars['DateTime']; // DateTime!
       tableId: string; // ID!
-    }
-    deleteProductList: { // args
-      id: number; // Int!
     }
     requestReservation: { // args
       areaId: string; // ID!
@@ -553,6 +567,7 @@ export interface NexusGenArgTypes {
       token: string; // String!
     }
     upsertProductList: { // args
+      active?: boolean | null; // Boolean
       emoji?: string | null; // String
       id?: number | null; // Int
       name?: string | null; // String
@@ -603,13 +618,14 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
-  Billable: "Device" | "Product" | "ProductList"
+  Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
   Node: "Area" | "Table"
 }
 
 export interface NexusGenTypeInterfaces {
   Area: "Node"
   Device: "Billable"
+  HistoricalProduct: "Billable"
   Product: "Billable"
   ProductList: "Billable"
   Table: "Node"
@@ -668,6 +684,8 @@ export interface NexusGenTypes {
 
 declare global {
   interface NexusGenPluginTypeConfig<TypeName extends string> {
+  }
+  interface NexusGenPluginInputTypeConfig<TypeName extends string> {
   }
   interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
     /**

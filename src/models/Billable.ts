@@ -31,6 +31,7 @@ export default interfaceType({
             };
             break;
           case 'Product':
+          case 'HistoricalProduct':
             where = {
               name: (root as NexusGenObjects[typeof typename]).name,
             };
@@ -46,7 +47,11 @@ export default interfaceType({
             throw new UnreachableCaseError(typename);
         }
 
-        const orderItems = await prismaClient.orderItem.findMany({
+        const orderItems = await prismaClient.orderItem.aggregate({
+          _count: true,
+          _sum: {
+            perUnitPrice: true,
+          },
           where: merge(
             {
               order: {
@@ -61,12 +66,8 @@ export default interfaceType({
         });
 
         return {
-          count: orderItems.length,
-          total:
-            orderItems.reduce(
-              (acc, cv) => acc + cv.amount * cv.perUnitPrice,
-              0,
-            ) / 100,
+          count: orderItems._count,
+          total: (orderItems._sum.perUnitPrice ?? 0) / 100,
         };
       },
     });
