@@ -16,7 +16,7 @@ export default extendType({
                   t.nonNull.field('perUnitPrice', {type: 'Int'});
                   t.nonNull.field('name', {type: 'String'});
                   t.nonNull.field('amount', {type: 'Int'});
-                  t.field('listId', {type: 'Int'});
+                  t.field('productListId', {type: 'Int'});
                   t.field('note', {type: 'String'});
                 },
               }),
@@ -32,13 +32,13 @@ export default extendType({
       resolve: async (
         _,
         {products, payment, deposit, deviceTime, clientId},
-        {prismaClient, token},
+        {prisma, token},
       ) => {
         if (token?.type !== 'device') {
           throw new Error('No device authentication');
         }
 
-        return await prismaClient.order.create({
+        return await prisma.order.create({
           data: {
             payment,
             deviceId: token.deviceId!,

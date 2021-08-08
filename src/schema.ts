@@ -1,6 +1,4 @@
-import {nexusPrisma} from 'nexus-plugin-prisma';
-import prismaClient from './utils/prismaClient';
-import {asNexusMethod, fieldAuthorizePlugin, makeSchema} from 'nexus';
+import {asNexusMethod, enumType, fieldAuthorizePlugin, makeSchema} from 'nexus';
 import {
   DateResolver,
   DateTimeResolver,
@@ -46,6 +44,8 @@ import upsertProductList from './mutations/upsertProductList';
 import swapReservations from './mutations/swapReservations';
 import Device from './models/Device';
 import devices from './queries/devices';
+import TimeGrouping from './models/TimeGrouping';
+import {TableType} from 'nexus-prisma';
 
 export default makeSchema({
   contextType: {
@@ -78,6 +78,8 @@ export default makeSchema({
     OrderPayment,
     OrderItem,
     Device,
+    TimeGrouping,
+    enumType(TableType),
 
     // type extensions
     availability,
@@ -106,9 +108,6 @@ export default makeSchema({
     swapReservations,
   ],
   plugins: [
-    nexusPrisma({
-      prismaClient: () => prismaClient,
-    }),
     fieldAuthorizePlugin({
       formatError: () => new AuthenticationError('Not authorized'),
     }),

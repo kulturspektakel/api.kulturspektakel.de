@@ -16,8 +16,8 @@ export default extendType({
       args: {
         token: nonNull(stringArg()),
       },
-      resolve: async (_, {token}, {prismaClient}) => {
-        let reservation = await prismaClient.reservation.findUnique({
+      resolve: async (_, {token}, {prisma}) => {
+        let reservation = await prisma.reservation.findUnique({
           where: {
             token,
           },
@@ -35,7 +35,7 @@ export default extendType({
         }
 
         if (reservation.status === 'Pending') {
-          reservation = await prismaClient.reservation.update({
+          reservation = await prisma.reservation.update({
             data: {
               status: 'Confirmed',
             },
@@ -51,7 +51,7 @@ export default extendType({
             },
           });
 
-          await sendConfirmationMail(prismaClient, reservation);
+          await sendConfirmationMail(prisma, reservation);
         }
 
         return reservation;
@@ -61,14 +61,14 @@ export default extendType({
 });
 
 export async function sendConfirmationMail(
-  prismaClient: PrismaClient,
+  prisma: PrismaClient,
   reservation: Reservation & {
     table: Table & {
       area: Area;
     };
   },
 ) {
-  const ics = await getIcs(prismaClient, reservation.token);
+  const ics = await getIcs(prisma, reservation.token);
   const attachments: Mail.Attachment[] = [
     {
       content: Buffer.from(ics).toString('base64'),
@@ -78,7 +78,7 @@ export async function sendConfirmationMail(
     },
   ];
 
-  const pass = await getPass(prismaClient, reservation.token);
+  const pass = await getPass(prisma, reservation.token);
   if (pass) {
     attachments.push({
       content: (await streamToString(pass)).toString('base64'),

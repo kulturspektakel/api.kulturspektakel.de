@@ -14,8 +14,8 @@ export default extendType({
         b: nonNull(intArg()),
       },
       authorize: authorization('user'),
-      resolve: async (_, {a, b}, {prismaClient}) => {
-        const resA = await prismaClient.reservation.findUnique({
+      resolve: async (_, {a, b}, {prisma}) => {
+        const resA = await prisma.reservation.findUnique({
           where: {id: a},
           include: {
             table: {
@@ -25,7 +25,7 @@ export default extendType({
             },
           },
         });
-        const resB = await prismaClient.reservation.findUnique({
+        const resB = await prisma.reservation.findUnique({
           where: {id: b},
           include: {
             table: {
@@ -58,8 +58,8 @@ export default extendType({
           throw new Error('Not swapable');
         }
 
-        await prismaClient.$transaction([
-          prismaClient.reservation.update({
+        await prisma.$transaction([
+          prisma.reservation.update({
             where: {
               id: resA.id,
             },
@@ -67,7 +67,7 @@ export default extendType({
               tableId: resB.tableId,
             },
           }),
-          prismaClient.reservation.update({
+          prisma.reservation.update({
             where: {
               id: resB.id,
             },

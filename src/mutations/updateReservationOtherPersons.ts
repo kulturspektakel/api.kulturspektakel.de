@@ -1,7 +1,6 @@
 import {extendType, stringArg, nonNull, list} from 'nexus';
 import {UserInputError} from 'apollo-server-express';
-import {checkOccupancy, occupancyIntervals} from './requestReservation';
-import {config} from '../queries/config';
+import {checkOccupancy} from './requestReservation';
 
 export default extendType({
   type: 'Mutation',
@@ -12,12 +11,8 @@ export default extendType({
         token: nonNull(stringArg()),
         otherPersons: nonNull(list(nonNull(stringArg()))),
       },
-      resolve: async (
-        _,
-        {token, otherPersons},
-        {prismaClient, token: auth},
-      ) => {
-        const reservation = await prismaClient.reservation.findUnique({
+      resolve: async (_, {token, otherPersons}, {prisma, token: auth}) => {
+        const reservation = await prisma.reservation.findUnique({
           include: {
             table: {
               include: {
@@ -48,7 +43,7 @@ export default extendType({
         }
         if (newPartySize > reservation.otherPersons.length + 1) {
           await checkOccupancy(
-            prismaClient,
+            prisma,
             reservation.startTime,
             reservation.endTime,
             -oldPartySize + newPartySize,
@@ -57,7 +52,7 @@ export default extendType({
 
         // TODO maybe downsize table?
 
-        return await prismaClient.reservation.update({
+        return await prisma.reservation.update({
           data: {
             otherPersons,
           },

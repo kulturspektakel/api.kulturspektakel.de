@@ -25,8 +25,8 @@ export default extendType({
         ),
       },
       authorize: authorization('user'),
-      resolve: async (_, {id, name, emoji, products, active}, {prismaClient}) =>
-        prismaClient.productList.upsert({
+      resolve: async (_, {id, name, emoji, products, active}, {prisma}) =>
+        prisma.productList.upsert({
           create: {
             name: name ?? '',
             emoji,

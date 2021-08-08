@@ -1,4 +1,4 @@
-import {Area, prisma} from '@prisma/client';
+import {Area} from 'nexus-prisma';
 import {endOfDay} from 'date-fns';
 import startOfDay from 'date-fns/startOfDay';
 import {objectType} from 'nexus';
@@ -9,15 +9,16 @@ export default objectType({
   name: 'Area',
   definition(t) {
     t.implements(Node);
-    t.model.displayName();
-    t.model.themeColor();
+    t.field(Area.id);
+    t.field(Area.displayName);
+    t.field(Area.themeColor);
     t.nonNull.list.nonNull.field('table', {
       type: 'Table',
       authorize: authorization('user'),
-      resolve: (area, _, {prismaClient}) =>
-        prismaClient.table.findMany({
+      resolve: (area, _, {prisma}) =>
+        prisma.table.findMany({
           where: {
-            areaId: (area as Area).id,
+            areaId: area.id,
           },
           orderBy: {
             id: 'asc',
@@ -30,10 +31,10 @@ export default objectType({
       args: {
         day: 'Date',
       },
-      resolve: (area, {day}, {prismaClient}) => {
-        return prismaClient.areaOpeningHour.findMany({
+      resolve: (area, {day}, {prisma}) =>
+        prisma.areaOpeningHour.findMany({
           where: {
-            areaId: (area as Area).id,
+            areaId: area.id,
             startTime: day
               ? {
                   gte: startOfDay(day),
@@ -44,8 +45,7 @@ export default objectType({
           orderBy: {
             startTime: 'asc',
           },
-        });
-      },
+        }),
     });
 
     t.nonNull.field('availableTables', {
@@ -53,12 +53,12 @@ export default objectType({
       args: {
         time: 'DateTime',
       },
-      resolve: async (area, args, {prismaClient}) => {
+      resolve: async (area, args, {prisma}) => {
         const time = new Date() ?? args;
-        const table = await prismaClient.table.findMany({
+        const table = await prisma.table.findMany({
           where: {
             area: {
-              id: (area as Area).id,
+              id: area.id,
             },
           },
           include: {

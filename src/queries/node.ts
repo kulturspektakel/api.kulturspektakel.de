@@ -14,7 +14,7 @@ export default extendType({
       args: {
         id: nonNull(idArg()),
       },
-      resolve: async (_parent, {id}, {prismaClient}) => {
+      resolve: async (_parent, {id}, {prisma}) => {
         if (!id.includes(':')) {
           throw new UserInputError('ID must be prefixed with typename');
         }
@@ -29,20 +29,19 @@ export default extendType({
         let delegate;
         switch (__typename) {
           case 'Area':
-            delegate = prismaClient.area;
+            delegate = prisma.area;
             break;
           case 'Table':
-            delegate = prismaClient.table;
+            delegate = prisma.table;
             break;
           default:
             new UnreachableCaseError(__typename);
             return null;
         }
 
-        const node: ResultValue<
-          'Query',
-          'node'
-        > | null = await (delegate as Prisma.AreaDelegate<any>).findUnique({
+        const node: ResultValue<'Query', 'node'> | null = await (
+          delegate as Prisma.AreaDelegate<any>
+        ).findUnique({
           where: {
             id: key,
           },

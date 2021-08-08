@@ -9,8 +9,8 @@ export default extendType({
       args: {
         token: nonNull(stringArg()),
       },
-      resolve: async (_, {token}, {prismaClient, token: auth}) => {
-        const reservation = await prismaClient.reservation.findUnique({
+      resolve: async (_, {token}, {prisma, token: auth}) => {
+        const reservation = await prisma.reservation.findUnique({
           where: {
             token,
           },
@@ -26,12 +26,12 @@ export default extendType({
           throw new UserInputError('Reservierung kann nicht gelöscht werden.');
         }
 
-        await prismaClient.reservation.delete({
+        await prisma.reservation.delete({
           where: {
             token,
           },
         });
-        await prismaClient.clearedReservation.create({
+        await prisma.clearedReservation.create({
           data: {
             id: reservation.id,
             data: JSON.stringify(reservation),

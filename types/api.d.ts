@@ -39,12 +39,7 @@ declare global {
     date<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "Date";
   }
 }
-declare global {
-  interface NexusGenCustomOutputProperties<TypeName extends string> {
-    model: NexusPrisma<TypeName, 'model'>
-    crud: any
-  }
-}
+
 
 declare global {
   interface NexusGen extends NexusGenTypes {}
@@ -53,29 +48,23 @@ declare global {
 export interface NexusGenInputs {
   OrderItemInput: { // input type
     amount: number; // Int!
-    listId?: number | null; // Int
     name: string; // String!
     note?: string | null; // String
     perUnitPrice: number; // Int!
+    productListId?: number | null; // Int
   }
   ProductInput: { // input type
     name: string; // String!
     price: number; // Int!
     requiresDeposit?: boolean | null; // Boolean
   }
-  ProductListProductOrderByInput: { // input type
-    order?: NexusGenEnums['SortOrder'] | null; // SortOrder
-  }
-  ProductWhereUniqueInput: { // input type
-    id?: number | null; // Int
-  }
 }
 
 export interface NexusGenEnums {
   OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "SUM_UP" | "VOUCHER"
   ReservationStatus: "CheckedIn" | "Confirmed" | "Pending"
-  SortOrder: "asc" | "desc"
   TableType: "ISLAND" | "TABLE"
+  TimeGrouping: "Day" | "Hour"
 }
 
 export interface NexusGenScalars {
@@ -92,6 +81,7 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Area: { // root type
     displayName: string; // String!
+    id: string; // ID!
     themeColor: string; // String!
   }
   Band: { // root type
@@ -107,11 +97,12 @@ export interface NexusGenObjects {
     tokenValue: number; // Int!
   }
   Device: { // root type
-    id: string; // String!
+    id: string; // ID!
     lastSeen?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   HistoricalProduct: { // root type
     name: string; // String!
+    productListId: number; // Int!
   }
   Mutation: {};
   OpeningHour: { // root type
@@ -137,6 +128,7 @@ export interface NexusGenObjects {
     id: number; // Int!
     name: string; // String!
     price: number; // Int!
+    productListId: number; // Int!
     requiresDeposit: boolean; // Boolean!
   }
   ProductList: { // root type
@@ -156,6 +148,7 @@ export interface NexusGenObjects {
     primaryPerson: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
     status: NexusGenEnums['ReservationStatus']; // ReservationStatus!
+    tableId: string; // String!
     token: string; // String!
   }
   ReservationByPerson: { // root type
@@ -168,6 +161,7 @@ export interface NexusGenObjects {
   }
   Table: { // root type
     displayName: string; // String!
+    id: string; // ID!
     maxCapacity: number; // Int!
     type: NexusGenEnums['TableType']; // TableType!
   }
@@ -175,6 +169,10 @@ export interface NexusGenObjects {
     endTime: NexusGenScalars['DateTime']; // DateTime!
     startTime: NexusGenScalars['DateTime']; // DateTime!
     tableType: NexusGenEnums['TableType']; // TableType!
+  }
+  TimeSeries: { // root type
+    time: NexusGenScalars['DateTime']; // DateTime!
+    value: number; // Int!
   }
   Viewer: { // root type
     displayName: string; // String!
@@ -219,13 +217,14 @@ export interface NexusGenFieldTypes {
     tokenValue: number; // Int!
   }
   Device: { // field return type
-    id: string; // String!
+    id: string; // ID!
     lastSeen: NexusGenScalars['DateTime'] | null; // DateTime
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
   HistoricalProduct: { // field return type
     name: string; // String!
+    productListId: number; // Int!
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
   Mutation: { // field return type
@@ -257,15 +256,16 @@ export interface NexusGenFieldTypes {
   OrderItem: { // field return type
     amount: number; // Int!
     id: number; // Int!
-    list: NexusGenRootTypes['ProductList'] | null; // ProductList
     name: string; // String!
     note: string | null; // String
     perUnitPrice: number; // Int!
+    productList: NexusGenRootTypes['ProductList'] | null; // ProductList
   }
   Product: { // field return type
     id: number; // Int!
     name: string; // String!
     price: number; // Int!
+    productListId: number; // Int!
     requiresDeposit: boolean; // Boolean!
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
@@ -304,6 +304,7 @@ export interface NexusGenFieldTypes {
     status: NexusGenEnums['ReservationStatus']; // ReservationStatus!
     swappableWith: Array<NexusGenRootTypes['Reservation'] | null>; // [Reservation]!
     table: NexusGenRootTypes['Table']; // Table!
+    tableId: string; // String!
     token: string; // String!
   }
   ReservationByPerson: { // field return type
@@ -312,6 +313,7 @@ export interface NexusGenFieldTypes {
   }
   SalesNumber: { // field return type
     count: number; // Int!
+    timeSeries: NexusGenRootTypes['TimeSeries'][]; // [TimeSeries!]!
     total: number; // Float!
   }
   Table: { // field return type
@@ -326,6 +328,10 @@ export interface NexusGenFieldTypes {
     endTime: NexusGenScalars['DateTime']; // DateTime!
     startTime: NexusGenScalars['DateTime']; // DateTime!
     tableType: NexusGenEnums['TableType']; // TableType!
+  }
+  TimeSeries: { // field return type
+    time: NexusGenScalars['DateTime']; // DateTime!
+    value: number; // Int!
   }
   Viewer: { // field return type
     displayName: string; // String!
@@ -364,13 +370,14 @@ export interface NexusGenFieldTypeNames {
     tokenValue: 'Int'
   }
   Device: { // field return type name
-    id: 'String'
+    id: 'ID'
     lastSeen: 'DateTime'
     productList: 'ProductList'
     salesNumbers: 'SalesNumber'
   }
   HistoricalProduct: { // field return type name
     name: 'String'
+    productListId: 'Int'
     salesNumbers: 'SalesNumber'
   }
   Mutation: { // field return type name
@@ -402,15 +409,16 @@ export interface NexusGenFieldTypeNames {
   OrderItem: { // field return type name
     amount: 'Int'
     id: 'Int'
-    list: 'ProductList'
     name: 'String'
     note: 'String'
     perUnitPrice: 'Int'
+    productList: 'ProductList'
   }
   Product: { // field return type name
     id: 'Int'
     name: 'String'
     price: 'Int'
+    productListId: 'Int'
     requiresDeposit: 'Boolean'
     salesNumbers: 'SalesNumber'
   }
@@ -449,6 +457,7 @@ export interface NexusGenFieldTypeNames {
     status: 'ReservationStatus'
     swappableWith: 'Reservation'
     table: 'Table'
+    tableId: 'String'
     token: 'String'
   }
   ReservationByPerson: { // field return type name
@@ -457,6 +466,7 @@ export interface NexusGenFieldTypeNames {
   }
   SalesNumber: { // field return type name
     count: 'Int'
+    timeSeries: 'TimeSeries'
     total: 'Float'
   }
   Table: { // field return type name
@@ -471,6 +481,10 @@ export interface NexusGenFieldTypeNames {
     endTime: 'DateTime'
     startTime: 'DateTime'
     tableType: 'TableType'
+  }
+  TimeSeries: { // field return type name
+    time: 'DateTime'
+    value: 'Int'
   }
   Viewer: { // field return type name
     displayName: 'String'
@@ -503,14 +517,14 @@ export interface NexusGenArgTypes {
   }
   Device: {
     salesNumbers: { // args
-      after?: NexusGenScalars['DateTime'] | null; // DateTime
-      before?: NexusGenScalars['DateTime'] | null; // DateTime
+      after: NexusGenScalars['DateTime']; // DateTime!
+      before: NexusGenScalars['DateTime']; // DateTime!
     }
   }
   HistoricalProduct: {
     salesNumbers: { // args
-      after?: NexusGenScalars['DateTime'] | null; // DateTime
-      before?: NexusGenScalars['DateTime'] | null; // DateTime
+      after: NexusGenScalars['DateTime']; // DateTime!
+      before: NexusGenScalars['DateTime']; // DateTime!
     }
   }
   Mutation: {
@@ -576,21 +590,14 @@ export interface NexusGenArgTypes {
   }
   Product: {
     salesNumbers: { // args
-      after?: NexusGenScalars['DateTime'] | null; // DateTime
-      before?: NexusGenScalars['DateTime'] | null; // DateTime
+      after: NexusGenScalars['DateTime']; // DateTime!
+      before: NexusGenScalars['DateTime']; // DateTime!
     }
   }
   ProductList: {
-    product: { // args
-      after?: NexusGenInputs['ProductWhereUniqueInput'] | null; // ProductWhereUniqueInput
-      before?: NexusGenInputs['ProductWhereUniqueInput'] | null; // ProductWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
-      orderBy?: NexusGenInputs['ProductListProductOrderByInput'][] | null; // [ProductListProductOrderByInput!]
-    }
     salesNumbers: { // args
-      after?: NexusGenScalars['DateTime'] | null; // DateTime
-      before?: NexusGenScalars['DateTime'] | null; // DateTime
+      after: NexusGenScalars['DateTime']; // DateTime!
+      before: NexusGenScalars['DateTime']; // DateTime!
     }
   }
   Query: {
@@ -604,6 +611,11 @@ export interface NexusGenArgTypes {
       token: string; // String!
     }
   }
+  SalesNumber: {
+    timeSeries: { // args
+      grouping?: NexusGenEnums['TimeGrouping'] | null; // TimeGrouping
+    }
+  }
   Table: {
     reservations: { // args
       day?: NexusGenScalars['Date'] | null; // Date
@@ -611,8 +623,8 @@ export interface NexusGenArgTypes {
   }
   Billable: {
     salesNumbers: { // args
-      after?: NexusGenScalars['DateTime'] | null; // DateTime
-      before?: NexusGenScalars['DateTime'] | null; // DateTime
+      after: NexusGenScalars['DateTime']; // DateTime!
+      before: NexusGenScalars['DateTime']; // DateTime!
     }
   }
 }

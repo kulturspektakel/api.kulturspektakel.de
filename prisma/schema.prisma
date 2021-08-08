@@ -1,6 +1,10 @@
-generator prisma_client {
+generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native"]
+}
+
+generator nexusPrisma {
+  provider = "nexus-prisma"
 }
 
 datasource db {
@@ -146,13 +150,13 @@ model Order {
 }
 
 model OrderItem {
-  id           Int          @id @default(autoincrement())
-  order        Order        @relation(fields: [orderId], references: [id])
-  orderId      Int
-  amount       Int
-  note         String?
-  name         String
-  perUnitPrice Int
-  list         ProductList? @relation(fields: [listId], references: [id])
-  listId       Int?
+  id            Int          @id @default(autoincrement())
+  order         Order        @relation(fields: [orderId], references: [id])
+  orderId       Int
+  amount        Int
+  note          String?
+  name          String
+  perUnitPrice  Int
+  productList   ProductList? @relation(fields: [productListId], references: [id])
+  productListId Int?
 }

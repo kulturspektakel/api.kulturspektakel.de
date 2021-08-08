@@ -33,12 +33,12 @@ export default extendType({
           note,
           tableId,
         },
-        {prismaClient},
+        {prisma},
       ) => {
         const partySize = otherPersons.length + 1;
-        await checkOccupancy(prismaClient, startTime, endTime, partySize);
+        await checkOccupancy(prisma, startTime, endTime, partySize);
 
-        const table = await prismaClient.table.findFirst({
+        const table = await prisma.table.findFirst({
           where: {
             id: tableId,
             reservations: whereHasNoOverlappingReservation(startTime, endTime),
@@ -49,7 +49,7 @@ export default extendType({
           throw new UserInputError('Tisch nicht verfügber');
         }
 
-        const reservation = await prismaClient.reservation.create({
+        const reservation = await prisma.reservation.create({
           data: {
             primaryEmail,
             primaryPerson,
@@ -69,7 +69,7 @@ export default extendType({
           },
         });
 
-        await sendConfirmationMail(prismaClient, reservation);
+        await sendConfirmationMail(prisma, reservation);
 
         return reservation;
       },

@@ -6,11 +6,11 @@ export default extendType({
   definition: (t) => {
     t.nonNull.list.nonNull.field('reservationsFromSamePerson', {
       type: 'Reservation',
-      resolve: async (parent, _args, {prismaClient}) => {
+      resolve: async (parent, _args, {prisma}) => {
         if (parent.status !== 'Confirmed') {
           return [];
         }
-        return prismaClient.reservation.findMany({
+        return prisma.reservation.findMany({
           where: {
             primaryEmail: (parent as Reservation).primaryEmail,
             status: {

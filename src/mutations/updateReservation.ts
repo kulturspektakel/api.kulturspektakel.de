@@ -30,9 +30,9 @@ export default extendType({
           note,
           primaryPerson,
         },
-        {prismaClient},
+        {prisma},
       ) => {
-        const reservation = await prismaClient.reservation.findUnique({
+        const reservation = await prisma.reservation.findUnique({
           include: {
             table: {
               include: {
@@ -77,7 +77,7 @@ export default extendType({
         }
 
         if (tableId) {
-          const table = await prismaClient.table.findFirst({
+          const table = await prisma.table.findFirst({
             where: {
               id: tableId,
               maxCapacity: {
@@ -119,7 +119,7 @@ export default extendType({
           checkInTime = reservation?.checkInTime ?? new Date();
         }
 
-        return await prismaClient.reservation.update({
+        return await prisma.reservation.update({
           data: {
             tableId: tableId ?? undefined,
             startTime,

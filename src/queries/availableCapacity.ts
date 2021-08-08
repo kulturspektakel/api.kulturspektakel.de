@@ -9,9 +9,9 @@ export default extendType({
       args: {
         time: 'DateTime',
       },
-      resolve: async (_parent, args, {prismaClient}) => {
+      resolve: async (_parent, args, {prisma}) => {
         const time = args.time ?? new Date();
-        const reservations = await prismaClient.reservation.findMany({
+        const reservations = await prisma.reservation.findMany({
           where: {
             OR: [
               {

@@ -104,7 +104,7 @@ export default function (app: Express) {
               createMany: {
                 data:
                   message.cartItems?.map((c) => ({
-                    listId: message.listId,
+                    productListId: message.listId,
                     amount: 1,
                     name: c.product,
                     perUnitPrice: c.price,

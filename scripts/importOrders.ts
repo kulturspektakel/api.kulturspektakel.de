@@ -37,7 +37,7 @@ async function insert(a: string) {
       products: Array<{
         amount: number;
         perUnitPrice: number;
-        listId: number;
+        productListId: number;
         note: string | null;
         name: string;
       }>;

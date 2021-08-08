@@ -1,38 +1,42 @@
-import {Reservation} from '@prisma/client';
 import {UserInputError} from 'apollo-server-express';
 import {objectType} from 'nexus';
 import {swapableReservation} from '../mutations/swapReservations';
 import {config} from '../queries/config';
 import authorization from '../utils/authorization';
 import filterEmpty from '../utils/filterEmpty';
+import {Reservation} from 'nexus-prisma';
 
 export default objectType({
   name: 'Reservation',
   definition(t) {
-    t.model.id();
-    t.model.status();
-    t.model.token();
-    t.model.table();
-    t.model.startTime();
-    t.model.endTime();
-    t.model.primaryPerson();
-    t.model.primaryEmail();
-    t.model.otherPersons();
-    t.model.checkedInPersons({
+    t.field(Reservation.id);
+    t.field(Reservation.status);
+    t.field(Reservation.token);
+    t.field(Reservation.table);
+    t.field(Reservation.tableId);
+    t.field(Reservation.startTime);
+    t.field(Reservation.endTime);
+    t.field(Reservation.primaryPerson);
+    t.field(Reservation.primaryEmail);
+    t.field(Reservation.otherPersons);
+    t.field({
+      ...Reservation.checkedInPersons,
       authorize: authorization('user'),
     });
-    t.model.note({
+    t.field({
+      ...Reservation.note,
       authorize: authorization('user'),
     });
-    t.model.checkInTime({
+    t.field({
+      ...Reservation.checkInTime,
       authorize: authorization('user'),
     });
 
     t.nonNull.list.field('swappableWith', {
       type: 'Reservation',
       authorize: authorization('user'),
-      resolve: async (reservation, _args, {prismaClient}) => {
-        const res = await prismaClient.reservation.findUnique({
+      resolve: async (reservation, _args, {prisma}) => {
+        const res = await prisma.reservation.findUnique({
           where: {id: reservation.id},
           include: {
             table: {
@@ -47,7 +51,7 @@ export default objectType({
           throw new UserInputError('Reservation not found');
         }
 
-        const tables = await prismaClient.table.findMany({
+        const tables = await prisma.table.findMany({
           where: {
             areaId: res.table.areaId,
             maxCapacity: {
@@ -82,8 +86,8 @@ export default objectType({
     t.nonNull.list.field('alternativeTables', {
       type: 'Table',
       authorize: authorization('user'),
-      resolve: async (reservation, _args, {prismaClient}) => {
-        return prismaClient.table.findMany({
+      resolve: async (reservation, _args, {prisma}) => {
+        return prisma.table.findMany({
           where: {
             maxCapacity: {
               gte: Math.max(
@@ -92,7 +96,7 @@ export default objectType({
               ),
             },
             id: {
-              not: (reservation as Reservation).tableId,
+              not: reservation.tableId,
             },
             area: {
               areaOpeningHour: {
@@ -130,8 +134,8 @@ export default objectType({
     t.nonNull.field('availableToCheckIn', {
       type: 'Int',
       authorize: authorization('user'),
-      resolve: async (reservation, _args, {prismaClient}) => {
-        const query = await prismaClient.reservation.aggregate({
+      resolve: async (reservation, _args, {prisma}) => {
+        const query = await prisma.reservation.aggregate({
           _sum: {
             checkedInPersons: true,
           },

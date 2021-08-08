@@ -8,8 +8,8 @@ export default extendType({
       args: {
         token: nonNull(stringArg()),
       },
-      resolve: async (_root, {token}, {prismaClient}) =>
-        prismaClient.reservation.findUnique({
+      resolve: async (_root, {token}, {prisma}) =>
+        prisma.reservation.findUnique({
           where: {
             token,
           },

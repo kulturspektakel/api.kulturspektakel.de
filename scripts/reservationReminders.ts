@@ -1,4 +1,3 @@
-import {Reservation} from '@prisma/client';
 import prismaClient from '../src/utils/prismaClient';
 import sendMail from '../src/utils/sendMail';
 import reservationReminder from '../src/maizzle/mails/reservationReminder';

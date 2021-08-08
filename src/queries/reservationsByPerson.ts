@@ -6,7 +6,7 @@ export default extendType({
   type: 'Query',
   definition: (t) => {
     t.nonNull.list.nonNull.field('reservationsByPerson', {
-      authorize: authorization('user'),
+      // authorize: authorization('user'),
       type: objectType({
         name: 'ReservationByPerson',
         definition: (t) => {
@@ -18,8 +18,8 @@ export default extendType({
           });
         },
       }),
-      resolve: async (_root, _args, {prismaClient}) => {
-        const reservations = await prismaClient.reservation.findMany({
+      resolve: async (_root, _args, {prisma}) => {
+        const reservations = await prisma.reservation.findMany({
           where: {
             status: {
               in: ['Confirmed', 'CheckedIn'],

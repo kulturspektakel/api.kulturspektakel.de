@@ -7,8 +7,7 @@ export default extendType({
     t.nonNull.list.nonNull.field('devices', {
       type: 'Device',
       authorize: authorization('user'),
-      resolve: async (_root, _args, {prismaClient}) =>
-        prismaClient.device.findMany({}),
+      resolve: async (_root, _args, {prisma}) => prisma.device.findMany({}),
     });
   },
 });

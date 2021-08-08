@@ -5,7 +5,7 @@ import {ParsedToken} from './routes/auth';
 import {Request} from 'express';
 
 export type Context = {
-  prismaClient: PrismaClient;
+  prisma: PrismaClient;
   token?: Partial<ParsedToken>;
 };
 
@@ -15,7 +15,7 @@ const context: ContextFunction<{
     _deviceId?: string;
   };
 }> = ({req}): Context => ({
-  prismaClient,
+  prisma: prismaClient,
   token: req._token,
 });
 export default context;

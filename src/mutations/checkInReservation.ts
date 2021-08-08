@@ -11,12 +11,12 @@ export default extendType({
         checkedInPersons: nonNull(intArg()),
       },
       authorize: authorization('user'),
-      resolve: async (_, {id, checkedInPersons}, {prismaClient}) => {
-        const reservation = await prismaClient.reservation.findUnique({
+      resolve: async (_, {id, checkedInPersons}, {prisma}) => {
+        const reservation = await prisma.reservation.findUnique({
           where: {id},
         });
 
-        return prismaClient.reservation.update({
+        return prisma.reservation.update({
           data: {
             status: 'CheckedIn',
             checkedInPersons,

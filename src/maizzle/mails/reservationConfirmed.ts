@@ -26,8 +26,8 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
   text-decoration: none !important;
 }
 @media (max-width: 600px) {
-  .sm-leading-32 {
-    line-height: 32px !important;
+  .sm-w-full {
+    width: 100% !important;
   }
   .sm-p-24 {
     padding: 24px !important;
@@ -36,18 +36,18 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
-  .sm-w-full {
-    width: 100% !important;
+  .sm-leading-32 {
+    line-height: 32px !important;
   }
 }
 </style>
 </head>
-<body style="margin: 0; padding: 0; width: 100%; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f4f4f5;">
+<body style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f4f4f5;">
     <div style="display: none;">Deine Reservierung für das Kulturspektakel ist bestätigt&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
       &#160;&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
       &#160;&#847; &#847; &#847; &#847; &#847; </div>
   <div role="article" aria-roledescription="email" aria-label="Reservierung #${number} bestätigt" lang="de">
-    <table style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
+    <table style="width: 100%; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center" style="background-color: #f4f4f5;">
           <table class="sm-w-full" style="width: 600px;" cellpadding="0" cellspacing="0" role="presentation">
@@ -58,8 +58,8 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
               <td align="center" class="sm-px-24">
                 <table style="width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
                   <tr>
-                    <td class="sm-p-24" style="background-color: #ffffff; border-radius: 4px; font-size: 16px; line-height: 24px; padding: 48px; text-align: left; color: #27272a;">
-    <h1 class="sm-leading-32" style="font-weight: 600; font-size: 24px; margin: 0; margin-bottom: 24px; color: #000000;">Reservierung #${number}</h1>
+                    <td class="sm-p-24" style="border-radius: 4px; background-color: #ffffff; padding: 48px; text-align: left; font-size: 16px; line-height: 24px; color: #27272a;">
+    <h1 class="sm-leading-32" style="margin: 0; margin-bottom: 24px; font-size: 24px; font-weight: 600; color: #000000;">Reservierung #${number}</h1>
     <p style="margin: 0; margin-bottom: 24px;">
       Wir freuen uns, dass du zum Kult kommst. Dein Reservierung ist nun bestätigt.
     </p>
@@ -67,19 +67,19 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
       <tbody>
         <tr>
           <th>Datum</th>
-          <td style="padding-top: 4px; padding-bottom: 4px; padding-left: 8px; padding-right: 8px;">${day}</td>
+          <td style="padding-left: 8px; padding-right: 8px; padding-top: 4px; padding-bottom: 4px;">${day}</td>
         </tr>
         <tr>
           <th>Uhrzeit</th>
-          <td style="padding-top: 4px; padding-bottom: 4px; padding-left: 8px; padding-right: 8px;">${startTime} bis ${endTime} Uhr</td>
+          <td style="padding-left: 8px; padding-right: 8px; padding-top: 4px; padding-bottom: 4px;">${startTime} bis ${endTime} Uhr</td>
         </tr>
         <tr>
           <th>Bereich</th>
-          <td style="padding-top: 4px; padding-bottom: 4px; padding-left: 8px; padding-right: 8px;">${area}</td>
+          <td style="padding-left: 8px; padding-right: 8px; padding-top: 4px; padding-bottom: 4px;">${area}</td>
         </tr>
         <tr>
           <th>Gäste</th>
-          <td style="padding-top: 4px; padding-bottom: 4px; padding-left: 8px; padding-right: 8px;">${partySize} Personen</td>
+          <td style="padding-left: 8px; padding-right: 8px; padding-top: 4px; padding-bottom: 4px;">${partySize} Personen</td>
         </tr>
       </tbody>
     </table>
@@ -114,13 +114,13 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
     <table style="width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
     <tr>
         <td style="padding-top: 24px; padding-bottom: 24px;">
-            <div style="background-color: #e4e4e7; height: 1px; line-height: 1px;">&zwnj;</div>
+            <div style="height: 1px; background-color: #e4e4e7; line-height: 1px;">&zwnj;</div>
         </td>
     </tr>
 </table>
     <p style="margin: 0; margin-bottom: 16px;">Falls du deine Reservierung ändern oder absagen möchtest, klicke bitte hier.</p>
     <div style="line-height: 100%;">
-    <a href="https://table.kulturspektakel.de/reservation/${token}" class="hover-bg-brand-dark" style="background-color: #e12e2e; border-radius: 4px; display: inline-block; font-weight: 600; font-size: 16px; padding-top: 12px; padding-bottom: 12px; padding-left: 24px; padding-right: 24px; text-align: center; color: #ffffff; text-decoration: none;">
+    <a href="https://table.kulturspektakel.de/reservation/${token}" class="hover-bg-brand-dark" style="display: inline-block; border-radius: 4px; background-color: #e12e2e; padding-left: 24px; padding-right: 24px; padding-top: 12px; padding-bottom: 12px; text-align: center; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none;">
         <!--[if mso]><i style="letter-spacing: 24px; mso-font-width: -100%; mso-text-raise:30px;">&#8202;</i><![endif]-->
         <span style="mso-text-raise: 16px;">
       Reservierung ändern
@@ -138,9 +138,9 @@ export default ({number, day, startTime, endTime, area, partySize, token}: {numb
                     <td style="height: 36px;"></td>
                   </tr>
                   <tr>
-                    <td style="font-size: 12px; padding-left: 24px; padding-right: 24px; text-align: center; color: #52525b;">
-                      <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" alt="Kulturspektakel Gauting" style="border: 0; line-height: 100%; max-width: 100%; vertical-align: middle;">
-                      <p style="font-weight: 600; margin: 0; margin-bottom: 4px; margin-top: 6px;">Kulturspektakel Gauting e.V.</p>
+                    <td style="padding-left: 24px; padding-right: 24px; text-align: center; font-size: 12px; color: #52525b;">
+                      <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" alt="Kulturspektakel Gauting" style="border: 0; max-width: 100%; vertical-align: middle; line-height: 100%;">
+                      <p style="margin: 0; margin-top: 6px; margin-bottom: 4px; font-weight: 600;">Kulturspektakel Gauting e.V.</p>
                       <p style="margin: 0; font-style: italic;">Anschrift: Bahnhofstr. 6, 82131 Gauting</p>
                       <p style="margin: 0; font-style: italic;">Festivalgelände: Germeringer Str. 41, Gauting</p>
                       <p style="cursor: default;">

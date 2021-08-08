@@ -1,18 +1,19 @@
 import {objectType} from 'nexus';
+import {Order} from 'nexus-prisma';
 
 export default objectType({
   name: 'Order',
   definition(t) {
-    t.model.id();
-    t.model.payment();
-    t.model.tokens();
-    t.model.createdAt();
-    t.model.deviceTime();
-    t.model.deviceId();
+    t.field(Order.id);
+    t.field(Order.payment);
+    t.field(Order.tokens);
+    t.field(Order.createdAt);
+    t.field(Order.deviceTime);
+    t.field(Order.deviceId);
     t.nonNull.list.nonNull.field('items', {
       type: 'OrderItem',
-      resolve: (parent, _, {prismaClient}) =>
-        prismaClient.orderItem.findMany({
+      resolve: (parent, _, {prisma}) =>
+        prisma.orderItem.findMany({
           where: {
             orderId: parent.id,
           },
@@ -20,8 +21,8 @@ export default objectType({
     });
     t.field('total', {
       type: 'Int',
-      resolve: async (parent, _, {prismaClient}) => {
-        const order = await prismaClient.order.findUnique({
+      resolve: async (parent, _, {prisma}) => {
+        const order = await prisma.order.findUnique({
           where: {id: parent.id},
           include: {
             items: true,

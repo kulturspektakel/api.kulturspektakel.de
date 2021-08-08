@@ -1,7 +1,6 @@
 import {PrismaClient, Reservation} from '@prisma/client';
 import {UserInputError} from 'apollo-server-errors';
 import {add, isBefore, isEqual} from 'date-fns';
-import endOfDay from 'date-fns/endOfDay';
 import {extendType, idArg, list, nonNull, stringArg} from 'nexus';
 import {ArgsValue} from 'nexus/dist/typegenTypeHelpers';
 import confirmReservation from '../maizzle/mails/confirmReservation';
@@ -43,7 +42,7 @@ export default extendType({
           startTime: Date;
           endTime: Date;
         },
-        {prismaClient},
+        {prisma},
       ) => {
         primaryPerson = primaryPerson.trim();
         primaryEmail = primaryEmail.trim();
@@ -67,7 +66,7 @@ export default extendType({
           throw new UserInputError('Reservierungszeitraum ist zu lange');
         }
 
-        const area = await prismaClient.area.findUnique({
+        const area = await prisma.area.findUnique({
           where: {
             id: areaId,
           },
@@ -92,9 +91,9 @@ export default extendType({
           throw new UserInputError('Außerhalb der Öffnungszeiten');
         }
 
-        await checkOccupancy(prismaClient, startTime, endTime, partySize);
+        await checkOccupancy(prisma, startTime, endTime, partySize);
 
-        const table = await prismaClient.table.findFirst({
+        const table = await prisma.table.findFirst({
           where: {
             minOccupancy: {
               lte: partySize,
@@ -120,7 +119,7 @@ export default extendType({
           throw new UserInputError('Kein Tisch verfügbar');
         }
 
-        const reservation = await prismaClient.reservation.create({
+        const reservation = await prisma.reservation.create({
           data: {
             primaryEmail,
             primaryPerson,
@@ -140,7 +139,7 @@ export default extendType({
         } catch (e) {
           console.error(e);
           // clear reservation, because it can't be confirmed
-          await prismaClient.reservation.delete({
+          await prisma.reservation.delete({
             where: {
               id: reservation.id,
             },
@@ -169,7 +168,7 @@ export default extendType({
 });
 
 export async function checkOccupancy(
-  prismaClient: PrismaClient,
+  prisma: PrismaClient,
   startTime: Date,
   endTime: Date,
   partySize: number,
@@ -177,7 +176,7 @@ export async function checkOccupancy(
   // don't check capacity limit anymore
   return;
   if (
-    (await occupancyIntervals(prismaClient, startTime, endTime)).some(
+    (await occupancyIntervals(prisma, startTime, endTime)).some(
       ({occupancy}) => occupancy + partySize > config.capacityLimit,
     )
   ) {

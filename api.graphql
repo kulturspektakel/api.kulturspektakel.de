@@ -7,8 +7,6 @@ type Area implements Node {
   availableTables(time: DateTime): Int!
   bandsPlaying(day: Date!): [Band!]!
   displayName: String!
-
-  """Unique identifier for the resource"""
   id: ID!
   openingHour(day: Date): [OpeningHour!]!
   table: [Table!]!
@@ -25,7 +23,7 @@ type Band {
 }
 
 interface Billable {
-  salesNumbers(after: DateTime, before: DateTime): SalesNumber!
+  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
 }
 
 type Config {
@@ -44,15 +42,16 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Device implements Billable {
-  id: String!
+  id: ID!
   lastSeen: DateTime
   productList: ProductList
-  salesNumbers(after: DateTime, before: DateTime): SalesNumber!
+  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
 }
 
 type HistoricalProduct implements Billable {
   name: String!
-  salesNumbers(after: DateTime, before: DateTime): SalesNumber!
+  productListId: Int!
+  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
 }
 
 """
@@ -97,18 +96,18 @@ type Order {
 type OrderItem {
   amount: Int!
   id: Int!
-  list: ProductList
   name: String!
   note: String
   perUnitPrice: Int!
+  productList: ProductList
 }
 
 input OrderItemInput {
   amount: Int!
-  listId: Int
   name: String!
   note: String
   perUnitPrice: Int!
+  productListId: Int
 }
 
 enum OrderPayment {
@@ -124,8 +123,9 @@ type Product implements Billable {
   id: Int!
   name: String!
   price: Int!
+  productListId: Int!
   requiresDeposit: Boolean!
-  salesNumbers(after: DateTime, before: DateTime): SalesNumber!
+  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
 }
 
 input ProductInput {
@@ -139,16 +139,8 @@ type ProductList implements Billable {
   historicalProducts: [HistoricalProduct!]!
   id: Int!
   name: String!
-  product(after: ProductWhereUniqueInput, before: ProductWhereUniqueInput, first: Int, last: Int, orderBy: [ProductListProductOrderByInput!]): [Product!]!
-  salesNumbers(after: DateTime, before: DateTime): SalesNumber!
-}
-
-input ProductListProductOrderByInput {
-  order: SortOrder
-}
-
-input ProductWhereUniqueInput {
-  id: Int
+  product: [Product!]!
+  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
 }
 
 type Query {
@@ -179,6 +171,7 @@ type Reservation {
   status: ReservationStatus!
   swappableWith: [Reservation]!
   table: Table!
+  tableId: String!
   token: String!
 }
 
@@ -195,19 +188,13 @@ enum ReservationStatus {
 
 type SalesNumber {
   count: Int!
+  timeSeries(grouping: TimeGrouping): [TimeSeries!]!
   total: Float!
-}
-
-enum SortOrder {
-  asc
-  desc
 }
 
 type Table implements Node {
   area: Area!
   displayName: String!
-
-  """Unique identifier for the resource"""
   id: ID!
   maxCapacity: Int!
   reservations(day: Date): [Reservation!]!
@@ -223,6 +210,16 @@ type TableAvailability {
 enum TableType {
   ISLAND
   TABLE
+}
+
+enum TimeGrouping {
+  Day
+  Hour
+}
+
+type TimeSeries {
+  time: DateTime!
+  value: Int!
 }
 
 type Viewer {

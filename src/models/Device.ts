@@ -1,12 +1,13 @@
 import {objectType} from 'nexus';
 import Billable from './Billable';
+import {Device} from 'nexus-prisma';
 
 export default objectType({
   name: 'Device',
   definition(t) {
-    t.model.id();
+    t.field(Device.id);
     t.implements(Billable);
-    t.model.productList();
-    t.model.lastSeen();
+    t.field(Device.productList);
+    t.field(Device.lastSeen);
   },
 });

@@ -25,9 +25,9 @@ export default extendType({
       resolve: async (
         parent,
         {partySize, day}: ArgsValue<'Area', 'availableSlots'> & {date: Date},
-        {prismaClient},
+        {prisma},
       ) => {
-        const area = await prismaClient.area.findUnique({
+        const area = await prisma.area.findUnique({
           where: {
             id: (parent as Area).id,
           },
@@ -51,7 +51,7 @@ export default extendType({
           ({startTime, endTime}) => ({startTime, endTime}),
         );
 
-        const tables = await prismaClient.table.findMany({
+        const tables = await prisma.table.findMany({
           where: {
             maxCapacity: {
               gte: partySize,
@@ -77,7 +77,7 @@ export default extendType({
         });
 
         const overCapacity = (
-          await occupancyIntervals(prismaClient, startOfDay(day), endOfDay(day))
+          await occupancyIntervals(prisma, startOfDay(day), endOfDay(day))
         ).filter(({occupancy}) => occupancy + partySize > config.capacityLimit);
 
         const availability = subtractIntervals(openingHours, overCapacity);
