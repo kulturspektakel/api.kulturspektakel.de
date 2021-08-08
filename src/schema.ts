@@ -46,6 +46,7 @@ import Device from './models/Device';
 import devices from './queries/devices';
 import TimeGrouping from './models/TimeGrouping';
 import {TableType} from 'nexus-prisma';
+import productList from './queries/productList';
 
 export default makeSchema({
   contextType: {
@@ -95,6 +96,7 @@ export default makeSchema({
     updateReservationOtherPersons,
     reservationsByPerson,
     devices,
+    productList,
 
     // mutations
     cancelReservation,

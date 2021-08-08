@@ -149,6 +149,7 @@ type Query {
   config: Config
   devices: [Device!]!
   node(id: ID!): Node
+  productList(id: Int!): ProductList
   productLists: [ProductList!]!
   reservationForToken(token: String!): Reservation
   reservationsByPerson: [ReservationByPerson!]!

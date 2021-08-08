@@ -283,6 +283,7 @@ export interface NexusGenFieldTypes {
     config: NexusGenRootTypes['Config'] | null; // Config
     devices: NexusGenRootTypes['Device'][]; // [Device!]!
     node: NexusGenRootTypes['Node'] | null; // Node
+    productList: NexusGenRootTypes['ProductList'] | null; // ProductList
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
     reservationForToken: NexusGenRootTypes['Reservation'] | null; // Reservation
     reservationsByPerson: NexusGenRootTypes['ReservationByPerson'][]; // [ReservationByPerson!]!
@@ -436,6 +437,7 @@ export interface NexusGenFieldTypeNames {
     config: 'Config'
     devices: 'Device'
     node: 'Node'
+    productList: 'ProductList'
     productLists: 'ProductList'
     reservationForToken: 'Reservation'
     reservationsByPerson: 'ReservationByPerson'
@@ -606,6 +608,9 @@ export interface NexusGenArgTypes {
     }
     node: { // args
       id: string; // ID!
+    }
+    productList: { // args
+      id: number; // Int!
     }
     reservationForToken: { // args
       token: string; // String!

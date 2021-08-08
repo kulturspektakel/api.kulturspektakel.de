@@ -22,6 +22,8 @@ jobs:
           if_key_exists: replace
       - name: install
         run: yarn
+      - name: generate
+        run: yarn generate:prisma
       - name: typecheck
         run: yarn tsc
       - name: deploy
