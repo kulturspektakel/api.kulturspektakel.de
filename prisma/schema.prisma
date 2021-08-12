@@ -13,14 +13,16 @@ datasource db {
 }
 
 model Viewer {
-  id                 String               @id @default(uuid())
-  displayName        String
-  email              String
-  profilePicture     String?
-  slackToken         String
-  slackScopes        String[]
-  updatedAt          DateTime             @default(now()) @updatedAt
-  ClearedReservation ClearedReservation[]
+  id                    String                  @id @default(uuid())
+  displayName           String
+  email                 String
+  profilePicture        String?
+  slackToken            String
+  slackScopes           String[]
+  updatedAt             DateTime                @default(now()) @updatedAt
+  ClearedReservation    ClearedReservation[]
+  BandApplicationRating BandApplicationRating[]
+  BandApplication       BandApplication[]
 }
 
 model Area {
@@ -159,4 +161,63 @@ model OrderItem {
   perUnitPrice  Int
   productList   ProductList? @relation(fields: [productListId], references: [id])
   productListId Int?
+}
+
+model BandApplication {
+  id                     String                  @id @default(uuid())
+  eventYear              Int
+  createdAt              DateTime                @default(now())
+  email                  String
+  bandname               String
+  genreCategory          GenreCategory
+  genre                  String?
+  city                   String
+  facebook               String?
+  instagram              String?
+  website                String?
+  demo                   String?
+  description            String?
+  numberOfArtists        Int?
+  numberOfNonMaleArtists Int?
+  contactName            String
+  contactPhone           String
+  knowsKultFrom          String?
+  heardAboutBookingFrom  HeardAboutBookingFrom?
+  distance               Int?
+  facebookLikes          Int?
+  instagramFollower      Int?
+  BandApplicationRating  BandApplicationRating[]
+
+  contactedByViewer   Viewer? @relation(fields: [contactedByViewerId], references: [id])
+  contactedByViewerId String?
+}
+
+enum GenreCategory {
+  Rock
+  Pop
+  Indie
+  Reggae_Ska
+  Blues_Funk_Jazz_Soul
+  Folk_SingerSongwriter_Country
+  Elektro_HipHop
+  Hardrock_Metal_Punk
+  Other
+}
+
+enum HeardAboutBookingFrom {
+  BYon
+  Newspaper
+  Friends
+  Website
+  Facebook
+}
+
+model BandApplicationRating {
+  viewer            Viewer          @relation(fields: [viewerId], references: [id])
+  viewerId          String
+  rating            Int
+  bandApplication   BandApplication @relation(fields: [bandApplicationId], references: [id])
+  bandApplicationId String
+
+  @@id([viewerId, bandApplicationId])
 }

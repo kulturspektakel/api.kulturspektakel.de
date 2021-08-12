@@ -50,6 +50,7 @@ const server = new ApolloServer({
         'https://crew.kulturspektakel.de',
         'https://kulturspektakel.de',
         'https://table.kulturspektakel.de',
+        'https://booking.kulturspektakel.de',
       ],
       credentials: true,
     },

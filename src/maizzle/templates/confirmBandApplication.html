@@ -1,0 +1,12 @@
+---
+title: "Bewerbung „{{ dynamic.bandname }}“ beim Kulturspektakel {{ dynamic.eventYear }}"
+preheader: "Eure Bewerbung mit „{{ dynamic.bandname }}“ für das Kulturspektakel Gauting {{ dynamic.eventYear }}"
+---
+
+<extends src="master.html">
+  <block name="content">
+    <component src="heading.html">Bewerbung für das Kulturspektakel {{ dynamic.eventYear }}</component>
+    <p>Vielen Dank für eure Bewerbung mit „{{ dynamic.bandname }}“ für das Kulturspektakel Gauting {{ dynamic.eventYear }}". Bitte habt Verständnis dafür, dass es einige Zeit dauern kann bis wir uns zurückmelden. Alle Bewerbungen bekommen von uns eine Zu- oder Absage.</p>
+    <p class="m-0">Viele Grüße,<br>Das Kulturspektakel-Booking-Team</p>
+  </block>
+</extends>

@@ -3,6 +3,7 @@ import env from './env';
 
 export enum SlackChannel {
   dev = 'C93K75X61',
+  bandbewerbungen = 'C3U99AB54',
 }
 
 export async function sendMessage({

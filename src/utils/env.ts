@@ -28,6 +28,8 @@ const e = {
     .asString(),
   SLACK_BOT_TOKEN: env.get('SLACK_BOT_TOKEN').required(!ci).asString(),
   KULT_CASH_SALT: env.get('KULT_CASH_SALT').required(!ci).asString(),
+  FACEBOOK_TOKEN: env.get('FACEBOOK_TOKEN').required(!ci).asString(),
+  BING_MAPS_KEY: env.get('BING_MAPS_KEY').required(!ci).asString(),
 };
 
 export default e;

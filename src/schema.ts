@@ -47,6 +47,10 @@ import devices from './queries/devices';
 import TimeGrouping from './models/TimeGrouping';
 import {TableType} from 'nexus-prisma';
 import productList from './queries/productList';
+import BandApplication from './models/BandApplication';
+import createBandApplication from './mutations/createBandApplication';
+import bandApplications from './queries/bandApplications';
+import distanceToKult from './queries/distanceToKult';
 
 export default makeSchema({
   contextType: {
@@ -81,6 +85,7 @@ export default makeSchema({
     Device,
     TimeGrouping,
     enumType(TableType),
+    BandApplication,
 
     // type extensions
     availability,
@@ -97,6 +102,8 @@ export default makeSchema({
     reservationsByPerson,
     devices,
     productList,
+    bandApplications,
+    distanceToKult,
 
     // mutations
     cancelReservation,
@@ -108,6 +115,7 @@ export default makeSchema({
     createReservation,
     upsertProductList,
     swapReservations,
+    createBandApplication,
   ],
   plugins: [
     fieldAuthorizePlugin({

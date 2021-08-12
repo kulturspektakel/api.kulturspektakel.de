@@ -46,6 +46,24 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  CreateBandApplicationInput: { // input type
+    bandname: string; // String!
+    city: string; // String!
+    contactName: string; // String!
+    contactPhone: string; // String!
+    demo: string; // String!
+    description: string; // String!
+    email: string; // String!
+    facebook?: string | null; // String
+    genre: string; // String!
+    genreCategory: NexusGenEnums['GenreCategory']; // GenreCategory!
+    heardAboutBookingFrom?: NexusGenEnums['HeardAboutBookingFrom'] | null; // HeardAboutBookingFrom
+    instagram?: string | null; // String
+    knowsKultFrom?: string | null; // String
+    numberOfArtists: number; // Int!
+    numberOfNonMaleArtists: number; // Int!
+    website?: string | null; // String
+  }
   OrderItemInput: { // input type
     amount: number; // Int!
     name: string; // String!
@@ -61,6 +79,8 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  GenreCategory: "Blues_Funk_Jazz_Soul" | "Elektro_HipHop" | "Folk_SingerSongwriter_Country" | "Hardrock_Metal_Punk" | "Indie" | "Other" | "Pop" | "Reggae_Ska" | "Rock"
+  HeardAboutBookingFrom: "BYon" | "Facebook" | "Friends" | "Newspaper" | "Website"
   OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "SUM_UP" | "VOUCHER"
   ReservationStatus: "CheckedIn" | "Confirmed" | "Pending"
   TableType: "ISLAND" | "TABLE"
@@ -91,6 +111,20 @@ export interface NexusGenObjects {
     id: string; // ID!
     name: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
+  }
+  BandApplication: { // root type
+    bandname: string; // String!
+    city: string; // String!
+    contactName: string; // String!
+    contactPhone: string; // String!
+    demo?: string | null; // String
+    description?: string | null; // String
+    email: string; // String!
+    facebook?: string | null; // String
+    facebookLikes?: number | null; // Int
+    genre?: string | null; // String
+    genreCategory: NexusGenEnums['GenreCategory']; // GenreCategory!
+    id: string; // ID!
   }
   Config: { // root type
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
@@ -212,6 +246,21 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
+  BandApplication: { // field return type
+    bandname: string; // String!
+    city: string; // String!
+    contactName: string; // String!
+    contactPhone: string; // String!
+    demo: string | null; // String
+    description: string | null; // String
+    email: string; // String!
+    embeddableDemo: string; // String!
+    facebook: string | null; // String
+    facebookLikes: number | null; // Int
+    genre: string | null; // String
+    genreCategory: NexusGenEnums['GenreCategory']; // GenreCategory!
+    id: string; // ID!
+  }
   Config: { // field return type
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
     tokenValue: number; // Int!
@@ -231,6 +280,7 @@ export interface NexusGenFieldTypes {
     cancelReservation: boolean | null; // Boolean
     checkInReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    createBandApplication: NexusGenRootTypes['BandApplication'] | null; // BandApplication
     createOrder: NexusGenRootTypes['Order'] | null; // Order
     createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     requestReservation: boolean; // Boolean!
@@ -280,6 +330,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     areas: NexusGenRootTypes['Area'][]; // [Area!]!
     availableCapacity: number; // Int!
+    bandApplications: NexusGenRootTypes['BandApplication'][]; // [BandApplication!]!
     config: NexusGenRootTypes['Config'] | null; // Config
     devices: NexusGenRootTypes['Device'][]; // [Device!]!
     node: NexusGenRootTypes['Node'] | null; // Node
@@ -366,6 +417,21 @@ export interface NexusGenFieldTypeNames {
     name: 'String'
     startTime: 'DateTime'
   }
+  BandApplication: { // field return type name
+    bandname: 'String'
+    city: 'String'
+    contactName: 'String'
+    contactPhone: 'String'
+    demo: 'String'
+    description: 'String'
+    email: 'String'
+    embeddableDemo: 'String'
+    facebook: 'String'
+    facebookLikes: 'Int'
+    genre: 'String'
+    genreCategory: 'GenreCategory'
+    id: 'ID'
+  }
   Config: { // field return type name
     reservationStart: 'DateTime'
     tokenValue: 'Int'
@@ -385,6 +451,7 @@ export interface NexusGenFieldTypeNames {
     cancelReservation: 'Boolean'
     checkInReservation: 'Reservation'
     confirmReservation: 'Reservation'
+    createBandApplication: 'BandApplication'
     createOrder: 'Order'
     createReservation: 'Reservation'
     requestReservation: 'Boolean'
@@ -434,6 +501,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     areas: 'Area'
     availableCapacity: 'Int'
+    bandApplications: 'BandApplication'
     config: 'Config'
     devices: 'Device'
     node: 'Node'
@@ -540,6 +608,9 @@ export interface NexusGenArgTypes {
     confirmReservation: { // args
       token: string; // String!
     }
+    createBandApplication: { // args
+      data: NexusGenInputs['CreateBandApplicationInput']; // CreateBandApplicationInput!
+    }
     createOrder: { // args
       clientId?: string | null; // String
       deposit: number; // Int!
@@ -605,6 +676,9 @@ export interface NexusGenArgTypes {
   Query: {
     availableCapacity: { // args
       time?: NexusGenScalars['DateTime'] | null; // DateTime
+    }
+    bandApplications: { // args
+      eventYear: number; // Int!
     }
     node: { // args
       id: string; // ID!

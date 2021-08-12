@@ -22,6 +22,22 @@ type Band {
   startTime: DateTime!
 }
 
+type BandApplication {
+  bandname: String!
+  city: String!
+  contactName: String!
+  contactPhone: String!
+  demo: String
+  description: String
+  email: String!
+  embeddableDemo: String!
+  facebook: String
+  facebookLikes: Int
+  genre: String
+  genreCategory: GenreCategory!
+  id: ID!
+}
+
 interface Billable {
   salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
 }
@@ -29,6 +45,25 @@ interface Billable {
 type Config {
   reservationStart: DateTime!
   tokenValue: Int!
+}
+
+input CreateBandApplicationInput {
+  bandname: String!
+  city: String!
+  contactName: String!
+  contactPhone: String!
+  demo: String!
+  description: String!
+  email: String!
+  facebook: String
+  genre: String!
+  genreCategory: GenreCategory!
+  heardAboutBookingFrom: HeardAboutBookingFrom
+  instagram: String
+  knowsKultFrom: String
+  numberOfArtists: Int!
+  numberOfNonMaleArtists: Int!
+  website: String
 }
 
 """
@@ -48,6 +83,26 @@ type Device implements Billable {
   salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
 }
 
+enum GenreCategory {
+  Blues_Funk_Jazz_Soul
+  Elektro_HipHop
+  Folk_SingerSongwriter_Country
+  Hardrock_Metal_Punk
+  Indie
+  Other
+  Pop
+  Reggae_Ska
+  Rock
+}
+
+enum HeardAboutBookingFrom {
+  BYon
+  Facebook
+  Friends
+  Newspaper
+  Website
+}
+
 type HistoricalProduct implements Billable {
   name: String!
   productListId: Int!
@@ -63,6 +118,7 @@ type Mutation {
   cancelReservation(token: String!): Boolean
   checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
+  createBandApplication(data: CreateBandApplicationInput!): BandApplication
   createOrder(clientId: String, deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
@@ -146,6 +202,7 @@ type ProductList implements Billable {
 type Query {
   areas: [Area!]!
   availableCapacity(time: DateTime): Int!
+  bandApplications(eventYear: Int!): [BandApplication!]!
   config: Config
   devices: [Device!]!
   node(id: ID!): Node

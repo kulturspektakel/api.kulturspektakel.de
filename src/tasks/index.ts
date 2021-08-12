@@ -2,10 +2,14 @@ import {run, makeWorkerUtils, WorkerUtils, TaskSpec} from 'graphile-worker';
 import env from '../utils/env';
 import clearPendingReservations from './clearPendingReservations';
 import reservationSlackMessage from './reservationSlackMessage';
+import facebookLikes from './facebookLikes';
+import instagramFollower from './instagramFollower';
 
 const taskList = {
   clearPendingReservations,
   reservationSlackMessage,
+  facebookLikes,
+  instagramFollower,
 };
 
 export default async function () {
