@@ -5,7 +5,7 @@ import env from '../utils/env';
 export default extendType({
   type: 'Query',
   definition: (t) => {
-    t.nonNull.list.nonNull.field('distanceToKult', {
+    t.field('distanceToKult', {
       type: 'Float',
       args: {
         origin: nonNull('String'),
