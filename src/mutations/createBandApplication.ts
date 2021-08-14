@@ -64,6 +64,7 @@ export default extendType({
 
         await sendMail({
           from: 'Kulturspektakel Gauting Booking booking@kulturspektakel.de',
+          to: data.email,
           html: confirmBandApplication({
             bandname: data.bandname,
             eventYear: String(eventYear),
