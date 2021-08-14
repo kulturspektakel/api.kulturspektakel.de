@@ -8,6 +8,7 @@ import {scheduleTask} from '../tasks';
 import sendMail from '../utils/sendMail';
 import {sendMessage, SlackChannel} from '../utils/slack';
 import {getDistanceToKult} from '../queries/distanceToKult';
+import {config} from '../queries/config';
 
 export default extendType({
   type: 'Mutation',
@@ -45,8 +46,7 @@ export default extendType({
       },
       resolve: async (_, {data}, {prisma}) => {
         let distance = await getDistanceToKult(data.city);
-        const eventYear = 2022;
-
+        const eventYear = config.bandApplicationDeadline.getFullYear();
         const application = await prisma.bandApplication.create({
           data: {
             ...data,
@@ -65,6 +65,7 @@ export default extendType({
         await sendMail({
           from: 'Kulturspektakel Gauting Booking booking@kulturspektakel.de',
           to: data.email,
+          subject: `Bewerbung „${data.bandname}“ beim Kulturspektakel ${eventYear}`,
           html: confirmBandApplication({
             bandname: data.bandname,
             eventYear: String(eventYear),
@@ -74,7 +75,42 @@ export default extendType({
         await sendMessage({
           channel: SlackChannel.dev,
           text: `Bewerbung von „${data.bandname}“`,
-          // TODO create Slack post
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: '*<' + data.demo + '|' + data.bandname + '>*',
+              },
+            },
+            {
+              type: 'section',
+              fields: [
+                {
+                  type: 'mrkdwn',
+                  text: `*Genre:*\n${data.genre ?? data.genreCategory}`,
+                },
+                {
+                  type: 'mrkdwn',
+                  text: `*Ort:*\n${data.city}${
+                    distance ? `${distance}km` : ''
+                  }`,
+                },
+              ],
+            },
+            {
+              type: 'context',
+              elements: [
+                {
+                  type: 'mrkdwn',
+                  text: `*AnsprechpartnerIn:* ${data.contactName} (${data.contactPhone}) ${data.email}`,
+                },
+              ],
+            },
+            {
+              type: 'divider',
+            },
+          ],
         });
 
         return application;
