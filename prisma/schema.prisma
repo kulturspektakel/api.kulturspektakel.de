@@ -183,7 +183,7 @@ model BandApplication {
   contactPhone           String
   knowsKultFrom          String?
   heardAboutBookingFrom  HeardAboutBookingFrom?
-  distance               Int?
+  distance               Float?
   facebookLikes          Int?
   instagramFollower      Int?
   BandApplicationRating  BandApplicationRating[]

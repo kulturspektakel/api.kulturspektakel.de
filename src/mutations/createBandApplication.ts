@@ -24,7 +24,7 @@ export default extendType({
               t.field('genreCategory', {
                 type: nonNull(enumType(GenreCategoryT)),
               });
-              t.field('genre', {type: nonNull('String')});
+              t.field('genre', {type: 'String'});
               t.field('city', {type: nonNull('String')});
               t.field('facebook', {type: 'String'});
               t.field('instagram', {type: 'String'});
