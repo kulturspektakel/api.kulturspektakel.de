@@ -15,13 +15,19 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
 
   const text = await fetch(
     `https://www.instagram.com/${application.instagram}/`,
+    {
+      headers: {
+        'User-Agent': 'Paw/3.2.2 (Macintosh; OS X/11.4.0) GCDHTTPRequest',
+      },
+    },
   ).then((r) => r.text());
 
-  const match = text.match(/"userInteractionCount":(\d+)/);
+  const match = text.match(/"userInteractionCount":"?(\d+)/);
   if (match && match?.length > 1) {
+    console.log(match[1]);
     await prismaClient.bandApplication.update({
       data: {
-        facebookLikes: parseInt(match[1], 10),
+        instagramFollower: parseInt(match[1], 10),
       },
       where: {
         id,
