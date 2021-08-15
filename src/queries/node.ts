@@ -34,6 +34,12 @@ export default extendType({
           case 'Table':
             delegate = prisma.table;
             break;
+          case 'Event':
+            delegate = prisma.event;
+            break;
+          case 'BandApplication':
+            delegate = prisma.bandApplication;
+            break;
           default:
             new UnreachableCaseError(__typename);
             return null;

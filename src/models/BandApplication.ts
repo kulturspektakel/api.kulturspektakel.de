@@ -1,11 +1,13 @@
 import {objectType} from 'nexus';
 import {BandApplication} from 'nexus-prisma';
 import {URL} from 'url';
+import Node from './Node';
 
 export default objectType({
   name: 'BandApplication',
   definition(t) {
     t.field(BandApplication.id);
+    t.implements(Node);
     t.field(BandApplication.bandname);
     t.field(BandApplication.genre);
     t.field(BandApplication.genreCategory);

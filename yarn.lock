@@ -1614,10 +1614,10 @@
     ora "^5.1.0"
     update-notifier "^5.0.1"
 
-"@maizzle/framework@^3.5.1":
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/@maizzle/framework/-/framework-3.6.1.tgz#3635a562c3b1615d0a18edea32a5fee4b0e5fee1"
-  integrity sha512-BwVsearxcSC5YCoLP7+QXpnNFx2g4xIXpu2tUyRgy8YLhyCS/bqqJcFNqHvn1NVJ9q7c8za2ew+qCOMjQpJsBw==
+"@maizzle/framework@^3.7.1":
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/@maizzle/framework/-/framework-3.7.1.tgz#e3ded788231ac93660743fde785c107a5c846bfc"
+  integrity sha512-3Sy24B4+Fb/KBWACWbCfot/K8fJiLnVg2QWI3bReP56XOOqbKgG9RIcPBLFRQSCUDcCDObfrEQ9Xximzct4gEg==
   dependencies:
     browser-sync "^2.26.13"
     color-shorthand-hex-to-six-digit "^3.0.2"
@@ -1635,7 +1635,7 @@
     posthtml "^0.16.4"
     posthtml-attrs-parser "^0.1.1"
     posthtml-content "^0.0.3"
-    posthtml-expressions "^1.6.2"
+    posthtml-expressions "^1.8.1"
     posthtml-extend "^0.6.0"
     posthtml-extra-attributes "^1.0.0"
     posthtml-fetch "^2.0.0"
@@ -7139,6 +7139,16 @@ posthtml-expressions@^1.6.2, posthtml-expressions@^1.7.1:
     fclone "^1.0.11"
     posthtml-parser "^0.6.0"
     posthtml-render "^1.4.0"
+
+posthtml-expressions@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/posthtml-expressions/-/posthtml-expressions-1.8.1.tgz#b3bcabef1dc7a7849f6b78ab659c20200a2b9010"
+  integrity sha512-9vKrZ3JnjZ+Iqg9Xi7QoSgLdWT9K/KwIqkDKDOaLFy1KrVtYz6dnsd3olGwufudFwGNZU0xp6fcdCicdyWjiwQ==
+  dependencies:
+    fclone "^1.0.11"
+    posthtml-match-helper "^1.0.1"
+    posthtml-parser "^0.10.0"
+    posthtml-render "^3.0.0"
 
 posthtml-extend@^0.6.0:
   version "0.6.0"

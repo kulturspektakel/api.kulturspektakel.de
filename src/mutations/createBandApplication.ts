@@ -8,7 +8,7 @@ import {scheduleTask} from '../tasks';
 import sendMail from '../utils/sendMail';
 import {sendMessage, SlackChannel} from '../utils/slack';
 import {getDistanceToKult} from '../queries/distanceToKult';
-import {config} from '../queries/config';
+import {UserInputError} from 'apollo-server-express';
 
 export default extendType({
   type: 'Mutation',
@@ -46,12 +46,26 @@ export default extendType({
       },
       resolve: async (_, {data}, {prisma}) => {
         let distance = await getDistanceToKult(data.city);
-        const eventYear = config.bandApplicationDeadline.getFullYear();
+        const now = new Date();
+        const event = await prisma.event.findFirst({
+          where: {
+            bandApplicationStart: {
+              lte: now,
+            },
+            bandApplicationEnd: {
+              gte: now,
+            },
+          },
+        });
+        if (!event) {
+          throw new UserInputError('No event found');
+        }
+        const eventYear = event.start.getFullYear();
         const application = await prisma.bandApplication.create({
           data: {
             ...data,
-            eventYear,
             distance,
+            eventId: event.id,
           },
         });
 
@@ -93,7 +107,7 @@ export default extendType({
                 {
                   type: 'mrkdwn',
                   text: `*Ort:*\n${data.city}${
-                    distance ? `${distance}km` : ''
+                    distance ? ` (${distance.toFixed()}km)` : ''
                   }`,
                 },
               ],

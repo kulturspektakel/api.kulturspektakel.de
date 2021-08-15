@@ -55,7 +55,7 @@ export interface NexusGenInputs {
     description: string; // String!
     email: string; // String!
     facebook?: string | null; // String
-    genre: string; // String!
+    genre?: string | null; // String
     genreCategory: NexusGenEnums['GenreCategory']; // GenreCategory!
     heardAboutBookingFrom?: NexusGenEnums['HeardAboutBookingFrom'] | null; // HeardAboutBookingFrom
     instagram?: string | null; // String
@@ -127,12 +127,20 @@ export interface NexusGenObjects {
     id: string; // ID!
   }
   Config: { // root type
+    bandApplicationDeadline: NexusGenScalars['DateTime']; // DateTime!
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
     tokenValue: number; // Int!
   }
   Device: { // root type
     id: string; // ID!
     lastSeen?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  Event: { // root type
+    bandApplicationEnd?: NexusGenScalars['DateTime'] | null; // DateTime
+    bandApplicationStart?: NexusGenScalars['DateTime'] | null; // DateTime
+    end: NexusGenScalars['DateTime']; // DateTime!
+    name: string; // String!
+    start: NexusGenScalars['DateTime']; // DateTime!
   }
   HistoricalProduct: { // root type
     name: string; // String!
@@ -217,7 +225,7 @@ export interface NexusGenObjects {
 
 export interface NexusGenInterfaces {
   Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
-  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['Table'];
+  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'];
 }
 
 export interface NexusGenUnions {
@@ -254,7 +262,6 @@ export interface NexusGenFieldTypes {
     demo: string | null; // String
     description: string | null; // String
     email: string; // String!
-    embeddableDemo: string; // String!
     facebook: string | null; // String
     facebookLikes: number | null; // Int
     genre: string | null; // String
@@ -262,6 +269,7 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
   }
   Config: { // field return type
+    bandApplicationDeadline: NexusGenScalars['DateTime']; // DateTime!
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
     tokenValue: number; // Int!
   }
@@ -270,6 +278,15 @@ export interface NexusGenFieldTypes {
     lastSeen: NexusGenScalars['DateTime'] | null; // DateTime
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+  }
+  Event: { // field return type
+    bandApplication: NexusGenRootTypes['BandApplication'][]; // [BandApplication!]!
+    bandApplicationEnd: NexusGenScalars['DateTime'] | null; // DateTime
+    bandApplicationStart: NexusGenScalars['DateTime'] | null; // DateTime
+    end: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // ID!
+    name: string; // String!
+    start: NexusGenScalars['DateTime']; // DateTime!
   }
   HistoricalProduct: { // field return type
     name: string; // String!
@@ -330,9 +347,10 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     areas: NexusGenRootTypes['Area'][]; // [Area!]!
     availableCapacity: number; // Int!
-    bandApplications: NexusGenRootTypes['BandApplication'][]; // [BandApplication!]!
     config: NexusGenRootTypes['Config'] | null; // Config
     devices: NexusGenRootTypes['Device'][]; // [Device!]!
+    distanceToKult: number | null; // Float
+    events: NexusGenRootTypes['Event'][]; // [Event!]!
     node: NexusGenRootTypes['Node'] | null; // Node
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
@@ -425,7 +443,6 @@ export interface NexusGenFieldTypeNames {
     demo: 'String'
     description: 'String'
     email: 'String'
-    embeddableDemo: 'String'
     facebook: 'String'
     facebookLikes: 'Int'
     genre: 'String'
@@ -433,6 +450,7 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
   }
   Config: { // field return type name
+    bandApplicationDeadline: 'DateTime'
     reservationStart: 'DateTime'
     tokenValue: 'Int'
   }
@@ -441,6 +459,15 @@ export interface NexusGenFieldTypeNames {
     lastSeen: 'DateTime'
     productList: 'ProductList'
     salesNumbers: 'SalesNumber'
+  }
+  Event: { // field return type name
+    bandApplication: 'BandApplication'
+    bandApplicationEnd: 'DateTime'
+    bandApplicationStart: 'DateTime'
+    end: 'DateTime'
+    id: 'ID'
+    name: 'String'
+    start: 'DateTime'
   }
   HistoricalProduct: { // field return type name
     name: 'String'
@@ -501,9 +528,10 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     areas: 'Area'
     availableCapacity: 'Int'
-    bandApplications: 'BandApplication'
     config: 'Config'
     devices: 'Device'
+    distanceToKult: 'Float'
+    events: 'Event'
     node: 'Node'
     productList: 'ProductList'
     productLists: 'ProductList'
@@ -677,8 +705,8 @@ export interface NexusGenArgTypes {
     availableCapacity: { // args
       time?: NexusGenScalars['DateTime'] | null; // DateTime
     }
-    bandApplications: { // args
-      eventYear: number; // Int!
+    distanceToKult: { // args
+      origin: string; // String!
     }
     node: { // args
       id: string; // ID!
@@ -710,12 +738,14 @@ export interface NexusGenArgTypes {
 
 export interface NexusGenAbstractTypeMembers {
   Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
-  Node: "Area" | "Table"
+  Node: "Area" | "BandApplication" | "Event" | "Table"
 }
 
 export interface NexusGenTypeInterfaces {
   Area: "Node"
+  BandApplication: "Node"
   Device: "Billable"
+  Event: "Node"
   HistoricalProduct: "Billable"
   Product: "Billable"
   ProductList: "Billable"

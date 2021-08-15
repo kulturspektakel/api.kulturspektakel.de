@@ -165,7 +165,6 @@ model OrderItem {
 
 model BandApplication {
   id                     String                  @id @default(uuid())
-  eventYear              Int
   createdAt              DateTime                @default(now())
   email                  String
   bandname               String
@@ -186,8 +185,10 @@ model BandApplication {
   distance               Float?
   facebookLikes          Int?
   instagramFollower      Int?
-  BandApplicationRating  BandApplicationRating[]
+  bandApplicationRating  BandApplicationRating[]
 
+  event               Event   @relation(fields: [eventId], references: [id])
+  eventId             String
   contactedByViewer   Viewer? @relation(fields: [contactedByViewerId], references: [id])
   contactedByViewerId String?
 }
@@ -220,4 +221,19 @@ model BandApplicationRating {
   bandApplicationId String
 
   @@id([viewerId, bandApplicationId])
+}
+
+enum EventType {
+  Kulturspektakel
+}
+
+model Event {
+  id                   String            @id
+  name                 String
+  start                DateTime
+  end                  DateTime
+  eventType            EventType
+  bandApplicationStart DateTime?
+  bandApplicationEnd   DateTime?
+  bandApplication      BandApplication[]
 }

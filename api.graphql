@@ -22,7 +22,7 @@ type Band {
   startTime: DateTime!
 }
 
-type BandApplication {
+type BandApplication implements Node {
   bandname: String!
   city: String!
   contactName: String!
@@ -30,7 +30,6 @@ type BandApplication {
   demo: String
   description: String
   email: String!
-  embeddableDemo: String!
   facebook: String
   facebookLikes: Int
   genre: String
@@ -43,6 +42,7 @@ interface Billable {
 }
 
 type Config {
+  bandApplicationDeadline: DateTime!
   reservationStart: DateTime!
   tokenValue: Int!
 }
@@ -56,7 +56,7 @@ input CreateBandApplicationInput {
   description: String!
   email: String!
   facebook: String
-  genre: String!
+  genre: String
   genreCategory: GenreCategory!
   heardAboutBookingFrom: HeardAboutBookingFrom
   instagram: String
@@ -81,6 +81,18 @@ type Device implements Billable {
   lastSeen: DateTime
   productList: ProductList
   salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
+}
+
+type Event implements Node {
+  bandApplication: [BandApplication!]!
+  bandApplicationEnd: DateTime
+  bandApplicationStart: DateTime
+  end: DateTime!
+
+  """Unique identifier for the resource"""
+  id: ID!
+  name: String!
+  start: DateTime!
 }
 
 enum GenreCategory {
@@ -202,9 +214,10 @@ type ProductList implements Billable {
 type Query {
   areas: [Area!]!
   availableCapacity(time: DateTime): Int!
-  bandApplications(eventYear: Int!): [BandApplication!]!
   config: Config
   devices: [Device!]!
+  distanceToKult(origin: String!): Float
+  events: [Event!]!
   node(id: ID!): Node
   productList(id: Int!): ProductList
   productLists: [ProductList!]!
