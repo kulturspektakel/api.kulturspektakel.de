@@ -1,6 +1,7 @@
 import {objectType} from 'nexus';
 import {BandApplication} from 'nexus-prisma';
 import {URL} from 'url';
+import authorization from '../utils/authorization';
 import Node from './Node';
 
 export default objectType({
@@ -19,6 +20,36 @@ export default objectType({
     t.field(BandApplication.email);
     t.field(BandApplication.city);
     t.field(BandApplication.demo);
+    t.field(BandApplication.instagram);
+    t.field(BandApplication.instagramFollower);
+    t.field(BandApplication.distance);
+    t.field(BandApplication.heardAboutBookingFrom);
+    t.field(BandApplication.knowsKultFrom);
+    t.field({
+      ...BandApplication.bandApplicationRating,
+      authorize: authorization('user'),
+    });
+    t.field('rating', {
+      type: 'Float',
+      authorize: authorization('user'),
+      resolve: async (root, _, {prisma, token}) => {
+        const ratings = await prisma.bandApplicationRating.findMany({
+          where: {
+            bandApplicationId: root.id,
+          },
+        });
+        const viewerId = token?.type === 'user' ? token.userId : undefined;
+        if (ratings.length === 0) {
+          return null;
+        } else if (ratings.find((r) => r.viewerId === viewerId)) {
+          return (
+            ratings.reduce((acc, cv) => acc + cv.rating, 0) / ratings.length
+          );
+        } else {
+          return null;
+        }
+      },
+    });
     /*
     t.nonNull.field('embeddableDemo', {
       type: 'String',

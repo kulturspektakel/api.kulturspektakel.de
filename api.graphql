@@ -23,18 +23,30 @@ type Band {
 }
 
 type BandApplication implements Node {
+  bandApplicationRating: [BandApplicationRating!]!
   bandname: String!
   city: String!
   contactName: String!
   contactPhone: String!
   demo: String
   description: String
+  distance: Float
   email: String!
   facebook: String
   facebookLikes: Int
   genre: String
   genreCategory: GenreCategory!
+  heardAboutBookingFrom: HeardAboutBookingFrom
   id: ID!
+  instagram: String
+  instagramFollower: Int
+  knowsKultFrom: String
+  rating: Float
+}
+
+type BandApplicationRating {
+  rating: Int!
+  viewer: Viewer!
 }
 
 interface Billable {
@@ -133,6 +145,7 @@ type Mutation {
   createBandApplication(data: CreateBandApplicationInput!): BandApplication
   createOrder(clientId: String, deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
+  rateBandApplication(bandApplicationId: ID!, rating: Int): BandApplication
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
   swapReservations(a: Int!, b: Int!): Boolean
   updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, primaryPerson: String, startTime: DateTime, tableId: ID): Reservation
