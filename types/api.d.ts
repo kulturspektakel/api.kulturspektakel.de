@@ -227,13 +227,14 @@ export interface NexusGenObjects {
   Viewer: { // root type
     displayName: string; // String!
     email: string; // String!
+    id: string; // ID!
     profilePicture?: string | null; // String
   }
 }
 
 export interface NexusGenInterfaces {
   Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
-  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'];
+  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'] | NexusGenRootTypes['Viewer'];
 }
 
 export interface NexusGenUnions {
@@ -426,6 +427,7 @@ export interface NexusGenFieldTypes {
   Viewer: { // field return type
     displayName: string; // String!
     email: string; // String!
+    id: string; // ID!
     profilePicture: string | null; // String
   }
   Billable: { // field return type
@@ -619,6 +621,7 @@ export interface NexusGenFieldTypeNames {
   Viewer: { // field return type name
     displayName: 'String'
     email: 'String'
+    id: 'ID'
     profilePicture: 'String'
   }
   Billable: { // field return type name
@@ -774,7 +777,7 @@ export interface NexusGenArgTypes {
 
 export interface NexusGenAbstractTypeMembers {
   Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
-  Node: "Area" | "BandApplication" | "Event" | "Table"
+  Node: "Area" | "BandApplication" | "Event" | "Table" | "Viewer"
 }
 
 export interface NexusGenTypeInterfaces {
@@ -786,6 +789,7 @@ export interface NexusGenTypeInterfaces {
   Product: "Billable"
   ProductList: "Billable"
   Table: "Node"
+  Viewer: "Node"
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
