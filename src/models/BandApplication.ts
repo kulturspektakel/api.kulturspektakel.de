@@ -26,6 +26,10 @@ export default objectType({
     t.field(BandApplication.heardAboutBookingFrom);
     t.field(BandApplication.knowsKultFrom);
     t.field({
+      ...BandApplication.contactedByViewer,
+      authorize: authorization('user'),
+    });
+    t.field({
       ...BandApplication.bandApplicationRating,
       authorize: authorization('user'),
     });
@@ -50,49 +54,5 @@ export default objectType({
         }
       },
     });
-    /*
-    t.nonNull.field('embeddableDemo', {
-      type: 'String',
-      resolve: ({demo}) => {
-        try {
-          const url = new URL(demo);
-          const domain = url.hostname
-            .toLowerCase()
-            .split('.')
-            .slice(-2)
-            .join('.');
-          const firstPath = url.pathname.split('/')[1];
-          switch (domain) {
-            case 'youtube.com':
-              switch (firstPath) {
-                case 'watch':
-                case 'channel':
-                case 'c':
-                case 'user':
-                default:
-                // probably a vanity URL
-              }
-              break;
-            case 'youtu.be':
-              break;
-            case 'bandcamp.com':
-              const match = url.hostname.match(/([^.]+)\.bandcamp\.com/i);
-              if (match && match?.length > 1) {
-              }
-              // <iframe style="border: 0; width: 400px; height: 241px;" src="https://bandcamp.com/EmbeddedPlayer/album=2867773323/size=large/bgcol=ffffff/linkcol=0687f5/artwork=small/transparent=true/" seamless></iframe>
-              break;
-            case 'soundcloud.com':
-              const username = firstPath;
-              break;
-            case 'spotify.com':
-              break;
-          }
-        } catch (e) {
-          return null;
-        }
-        return null;
-      },
-    });
-    */
   },
 });
