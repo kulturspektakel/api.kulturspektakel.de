@@ -14,7 +14,15 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   }
 
   const url = new URL(application.facebook);
-  const fbid = url.pathname.split('/')[1];
+  const path = url.pathname.split('/');
+  let fbid: string | null = null;
+  if (path[1] === 'pg') {
+    fbid = path[2];
+  } else if (path[1] === 'pages' && path[2] === 'category') {
+    fbid = path[3];
+  } else {
+    fbid = path[1];
+  }
   const text = await fetch(`https://www.facebook.com/${fbid}`, {
     headers: {
       'User-Agent': 'Paw/3.2.2 (Macintosh; OS X/11.4.0) GCDHTTPRequest',

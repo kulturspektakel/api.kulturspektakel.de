@@ -5,18 +5,23 @@ import reservationSlackMessage from './reservationSlackMessage';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
 
-const taskList = {
+const taskListProd = {
   clearPendingReservations,
   reservationSlackMessage,
+};
+
+const taskList = {
+  ...taskListProd,
+  // These jobs are only executed in dev environment
   facebookLikes,
   instagramFollower,
 };
 
 export default async function () {
-  run({
+  return run({
     connectionString: env.DATABASE_URL,
     concurrency: 1,
-    taskList: taskList as any,
+    taskList: (env.NODE_ENV === 'production' ? taskListProd : taskList) as any,
   });
 }
 

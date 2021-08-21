@@ -53,6 +53,8 @@ import distanceToKult from './queries/distanceToKult';
 import Event from './models/Event';
 import events from './queries/events';
 import markBandApplicationContacted from './mutations/markBandApplicationContacted';
+import rateBandApplication from './mutations/rateBandApplication';
+import BandApplicationRating from './models/BandApplicationRating';
 
 export default makeSchema({
   contextType: {
@@ -88,6 +90,7 @@ export default makeSchema({
     TimeGrouping,
     enumType(TableType),
     BandApplication,
+    BandApplicationRating,
     Event,
 
     // type extensions
@@ -120,6 +123,7 @@ export default makeSchema({
     swapReservations,
     createBandApplication,
     markBandApplicationContacted,
+    rateBandApplication,
   ],
   plugins: [
     fieldAuthorizePlugin({

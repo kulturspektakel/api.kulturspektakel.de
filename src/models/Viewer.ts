@@ -1,5 +1,6 @@
 import {objectType} from 'nexus';
 import {Viewer} from 'nexus-prisma';
+import Node from './Node';
 
 export default objectType({
   name: 'Viewer',

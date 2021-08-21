@@ -221,6 +221,7 @@ model BandApplicationRating {
   bandApplicationId String
 
   @@id([viewerId, bandApplicationId])
+  @@index([bandApplicationId])
 }
 
 enum EventType {

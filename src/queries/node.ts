@@ -37,6 +37,9 @@ export default extendType({
           case 'Event':
             delegate = prisma.event;
             break;
+          case 'Viewer':
+            delegate = prisma.viewer;
+            break;
           case 'BandApplication':
             delegate = prisma.bandApplication;
             break;
