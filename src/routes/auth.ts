@@ -33,7 +33,9 @@ function parseToken(token?: string): ParsedToken | null {
 
 function requestURL(req: Request): URL {
   return new URL(
-    `${req.headers['x-forwarded-proto'] ?? req.protocol}://${req.get('host')}`,
+    `${req.headers['x-forwarded-proto'] ?? req.protocol}://${req.get('host')}${
+      req.path
+    }`,
   );
 }
 
@@ -94,7 +96,7 @@ export default function (app: Express) {
     '/auth',
     async (req, res) => {
       const redirectURI = requestURL(req);
-      redirectURI.pathname = req.originalUrl.split('?').shift()!;
+      // redirectURI.pathname = req.originalUrl.split('?').shift()!;
       /*
       if (parseToken(req.cookies.token)) {
         // valid token
@@ -165,9 +167,9 @@ export default function (app: Express) {
 
         const token = setCookie(req, res, user.id);
         if (req.query.state) {
-          const u = new URL(req.query.state);
+          const u = new URL(decodeURIComponent(req.query.state));
           u.searchParams.append('token', token);
-          return res.redirect(302, req.query.state);
+          return res.redirect(302, u.toString());
         }
         return res.send(token);
       }
@@ -176,7 +178,9 @@ export default function (app: Express) {
       url.searchParams.append('client_id', env.SLACK_CLIENT_ID);
       url.searchParams.append('scope', SCOPES.join(' '));
       url.searchParams.append('redirect_uri', redirectURI.toString());
-      url.searchParams.append('state', req.headers['referer'] ?? '');
+      if (req.query.state) {
+        url.searchParams.append('state', encodeURIComponent(req.query.state));
+      }
       res.redirect(302, url.toString());
     },
   );

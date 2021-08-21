@@ -52,6 +52,7 @@ import createBandApplication from './mutations/createBandApplication';
 import distanceToKult from './queries/distanceToKult';
 import Event from './models/Event';
 import events from './queries/events';
+import markBandApplicationContacted from './mutations/markBandApplicationContacted';
 
 export default makeSchema({
   contextType: {
@@ -118,6 +119,7 @@ export default makeSchema({
     upsertProductList,
     swapReservations,
     createBandApplication,
+    markBandApplicationContacted,
   ],
   plugins: [
     fieldAuthorizePlugin({
