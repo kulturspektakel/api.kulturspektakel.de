@@ -1934,13 +1934,6 @@
   resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.10.tgz#61cc8469849e5bcdd0c7044122265c39cec10cf4"
   integrity sha512-C7srjHiVG3Ey1nR6d511dtDkCEjxuN9W1HWAEjGq8kpcwmNM6JJkpC0xvabM7BXTG2wDq8Eu33iH9aQKa7IvLQ==
 
-"@types/crc@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@types/crc/-/crc-3.4.0.tgz#2366beb4399cd734b33e42c7ac809576e617d48a"
-  integrity sha1-I2a+tDmc1zSzPkLHrICVduYX1Io=
-  dependencies:
-    "@types/node" "*"
-
 "@types/cross-spawn@^6.0.1":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@types/cross-spawn/-/cross-spawn-6.0.2.tgz#168309de311cd30a2b8ae720de6475c2fbf33ac7"
@@ -2900,7 +2893,7 @@ buffer-writer@2.0.0:
   resolved "https://registry.yarnpkg.com/buffer-writer/-/buffer-writer-2.0.0.tgz#ce7eb81a38f7829db09c873f2fbb792c0c98ec04"
   integrity sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==
 
-buffer@^5.1.0, buffer@^5.5.0, buffer@^5.7.0:
+buffer@^5.5.0, buffer@^5.7.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.7.1.tgz#ba62e7c13133053582197160851a8f648e99eed0"
   integrity sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==
@@ -3448,13 +3441,6 @@ cosmiconfig@7.0.0, cosmiconfig@^7.0.0:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.10.0"
-
-crc@^3.8.0:
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/crc/-/crc-3.8.0.tgz#ad60269c2c856f8c299e2c4cc0de4556914056c6"
-  integrity sha512-iX3mfgcTMIq3ZKLIsVFAbv7+Mc10kxabAGQb8HvjA1o3T1PIYprbakQ65d3I+2HGHt6nSKkM9PYjgoJO2KcFBQ==
-  dependencies:
-    buffer "^5.1.0"
 
 create-require@^1.1.0:
   version "1.1.1"
@@ -8697,7 +8683,7 @@ ts-proto-descriptors@^1.2.1:
     long "^4.0.0"
     protobufjs "^6.8.8"
 
-ts-proto@^1.82.2:
+ts-proto@^1.82.5:
   version "1.82.5"
   resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.82.5.tgz#9dd11785e314e2ae5467c09acdb739de010487b7"
   integrity sha512-RqlTxosROuYdeWRLa6Qu8Wz9dc3fpAh+R8PELUlhSSZlUiEkTos662SgKHOB8UoJd9CBMSyJPRC7z8k2WvWzhw==

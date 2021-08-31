@@ -1,34 +1,33 @@
 syntax = "proto3";
-import "google/protobuf/timestamp.proto";
+import "product.proto";
 
 message TransactionMessage {
-  string id = 1;
-  string device_id = 2;
-  enum Mode {
-    TIME_ENTRY = 0;
-    TOP_UP = 1;
-    CHARGE = 2;
-    CASHOUT = 3;
-    INIT_CARD = 4;
-  }
-  Mode mode = 3;
-  google.protobuf.Timestamp device_time = 4;
-  optional string card = 5;
+  string device_id = 1;
+  string client_transaction_id = 2;
+  TransactionType transaction_type = 3;
+  int32 device_time = 4;
+
+  PaymentMethod payment_method = 5;
   sint32 deposit = 6;
   sint32 total = 7;
-  message CartItemMessage {
-    int32 price = 1;
-    string product = 2;
-  }
-  repeated CartItemMessage cart_items = 8;
-  enum Payment {
+  optional string card_id = 8;
+
+  optional int32 list_id = 9;
+  repeated Product cart_items = 10;
+
+  enum PaymentMethod {
     CASH = 0;
     BON = 1;
     SUM_UP = 2;
     VOUCHER = 3;
     FREE_CREW = 4;
     FREE_BAND = 5;
+    KULT_CARD = 6;
   }
-  Payment payment = 9;
-  optional int32 list_id = 10;
+
+  enum TransactionType {
+    TOP_UP = 0;
+    CHARGE = 1;
+    CASHOUT = 2;
+  }
 }

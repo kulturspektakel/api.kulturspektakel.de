@@ -1,12 +1,11 @@
 import prismaClient from '../utils/prismaClient';
-import {crc32} from 'crc';
 import {Express, Request, Response} from 'express';
 import asciinize from '../utils/asciinize';
 import {createHash} from 'crypto';
 import env from '../utils/env';
 import {
   TransactionMessage,
-  TransactionMessage_Payment,
+  TransactionMessage_PaymentMethod,
 } from '../proto/transaction';
 import {ConfigMessage} from '../proto/config';
 import {OrderPayment} from '@prisma/client';
@@ -60,22 +59,10 @@ export default function (app: Express) {
       return res.status(204).send('No Content');
     }
 
-    const partialList: Omit<ConfigMessage, 'checksum'> = {
-      name: asciinize(list.name, 16),
-      listId: list.id,
-      ...list.product.reduce<Partial<ConfigMessage>>(
-        (acc, {name, price}, i) => ({
-          ...acc,
-          [`product${i + 1}`]: asciinize(name, 16),
-          [`price${i + 1}`]: price,
-        }),
-        {},
-      ),
-    };
-
     const message = ConfigMessage.encode({
-      ...partialList,
-      checksum: crc32(JSON.stringify(partialList)),
+      listId: list.id,
+      name: list.name,
+      products: list.product.map(({name, price}) => ({name, price})),
     }).finish();
 
     res.setHeader('Content-Type', 'application/x-protobuf');
@@ -89,47 +76,48 @@ export default function (app: Express) {
     });
 
     req.on('end', async () => {
+      const {id} = auth(req, res);
+
+      let message: TransactionMessage;
       try {
-        const {id} = auth(req, res);
-        const message = TransactionMessage.decode(buffer);
-        console.log(message);
-
-        await prismaClient.order.create({
-          data: {
-            deviceTime: message.deviceTime ?? new Date(),
-            tokens: message.deposit,
-            clientId: message.id,
-            payment: mapPayment(message.payment),
-            items: {
-              createMany: {
-                data:
-                  message.cartItems?.map((c) => ({
-                    productListId: message.listId,
-                    amount: 1,
-                    name: c.product,
-                    perUnitPrice: c.price,
-                  })) ?? [],
-              },
-            },
-            device: {
-              connectOrCreate: {
-                create: {
-                  id,
-                  lastSeen: new Date(),
-                },
-                where: {
-                  id,
-                },
-              },
-            },
-          },
-        });
-
-        return res.status(201).send('Created');
+        message = TransactionMessage.decode(buffer);
       } catch (e) {
         console.error(e);
         return res.status(400).send('Bad Request');
       }
+
+      await prismaClient.order.create({
+        data: {
+          deviceTime: new Date(message.deviceTime),
+          tokens: message.deposit,
+          clientId: message.clientTransactionId,
+          payment: mapPayment(message.paymentMethod),
+          items: {
+            createMany: {
+              data:
+                message.cartItems?.map(({name, price}) => ({
+                  productListId: message.listId,
+                  amount: 1,
+                  name: name,
+                  perUnitPrice: price,
+                })) ?? [],
+            },
+          },
+          device: {
+            connectOrCreate: {
+              create: {
+                id,
+                lastSeen: new Date(),
+              },
+              where: {
+                id,
+              },
+            },
+          },
+        },
+      });
+
+      return res.status(201).send('Created');
     });
   });
 
@@ -140,19 +128,19 @@ export default function (app: Express) {
   });
 }
 
-function mapPayment(payment: TransactionMessage_Payment): OrderPayment {
+function mapPayment(payment: TransactionMessage_PaymentMethod): OrderPayment {
   switch (payment) {
-    case TransactionMessage_Payment.CASH:
+    case TransactionMessage_PaymentMethod.CASH:
       return OrderPayment.CASH;
-    case TransactionMessage_Payment.BON:
+    case TransactionMessage_PaymentMethod.BON:
       return OrderPayment.BON;
-    case TransactionMessage_Payment.FREE_BAND:
+    case TransactionMessage_PaymentMethod.FREE_BAND:
       return OrderPayment.FREE_BAND;
-    case TransactionMessage_Payment.FREE_CREW:
+    case TransactionMessage_PaymentMethod.FREE_CREW:
       return OrderPayment.FREE_CREW;
-    case TransactionMessage_Payment.SUM_UP:
+    case TransactionMessage_PaymentMethod.SUM_UP:
       return OrderPayment.SUM_UP;
-    case TransactionMessage_Payment.VOUCHER:
+    case TransactionMessage_PaymentMethod.VOUCHER:
       return OrderPayment.VOUCHER;
     default:
       return OrderPayment.CASH;

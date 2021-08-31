@@ -1,25 +1,8 @@
 syntax = "proto3";
+import "product.proto";
 
 message ConfigMessage {
   string name = 1;
   int32 list_id = 2;
-  optional string product1 = 3;
-  optional int32 price1 = 4;
-  optional string product2 = 5;
-  optional int32 price2 = 6;
-  optional string product3 = 7;
-  optional int32 price3 = 8;
-  optional string product4 = 9;
-  optional int32 price4 = 10;
-  optional string product5 = 11;
-  optional int32 price5 = 12;
-  optional string product6 = 13;
-  optional int32 price6 = 14;
-  optional string product7 = 15;
-  optional int32 price7 = 16;
-  optional string product8 = 17;
-  optional int32 price8 = 18;
-  optional string product9 = 19;
-  optional int32 price9 = 20;
-  int32 checksum = 21;
+  repeated Product products = 3;
 }
