@@ -54,7 +54,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
                   <tr>
                     <td class="sm-p-24" style="border-radius: 4px; background-color: #ffffff; padding: 48px; text-align: left; font-size: 16px; line-height: 24px; color: #27272a;">
     <h1 class="sm-leading-32" style="margin: 0; margin-bottom: 24px; font-size: 24px; font-weight: 600; color: #000000;">Bewerbung für das Kulturspektakel ${eventYear}</h1>
-    <p>Vielen Dank für eure Bewerbung mit „${bandname}“ für das Kulturspektakel Gauting ${eventYear}". Bitte habt Verständnis dafür, dass es einige Zeit dauern kann bis wir uns zurückmelden. Alle Bewerbungen bekommen von uns eine Zu- oder Absage.</p>
+    <p>Vielen Dank für eure Bewerbung mit „${bandname}“ für das Kulturspektakel Gauting ${eventYear}. Jede Bewerbung bekommt von uns eine Zu- oder Absage. Es kann allerdings bis wenige Monate vor dem Kulturspektakel dauern, bis ihr eine Antwort bekommt. Daher bitten wir euch gedulig zu sein.</p>
     <p style="margin: 0;">Viele Grüße,<br>Das Kulturspektakel-Booking-Team</p>
                     </td>
                   </tr>
