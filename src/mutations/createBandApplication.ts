@@ -87,7 +87,7 @@ export default extendType({
         });
 
         await sendMessage({
-          channel: SlackChannel.dev,
+          channel: SlackChannel.bandbewerbungen,
           text: `Bewerbung von „${data.bandname}“`,
           blocks: [
             {
