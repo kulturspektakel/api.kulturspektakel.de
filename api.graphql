@@ -308,7 +308,7 @@ type TimeSeries {
   value: Int!
 }
 
-type Viewer {
+type Viewer implements Node {
   displayName: String!
   email: String!
   id: ID!

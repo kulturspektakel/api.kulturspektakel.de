@@ -234,7 +234,7 @@ export interface NexusGenObjects {
 
 export interface NexusGenInterfaces {
   Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
-  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'];
+  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'] | NexusGenRootTypes['Viewer'];
 }
 
 export interface NexusGenUnions {
@@ -785,7 +785,7 @@ export interface NexusGenArgTypes {
 
 export interface NexusGenAbstractTypeMembers {
   Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
-  Node: "Area" | "BandApplication" | "Event" | "Table"
+  Node: "Area" | "BandApplication" | "Event" | "Table" | "Viewer"
 }
 
 export interface NexusGenTypeInterfaces {
@@ -797,6 +797,7 @@ export interface NexusGenTypeInterfaces {
   Product: "Billable"
   ProductList: "Billable"
   Table: "Node"
+  Viewer: "Node"
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
