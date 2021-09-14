@@ -10,6 +10,7 @@ import ics from './routes/ics';
 import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
+import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
 
 const server = new ApolloServer({
   context,
@@ -21,11 +22,13 @@ const server = new ApolloServer({
     return err;
   },
   introspection: true,
-  playground: {
-    settings: {
-      'request.credentials': 'include',
-    },
-  },
+  plugins: [
+    ApolloServerPluginLandingPageGraphQLPlayground({
+      settings: {
+        'request.credentials': 'include',
+      },
+    }),
+  ],
 });
 
 (async () => {
@@ -42,6 +45,7 @@ const server = new ApolloServer({
     '/public',
     express.static(join(__dirname, '..', 'artifacts', 'public')),
   );
+  await server.start();
   server.applyMiddleware({
     app,
     cors: {

@@ -28,6 +28,7 @@ type BandApplication implements Node {
   city: String!
   contactName: String!
   contactPhone: String!
+  contactedByViewer: Viewer
   demo: String
   description: String
   distance: Float
@@ -145,6 +146,7 @@ type Mutation {
   createBandApplication(data: CreateBandApplicationInput!): BandApplication
   createOrder(clientId: String, deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
+  markBandApplicationContacted(bandApplicationId: ID!, contacted: Boolean!): BandApplication
   rateBandApplication(bandApplicationId: ID!, rating: Int): BandApplication
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
   swapReservations(a: Int!, b: Int!): Boolean
@@ -306,7 +308,7 @@ type TimeSeries {
   value: Int!
 }
 
-type Viewer implements Node {
+type Viewer {
   displayName: String!
   email: String!
   id: ID!

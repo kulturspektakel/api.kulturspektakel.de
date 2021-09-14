@@ -9,6 +9,7 @@ import sendMail from '../utils/sendMail';
 import {sendMessage, SlackChannel} from '../utils/slack';
 import {getDistanceToKult} from '../queries/distanceToKult';
 import {UserInputError} from 'apollo-server-express';
+import normalizeUrl from 'normalize-url';
 
 export default extendType({
   type: 'Mutation',
@@ -44,7 +45,15 @@ export default extendType({
           }),
         ),
       },
-      resolve: async (_, {data}, {prisma}) => {
+      resolve: async (
+        _,
+        {data: {website, demo, facebook, ...data}},
+        {prisma},
+      ) => {
+        demo = normalizeUrl(demo);
+        website = website ? normalizeUrl(website) : null;
+        facebook = facebook ? normalizeUrl(facebook) : null;
+
         let distance = await getDistanceToKult(data.city);
         const now = new Date();
         const event = await prisma.event.findFirst({
@@ -66,10 +75,13 @@ export default extendType({
             ...data,
             distance,
             eventId: event.id,
+            website,
+            demo,
+            facebook,
           },
         });
 
-        if (data.facebook) {
+        if (facebook) {
           await scheduleTask('facebookLikes', {id: application.id});
         }
         if (data.instagram) {
@@ -94,7 +106,7 @@ export default extendType({
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: '*<' + data.demo + '|' + data.bandname + '>*',
+                text: '*<' + demo + '|' + data.bandname + '>*',
               },
             },
             {

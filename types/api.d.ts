@@ -234,7 +234,7 @@ export interface NexusGenObjects {
 
 export interface NexusGenInterfaces {
   Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
-  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'] | NexusGenRootTypes['Viewer'];
+  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'];
 }
 
 export interface NexusGenUnions {
@@ -269,6 +269,7 @@ export interface NexusGenFieldTypes {
     city: string; // String!
     contactName: string; // String!
     contactPhone: string; // String!
+    contactedByViewer: NexusGenRootTypes['Viewer'] | null; // Viewer
     demo: string | null; // String
     description: string | null; // String
     distance: number | null; // Float
@@ -320,6 +321,7 @@ export interface NexusGenFieldTypes {
     createBandApplication: NexusGenRootTypes['BandApplication'] | null; // BandApplication
     createOrder: NexusGenRootTypes['Order'] | null; // Order
     createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    markBandApplicationContacted: NexusGenRootTypes['BandApplication'] | null; // BandApplication
     rateBandApplication: NexusGenRootTypes['BandApplication'] | null; // BandApplication
     requestReservation: boolean; // Boolean!
     swapReservations: boolean | null; // Boolean
@@ -463,6 +465,7 @@ export interface NexusGenFieldTypeNames {
     city: 'String'
     contactName: 'String'
     contactPhone: 'String'
+    contactedByViewer: 'Viewer'
     demo: 'String'
     description: 'String'
     distance: 'Float'
@@ -514,6 +517,7 @@ export interface NexusGenFieldTypeNames {
     createBandApplication: 'BandApplication'
     createOrder: 'Order'
     createReservation: 'Reservation'
+    markBandApplicationContacted: 'BandApplication'
     rateBandApplication: 'BandApplication'
     requestReservation: 'Boolean'
     swapReservations: 'Boolean'
@@ -690,6 +694,10 @@ export interface NexusGenArgTypes {
       startTime: NexusGenScalars['DateTime']; // DateTime!
       tableId: string; // ID!
     }
+    markBandApplicationContacted: { // args
+      bandApplicationId: string; // ID!
+      contacted: boolean; // Boolean!
+    }
     rateBandApplication: { // args
       bandApplicationId: string; // ID!
       rating?: number | null; // Int
@@ -777,7 +785,7 @@ export interface NexusGenArgTypes {
 
 export interface NexusGenAbstractTypeMembers {
   Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
-  Node: "Area" | "BandApplication" | "Event" | "Table" | "Viewer"
+  Node: "Area" | "BandApplication" | "Event" | "Table"
 }
 
 export interface NexusGenTypeInterfaces {
@@ -789,7 +797,6 @@ export interface NexusGenTypeInterfaces {
   Product: "Billable"
   ProductList: "Billable"
   Table: "Node"
-  Viewer: "Node"
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
