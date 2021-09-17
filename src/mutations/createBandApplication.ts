@@ -81,11 +81,15 @@ export default extendType({
           },
         });
 
-        if (facebook) {
-          await scheduleTask('facebookLikes', {id: application.id});
-        }
-        if (data.instagram) {
-          await scheduleTask('instagramFollower', {id: application.id});
+        try {
+          if (facebook) {
+            await scheduleTask('facebookLikes', {id: application.id});
+          }
+          if (data.instagram) {
+            await scheduleTask('instagramFollower', {id: application.id});
+          }
+        } catch (e) {
+          console.error(e);
         }
 
         await sendMail({
