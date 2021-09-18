@@ -147,6 +147,7 @@ export interface NexusGenObjects {
     bandApplicationEnd?: NexusGenScalars['DateTime'] | null; // DateTime
     bandApplicationStart?: NexusGenScalars['DateTime'] | null; // DateTime
     end: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // ID!
     name: string; // String!
     start: NexusGenScalars['DateTime']; // DateTime!
   }

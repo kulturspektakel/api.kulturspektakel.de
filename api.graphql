@@ -101,8 +101,6 @@ type Event implements Node {
   bandApplicationEnd: DateTime
   bandApplicationStart: DateTime
   end: DateTime!
-
-  """Unique identifier for the resource"""
   id: ID!
   name: String!
   start: DateTime!
