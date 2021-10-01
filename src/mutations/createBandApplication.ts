@@ -10,6 +10,7 @@ import {sendMessage, SlackChannel} from '../utils/slack';
 import {getDistanceToKult} from '../queries/distanceToKult';
 import {UserInputError} from 'apollo-server-express';
 import normalizeUrl from 'normalize-url';
+import {URL} from 'url';
 
 export default extendType({
   type: 'Mutation',
@@ -47,12 +48,17 @@ export default extendType({
       },
       resolve: async (
         _,
-        {data: {website, demo, facebook, ...data}},
+        {data: {website, demo, facebook, instagram, ...data}},
         {prisma},
       ) => {
         demo = normalizeUrl(demo);
         website = website ? normalizeUrl(website) : null;
         facebook = facebook ? normalizeUrl(facebook) : null;
+
+        const igUrl = instagram?.match(/instagram\.com\/([^\/?]+)/);
+        if (igUrl && igUrl.length > 1) {
+          instagram = igUrl[1];
+        }
 
         let distance = await getDistanceToKult(data.city);
         const now = new Date();
@@ -78,6 +84,7 @@ export default extendType({
             website,
             demo,
             facebook,
+            instagram,
           },
         });
 
@@ -85,7 +92,7 @@ export default extendType({
           if (facebook) {
             await scheduleTask('facebookLikes', {id: application.id});
           }
-          if (data.instagram) {
+          if (instagram) {
             await scheduleTask('instagramFollower', {id: application.id});
           }
         } catch (e) {

@@ -211,6 +211,7 @@ enum HeardAboutBookingFrom {
   Friends
   Website
   Facebook
+  Instagram
 }
 
 model BandApplicationRating {

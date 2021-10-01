@@ -80,7 +80,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   GenreCategory: "Blues_Funk_Jazz_Soul" | "Elektro_HipHop" | "Folk_SingerSongwriter_Country" | "Hardrock_Metal_Punk" | "Indie" | "Other" | "Pop" | "Reggae_Ska" | "Rock"
-  HeardAboutBookingFrom: "BYon" | "Facebook" | "Friends" | "Newspaper" | "Website"
+  HeardAboutBookingFrom: "BYon" | "Facebook" | "Friends" | "Instagram" | "Newspaper" | "Website"
   OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "SUM_UP" | "VOUCHER"
   ReservationStatus: "CheckedIn" | "Confirmed" | "Pending"
   TableType: "ISLAND" | "TABLE"
