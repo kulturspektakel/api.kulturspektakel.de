@@ -1018,7 +1018,7 @@
           },
           {
             "name": "id",
-            "description": "Unique identifier for the resource",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1155,6 +1155,12 @@
           },
           {
             "name": "Friends",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "Instagram",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -2019,7 +2025,8 @@
           {"kind": "OBJECT", "name": "Area", "ofType": null},
           {"kind": "OBJECT", "name": "BandApplication", "ofType": null},
           {"kind": "OBJECT", "name": "Event", "ofType": null},
-          {"kind": "OBJECT", "name": "Table", "ofType": null}
+          {"kind": "OBJECT", "name": "Table", "ofType": null},
+          {"kind": "OBJECT", "name": "Viewer", "ofType": null}
         ]
       },
       {
@@ -3588,7 +3595,7 @@
           }
         ],
         "inputFields": null,
-        "interfaces": [],
+        "interfaces": [{"kind": "INTERFACE", "name": "Node", "ofType": null}],
         "enumValues": null,
         "possibleTypes": null
       },

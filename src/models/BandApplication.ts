@@ -25,6 +25,8 @@ export default objectType({
     t.field(BandApplication.distance);
     t.field(BandApplication.heardAboutBookingFrom);
     t.field(BandApplication.knowsKultFrom);
+    t.field(BandApplication.numberOfArtists);
+    t.field(BandApplication.numberOfNonMaleArtists);
     t.field({
       ...BandApplication.contactedByViewer,
       authorize: authorization('user'),

@@ -42,6 +42,8 @@ type BandApplication implements Node {
   instagram: String
   instagramFollower: Int
   knowsKultFrom: String
+  numberOfArtists: Int
+  numberOfNonMaleArtists: Int
   rating: Float
 }
 

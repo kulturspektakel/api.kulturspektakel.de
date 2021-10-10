@@ -130,6 +130,8 @@ export interface NexusGenObjects {
     instagram?: string | null; // String
     instagramFollower?: number | null; // Int
     knowsKultFrom?: string | null; // String
+    numberOfArtists?: number | null; // Int
+    numberOfNonMaleArtists?: number | null; // Int
   }
   BandApplicationRating: { // root type
     rating: number; // Int!
@@ -284,6 +286,8 @@ export interface NexusGenFieldTypes {
     instagram: string | null; // String
     instagramFollower: number | null; // Int
     knowsKultFrom: string | null; // String
+    numberOfArtists: number | null; // Int
+    numberOfNonMaleArtists: number | null; // Int
     rating: number | null; // Float
   }
   BandApplicationRating: { // field return type
@@ -480,6 +484,8 @@ export interface NexusGenFieldTypeNames {
     instagram: 'String'
     instagramFollower: 'Int'
     knowsKultFrom: 'String'
+    numberOfArtists: 'Int'
+    numberOfNonMaleArtists: 'Int'
     rating: 'Float'
   }
   BandApplicationRating: { // field return type name
