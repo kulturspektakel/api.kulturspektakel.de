@@ -57,6 +57,7 @@ export interface NexusGenInputs {
     facebook?: string | null; // String
     genre?: string | null; // String
     genreCategory: NexusGenEnums['GenreCategory']; // GenreCategory!
+    hasPreviouslyPlayed?: NexusGenEnums['PreviouslyPlayed'] | null; // PreviouslyPlayed
     heardAboutBookingFrom?: NexusGenEnums['HeardAboutBookingFrom'] | null; // HeardAboutBookingFrom
     instagram?: string | null; // String
     knowsKultFrom?: string | null; // String
@@ -82,6 +83,7 @@ export interface NexusGenEnums {
   GenreCategory: "Blues_Funk_Jazz_Soul" | "Elektro_HipHop" | "Folk_SingerSongwriter_Country" | "Hardrock_Metal_Punk" | "Indie" | "Other" | "Pop" | "Reggae_Ska" | "Rock"
   HeardAboutBookingFrom: "BYon" | "Facebook" | "Friends" | "Instagram" | "Newspaper" | "Website"
   OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "SUM_UP" | "VOUCHER"
+  PreviouslyPlayed: "No" | "OtherFormation" | "Yes"
   ReservationStatus: "CheckedIn" | "Confirmed" | "Pending"
   TableType: "ISLAND" | "TABLE"
   TimeGrouping: "Day" | "Hour"

@@ -2,6 +2,7 @@ import {enumType, extendType, inputObjectType, nonNull} from 'nexus';
 import {
   GenreCategory as GenreCategoryT,
   HeardAboutBookingFrom,
+  PreviouslyPlayed,
 } from 'nexus-prisma';
 import confirmBandApplication from '../maizzle/mails/confirmBandApplication';
 import {scheduleTask} from '../tasks';
@@ -41,6 +42,9 @@ export default extendType({
               t.field('heardAboutBookingFrom', {
                 type: enumType(HeardAboutBookingFrom),
               });
+              t.field('hasPreviouslyPlayed', {
+                type: enumType(PreviouslyPlayed),
+              });
             },
           }),
         ),
@@ -53,7 +57,7 @@ export default extendType({
         demo = normalizeUrl(demo);
         website = website ? normalizeUrl(website) : null;
         facebook = facebook ? normalizeUrl(facebook) : null;
-        
+
         const igUrl = instagram?.match(/instagram\.com\/([^\/?]+)/);
         if (igUrl && igUrl.length > 1) {
           instagram = igUrl[1];

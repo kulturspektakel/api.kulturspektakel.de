@@ -73,6 +73,7 @@ input CreateBandApplicationInput {
   facebook: String
   genre: String
   genreCategory: GenreCategory!
+  hasPreviouslyPlayed: PreviouslyPlayed
   heardAboutBookingFrom: HeardAboutBookingFrom
   instagram: String
   knowsKultFrom: String
@@ -201,6 +202,12 @@ enum OrderPayment {
   FREE_CREW
   SUM_UP
   VOUCHER
+}
+
+enum PreviouslyPlayed {
+  No
+  OtherFormation
+  Yes
 }
 
 type Product implements Billable {

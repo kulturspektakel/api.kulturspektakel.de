@@ -186,11 +186,18 @@ model BandApplication {
   facebookLikes          Int?
   instagramFollower      Int?
   bandApplicationRating  BandApplicationRating[]
+  hasPreviouslyPlayed    PreviouslyPlayed?
 
   event               Event   @relation(fields: [eventId], references: [id])
   eventId             String
   contactedByViewer   Viewer? @relation(fields: [contactedByViewerId], references: [id])
   contactedByViewerId String?
+}
+
+enum PreviouslyPlayed {
+  Yes
+  OtherFormation
+  No
 }
 
 enum GenreCategory {
