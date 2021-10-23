@@ -132,10 +132,10 @@ export default interfaceType({
         }
 
         const orderItems = await prisma.orderItem.findMany({
-          where: merge(
+          where: merge<Prisma.OrderItemWhereInput, Prisma.OrderItemWhereInput>(
             {
               order: {
-                deviceTime: {
+                createdAt: {
                   gte: after,
                   lte: before,
                 },
