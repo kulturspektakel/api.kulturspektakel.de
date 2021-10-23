@@ -24,14 +24,13 @@ export default extendType({
           ),
         ),
         payment: nonNull('OrderPayment'),
-        clientId: 'String',
         deposit: nonNull('Int'),
         deviceTime: nonNull('DateTime'),
       },
       authorize: authorization('device'),
       resolve: async (
         _,
-        {products, payment, deposit, deviceTime, clientId},
+        {products, payment, deposit, deviceTime},
         {prisma, token},
       ) => {
         if (token?.type !== 'device') {
@@ -42,9 +41,8 @@ export default extendType({
           data: {
             payment,
             deviceId: token.deviceId!,
-            tokens: deposit,
-            deviceTime,
-            clientId,
+            deposit,
+            createdAt: deviceTime,
             items: {
               createMany: {
                 data: products,

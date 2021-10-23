@@ -1,14 +1,16 @@
 import prismaClient from '../utils/prismaClient';
 import {Express, Request, Response} from 'express';
-import asciinize from '../utils/asciinize';
 import {createHash} from 'crypto';
 import env from '../utils/env';
 import {
-  TransactionMessage,
-  TransactionMessage_PaymentMethod,
+  CardTransaction,
+  CardTransaction_PaymentMethod,
+  CardTransaction_TransactionType,
 } from '../proto/transaction';
-import {ConfigMessage} from '../proto/config';
-import {OrderPayment} from '@prisma/client';
+import {DeviceConfig} from '../proto/config';
+import {OrderPayment, CardTransactionType} from '@prisma/client';
+import UnreachableCaseError from '../utils/UnreachableCaseError';
+import {add} from 'date-fns';
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
@@ -59,7 +61,7 @@ export default function (app: Express) {
       return res.status(204).send('No Content');
     }
 
-    const message = ConfigMessage.encode({
+    const message = DeviceConfig.encode({
       listId: list.id,
       name: list.name,
       products: list.product.map(({name, price}) => ({name, price})),
@@ -78,31 +80,40 @@ export default function (app: Express) {
     req.on('end', async () => {
       const {id} = auth(req, res);
 
-      let message: TransactionMessage;
+      let message: CardTransaction;
       try {
-        message = TransactionMessage.decode(buffer);
+        message = CardTransaction.decode(buffer);
       } catch (e) {
         console.error(e);
         return res.status(400).send('Bad Request');
       }
 
-      await prismaClient.order.create({
+      let deviceTime = new Date(message.deviceTime * 1000);
+      if (!message.deviceTimeIsUtc) {
+        const referenceDate = new Date();
+        referenceDate.setMilliseconds(0);
+        const shiftedDate = new Date(
+          referenceDate.toLocaleString(undefined, {
+            timeZone: 'Europe/Berlin',
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+          }),
+        );
+        const differenceMs = referenceDate.getTime() - shiftedDate.getTime();
+        // TODO: Verify add or sub is needed here
+        deviceTime = add(deviceTime, {
+          minutes: differenceMs / 1000 / 60,
+        });
+      }
+
+      await prismaClient.cardTransaction.create({
         data: {
-          deviceTime: new Date(message.deviceTime),
-          tokens: message.deposit,
-          clientId: message.clientTransactionId,
-          payment: mapPayment(message.paymentMethod),
-          items: {
-            createMany: {
-              data:
-                message.cartItems?.map(({name, price}) => ({
-                  productListId: message.listId,
-                  amount: 1,
-                  name: name,
-                  perUnitPrice: price,
-                })) ?? [],
-            },
-          },
+          clientId: message.clientId,
+          deviceTime,
           device: {
             connectOrCreate: {
               create: {
@@ -114,6 +125,32 @@ export default function (app: Express) {
               },
             },
           },
+          cardId: message.cardId,
+          depositBefore: message.depositBefore,
+          depositAfter: message.depositAfter,
+          balanceBefore: message.balanceBefore,
+          balanceAfter: message.balanceAfter,
+          transactionType: mapTransactionType(message.transactionType),
+        },
+      });
+
+      await prismaClient.order.create({
+        data: {
+          createdAt: deviceTime,
+          deposit: message.depositBefore - message.depositAfter,
+          payment: mapPayment(message.paymentMethod),
+          items: {
+            createMany: {
+              data:
+                message.cartItems?.map(({amount, product}) => ({
+                  productListId: message.listId,
+                  amount,
+                  name: product!.name, // not sure why product is nullable
+                  perUnitPrice: product!.price,
+                })) ?? [],
+            },
+          },
+          deviceId: message.deviceId, // made sure device exists earlier
         },
       });
 
@@ -128,21 +165,42 @@ export default function (app: Express) {
   });
 }
 
-function mapPayment(payment: TransactionMessage_PaymentMethod): OrderPayment {
+function mapTransactionType(
+  payment: CardTransaction_TransactionType,
+): CardTransactionType {
   switch (payment) {
-    case TransactionMessage_PaymentMethod.CASH:
-      return OrderPayment.CASH;
-    case TransactionMessage_PaymentMethod.BON:
-      return OrderPayment.BON;
-    case TransactionMessage_PaymentMethod.FREE_BAND:
-      return OrderPayment.FREE_BAND;
-    case TransactionMessage_PaymentMethod.FREE_CREW:
-      return OrderPayment.FREE_CREW;
-    case TransactionMessage_PaymentMethod.SUM_UP:
-      return OrderPayment.SUM_UP;
-    case TransactionMessage_PaymentMethod.VOUCHER:
-      return OrderPayment.VOUCHER;
+    case CardTransaction_TransactionType.CASHOUT:
+      return CardTransactionType.Cashout;
+    case CardTransaction_TransactionType.CHARGE:
+      return CardTransactionType.Charge;
+    case CardTransaction_TransactionType.TOP_UP:
+      return CardTransactionType.TopUp;
+    case CardTransaction_TransactionType.UNRECOGNIZED:
+      throw new Error('Unrecognized TransactionType');
     default:
+      throw new UnreachableCaseError(payment);
+  }
+}
+
+function mapPayment(payment: CardTransaction_PaymentMethod): OrderPayment {
+  switch (payment) {
+    case CardTransaction_PaymentMethod.CASH:
       return OrderPayment.CASH;
+    case CardTransaction_PaymentMethod.BON:
+      return OrderPayment.BON;
+    case CardTransaction_PaymentMethod.FREE_BAND:
+      return OrderPayment.FREE_BAND;
+    case CardTransaction_PaymentMethod.FREE_CREW:
+      return OrderPayment.FREE_CREW;
+    case CardTransaction_PaymentMethod.SUM_UP:
+      return OrderPayment.SUM_UP;
+    case CardTransaction_PaymentMethod.VOUCHER:
+      return OrderPayment.VOUCHER;
+    case CardTransaction_PaymentMethod.KULT_CARD:
+      return OrderPayment.KULT_CARD;
+    case CardTransaction_PaymentMethod.UNRECOGNIZED:
+      throw new Error('Unrecognized PaymentMethod');
+    default:
+      throw new UnreachableCaseError(payment);
   }
 }

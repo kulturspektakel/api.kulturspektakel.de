@@ -5,17 +5,17 @@ import {Product} from './product';
 
 export const protobufPackage = '';
 
-export interface ConfigMessage {
+export interface DeviceConfig {
   name: string;
   listId: number;
   products: Product[];
 }
 
-const baseConfigMessage: object = {name: '', listId: 0};
+const baseDeviceConfig: object = {name: '', listId: 0};
 
-export const ConfigMessage = {
+export const DeviceConfig = {
   encode(
-    message: ConfigMessage,
+    message: DeviceConfig,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.name !== '') {
@@ -30,10 +30,10 @@ export const ConfigMessage = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ConfigMessage {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeviceConfig {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {...baseConfigMessage} as ConfigMessage;
+    const message = {...baseDeviceConfig} as DeviceConfig;
     message.products = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -55,8 +55,8 @@ export const ConfigMessage = {
     return message;
   },
 
-  fromJSON(object: any): ConfigMessage {
-    const message = {...baseConfigMessage} as ConfigMessage;
+  fromJSON(object: any): DeviceConfig {
+    const message = {...baseDeviceConfig} as DeviceConfig;
     message.products = [];
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
@@ -76,7 +76,7 @@ export const ConfigMessage = {
     return message;
   },
 
-  toJSON(message: ConfigMessage): unknown {
+  toJSON(message: DeviceConfig): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
     message.listId !== undefined && (obj.listId = message.listId);
@@ -90,8 +90,8 @@ export const ConfigMessage = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<ConfigMessage>): ConfigMessage {
-    const message = {...baseConfigMessage} as ConfigMessage;
+  fromPartial(object: DeepPartial<DeviceConfig>): DeviceConfig {
+    const message = {...baseDeviceConfig} as DeviceConfig;
     message.products = [];
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;

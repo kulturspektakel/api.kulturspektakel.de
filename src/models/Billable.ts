@@ -67,9 +67,9 @@ export default interfaceType({
                   _orderItems.reduce(
                     (acc, cv) => {
                       if (
-                        !isBefore(cv.order.deviceTime, time) &&
+                        !isBefore(cv.order.createdAt, time) &&
                         isBefore(
-                          cv.order.deviceTime,
+                          cv.order.createdAt,
                           add(time, {hours: stepHours}),
                         )
                       ) {

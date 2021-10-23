@@ -146,7 +146,7 @@ type Mutation {
   checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
   createBandApplication(data: CreateBandApplicationInput!): BandApplication
-  createOrder(clientId: String, deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order
+  createOrder(deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
   markBandApplicationContacted(bandApplicationId: ID!, contacted: Boolean!): BandApplication
   rateBandApplication(bandApplicationId: ID!, rating: Int): BandApplication
@@ -169,12 +169,11 @@ type OpeningHour {
 
 type Order {
   createdAt: DateTime!
-  deviceId: String!
-  deviceTime: DateTime!
+  deposit: Int!
+  deviceId: String
   id: Int!
   items: [OrderItem!]!
   payment: OrderPayment!
-  tokens: Int!
   total: Int
 }
 
@@ -200,6 +199,7 @@ enum OrderPayment {
   CASH
   FREE_BAND
   FREE_CREW
+  KULT_CARD
   SUM_UP
   VOUCHER
 }

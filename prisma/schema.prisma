@@ -142,14 +142,15 @@ model Device {
 }
 
 model Order {
-  id              Int               @id @default(autoincrement())
-  createdAt       DateTime          @default(now())
-  payment         OrderPayment
-  tokens          Int               @default(0)
-  device          Device            @relation(fields: [deviceId], references: [id])
-  deviceId        String
-  items           OrderItem[]
-  CardTransaction CardTransaction[]
+  id                      Int              @id @default(autoincrement())
+  createdAt               DateTime         @default(now())
+  payment                 OrderPayment
+  deposit                 Int              @default(0)
+  device                  Device?          @relation(fields: [deviceId], references: [id])
+  deviceId                String?
+  items                   OrderItem[]
+  CardTransaction         CardTransaction? @relation(fields: [cardTransactionClientId], references: [clientId])
+  cardTransactionClientId String?
 }
 
 model OrderItem {
@@ -166,6 +167,8 @@ model OrderItem {
 
 model CardTransaction {
   clientId        String              @id
+  createdAt       DateTime            @default(now())
+  deviceTime      DateTime
   cardId          String
   depositBefore   Int
   depositAfter    Int
@@ -174,8 +177,7 @@ model CardTransaction {
   transactionType CardTransactionType
   device          Device              @relation(fields: [deviceId], references: [id])
   deviceId        String
-  Order           Order?              @relation(fields: [orderId], references: [id])
-  orderId         Int?
+  Order           Order[]
 }
 
 enum CardTransactionType {

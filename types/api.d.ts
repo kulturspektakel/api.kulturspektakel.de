@@ -82,7 +82,7 @@ export interface NexusGenInputs {
 export interface NexusGenEnums {
   GenreCategory: "Blues_Funk_Jazz_Soul" | "Elektro_HipHop" | "Folk_SingerSongwriter_Country" | "Hardrock_Metal_Punk" | "Indie" | "Other" | "Pop" | "Reggae_Ska" | "Rock"
   HeardAboutBookingFrom: "BYon" | "Facebook" | "Friends" | "Instagram" | "Newspaper" | "Website"
-  OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "SUM_UP" | "VOUCHER"
+  OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "KULT_CARD" | "SUM_UP" | "VOUCHER"
   PreviouslyPlayed: "No" | "OtherFormation" | "Yes"
   ReservationStatus: "CheckedIn" | "Confirmed" | "Pending"
   TableType: "ISLAND" | "TABLE"
@@ -166,11 +166,10 @@ export interface NexusGenObjects {
   }
   Order: { // root type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    deviceId: string; // String!
-    deviceTime: NexusGenScalars['DateTime']; // DateTime!
+    deposit: number; // Int!
+    deviceId?: string | null; // String
     id: number; // Int!
     payment: NexusGenEnums['OrderPayment']; // OrderPayment!
-    tokens: number; // Int!
   }
   OrderItem: { // root type
     amount: number; // Int!
@@ -342,12 +341,11 @@ export interface NexusGenFieldTypes {
   }
   Order: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    deviceId: string; // String!
-    deviceTime: NexusGenScalars['DateTime']; // DateTime!
+    deposit: number; // Int!
+    deviceId: string | null; // String
     id: number; // Int!
     items: NexusGenRootTypes['OrderItem'][]; // [OrderItem!]!
     payment: NexusGenEnums['OrderPayment']; // OrderPayment!
-    tokens: number; // Int!
     total: number | null; // Int
   }
   OrderItem: { // field return type
@@ -540,12 +538,11 @@ export interface NexusGenFieldTypeNames {
   }
   Order: { // field return type name
     createdAt: 'DateTime'
+    deposit: 'Int'
     deviceId: 'String'
-    deviceTime: 'DateTime'
     id: 'Int'
     items: 'OrderItem'
     payment: 'OrderPayment'
-    tokens: 'Int'
     total: 'Int'
   }
   OrderItem: { // field return type name
@@ -688,7 +685,6 @@ export interface NexusGenArgTypes {
       data: NexusGenInputs['CreateBandApplicationInput']; // CreateBandApplicationInput!
     }
     createOrder: { // args
-      clientId?: string | null; // String
       deposit: number; // Int!
       deviceTime: NexusGenScalars['DateTime']; // DateTime!
       payment: NexusGenEnums['OrderPayment']; // OrderPayment!
