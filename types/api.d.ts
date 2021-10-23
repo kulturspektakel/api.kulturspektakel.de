@@ -127,6 +127,7 @@ export interface NexusGenObjects {
     facebookLikes?: number | null; // Int
     genre?: string | null; // String
     genreCategory: NexusGenEnums['GenreCategory']; // GenreCategory!
+    hasPreviouslyPlayed?: NexusGenEnums['PreviouslyPlayed'] | null; // PreviouslyPlayed
     heardAboutBookingFrom?: NexusGenEnums['HeardAboutBookingFrom'] | null; // HeardAboutBookingFrom
     id: string; // ID!
     instagram?: string | null; // String
@@ -282,6 +283,7 @@ export interface NexusGenFieldTypes {
     facebookLikes: number | null; // Int
     genre: string | null; // String
     genreCategory: NexusGenEnums['GenreCategory']; // GenreCategory!
+    hasPreviouslyPlayed: NexusGenEnums['PreviouslyPlayed'] | null; // PreviouslyPlayed
     heardAboutBookingFrom: NexusGenEnums['HeardAboutBookingFrom'] | null; // HeardAboutBookingFrom
     id: string; // ID!
     instagram: string | null; // String
@@ -479,6 +481,7 @@ export interface NexusGenFieldTypeNames {
     facebookLikes: 'Int'
     genre: 'String'
     genreCategory: 'GenreCategory'
+    hasPreviouslyPlayed: 'PreviouslyPlayed'
     heardAboutBookingFrom: 'HeardAboutBookingFrom'
     id: 'ID'
     instagram: 'String'

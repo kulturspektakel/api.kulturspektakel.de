@@ -1,6 +1,5 @@
 import {objectType} from 'nexus';
 import {BandApplication} from 'nexus-prisma';
-import {URL} from 'url';
 import authorization from '../utils/authorization';
 import Node from './Node';
 
@@ -27,6 +26,7 @@ export default objectType({
     t.field(BandApplication.knowsKultFrom);
     t.field(BandApplication.numberOfArtists);
     t.field(BandApplication.numberOfNonMaleArtists);
+    t.field(BandApplication.hasPreviouslyPlayed);
     t.field({
       ...BandApplication.contactedByViewer,
       authorize: authorization('user'),
