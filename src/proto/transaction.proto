@@ -13,7 +13,13 @@ message TransactionMessage {
   optional string card_id = 8;
 
   optional int32 list_id = 9;
-  repeated Product cart_items = 10;
+
+  message CartItem {
+    int32 amount = 1;
+    Product product = 2;
+  }
+
+  repeated CartItem cart_items = 10;
 
   enum PaymentMethod {
     CASH = 0;

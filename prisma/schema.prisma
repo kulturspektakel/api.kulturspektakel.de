@@ -129,26 +129,27 @@ enum OrderPayment {
   VOUCHER
   FREE_CREW
   FREE_BAND
+  KULT_CARD
 }
 
 model Device {
-  id            String       @id
-  Order         Order[]
-  lastSeen      DateTime?
-  productList   ProductList? @relation(fields: [productListId], references: [id])
-  productListId Int?
+  id              String            @id
+  Order           Order[]
+  lastSeen        DateTime?
+  productList     ProductList?      @relation(fields: [productListId], references: [id])
+  productListId   Int?
+  CardTransaction CardTransaction[]
 }
 
 model Order {
-  id         Int          @id @default(autoincrement())
-  clientId   String?
-  createdAt  DateTime     @default(now())
-  deviceTime DateTime
-  payment    OrderPayment
-  tokens     Int          @default(0)
-  device     Device       @relation(fields: [deviceId], references: [id])
-  items      OrderItem[]
-  deviceId   String
+  id              Int               @id @default(autoincrement())
+  createdAt       DateTime          @default(now())
+  payment         OrderPayment
+  tokens          Int               @default(0)
+  device          Device            @relation(fields: [deviceId], references: [id])
+  deviceId        String
+  items           OrderItem[]
+  CardTransaction CardTransaction[]
 }
 
 model OrderItem {
@@ -161,6 +162,26 @@ model OrderItem {
   perUnitPrice  Int
   productList   ProductList? @relation(fields: [productListId], references: [id])
   productListId Int?
+}
+
+model CardTransaction {
+  clientId        String              @id
+  cardId          String
+  depositBefore   Int
+  depositAfter    Int
+  balanceBefore   Int
+  balanceAfter    Int
+  transactionType CardTransactionType
+  device          Device              @relation(fields: [deviceId], references: [id])
+  deviceId        String
+  Order           Order?              @relation(fields: [orderId], references: [id])
+  orderId         Int?
+}
+
+enum CardTransactionType {
+  TopUp
+  Charge
+  Cashout
 }
 
 model BandApplication {
