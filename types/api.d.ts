@@ -135,6 +135,7 @@ export interface NexusGenObjects {
     knowsKultFrom?: string | null; // String
     numberOfArtists?: number | null; // Int
     numberOfNonMaleArtists?: number | null; // Int
+    website?: string | null; // String
   }
   BandApplicationRating: { // root type
     rating: number; // Int!
@@ -292,6 +293,7 @@ export interface NexusGenFieldTypes {
     numberOfArtists: number | null; // Int
     numberOfNonMaleArtists: number | null; // Int
     rating: number | null; // Float
+    website: string | null; // String
   }
   BandApplicationRating: { // field return type
     rating: number; // Int!
@@ -490,6 +492,7 @@ export interface NexusGenFieldTypeNames {
     numberOfArtists: 'Int'
     numberOfNonMaleArtists: 'Int'
     rating: 'Float'
+    website: 'String'
   }
   BandApplicationRating: { // field return type name
     rating: 'Int'

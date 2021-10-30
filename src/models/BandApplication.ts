@@ -27,6 +27,7 @@ export default objectType({
     t.field(BandApplication.numberOfArtists);
     t.field(BandApplication.numberOfNonMaleArtists);
     t.field(BandApplication.hasPreviouslyPlayed);
+    t.field(BandApplication.website);
     t.field({
       ...BandApplication.contactedByViewer,
       authorize: authorization('user'),

@@ -46,6 +46,7 @@ type BandApplication implements Node {
   numberOfArtists: Int
   numberOfNonMaleArtists: Int
   rating: Float
+  website: String
 }
 
 type BandApplicationRating {
