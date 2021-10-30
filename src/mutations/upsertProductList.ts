@@ -1,3 +1,4 @@
+import {Prisma, PrismaPromise} from '@prisma/client';
 import {extendType, list, inputObjectType, nonNull} from 'nexus';
 import authorization from '../utils/authorization';
 
@@ -25,8 +26,8 @@ export default extendType({
         ),
       },
       authorize: authorization('user'),
-      resolve: async (_, {id, name, emoji, products, active}, {prisma}) =>
-        prisma.productList.upsert({
+      resolve: async (_, {id, name, emoji, products, active}, {prisma}) => {
+        const upsert = prisma.productList.upsert({
           create: {
             name: name ?? '',
             emoji,
@@ -67,7 +68,29 @@ export default extendType({
           include: {
             product: true,
           },
-        }),
+        });
+
+        const transactions: [
+          typeof upsert,
+          ...PrismaPromise<Prisma.BatchPayload>[]
+        ] = [upsert];
+
+        if (active === false) {
+          // remove from connected devices when product list is disabled
+          transactions.push(
+            prisma.device.updateMany({
+              where: {
+                productListId: id,
+              },
+              data: {
+                productListId: null,
+              },
+            }),
+          );
+        }
+
+        return prisma.$transaction(transactions).then(([data]) => data);
+      },
     });
   },
 });
