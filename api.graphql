@@ -228,6 +228,7 @@ input ProductInput {
 }
 
 type ProductList implements Billable {
+  active: Boolean!
   emoji: String
   historicalProducts: [HistoricalProduct!]!
   id: Int!

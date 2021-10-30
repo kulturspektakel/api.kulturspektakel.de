@@ -9,6 +9,7 @@ export default objectType({
     t.field(ProductList.id);
     t.field(ProductList.name);
     t.field(ProductList.emoji);
+    t.field(ProductList.active);
     t.field({
       ...ProductList.product,
       resolve: ({id}, _, {prisma}) =>

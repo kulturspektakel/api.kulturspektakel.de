@@ -188,6 +188,7 @@ export interface NexusGenObjects {
     requiresDeposit: boolean; // Boolean!
   }
   ProductList: { // root type
+    active: boolean; // Boolean!
     emoji?: string | null; // String
     id: number; // Int!
     name: string; // String!
@@ -369,6 +370,7 @@ export interface NexusGenFieldTypes {
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
   ProductList: { // field return type
+    active: boolean; // Boolean!
     emoji: string | null; // String
     historicalProducts: NexusGenRootTypes['HistoricalProduct'][]; // [HistoricalProduct!]!
     id: number; // Int!
@@ -568,6 +570,7 @@ export interface NexusGenFieldTypeNames {
     salesNumbers: 'SalesNumber'
   }
   ProductList: { // field return type name
+    active: 'Boolean'
     emoji: 'String'
     historicalProducts: 'HistoricalProduct'
     id: 'Int'
