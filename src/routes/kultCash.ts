@@ -46,6 +46,10 @@ export default function (app: Express) {
         productList: {
           include: {
             product: {
+              select: {
+                name: true,
+                price: true,
+              },
               orderBy: {
                 order: 'asc',
               },
@@ -64,7 +68,7 @@ export default function (app: Express) {
     const message = DeviceConfig.encode({
       listId: list.id,
       name: list.name,
-      products: list.product.map(({name, price}) => ({name, price})),
+      products: list.product,
     }).finish();
 
     res.setHeader('Content-Type', 'application/x-protobuf');
@@ -110,49 +114,50 @@ export default function (app: Express) {
         });
       }
 
-      await prismaClient.cardTransaction.create({
-        data: {
-          clientId: message.clientId,
-          deviceTime,
-          device: {
-            connectOrCreate: {
-              create: {
-                id,
-                lastSeen: new Date(),
-              },
-              where: {
-                id,
+      await prismaClient.$transaction([
+        prismaClient.cardTransaction.create({
+          data: {
+            clientId: message.clientId,
+            deviceTime,
+            device: {
+              connectOrCreate: {
+                create: {
+                  id,
+                  lastSeen: new Date(),
+                },
+                where: {
+                  id,
+                },
               },
             },
+            cardId: message.cardId,
+            depositBefore: message.depositBefore,
+            depositAfter: message.depositAfter,
+            balanceBefore: message.balanceBefore,
+            balanceAfter: message.balanceAfter,
+            transactionType: mapTransactionType(message.transactionType),
           },
-          cardId: message.cardId,
-          depositBefore: message.depositBefore,
-          depositAfter: message.depositAfter,
-          balanceBefore: message.balanceBefore,
-          balanceAfter: message.balanceAfter,
-          transactionType: mapTransactionType(message.transactionType),
-        },
-      });
-
-      await prismaClient.order.create({
-        data: {
-          createdAt: deviceTime,
-          deposit: message.depositBefore - message.depositAfter,
-          payment: mapPayment(message.paymentMethod),
-          items: {
-            createMany: {
-              data:
-                message.cartItems?.map(({amount, product}) => ({
-                  productListId: message.listId,
-                  amount,
-                  name: product!.name, // not sure why product is nullable
-                  perUnitPrice: product!.price,
-                })) ?? [],
+        }),
+        prismaClient.order.create({
+          data: {
+            createdAt: deviceTime,
+            deposit: message.depositBefore - message.depositAfter,
+            payment: mapPayment(message.paymentMethod),
+            items: {
+              createMany: {
+                data:
+                  message.cartItems?.map(({amount, product}) => ({
+                    productListId: message.listId,
+                    amount,
+                    name: product!.name, // not sure why product is nullable
+                    perUnitPrice: product!.price,
+                  })) ?? [],
+              },
             },
+            deviceId: message.deviceId, // made sure device exists earlier
           },
-          deviceId: message.deviceId, // made sure device exists earlier
-        },
-      });
+        }),
+      ]);
 
       return res.status(201).send('Created');
     });
