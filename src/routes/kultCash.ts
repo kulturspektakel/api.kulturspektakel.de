@@ -86,6 +86,7 @@ export default function (app: Express) {
 
       let message: CardTransaction;
       try {
+        console.log(buffer.toString('base64'));
         message = CardTransaction.decode(buffer);
       } catch (e) {
         console.error(e);
