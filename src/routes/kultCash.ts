@@ -156,6 +156,7 @@ export default function (app: Express) {
             },
           },
           deviceId: message.deviceId, // made sure device exists earlier
+          cardTransactionClientId: message.clientId,
         },
       });
 

@@ -163,22 +163,22 @@ export const CardTransaction = {
       writer.uint32(24).int32(message.transactionType);
     }
     if (message.deviceTime !== 0) {
-      writer.uint32(32).uint32(message.deviceTime);
+      writer.uint32(32).int32(message.deviceTime);
     }
     if (message.paymentMethod !== 0) {
       writer.uint32(40).int32(message.paymentMethod);
     }
     if (message.balanceBefore !== 0) {
-      writer.uint32(48).uint32(message.balanceBefore);
+      writer.uint32(48).int32(message.balanceBefore);
     }
     if (message.balanceAfter !== 0) {
-      writer.uint32(56).uint32(message.balanceAfter);
+      writer.uint32(56).int32(message.balanceAfter);
     }
     if (message.depositBefore !== 0) {
-      writer.uint32(64).uint32(message.depositBefore);
+      writer.uint32(64).int32(message.depositBefore);
     }
     if (message.depositAfter !== 0) {
-      writer.uint32(72).uint32(message.depositAfter);
+      writer.uint32(72).int32(message.depositAfter);
     }
     if (message.cardId !== '') {
       writer.uint32(82).string(message.cardId);
@@ -213,22 +213,22 @@ export const CardTransaction = {
           message.transactionType = reader.int32() as any;
           break;
         case 4:
-          message.deviceTime = reader.uint32();
+          message.deviceTime = reader.int32();
           break;
         case 5:
           message.paymentMethod = reader.int32() as any;
           break;
         case 6:
-          message.balanceBefore = reader.uint32();
+          message.balanceBefore = reader.int32();
           break;
         case 7:
-          message.balanceAfter = reader.uint32();
+          message.balanceAfter = reader.int32();
           break;
         case 8:
-          message.depositBefore = reader.uint32();
+          message.depositBefore = reader.int32();
           break;
         case 9:
-          message.depositAfter = reader.uint32();
+          message.depositAfter = reader.int32();
           break;
         case 10:
           message.cardId = reader.string();
