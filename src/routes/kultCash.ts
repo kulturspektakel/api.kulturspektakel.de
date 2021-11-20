@@ -8,9 +8,16 @@ import {
   CardTransaction_TransactionType,
 } from '../proto/transaction';
 import {DeviceConfig} from '../proto/config';
-import {OrderPayment, CardTransactionType, Prisma} from '@prisma/client';
+import {
+  OrderPayment,
+  CardTransactionType,
+  Prisma,
+  ProductList,
+} from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {add} from 'date-fns';
+import {sendMessage, SlackChannel} from '../utils/slack';
+import {config} from '../queries/config';
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
@@ -171,6 +178,12 @@ export default function (app: Express) {
         },
       });
 
+      try {
+        await postTransactionToSlack(message);
+      } catch (e) {
+        console.error(e);
+      }
+
       return res.status(201).send('Created');
     });
   });
@@ -220,4 +233,111 @@ function mapPayment(payment: CardTransaction_PaymentMethod): OrderPayment {
     default:
       throw new UnreachableCaseError(payment);
   }
+}
+
+async function postTransactionToSlack(message: CardTransaction) {
+  let list: ProductList | null = null;
+  if (message.listId) {
+    list = await prismaClient.productList.findUnique({
+      where: {
+        id: message.listId,
+      },
+    });
+  }
+
+  const total = (message.balanceBefore - message.balanceAfter) / 100;
+  const totalStr = total.toLocaleString('de-DE', {
+    style: 'currency',
+    currency: 'EUR',
+  });
+
+  await sendMessage({
+    channel: SlackChannel.dev,
+    text: list
+      ? `${list.emoji} ${list.name}: ${totalStr}`
+      : `Neue Transaktion: ${totalStr}`,
+    blocks: [
+      list
+        ? {
+            type: 'header',
+            text: {
+              type: 'plain_text',
+              text: `${list.emoji} ${list.name}`,
+            },
+          }
+        : null,
+      {
+        type: 'section',
+        fields: message.cartItems
+          .flatMap<any[]>(({product, amount}) => [
+            {
+              type: 'mrkdwn',
+              text: `${amount}x ${product?.name}`,
+            },
+            {
+              type: 'mrkdwn',
+              text: ((product?.price ?? 0 * amount) / 100).toLocaleString(
+                'de-DE',
+                {
+                  style: 'currency',
+                  currency: 'EUR',
+                },
+              ),
+            },
+          ])
+          .concat([
+            message.depositAfter != message.depositBefore
+              ? {
+                  type: 'text',
+                  text:
+                    message.depositAfter > message.depositBefore
+                      ? `${message.depositAfter - message.depositBefore}x Pfand`
+                      : `${
+                          message.depositBefore - message.depositAfter
+                        }x Pfandrückgabe`,
+                }
+              : null,
+            message.depositAfter != message.depositBefore
+              ? {
+                  type: 'mrkdwn',
+                  text: (
+                    ((message.depositBefore - message.depositAfter) *
+                      config.depositValue) /
+                    100
+                  ).toLocaleString('de-DE', {
+                    style: 'currency',
+                    currency: 'EUR',
+                  }),
+                }
+              : null,
+          ])
+          .filter(Boolean),
+      },
+      {
+        type: 'divider',
+      },
+      {
+        type: 'section',
+        fields: [
+          {
+            type: 'mrkdwn',
+            text: '*Summe*',
+          },
+          {
+            type: 'mrkdwn',
+            text: `*${totalStr}*`,
+          },
+        ],
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: `*Transaktion* ${message.clientId} · *Geräte-ID* ${message.deviceId} · *Karten-ID* ${message.cardId}`,
+          },
+        ],
+      },
+    ].filter(Boolean),
+  });
 }
