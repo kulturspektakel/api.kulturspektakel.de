@@ -8,7 +8,7 @@ import {
   CardTransaction_TransactionType,
 } from '../proto/transaction';
 import {DeviceConfig} from '../proto/config';
-import {OrderPayment, CardTransactionType} from '@prisma/client';
+import {OrderPayment, CardTransactionType, Prisma} from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {add} from 'date-fns';
 
@@ -75,7 +75,7 @@ export default function (app: Express) {
     res.send(message);
   });
 
-  app.post('/\\$\\$\\$/log', (req, res) => {
+  app.put('/\\$\\$\\$/log', (req, res) => {
     let buffer: Buffer = Buffer.from('');
     req.on('data', (chunk: Buffer) => {
       buffer = Buffer.concat([buffer, chunk]);
@@ -115,29 +115,40 @@ export default function (app: Express) {
         });
       }
 
-      await prismaClient.cardTransaction.create({
-        data: {
-          clientId: message.clientId,
-          deviceTime,
-          device: {
-            connectOrCreate: {
-              create: {
-                id,
-                lastSeen: new Date(),
-              },
-              where: {
-                id,
+      try {
+        await prismaClient.cardTransaction.create({
+          data: {
+            clientId: message.clientId,
+            deviceTime,
+            device: {
+              connectOrCreate: {
+                create: {
+                  id,
+                  lastSeen: new Date(),
+                },
+                where: {
+                  id,
+                },
               },
             },
+            cardId: message.cardId,
+            depositBefore: message.depositBefore,
+            depositAfter: message.depositAfter,
+            balanceBefore: message.balanceBefore,
+            balanceAfter: message.balanceAfter,
+            transactionType: mapTransactionType(message.transactionType),
           },
-          cardId: message.cardId,
-          depositBefore: message.depositBefore,
-          depositAfter: message.depositAfter,
-          balanceBefore: message.balanceBefore,
-          balanceAfter: message.balanceAfter,
-          transactionType: mapTransactionType(message.transactionType),
-        },
-      });
+        });
+      } catch (e) {
+        if (
+          e instanceof Prisma.PrismaClientKnownRequestError &&
+          e.code === 'P2002'
+        ) {
+          // client ID already exists
+          return res.status(409).send('Conflict');
+        }
+        throw e;
+      }
 
       await prismaClient.order.create({
         data: {

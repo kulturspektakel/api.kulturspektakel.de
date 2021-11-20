@@ -14,7 +14,7 @@ import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core
 
 const server = new ApolloServer({
   context,
-  schema,
+  schema: schema as any, // nexus problem, probably fixed in next version
   formatError: (err) => {
     if (!(err instanceof ApolloError)) {
       return new ApolloError(err.message);
