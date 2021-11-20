@@ -75,7 +75,7 @@ export default function (app: Express) {
     res.send(message);
   });
 
-  app.put('/\\$\\$\\$/log', (req, res) => {
+  app.post('/\\$\\$\\$/log', (req, res) => {
     let buffer: Buffer = Buffer.from('');
     req.on('data', (chunk: Buffer) => {
       buffer = Buffer.concat([buffer, chunk]);
