@@ -27,8 +27,9 @@ function auth(req: Request, res: Response): {id: string; version?: string} {
   const macAddress = req.headers['x-esp8266-sta-mac'];
   if (typeof macAddress === 'string' && macAddress.length === 17) {
     const id = macAddress.substr(9);
-    const match = authorization?.match(/^Bearer (.+)$/);
-    const signature = match && match.length > 1 ? match[1] : req.query['token'];
+    // ESPhttpUpdate.setAuthorization prefixes auth header with "Basic " :-/
+    const match = authorization?.match(/^(Basic )?Bearer (.+)$/);
+    const signature = match && match.length > 2 ? match[2] : req.query['token'];
     if (signature === sha1(`${id}${env.KULT_CASH_SALT}`)) {
       return {id, version: req.headers['x-esp8266-version']?.toString()};
     }
