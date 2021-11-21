@@ -11,6 +11,8 @@ export async function sendMessage({
 }: {
   channel: SlackChannel;
   text: string;
+  username?: string;
+  icon_emoji?: string;
   blocks?: Array<any>;
 }) {
   const res = await fetch('https://slack.com/api/chat.postMessage', {

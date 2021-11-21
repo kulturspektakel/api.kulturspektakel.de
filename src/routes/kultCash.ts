@@ -18,6 +18,7 @@ import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {add} from 'date-fns';
 import {sendMessage, SlackChannel} from '../utils/slack';
 import {config} from '../queries/config';
+import emoji from 'node-emoji';
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
@@ -256,16 +257,9 @@ async function postTransactionToSlack(message: CardTransaction) {
     text: list
       ? `${list.emoji} ${list.name}: ${totalStr}`
       : `Neue Transaktion: ${totalStr}`,
+    username: list?.name ?? 'Neue Transaktion',
+    icon_emoji: `:${emoji.find(list?.emoji ?? '💳')?.key ?? 'credit_card'}:`,
     blocks: [
-      list
-        ? {
-            type: 'header',
-            text: {
-              type: 'plain_text',
-              text: `${list.emoji} ${list.name}`,
-            },
-          }
-        : null,
       {
         type: 'section',
         fields: message.cartItems
@@ -288,7 +282,7 @@ async function postTransactionToSlack(message: CardTransaction) {
           .concat([
             message.depositAfter != message.depositBefore
               ? {
-                  type: 'text',
+                  type: 'mrkdwn',
                   text:
                     message.depositAfter > message.depositBefore
                       ? `${message.depositAfter - message.depositBefore}x Pfand`
