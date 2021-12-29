@@ -193,7 +193,7 @@ export default function (app: Express) {
   app.get('/\\$\\$\\$/update', (req, res) => {
     const {id, version} = auth(req, res);
     // TODO
-    return res.status(204).send('No Content');
+    return res.status(304).send('Not Modified');
   });
 }
 
