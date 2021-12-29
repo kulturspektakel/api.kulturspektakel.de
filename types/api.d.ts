@@ -161,6 +161,11 @@ export interface NexusGenObjects {
     name: string; // String!
     productListId: number; // Int!
   }
+  MonotonicCounter: { // root type
+    id: string; // ID!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+    value: number; // Int!
+  }
   Mutation: {};
   OpeningHour: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -325,6 +330,11 @@ export interface NexusGenFieldTypes {
     productListId: number; // Int!
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
   }
+  MonotonicCounter: { // field return type
+    id: string; // ID!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+    value: number; // Int!
+  }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
     checkInReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -333,6 +343,7 @@ export interface NexusGenFieldTypes {
     createOrder: NexusGenRootTypes['Order'] | null; // Order
     createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     markBandApplicationContacted: NexusGenRootTypes['BandApplication'] | null; // BandApplication
+    monotonicCounter: NexusGenRootTypes['MonotonicCounter'] | null; // MonotonicCounter
     rateBandApplication: NexusGenRootTypes['BandApplication'] | null; // BandApplication
     requestReservation: boolean; // Boolean!
     swapReservations: boolean | null; // Boolean
@@ -525,6 +536,11 @@ export interface NexusGenFieldTypeNames {
     productListId: 'Int'
     salesNumbers: 'SalesNumber'
   }
+  MonotonicCounter: { // field return type name
+    id: 'ID'
+    updatedAt: 'DateTime'
+    value: 'Int'
+  }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
     checkInReservation: 'Reservation'
@@ -533,6 +549,7 @@ export interface NexusGenFieldTypeNames {
     createOrder: 'Order'
     createReservation: 'Reservation'
     markBandApplicationContacted: 'BandApplication'
+    monotonicCounter: 'MonotonicCounter'
     rateBandApplication: 'BandApplication'
     requestReservation: 'Boolean'
     swapReservations: 'Boolean'
@@ -711,6 +728,9 @@ export interface NexusGenArgTypes {
     markBandApplicationContacted: { // args
       bandApplicationId: string; // ID!
       contacted: boolean; // Boolean!
+    }
+    monotonicCounter: { // args
+      id: string; // ID!
     }
     rateBandApplication: { // args
       bandApplicationId: string; // ID!
