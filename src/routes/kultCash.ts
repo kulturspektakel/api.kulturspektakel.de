@@ -19,10 +19,14 @@ import {add} from 'date-fns';
 import {sendMessage, SlackChannel} from '../utils/slack';
 import {config} from '../queries/config';
 import emoji from 'node-emoji';
+import {join} from 'path';
+import fsNode, {existsSync, mkdirSync} from 'fs';
+import {homedir} from 'os';
+const fs = fsNode.promises;
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
-function auth(req: Request, res: Response): {id: string; version?: string} {
+function auth(req: Request, res: Response): {id: string; version?: number} {
   const authorization: string | undefined = req.headers['authorization'];
   const macAddress = req.headers['x-esp8266-sta-mac'];
   if (typeof macAddress === 'string' && macAddress.length === 17) {
@@ -31,7 +35,14 @@ function auth(req: Request, res: Response): {id: string; version?: string} {
     const match = authorization?.match(/^(Basic )?Bearer (.+)$/);
     const signature = match && match.length > 2 ? match[2] : req.query['token'];
     if (signature === sha1(`${id}${env.KULT_CASH_SALT}`)) {
-      return {id, version: req.headers['x-esp8266-version']?.toString()};
+      let version: number | undefined = parseInt(
+        req.headers['x-esp8266-version']?.toString() ?? '',
+        10,
+      );
+      if (!Number.isSafeInteger(version)) {
+        version = undefined;
+      }
+      return {id, version};
     }
   }
   throw res.status(401).send('Unauthorized');
@@ -190,10 +201,30 @@ export default function (app: Express) {
     });
   });
 
-  app.get('/\\$\\$\\$/update', (req, res) => {
-    const {id, version} = auth(req, res);
-    // TODO
-    return res.status(304).send('Not Modified');
+  app.get('/\\$\\$\\$/update', async (req, res) => {
+    const noUpdate = () => res.status(304).send('Not Modified');
+    const {version} = auth(req, res);
+    if (!version || version < 1) {
+      return noUpdate();
+    }
+
+    const dir = join(homedir(), 'contactless-firmware');
+    if (!existsSync(dir)) {
+      await fs.mkdir(dir);
+    }
+
+    const latestVersion = (await fs.readdir(dir))
+      .map((i) => i.match(/^(\d+)\.bin$/)?.pop())
+      .map((i) => (i ? parseInt(i, 10) : undefined))
+      .filter((i): i is number => Number.isSafeInteger(i))
+      .sort((a, b) => a - b)
+      .pop();
+
+    if (latestVersion && latestVersion > version) {
+      return res.download(join(dir, `${latestVersion}.bin`));
+    }
+
+    return noUpdate();
   });
 }
 
