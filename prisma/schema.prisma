@@ -269,9 +269,3 @@ model Event {
   bandApplicationEnd   DateTime?
   bandApplication      BandApplication[]
 }
-
-model MonotonicCounter {
-  id        String   @id
-  value     Int      @default(0)
-  updatedAt DateTime @updatedAt
-}

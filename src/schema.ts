@@ -55,8 +55,6 @@ import events from './queries/events';
 import markBandApplicationContacted from './mutations/markBandApplicationContacted';
 import rateBandApplication from './mutations/rateBandApplication';
 import BandApplicationRating from './models/BandApplicationRating';
-import monotonicCounter from './mutations/monotonicCounter';
-import MonotonicCounter from './models/MonotonicCounter';
 
 export default makeSchema({
   contextType: {
@@ -94,7 +92,6 @@ export default makeSchema({
     BandApplication,
     BandApplicationRating,
     Event,
-    MonotonicCounter,
 
     // type extensions
     availability,
@@ -127,7 +124,6 @@ export default makeSchema({
     createBandApplication,
     markBandApplicationContacted,
     rateBandApplication,
-    monotonicCounter,
   ],
   plugins: [
     fieldAuthorizePlugin({
