@@ -55,6 +55,7 @@ import events from './queries/events';
 import markBandApplicationContacted from './mutations/markBandApplicationContacted';
 import rateBandApplication from './mutations/rateBandApplication';
 import BandApplicationRating from './models/BandApplicationRating';
+import nuclino from './queries/nuclino';
 
 export default makeSchema({
   contextType: {
@@ -110,6 +111,7 @@ export default makeSchema({
     productList,
     distanceToKult,
     events,
+    nuclino,
 
     // mutations
     cancelReservation,

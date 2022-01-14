@@ -6,7 +6,7 @@ export default extendType({
   type: 'Query',
   definition: (t) => {
     t.nonNull.list.nonNull.field('reservationsByPerson', {
-      // authorize: authorization('user'),
+      authorize: authorization('user'),
       type: objectType({
         name: 'ReservationByPerson',
         definition: (t) => {

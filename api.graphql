@@ -164,6 +164,18 @@ interface Node {
   id: ID!
 }
 
+type NuclinoPage {
+  content: String!
+  id: ID!
+  title: String!
+  updatedAt: DateTime!
+}
+
+type NuclinoSearchResult {
+  highlight: String!
+  page: NuclinoPage!
+}
+
 type OpeningHour {
   endTime: DateTime!
   startTime: DateTime!
@@ -245,6 +257,8 @@ type Query {
   distanceToKult(origin: String!): Float
   events: [Event!]!
   node(id: ID!): Node
+  nuclinoPage(id: ID!): NuclinoPage
+  nuclinoPages(query: String!): [NuclinoSearchResult!]!
   productList(id: Int!): ProductList
   productLists: [ProductList!]!
   reservationForToken(token: String!): Reservation

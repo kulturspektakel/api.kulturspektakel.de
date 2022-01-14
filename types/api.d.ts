@@ -162,6 +162,14 @@ export interface NexusGenObjects {
     productListId: number; // Int!
   }
   Mutation: {};
+  NuclinoPage: { // root type
+    id: string; // ID!
+    title: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
+  NuclinoSearchResult: { // root type
+    highlight: string; // String!
+  }
   OpeningHour: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
     startTime: NexusGenScalars['DateTime']; // DateTime!
@@ -340,6 +348,16 @@ export interface NexusGenFieldTypes {
     updateReservationOtherPersons: NexusGenRootTypes['Reservation'] | null; // Reservation
     upsertProductList: NexusGenRootTypes['ProductList'] | null; // ProductList
   }
+  NuclinoPage: { // field return type
+    content: string; // String!
+    id: string; // ID!
+    title: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
+  NuclinoSearchResult: { // field return type
+    highlight: string; // String!
+    page: NexusGenRootTypes['NuclinoPage']; // NuclinoPage!
+  }
   OpeningHour: { // field return type
     endTime: NexusGenScalars['DateTime']; // DateTime!
     startTime: NexusGenScalars['DateTime']; // DateTime!
@@ -386,6 +404,8 @@ export interface NexusGenFieldTypes {
     distanceToKult: number | null; // Float
     events: NexusGenRootTypes['Event'][]; // [Event!]!
     node: NexusGenRootTypes['Node'] | null; // Node
+    nuclinoPage: NexusGenRootTypes['NuclinoPage'] | null; // NuclinoPage
+    nuclinoPages: NexusGenRootTypes['NuclinoSearchResult'][]; // [NuclinoSearchResult!]!
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
     reservationForToken: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -540,6 +560,16 @@ export interface NexusGenFieldTypeNames {
     updateReservationOtherPersons: 'Reservation'
     upsertProductList: 'ProductList'
   }
+  NuclinoPage: { // field return type name
+    content: 'String'
+    id: 'ID'
+    title: 'String'
+    updatedAt: 'DateTime'
+  }
+  NuclinoSearchResult: { // field return type name
+    highlight: 'String'
+    page: 'NuclinoPage'
+  }
   OpeningHour: { // field return type name
     endTime: 'DateTime'
     startTime: 'DateTime'
@@ -586,6 +616,8 @@ export interface NexusGenFieldTypeNames {
     distanceToKult: 'Float'
     events: 'Event'
     node: 'Node'
+    nuclinoPage: 'NuclinoPage'
+    nuclinoPages: 'NuclinoSearchResult'
     productList: 'ProductList'
     productLists: 'ProductList'
     reservationForToken: 'Reservation'
@@ -771,6 +803,12 @@ export interface NexusGenArgTypes {
     }
     node: { // args
       id: string; // ID!
+    }
+    nuclinoPage: { // args
+      id: string; // ID!
+    }
+    nuclinoPages: { // args
+      query: string; // String!
     }
     productList: { // args
       id: number; // Int!
