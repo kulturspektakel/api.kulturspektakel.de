@@ -6,7 +6,6 @@ import {
   isBefore,
   startOfDay,
 } from 'date-fns';
-import {isEqual} from 'date-fns/esm';
 import {extendType} from 'nexus';
 import {ArgsValue, intArg, nonNull} from 'nexus/dist/core';
 import {occupancyIntervals} from '../mutations/requestReservation';

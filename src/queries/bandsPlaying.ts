@@ -53,13 +53,22 @@ function isSameWeekDay(date: Date, day: ApiDay): boolean {
 function getStartEndTime(
   time: string,
   date: Date,
+  day: ApiDay,
 ): {
   startTime: Date;
   endTime: Date;
 } {
   const [hour, minute] = time.split(':').map((i) => parseInt(i, 10));
 
-  const startTime = new Date(date);
+  const dayOffset: Record<ApiDay, number> = {
+    Freitag: 0,
+    Samstag: 1,
+    Sonntag: 2,
+  };
+
+  const startTime = add(date, {
+    days: dayOffset[day],
+  });
   startTime.setHours(hour);
   startTime.setMinutes(minute);
 
@@ -71,7 +80,7 @@ function getStartEndTime(
   };
 }
 
-export default extendType({
+export const bandsPlayingArea = extendType({
   type: 'Area',
   definition: (t) => {
     t.nonNull.list.nonNull.field('bandsPlaying', {
@@ -79,35 +88,59 @@ export default extendType({
       args: {
         day: nonNull('Date'),
       },
-      resolve: async (area, {day}) => {
-        const res: ApiError | ApiResponse = await fetch(
-          `https://kulturspektakel.de/api/pages/lineup+${day.getFullYear()}/children?select=id,title,content`,
-          {
-            headers: {
-              Authorization: `Basic ${Buffer.from(
-                `${env.KULT_WEBSITE_API_EMAIL}:${env.KULT_WEBSITE_API_PASSWORD}`,
-              ).toString('base64')}`,
-            },
-          },
-        ).then((res) => res.json());
-        if (res.status === 'ok') {
-          return res.data
-            .filter(
-              ({content: {stage, day: weekday}}) =>
-                stage.toLowerCase() === (area as Area).id.toLowerCase() &&
-                isSameWeekDay(day, weekday),
-            )
-            .sort((a, b) => (a.content.time > b.content.time ? 1 : -1))
-            .map(({id, title, content: {genre, description, time}}) => ({
-              id,
-              name: title,
-              ...getStartEndTime(time, day),
-              genre: genre ? genre : undefined,
-              description: description ? description : undefined,
-            }));
-        }
-        return [];
-      },
+      resolve: (area, {day}) =>
+        fetchLineUp(
+          day,
+          ({stage, day: weekday}) =>
+            stage.toLowerCase() === (area as Area).id.toLowerCase() &&
+            isSameWeekDay(day, weekday),
+        ),
     });
   },
 });
+
+export const bandsPlayingEvent = extendType({
+  type: 'Event',
+  definition: (t) => {
+    t.nonNull.list.nonNull.field('bandsPlaying', {
+      type: 'Band',
+      resolve: ({start}) => fetchLineUp(start),
+    });
+  },
+});
+
+async function fetchLineUp(
+  eventStart: Date,
+  filter: (item: ApiResponse['data'][number]['content']) => boolean = () =>
+    true,
+) {
+  const res: ApiError | ApiResponse = await fetch(
+    `https://kulturspektakel.de/api/pages/lineup+${eventStart.getFullYear()}/children?select=id,title,content`,
+    {
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${env.KULT_WEBSITE_API_EMAIL}:${env.KULT_WEBSITE_API_PASSWORD}`,
+        ).toString('base64')}`,
+      },
+    },
+  ).then((res) => res.json());
+  if (res.status === 'ok') {
+    return res.data
+      .filter(({content}) => filter(content))
+      .sort((a, b) => {
+        if (a.content.day == b.content.day) {
+          return a.content.time > b.content.time ? 1 : -1;
+        }
+        return a.content.day > b.content.day ? 1 : -1;
+      })
+      .map(({id, title, content: {genre, description, time, day, stage}}) => ({
+        id,
+        name: title,
+        ...getStartEndTime(time, eventStart, day),
+        genre: genre ? genre : undefined,
+        description: description ? description : undefined,
+        areaId: stage.toLocaleLowerCase(),
+      }));
+  }
+  return [];
+}

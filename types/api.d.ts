@@ -323,6 +323,7 @@ export interface NexusGenFieldTypes {
     bandApplication: NexusGenRootTypes['BandApplication'][]; // [BandApplication!]!
     bandApplicationEnd: NexusGenScalars['DateTime'] | null; // DateTime
     bandApplicationStart: NexusGenScalars['DateTime'] | null; // DateTime
+    bandsPlaying: NexusGenRootTypes['Band'][]; // [Band!]!
     end: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
     name: string; // String!
@@ -535,6 +536,7 @@ export interface NexusGenFieldTypeNames {
     bandApplication: 'BandApplication'
     bandApplicationEnd: 'DateTime'
     bandApplicationStart: 'DateTime'
+    bandsPlaying: 'Band'
     end: 'DateTime'
     id: 'ID'
     name: 'String'

@@ -105,6 +105,7 @@ type Event implements Node {
   bandApplication: [BandApplication!]!
   bandApplicationEnd: DateTime
   bandApplicationStart: DateTime
+  bandsPlaying: [Band!]!
   end: DateTime!
   id: ID!
   name: String!

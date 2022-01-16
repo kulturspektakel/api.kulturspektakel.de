@@ -26,7 +26,6 @@ import reservationForToken from './queries/reservationForToken';
 import reservationsFromSamePerson from './queries/reservationsFromSamePerson';
 import node from './queries/node';
 import Band from './models/Band';
-import bandsPlaying from './queries/bandsPlaying';
 import ProductList from './models/ProductList';
 import Product from './models/Product';
 import productLists from './queries/productLists';
@@ -56,6 +55,7 @@ import markBandApplicationContacted from './mutations/markBandApplicationContact
 import rateBandApplication from './mutations/rateBandApplication';
 import BandApplicationRating from './models/BandApplicationRating';
 import nuclino from './queries/nuclino';
+import {bandsPlayingArea, bandsPlayingEvent} from './queries/bandsPlaying';
 
 export default makeSchema({
   contextType: {
@@ -101,7 +101,8 @@ export default makeSchema({
     reservationsFromSamePerson,
     viewer,
     node,
-    bandsPlaying,
+    bandsPlayingArea,
+    bandsPlayingEvent,
     productLists,
     config,
     availableCapacity,
