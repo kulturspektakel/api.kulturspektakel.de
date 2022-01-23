@@ -170,26 +170,28 @@ export default function (app: Express) {
         throw e;
       }
 
-      await prismaClient.order.create({
-        data: {
-          createdAt: deviceTime,
-          deposit: message.depositBefore - message.depositAfter,
-          payment: mapPayment(message.paymentMethod),
-          items: {
-            createMany: {
-              data:
-                message.cartItems?.map(({amount, product}) => ({
-                  productListId: message.listId,
-                  amount,
-                  name: product!.name, // not sure why product is nullable
-                  perUnitPrice: product!.price,
-                })) ?? [],
+      if (message.transactionType === CardTransaction_TransactionType.CHARGE) {
+        await prismaClient.order.create({
+          data: {
+            createdAt: deviceTime,
+            deposit: message.depositBefore - message.depositAfter,
+            payment: mapPayment(message.paymentMethod),
+            items: {
+              createMany: {
+                data:
+                  message.cartItems?.map(({amount, product}) => ({
+                    productListId: message.listId,
+                    amount,
+                    name: product!.name, // not sure why product is nullable
+                    perUnitPrice: product!.price,
+                  })) ?? [],
+              },
             },
+            deviceId: message.deviceId, // made sure device exists earlier
+            cardTransactionClientId: message.clientId,
           },
-          deviceId: message.deviceId, // made sure device exists earlier
-          cardTransactionClientId: message.clientId,
-        },
-      });
+        });
+      }
 
       try {
         await postTransactionToSlack(message);
