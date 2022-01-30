@@ -11,3 +11,5 @@ newrelic_agent.log
 /yarn-error.log
 .build_local
 artifacts/public/maizzle/**/*
+.env*
+!.env.project

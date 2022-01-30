@@ -7,15 +7,17 @@
     "start": "node -r dotenv/config dist/index.js",
     "dev": "ts-node-dev --transpile-only --no-notify -r dotenv/config src/index.ts",
     "build": "yarn generate && tsc",
-    "generate": "yarn generate:prisma && yarn generate:graphql && yarn generate:mail",
+    "generate": "yarn generate:prisma && yarn generate:graphql && yarn generate:mail && generate:env",
     "generate:graphql": "graphql-codegen -r dotenv/config",
     "generate:prisma": "prisma generate",
     "generate:mail": "maizzle build production",
     "generate:proto": "cd src/proto && protoc --experimental_allow_proto3_optional --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=. ./*.proto --ts_proto_opt=esModuleInterop=true",
+    "generate:env": "yarn dotenv-cli pull",
     "update:db": "export $(cat .env | xargs) && prisma db push",
     "mail": "maizzle serve"
   },
   "devDependencies": {
+    "@dotenv/cli": "^2.0.0",
     "@graphql-codegen/add": "^3.1.1",
     "@graphql-codegen/cli": "^2.4.0",
     "@graphql-codegen/introspection": "^2.1.1",

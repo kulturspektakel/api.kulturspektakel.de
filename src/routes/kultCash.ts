@@ -15,13 +15,13 @@ import {
   ProductList,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {sub} from 'date-fns';
 import {sendMessage, SlackChannel} from '../utils/slack';
 import {config} from '../queries/config';
 import emoji from 'node-emoji';
 import {join} from 'path';
 import fsNode, {existsSync} from 'fs';
 import {homedir} from 'os';
+import {utcToZonedTime} from 'date-fns-tz';
 const fs = fsNode.promises;
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
@@ -114,22 +114,7 @@ export default function (app: Express) {
 
       let deviceTime = new Date(message.deviceTime * 1000);
       if (!message.deviceTimeIsUtc) {
-        const referenceDate = new Date(deviceTime);
-        const shiftedDate = new Date(
-          referenceDate.toLocaleString(undefined, {
-            timeZone: 'Europe/Berlin',
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-          }),
-        );
-        const differenceMs = referenceDate.getTime() - shiftedDate.getTime();
-        deviceTime = sub(deviceTime, {
-          minutes: differenceMs / 1000 / 60,
-        });
+        deviceTime = utcToZonedTime(deviceTime, 'Europe/Berlin');
       }
 
       try {
