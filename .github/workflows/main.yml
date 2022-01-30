@@ -33,5 +33,5 @@ jobs:
         run: |
           yarn build
           yarn dotenv-cli pull production .env --dotenv_me=$Dotenv
-          rsync -avz --delete artifacts dist prisma package.json yarn.lock $Host:$Dir
+          rsync -avz --delete artifacts dist prisma package.json yarn.lock .env $Host:$Dir
           ssh $Host 'cd $Dir; yarn install --production; yarn generate:prisma; supervisorctl restart api'
