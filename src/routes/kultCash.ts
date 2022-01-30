@@ -15,12 +15,12 @@ import {
   ProductList,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {add} from 'date-fns';
+import {sub} from 'date-fns';
 import {sendMessage, SlackChannel} from '../utils/slack';
 import {config} from '../queries/config';
 import emoji from 'node-emoji';
 import {join} from 'path';
-import fsNode, {existsSync, mkdirSync} from 'fs';
+import fsNode, {existsSync} from 'fs';
 import {homedir} from 'os';
 const fs = fsNode.promises;
 
@@ -106,7 +106,6 @@ export default function (app: Express) {
 
       let message: CardTransaction;
       try {
-        console.log(buffer.toString('base64'));
         message = CardTransaction.decode(buffer);
       } catch (e) {
         console.error(e);
@@ -115,8 +114,7 @@ export default function (app: Express) {
 
       let deviceTime = new Date(message.deviceTime * 1000);
       if (!message.deviceTimeIsUtc) {
-        const referenceDate = new Date();
-        referenceDate.setMilliseconds(0);
+        const referenceDate = new Date(deviceTime);
         const shiftedDate = new Date(
           referenceDate.toLocaleString(undefined, {
             timeZone: 'Europe/Berlin',
@@ -129,8 +127,7 @@ export default function (app: Express) {
           }),
         );
         const differenceMs = referenceDate.getTime() - shiftedDate.getTime();
-        // TODO: Verify add or sub is needed here
-        deviceTime = add(deviceTime, {
+        deviceTime = sub(deviceTime, {
           minutes: differenceMs / 1000 / 60,
         });
       }
@@ -281,7 +278,7 @@ async function postTransactionToSlack(message: CardTransaction) {
   }
 
   const total = (message.balanceBefore - message.balanceAfter) / 100;
-  const totalStr = total.toLocaleString('de-DE', {
+  const totalAbsoluteStr = Math.abs(total).toLocaleString('de-DE', {
     style: 'currency',
     currency: 'EUR',
   });
@@ -331,8 +328,8 @@ async function postTransactionToSlack(message: CardTransaction) {
   await sendMessage({
     channel: SlackChannel.dev,
     text: list
-      ? `${list.emoji} ${list.name}: ${totalStr}`
-      : `Neue Transaktion: ${totalStr}`,
+      ? `${list.emoji} ${list.name}: ${totalAbsoluteStr}`
+      : `Neue Transaktion: ${totalAbsoluteStr}`,
     username: list?.name ?? 'Neue Transaktion',
     icon_emoji: `:${emoji.find(list?.emoji ?? '💳')?.key ?? 'credit_card'}:`,
     blocks: [
@@ -348,7 +345,10 @@ async function postTransactionToSlack(message: CardTransaction) {
           {
             type: 'mrkdwn',
             text: `*${
-              fields.length > 0
+              message.transactionType ===
+              CardTransaction_TransactionType.CASHOUT
+                ? 'Auszahlung'
+                : fields.length > 0
                 ? 'Summe'
                 : total > 0
                 ? 'Abbuchung'
@@ -357,7 +357,7 @@ async function postTransactionToSlack(message: CardTransaction) {
           },
           {
             type: 'mrkdwn',
-            text: `*${totalStr}*`,
+            text: `*${totalAbsoluteStr}*`,
           },
         ],
       },
