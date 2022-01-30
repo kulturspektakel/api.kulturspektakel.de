@@ -32,6 +32,6 @@ jobs:
           Dotenv: ${{ secrets.DOTENV_ME }}
         run: |
           yarn build
-          yarn dotenv-cli pull production .env --dotenv_me=$Dotenv
-          rsync -avz --delete artifacts dist prisma package.json yarn.lock .env $Host:$Dir
-          ssh $Host 'cd $Dir; yarn install --production; yarn generate:prisma; supervisorctl restart api'
+          echo "DOTENV_ME=$Dotenv" > .env.me
+          rsync -avz --delete artifacts dist prisma package.json yarn.lock .env.me $Host:$Dir
+          ssh $Host 'cd $Dir; yarn install --production; yarn generate:prisma; yarn dotenv-cli pull production .env; supervisorctl restart api'
