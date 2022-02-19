@@ -58,8 +58,19 @@ interface Billable {
   salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
 }
 
+type Board {
+  chair: String!
+  deputy: String!
+  deputy2: String!
+  observer: String!
+  observer2: String!
+  secretary: String!
+  treasurer: String!
+}
+
 type Config {
   bandApplicationDeadline: DateTime!
+  board: Board
   reservationStart: DateTime!
   tokenValue: Int!
 }

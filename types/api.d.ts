@@ -140,8 +140,18 @@ export interface NexusGenObjects {
   BandApplicationRating: { // root type
     rating: number; // Int!
   }
+  Board: { // root type
+    chair: string; // String!
+    deputy: string; // String!
+    deputy2: string; // String!
+    observer: string; // String!
+    observer2: string; // String!
+    secretary: string; // String!
+    treasurer: string; // String!
+  }
   Config: { // root type
     bandApplicationDeadline: NexusGenScalars['DateTime']; // DateTime!
+    board?: NexusGenRootTypes['Board'] | null; // Board
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
     tokenValue: number; // Int!
   }
@@ -309,8 +319,18 @@ export interface NexusGenFieldTypes {
     rating: number; // Int!
     viewer: NexusGenRootTypes['Viewer']; // Viewer!
   }
+  Board: { // field return type
+    chair: string; // String!
+    deputy: string; // String!
+    deputy2: string; // String!
+    observer: string; // String!
+    observer2: string; // String!
+    secretary: string; // String!
+    treasurer: string; // String!
+  }
   Config: { // field return type
     bandApplicationDeadline: NexusGenScalars['DateTime']; // DateTime!
+    board: NexusGenRootTypes['Board'] | null; // Board
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
     tokenValue: number; // Int!
   }
@@ -522,8 +542,18 @@ export interface NexusGenFieldTypeNames {
     rating: 'Int'
     viewer: 'Viewer'
   }
+  Board: { // field return type name
+    chair: 'String'
+    deputy: 'String'
+    deputy2: 'String'
+    observer: 'String'
+    observer2: 'String'
+    secretary: 'String'
+    treasurer: 'String'
+  }
   Config: { // field return type name
     bandApplicationDeadline: 'DateTime'
+    board: 'Board'
     reservationStart: 'DateTime'
     tokenValue: 'Int'
   }
