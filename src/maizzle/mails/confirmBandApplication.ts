@@ -19,7 +19,23 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
 .hover-underline:hover {
   text-decoration: underline !important;
 }
+.hover-underline:hover {
+  text-decoration: underline !important;
+}
 @media (max-width: 600px) {
+  .sm-w-full {
+    width: 100% !important;
+  }
+  .sm-p-24 {
+    padding: 24px !important;
+  }
+  .sm-px-24 {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .sm-leading-32 {
+    line-height: 32px !important;
+  }
   .sm-w-full {
     width: 100% !important;
   }
@@ -36,7 +52,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
 }
 </style>
 </head>
-<body style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f4f4f5;">
+<body style="width: 100%; margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f4f4f5;">
     <div style="display: none;">Eure Bewerbung mit „${bandname}“ für das Kulturspektakel Gauting ${eventYear}&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
       &#160;&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
       &#160;&#847; &#847; &#847; &#847; &#847; </div>
@@ -63,7 +79,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
                   </tr>
                   <tr>
                     <td style="padding-left: 24px; padding-right: 24px; text-align: center; font-size: 12px; color: #52525b;">
-                      <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" alt="Kulturspektakel Gauting" style="border: 0; max-width: 100%; vertical-align: middle; line-height: 100%;">
+                      <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" alt="Kulturspektakel Gauting" style="border: 0; max-width: 100%; vertical-align: middle; line-height: 100%; max-width: 100%; vertical-align: middle; line-height: 100%;">
                       <p style="margin: 0; margin-top: 6px; margin-bottom: 4px; font-weight: 600;">Kulturspektakel Gauting e.V.</p>
                       <p style="margin: 0; font-style: italic;">Anschrift: Bahnhofstr. 6, 82131 Gauting</p>
                       <p style="margin: 0; font-style: italic;">Festivalgelände: Germeringer Str. 41, Gauting</p>

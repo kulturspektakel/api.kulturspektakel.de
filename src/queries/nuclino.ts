@@ -1,16 +1,22 @@
 import {extendType, nonNull, objectType} from 'nexus';
 import authorization from '../utils/authorization';
-import {markdown, getCell, search} from '../utils/nuclino';
+import {APIItemWithContent, item, search} from '../utils/nuclino';
 
 const NuclinoPage = objectType({
   name: 'NuclinoPage',
   definition(t) {
     t.nonNull.field('id', {type: 'ID'});
     t.nonNull.field('title', {type: 'String'});
-    t.nonNull.field('updatedAt', {type: 'DateTime'});
+    t.nonNull.field('lastUpdatedAt', {type: 'DateTime'});
     t.nonNull.field('content', {
       type: 'String',
-      resolve: ({id}, _args, {prisma}) => markdown(prisma, id),
+      resolve: async (root) => {
+        if (root.hasOwnProperty('content')) {
+          return (root as APIItemWithContent).content;
+        }
+        const page = await item(root.id);
+        return page.content;
+      },
     });
   },
 });
@@ -24,10 +30,6 @@ export default extendType({
         definition(t) {
           t.nonNull.field('page', {
             type: NuclinoPage,
-            resolve: async ({id}) => {
-              const page = await getCell(id);
-              return {...page, id};
-            },
           });
           t.nonNull.field('highlight', {type: 'String'});
         },
@@ -36,7 +38,13 @@ export default extendType({
         query: nonNull('String'),
       },
       authorize: authorization('user'),
-      resolve: async (_root, {query}, {prisma}) => search(prisma, query),
+      resolve: async (_root, {query}) => {
+        const res = await search(query);
+        return res.results.map(({highlight, ...page}) => ({
+          highlight,
+          page,
+        }));
+      },
     });
 
     t.field('nuclinoPage', {
@@ -45,10 +53,7 @@ export default extendType({
         id: nonNull('ID'),
       },
       authorize: authorization('user'),
-      resolve: async (_root, {id}) => {
-        const page = await getCell(id);
-        return {...page, id};
-      },
+      resolve: async (_root, {id}) => item(id),
     });
   },
 });

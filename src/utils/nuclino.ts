@@ -25,27 +25,6 @@ export async function getHeaders(prisma: PrismaClient) {
   };
 }
 
-export async function search(
-  prisma: PrismaClient,
-  query: string,
-): Promise<
-  Array<{
-    id: string;
-    brain_id: string;
-    rank: number;
-    highlight: string;
-  }>
-> {
-  const headers = await getHeaders(prisma);
-  const data = await fetch(
-    `https://api.nuclino.com/api/teams/${env.NUCLINO_TEAM_ID}/cells?query=${query}&isArchived=false&isDeleted=false`,
-    {
-      headers,
-    },
-  ).then((r) => r.json());
-  return data.response;
-}
-
 declare class Connection extends EventEmitter {
   get(collectionName: 'ot_cell', documentID: string): PubSub<Cell>;
   get(collectionName: 'ot_brain', documentID: string): PubSub<Brain>;
@@ -149,14 +128,6 @@ function getUser(id: string): Promise<User> {
   });
 }
 
-export async function markdown(prisma: PrismaClient, id: string) {
-  const headers = await getHeaders(prisma);
-
-  return fetch(`https://files.nuclino.com/export/cells/${id}.md`, {
-    headers,
-  }).then((r) => r.text());
-}
-
 type Cell = {
   kind: 'LEAF' | 'PARENT';
   title: string;
@@ -209,3 +180,60 @@ type User = {
   createdAt: string;
   firstName: string;
 };
+
+export type APIItem = {
+  object: string;
+  id: string;
+  workspaceId: string;
+  url: string;
+  title: string;
+  createdAt: Date;
+  createdUserId: string;
+  lastUpdatedAt: Date;
+  lastUpdatedUserId: string;
+  contentMeta: {
+    itemIds: string[];
+    fileIds: string[];
+  };
+};
+
+export type APIItemWithContent = APIItem & {content: string};
+
+type APIResponse<T> =
+  | {
+      status: 'success';
+      data: T;
+    }
+  | {
+      status: 'fail';
+      message: string;
+    }
+  | {
+      status: 'error';
+      message: string;
+    };
+
+async function nuclinoAPIRequest<T>(url: string) {
+  const res: APIResponse<T> = await fetch(url, {
+    headers: {
+      Authorization: env.NUCLINO_API_KEY,
+    },
+  }).then((res) => res.json());
+
+  if (res.status !== 'success') {
+    throw new Error(res.message);
+  }
+  return res.data;
+}
+
+export function search(query: string) {
+  return nuclinoAPIRequest<{
+    results: Array<APIItem & {highlight: string}>;
+  }>(`https://api.nuclino.com/v0/items${env.NUCLINO_BRAIN_ID}&search=${query}`);
+}
+
+export function item(id: string) {
+  return nuclinoAPIRequest<APIItemWithContent>(
+    `https://api.nuclino.com/v0/items/${id}`,
+  );
+}

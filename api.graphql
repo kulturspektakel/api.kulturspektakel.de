@@ -168,8 +168,8 @@ interface Node {
 type NuclinoPage {
   content: String!
   id: ID!
+  lastUpdatedAt: DateTime!
   title: String!
-  updatedAt: DateTime!
 }
 
 type NuclinoSearchResult {

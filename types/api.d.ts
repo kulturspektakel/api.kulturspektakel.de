@@ -164,11 +164,12 @@ export interface NexusGenObjects {
   Mutation: {};
   NuclinoPage: { // root type
     id: string; // ID!
+    lastUpdatedAt: NexusGenScalars['DateTime']; // DateTime!
     title: string; // String!
-    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   NuclinoSearchResult: { // root type
     highlight: string; // String!
+    page: NexusGenRootTypes['NuclinoPage']; // NuclinoPage!
   }
   OpeningHour: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -352,8 +353,8 @@ export interface NexusGenFieldTypes {
   NuclinoPage: { // field return type
     content: string; // String!
     id: string; // ID!
+    lastUpdatedAt: NexusGenScalars['DateTime']; // DateTime!
     title: string; // String!
-    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   NuclinoSearchResult: { // field return type
     highlight: string; // String!
@@ -565,8 +566,8 @@ export interface NexusGenFieldTypeNames {
   NuclinoPage: { // field return type name
     content: 'String'
     id: 'ID'
+    lastUpdatedAt: 'DateTime'
     title: 'String'
-    updatedAt: 'DateTime'
   }
   NuclinoSearchResult: { // field return type name
     highlight: 'String'
