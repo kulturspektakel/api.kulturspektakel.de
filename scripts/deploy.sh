@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 cd /var/www/virtual/kultursp/api.kulturspektakel.de
 yarn install --production
 yarn generate:prisma
