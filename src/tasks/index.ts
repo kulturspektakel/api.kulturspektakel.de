@@ -24,7 +24,7 @@ export default async function () {
     connectionString: env.DATABASE_URL,
     concurrency: 1,
     taskList: (env.NODE_ENV === 'production' ? taskListProd : taskList) as any,
-    crontab: ['*/3 * * * * nuclinoUpdateMessage ?max=1'].join('\n'),
+    crontab: ['*/5 * * * * nuclinoUpdateMessage ?max=1'].join('\n'),
   });
 }
 

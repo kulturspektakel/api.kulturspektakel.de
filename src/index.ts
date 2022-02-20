@@ -62,15 +62,6 @@ const server = new ApolloServer({
     },
   });
 
-  const items = await allItems();
-  const updatedItems = items.filter(
-    (r) =>
-      r.object === 'item' &&
-      // edited in last 5 minutes
-      isAfter(new Date(r.lastUpdatedAt), sub(new Date(), {minutes: 5})),
-  );
-  console.log(items.length, updatedItems);
-
   app.listen({port: env.PORT}, () =>
     console.log(
       `🚀 Server ready at http://localhost:${env.PORT}${server.graphqlPath}`,
