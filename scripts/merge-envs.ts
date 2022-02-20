@@ -1,21 +1,29 @@
-import dotenv from 'dotenv';
 import path from 'path';
+import {promises as fs} from 'fs';
+import {parse} from 'dotenv';
 
-const {parsed: conf} = dotenv.config();
-const {parsed: confProduction} = dotenv.config({
-  path: path.resolve(process.cwd(), '.env.production'),
-});
+const ENV_PROD_PATH = path.join(__dirname, '..', '.env.production');
+const ENV_PATH = path.join(__dirname, '..', '.env');
 
-console.log(
-  Object.fromEntries(Object.entries(confProduction).filter(([, v]) => v)),
-);
+(async () => {
+  const prod = await (
+    await fs.readFile(ENV_PROD_PATH)
+  )
+    .toString()
+    .split('\n')
+    // filter empty vars
+    .filter((l) => !l.endsWith('='));
 
-// console.log({
-//   ...conf,
-//   // filter null values
-//   ...Object.fromEntries(Object.entries(confProduction).filter(([, v]) => v)),
-// });
+  // adding new line
+  prod.unshift('');
+  await fs.appendFile(ENV_PATH, prod.join('\n'));
 
-// TODO write .env file
-
-// TODO validate with utils/env.ts else throw error
+  const conf = await fs.readFile(ENV_PATH);
+  process.env = {
+    ...process.env,
+    ...parse(conf),
+  };
+  require('../src/utils/env'); // validate env is correct
+  await fs.unlink(ENV_PROD_PATH);
+  console.log('Merged configs into .env');
+})();
