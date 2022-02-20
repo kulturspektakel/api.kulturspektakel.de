@@ -25,11 +25,8 @@ export default extendType({
           t.field('reservationStart', {
             type: nonNull('DateTime'),
           });
-          t.field('tokenValue', {
+          t.field('depositValue', {
             type: nonNull('Int'),
-          });
-          t.field('bandApplicationDeadline', {
-            type: nonNull('DateTime'),
           });
           t.field('board', {
             type: objectType({
@@ -47,6 +44,7 @@ export default extendType({
           });
         },
       }),
+      resolve: () => config,
     });
   },
 });

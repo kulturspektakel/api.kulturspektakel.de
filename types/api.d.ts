@@ -150,10 +150,9 @@ export interface NexusGenObjects {
     treasurer: string; // String!
   }
   Config: { // root type
-    bandApplicationDeadline: NexusGenScalars['DateTime']; // DateTime!
     board?: NexusGenRootTypes['Board'] | null; // Board
+    depositValue: number; // Int!
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
-    tokenValue: number; // Int!
   }
   Device: { // root type
     id: string; // ID!
@@ -329,10 +328,9 @@ export interface NexusGenFieldTypes {
     treasurer: string; // String!
   }
   Config: { // field return type
-    bandApplicationDeadline: NexusGenScalars['DateTime']; // DateTime!
     board: NexusGenRootTypes['Board'] | null; // Board
+    depositValue: number; // Int!
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
-    tokenValue: number; // Int!
   }
   Device: { // field return type
     id: string; // ID!
@@ -552,10 +550,9 @@ export interface NexusGenFieldTypeNames {
     treasurer: 'String'
   }
   Config: { // field return type name
-    bandApplicationDeadline: 'DateTime'
     board: 'Board'
+    depositValue: 'Int'
     reservationStart: 'DateTime'
-    tokenValue: 'Int'
   }
   Device: { // field return type name
     id: 'ID'
