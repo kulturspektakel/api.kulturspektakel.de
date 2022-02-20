@@ -650,7 +650,11 @@
             "name": "chair",
             "description": null,
             "args": [],
-            "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -658,7 +662,11 @@
             "name": "deputy",
             "description": null,
             "args": [],
-            "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -666,7 +674,11 @@
             "name": "deputy2",
             "description": null,
             "args": [],
-            "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -674,7 +686,11 @@
             "name": "observer",
             "description": null,
             "args": [],
-            "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -682,7 +698,11 @@
             "name": "observer2",
             "description": null,
             "args": [],
-            "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -690,7 +710,11 @@
             "name": "secretary",
             "description": null,
             "args": [],
-            "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -698,7 +722,11 @@
             "name": "treasurer",
             "description": null,
             "args": [],
-            "type": {"kind": "SCALAR", "name": "String", "ofType": null},
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {"kind": "SCALAR", "name": "String", "ofType": null}
+            },
             "isDeprecated": false,
             "deprecationReason": null
           }

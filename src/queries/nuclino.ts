@@ -1,6 +1,6 @@
 import {extendType, nonNull, objectType} from 'nexus';
 import authorization from '../utils/authorization';
-import {APIItemWithContent, item, search} from '../utils/nuclino';
+import {APIObjectWithContent, item, items} from '../utils/nuclino';
 
 const NuclinoPage = objectType({
   name: 'NuclinoPage',
@@ -12,7 +12,7 @@ const NuclinoPage = objectType({
       type: 'String',
       resolve: async (root) => {
         if (root.hasOwnProperty('content')) {
-          return (root as APIItemWithContent).content;
+          return (root as APIObjectWithContent).content;
         }
         const page = await item(root.id);
         return page.content;
@@ -39,11 +39,13 @@ export default extendType({
       },
       authorize: authorization('user'),
       resolve: async (_root, {query}) => {
-        const res = await search(query);
-        return res.results.map(({highlight, ...page}) => ({
-          highlight,
-          page,
-        }));
+        const res = await items({search: query, limit: 20});
+        return res
+          .filter((i) => i.object === 'item')
+          .map(({highlight, ...page}) => ({
+            highlight,
+            page,
+          }));
       },
     });
 

@@ -269,12 +269,3 @@ model Event {
   bandApplicationEnd   DateTime?
   bandApplication      BandApplication[]
 }
-
-enum ConfigKey {
-  NuclinoToken
-}
-
-model Config {
-  key   ConfigKey @id
-  value String
-}

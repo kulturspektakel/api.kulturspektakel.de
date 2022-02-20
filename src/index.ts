@@ -11,6 +11,8 @@ import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
 import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
+import {isAfter, sub} from 'date-fns';
+import {allItems} from './utils/nuclino';
 
 const server = new ApolloServer({
   context,
@@ -59,6 +61,15 @@ const server = new ApolloServer({
       credentials: true,
     },
   });
+
+  const items = await allItems();
+  const updatedItems = items.filter(
+    (r) =>
+      r.object === 'item' &&
+      // edited in last 5 minutes
+      isAfter(new Date(r.lastUpdatedAt), sub(new Date(), {minutes: 5})),
+  );
+  console.log(items.length, updatedItems);
 
   app.listen({port: env.PORT}, () =>
     console.log(

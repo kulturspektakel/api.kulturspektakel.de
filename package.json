@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.52.0",
-    "@danielbuechele/sharedb": "^1.1.1",
     "@dotenv/cli": "^2.0.0",
     "@prisma/client": "^3.9.2",
     "apollo-server-express": "^3.6.3",
@@ -65,7 +64,6 @@
     "normalize-url": "6",
     "passkit-generator": "^2.0.8",
     "ts-node": "^10.5.0",
-    "ts-proto": "^1.105.2",
-    "ws": "^8.5.0"
+    "ts-proto": "^1.105.2"
   }
 }

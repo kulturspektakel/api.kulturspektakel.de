@@ -29,9 +29,6 @@ const e = {
   SLACK_BOT_TOKEN: env.get('SLACK_BOT_TOKEN').required(!ci).asString(),
   KULT_CASH_SALT: env.get('KULT_CASH_SALT').required(!ci).asString(),
   BING_MAPS_KEY: env.get('BING_MAPS_KEY').required(!ci).asString(),
-  NUCLINO_APP_ID: env.get('NUCLINO_APP_ID').required(!ci).asString(),
-  NUCLINO_TEAM_ID: env.get('NUCLINO_TEAM_ID').required(!ci).asString(),
-  NUCLINO_BRAIN_ID: env.get('NUCLINO_BRAIN_ID').required(!ci).asString(),
   NUCLINO_API_KEY: env.get('NUCLINO_API_KEY').required(!ci).asString(),
 };
 
