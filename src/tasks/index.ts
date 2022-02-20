@@ -9,12 +9,12 @@ import nuclinoUpdateMessage from './nuclinoUpdateMessage';
 const taskListProd = {
   clearPendingReservations,
   reservationSlackMessage,
+  nuclinoUpdateMessage,
 };
 
 const taskList = {
   ...taskListProd,
   // These jobs are only executed in dev environment
-  nuclinoUpdateMessage,
   facebookLikes,
   instagramFollower,
 };
