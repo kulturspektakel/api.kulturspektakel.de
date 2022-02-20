@@ -29,6 +29,7 @@ jobs:
         env:
           Host: kultursp@kulturspektakel.de
           Dir: /var/www/virtual/kultursp/api.kulturspektakel.de
+          Dotenv: ${{ secrets.DOTENV_ME }}
         run: |
           echo "DOTENV_ME=$Dotenv" > .env.me
           yarn build
