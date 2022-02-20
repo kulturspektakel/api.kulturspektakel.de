@@ -25,13 +25,19 @@ jobs:
         run: yarn generate:prisma
       - name: typecheck
         run: yarn tsc
+      - name: generate .env
+        env:
+          Dotenv: ${{ secrets.DOTENV_ME }}
+        run: |
+          echo "DOTENV_ME=$Dotenv" > .env.me
+          yarn dotenv-cli pull production
+          yarn dotenv-cli pull
+          yarn ts-node scripts/merge-envs.ts
       - name: deploy
         env:
           Host: kultursp@kulturspektakel.de
           Dir: /var/www/virtual/kultursp/api.kulturspektakel.de
-          Dotenv: ${{ secrets.DOTENV_ME }}
         run: |
           yarn build
-          echo "DOTENV_ME=$Dotenv" > .env.me
-          rsync -avz --delete artifacts dist prisma scripts package.json yarn.lock .env.me .env.project $Host:$Dir
+          rsync -avz --delete artifacts dist prisma scripts package.json yarn.lock .env $Host:$Dir
           ssh $Host "cd $Dir && ./scripts/deploy.sh"
