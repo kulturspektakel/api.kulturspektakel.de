@@ -11,8 +11,6 @@ import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
 import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
-import {isAfter, sub} from 'date-fns';
-import {allItems} from './utils/nuclino';
 
 const server = new ApolloServer({
   context,

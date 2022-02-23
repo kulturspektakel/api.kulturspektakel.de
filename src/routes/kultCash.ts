@@ -21,7 +21,8 @@ import emoji from 'node-emoji';
 import {join} from 'path';
 import fsNode, {existsSync} from 'fs';
 import {homedir} from 'os';
-import {utcToZonedTime} from 'date-fns-tz';
+import {getTimezoneOffset} from 'date-fns-tz';
+import {subMilliseconds} from 'date-fns';
 const fs = fsNode.promises;
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
@@ -114,7 +115,10 @@ export default function (app: Express) {
 
       let deviceTime = new Date(message.deviceTime * 1000);
       if (!message.deviceTimeIsUtc) {
-        deviceTime = utcToZonedTime(deviceTime, 'Europe/Berlin');
+        deviceTime = subMilliseconds(
+          deviceTime,
+          getTimezoneOffset('Europe/Berlin', deviceTime),
+        );
       }
 
       try {
