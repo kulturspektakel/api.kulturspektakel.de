@@ -69,10 +69,9 @@ type Board {
 }
 
 type Config {
-  bandApplicationDeadline: DateTime!
   board: Board
+  depositValue: Int!
   reservationStart: DateTime!
-  tokenValue: Int!
 }
 
 input CreateBandApplicationInput {

@@ -11,6 +11,7 @@ import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
 import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
+import ApolloErrorLoggingPlugin from './utils/ApolloErrorLoggingPlugin';
 
 const server = new ApolloServer({
   context,
@@ -28,6 +29,7 @@ const server = new ApolloServer({
         'request.credentials': 'include',
       },
     }),
+    ApolloErrorLoggingPlugin,
   ],
 });
 
