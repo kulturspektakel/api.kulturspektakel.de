@@ -179,12 +179,20 @@ type NuclinoPage {
   content: String!
   id: ID!
   lastUpdatedAt: DateTime!
+  lastUpdatedUser: NuclinoUser!
   title: String!
 }
 
 type NuclinoSearchResult {
   highlight: String!
   page: NuclinoPage!
+}
+
+type NuclinoUser {
+  email: String!
+  firstName: String!
+  id: ID!
+  lastName: String!
 }
 
 type OpeningHour {

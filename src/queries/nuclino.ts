@@ -1,6 +1,6 @@
 import {extendType, nonNull, objectType} from 'nexus';
 import authorization from '../utils/authorization';
-import {APIObjectWithContent, item, items} from '../utils/nuclino';
+import {APIObjectWithContent, item, items, user} from '../utils/nuclino';
 
 const NuclinoPage = objectType({
   name: 'NuclinoPage',
@@ -8,6 +8,19 @@ const NuclinoPage = objectType({
     t.nonNull.field('id', {type: 'ID'});
     t.nonNull.field('title', {type: 'String'});
     t.nonNull.field('lastUpdatedAt', {type: 'DateTime'});
+    t.nonNull.field('lastUpdatedUser', {
+      type: objectType({
+        name: 'NuclinoUser',
+        definition(t) {
+          t.nonNull.field('id', {type: 'ID'});
+          t.nonNull.field('firstName', {type: 'String'});
+          t.nonNull.field('lastName', {type: 'String'});
+          t.nonNull.field('email', {type: 'String'});
+        },
+      }),
+      resolve: async (root) =>
+        user((root as APIObjectWithContent).lastUpdatedUserId),
+    });
     t.nonNull.field('content', {
       type: 'String',
       resolve: async (root) => {

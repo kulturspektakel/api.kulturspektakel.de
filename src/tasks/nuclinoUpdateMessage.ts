@@ -1,4 +1,4 @@
-import {allItems} from '../utils/nuclino';
+import {allItems, user} from '../utils/nuclino';
 import {sendMessage, SlackChannel} from '../utils/slack';
 import {isAfter, sub, isBefore} from 'date-fns';
 import {JobHelpers} from 'graphile-worker';
@@ -19,11 +19,13 @@ export default async function (_: undefined, {logger}: JobHelpers) {
   updatedItems.length = 3;
 
   await Promise.all(
-    updatedItems.map((item) =>
-      sendMessage({
+    updatedItems.map(async (item) => {
+      const lastUpdatedUser = await user(item.lastUpdatedUserId);
+      return sendMessage({
         channel: SlackChannel.wiki,
-        text: `<${item.url}|${item.title}> aktualisiert`,
-      }),
-    ),
+        text: `<${item.url}|${item.title}> von ${lastUpdatedUser.firstName} ${lastUpdatedUser.lastName} aktualisiert`,
+        unfurl_links: false,
+      });
+    }),
   );
 }

@@ -180,6 +180,12 @@ export interface NexusGenObjects {
     highlight: string; // String!
     page: NexusGenRootTypes['NuclinoPage']; // NuclinoPage!
   }
+  NuclinoUser: { // root type
+    email: string; // String!
+    firstName: string; // String!
+    id: string; // ID!
+    lastName: string; // String!
+  }
   OpeningHour: { // root type
     endTime: NexusGenScalars['DateTime']; // DateTime!
     startTime: NexusGenScalars['DateTime']; // DateTime!
@@ -372,11 +378,18 @@ export interface NexusGenFieldTypes {
     content: string; // String!
     id: string; // ID!
     lastUpdatedAt: NexusGenScalars['DateTime']; // DateTime!
+    lastUpdatedUser: NexusGenRootTypes['NuclinoUser']; // NuclinoUser!
     title: string; // String!
   }
   NuclinoSearchResult: { // field return type
     highlight: string; // String!
     page: NexusGenRootTypes['NuclinoPage']; // NuclinoPage!
+  }
+  NuclinoUser: { // field return type
+    email: string; // String!
+    firstName: string; // String!
+    id: string; // ID!
+    lastName: string; // String!
   }
   OpeningHour: { // field return type
     endTime: NexusGenScalars['DateTime']; // DateTime!
@@ -594,11 +607,18 @@ export interface NexusGenFieldTypeNames {
     content: 'String'
     id: 'ID'
     lastUpdatedAt: 'DateTime'
+    lastUpdatedUser: 'NuclinoUser'
     title: 'String'
   }
   NuclinoSearchResult: { // field return type name
     highlight: 'String'
     page: 'NuclinoPage'
+  }
+  NuclinoUser: { // field return type name
+    email: 'String'
+    firstName: 'String'
+    id: 'ID'
+    lastName: 'String'
   }
   OpeningHour: { // field return type name
     endTime: 'DateTime'

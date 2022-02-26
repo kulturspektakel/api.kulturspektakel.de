@@ -79,6 +79,17 @@ export function item(id: string) {
   );
 }
 
+export function user(id: string) {
+  return nuclinoAPIRequest<{
+    object: 'user';
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatarUrl: string | undefined;
+  }>(`https://api.nuclino.com/v0/users/${id}`);
+}
+
 export async function allItems() {
   const results: Array<APIObject> = [];
   let after = undefined;
