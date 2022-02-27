@@ -30,6 +30,10 @@ const e = {
   KULT_CASH_SALT: env.get('KULT_CASH_SALT').required(!ci).asString(),
   BING_MAPS_KEY: env.get('BING_MAPS_KEY').required(!ci).asString(),
   NUCLINO_API_KEY: env.get('NUCLINO_API_KEY').required(!ci).asString(),
+  GOOGLE_APPLICATION_CREDENTIALS: env
+    .get('GOOGLE_APPLICATION_CREDENTIALS')
+    .required(!ci)
+    .asString(),
 };
 
 export default e;

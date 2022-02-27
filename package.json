@@ -40,6 +40,7 @@
   "dependencies": {
     "@aws-sdk/client-ses": "^3.52.0",
     "@dotenv/cli": "^2.0.0",
+    "@google-cloud/error-reporting": "^2.0.4",
     "@prisma/client": "^3.9.2",
     "apollo-server-express": "^3.6.3",
     "cookie-parser": "^1.4.6",
