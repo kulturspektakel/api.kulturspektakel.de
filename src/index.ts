@@ -11,14 +11,20 @@ import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
 import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
-import ApolloErrorLoggingPlugin from './utils/ApolloErrorLoggingPlugin';
+import {
+  ApolloErrorLoggingPlugin,
+  errorReportingMiddleware,
+} from './utils/errorReporting';
 
 const server = new ApolloServer({
   context,
   schema: schema as any, // nexus problem, probably fixed in next version
   formatError: (err) => {
     if (!(err instanceof ApolloError)) {
-      return new ApolloError(err.message);
+      const e = new ApolloError(err.message);
+      // TODO: Check original error is not displayed buy logged
+      e.originalError = err;
+      return e;
     }
     return err;
   },
@@ -47,6 +53,9 @@ const server = new ApolloServer({
     '/public',
     express.static(join(__dirname, '..', 'artifacts', 'public')),
   );
+
+  app.use(errorReportingMiddleware);
+
   await server.start();
   server.applyMiddleware({
     app,
@@ -68,3 +77,7 @@ const server = new ApolloServer({
     ),
   );
 })();
+
+export const asyncErrorHandler = (fn) => (req, res, next) => {
+  return Promise.resolve(fn(req, res, next)).catch(next);
+};

@@ -6,6 +6,7 @@ import {URL} from 'url';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 import {add} from 'date-fns';
+import {ApiError} from '../utils/errorReporting';
 
 export type TokenInput =
   | {
@@ -124,7 +125,7 @@ export default function (app: Express) {
         }).then((res) => res.json());
 
         if (!data.ok) {
-          return res.send(data.error);
+          throw new Error(data.error);
         }
 
         const data2: {
@@ -143,7 +144,7 @@ export default function (app: Express) {
         }).then((res) => res.json());
 
         if (!data2.ok) {
-          return res.send(data2.error);
+          throw new Error(data2.error);
         }
 
         const payload = {

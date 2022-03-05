@@ -23,11 +23,14 @@ import fsNode, {existsSync} from 'fs';
 import {homedir} from 'os';
 import {getTimezoneOffset} from 'date-fns-tz';
 import {subMilliseconds} from 'date-fns';
+import {ApiError} from '../utils/errorReporting';
+import asyncHandler from 'express-async-handler';
+
 const fs = fsNode.promises;
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
-function auth(req: Request, res: Response): {id: string; version?: number} {
+function auth(req: Request): {id: string; version?: number} {
   const authorization: string | undefined = req.headers['authorization'];
   const macAddress = req.headers['x-esp8266-sta-mac'];
   if (typeof macAddress === 'string' && macAddress.length === 17) {
@@ -46,55 +49,59 @@ function auth(req: Request, res: Response): {id: string; version?: number} {
       return {id, version};
     }
   }
-  throw res.status(401).send('Unauthorized');
+
+  throw new ApiError(401, 'Unauthorized');
 }
 
 export default function (app: Express) {
-  app.get('/\\$\\$\\$/config', async (req, res) => {
-    const {id} = auth(req, res);
-    const device = await prismaClient.device.upsert({
-      where: {
-        id,
-      },
-      create: {
-        id,
-        lastSeen: new Date(),
-      },
-      update: {
-        lastSeen: new Date(),
-      },
-      include: {
-        productList: {
-          include: {
-            product: {
-              select: {
-                name: true,
-                price: true,
+  app.get(
+    '/\\$\\$\\$/config',
+    asyncHandler(async (req, res) => {
+      const {id} = auth(req);
+      const device = await prismaClient.device.upsert({
+        where: {
+          id,
+        },
+        create: {
+          id,
+          lastSeen: new Date(),
+        },
+        update: {
+          lastSeen: new Date(),
+        },
+        include: {
+          productList: {
+            include: {
+              product: {
+                select: {
+                  name: true,
+                  price: true,
+                },
+                orderBy: {
+                  order: 'asc',
+                },
+                take: 9,
               },
-              orderBy: {
-                order: 'asc',
-              },
-              take: 9,
             },
           },
         },
-      },
-    });
+      });
 
-    const list = device?.productList;
-    if (!list) {
-      return res.status(204).send('No Content');
-    }
+      const list = device?.productList;
+      if (!list) {
+        return res.status(204).send('No Content');
+      }
 
-    const message = DeviceConfig.encode({
-      listId: list.id,
-      name: list.name,
-      products: list.product,
-    }).finish();
+      const message = DeviceConfig.encode({
+        listId: list.id,
+        name: list.name,
+        products: list.product,
+      }).finish();
 
-    res.setHeader('Content-Type', 'application/x-protobuf');
-    res.send(message);
-  });
+      res.setHeader('Content-Type', 'application/x-protobuf');
+      res.send(message);
+    }),
+  );
 
   app.post('/\\$\\$\\$/log', (req, res) => {
     let buffer: Buffer = Buffer.from('');
@@ -103,14 +110,13 @@ export default function (app: Express) {
     });
 
     req.on('end', async () => {
-      const {id} = auth(req, res);
+      const {id} = auth(req);
 
       let message: CardTransaction;
       try {
         message = CardTransaction.decode(buffer);
       } catch (e) {
-        console.error(e);
-        return res.status(400).send('Bad Request');
+        throw new ApiError(400, 'Bad Request', e as Error);
       }
 
       let deviceTime = new Date(message.deviceTime * 1000);
@@ -151,7 +157,7 @@ export default function (app: Express) {
           e.code === 'P2002'
         ) {
           // client ID already exists
-          return res.status(409).send('Conflict');
+          throw new ApiError(409, 'Conflict');
         }
         throw e;
       }
@@ -191,7 +197,7 @@ export default function (app: Express) {
 
   app.get('/\\$\\$\\$/update', async (req, res) => {
     const noUpdate = () => res.status(304).send('Not Modified');
-    const {version} = auth(req, res);
+    const {version} = auth(req);
     if (!version || version < 1) {
       return noUpdate();
     }

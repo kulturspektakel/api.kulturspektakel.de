@@ -4,6 +4,7 @@ import {Express} from 'express';
 import {createPass, createAbstractModel} from 'passkit-generator';
 import {PrismaClient} from '@prisma/client';
 import {Stream} from 'form-data';
+import {ApiError} from '../../utils/errorReporting';
 
 const createModel = createAbstractModel({
   model: __dirname + '/../../../artifacts/model',
@@ -131,8 +132,7 @@ export default function (app: Express) {
     const {token} = req.params;
     const pass = await getPass(prismaClient, token);
     if (!pass) {
-      res.status(404);
-      return res.send('not found');
+      throw new ApiError(404, 'Not Found');
     }
     res.set({
       'Content-type': 'application/vnd.apple.pkpass',
