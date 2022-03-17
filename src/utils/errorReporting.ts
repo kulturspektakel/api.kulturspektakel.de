@@ -1,13 +1,25 @@
 import {PluginDefinition} from 'apollo-server-core';
-import {ErrorReporting} from '@google-cloud/error-reporting';
+import {ErrorMessage, ErrorReporting} from '@google-cloud/error-reporting';
 import env from './env';
 import {ErrorRequestHandler} from 'express';
 
-export const errorReporter = new ErrorReporting({
-  credentials: JSON.parse(env.GOOGLE_APPLICATION_CREDENTIALS),
-  reportMode: 'always',
-  reportUnhandledRejections: true,
-});
+const localReporter: ErrorReporting['report'] = (error, req, message, cb) => {
+  console.error(error, message);
+  if (typeof cb === 'function') {
+    cb(null, null, {});
+  }
+  return new ErrorMessage();
+};
+
+export const errorReporter =
+  env.NODE_ENV === 'production'
+    ? new ErrorReporting({
+        reportMode: 'production',
+        reportUnhandledRejections: true,
+      })
+    : {
+        report: localReporter,
+      };
 
 export const ApolloErrorLoggingPlugin: PluginDefinition = {
   async requestDidStart() {
@@ -16,10 +28,8 @@ export const ApolloErrorLoggingPlugin: PluginDefinition = {
         await Promise.all(
           errors.map((e) => {
             return new Promise((resolve, reject) => {
-              logger.info(e);
               errorReporter.report(e, http, undefined, (err, response) => {
                 if (err) {
-                  logger.error(err);
                   return reject(err);
                 }
                 return resolve(response);
@@ -43,6 +53,8 @@ export class ApiError extends Error {
     this.code = code;
     this.message = message;
     this.originalError = originalError;
+    // needed for instance of check
+    Object.setPrototypeOf(this, ApiError.prototype);
   }
 }
 
@@ -52,16 +64,17 @@ export const errorReportingMiddleware: ErrorRequestHandler = (
   res,
   next,
 ) => {
-  let originalError;
-  console.log('asss');
+  res.type('text/plain');
   if (err instanceof ApiError) {
-    res.status(err.code).text(err.message);
-    originalError = err.message;
+    res.status(err.code).send(err.message);
+    if (err.originalError) {
+      err = err.originalError;
+    }
   } else {
-    res.status(500).text('Internal Server Error');
+    res.status(500).send('Internal Server Error');
   }
 
-  errorReporter.report(originalError ?? err, req, undefined, (e, response) => {
+  errorReporter.report(err, req, undefined, (e) => {
     if (e) {
       console.error(e);
     }

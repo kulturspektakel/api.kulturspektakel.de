@@ -1,8 +1,9 @@
 import prismaClient from '../utils/prismaClient';
 import {createEvent, DateArray, EventAttributes} from 'ics';
-import {Express} from 'express';
 import {PrismaClient} from '@prisma/client';
 import {differenceInMinutes} from 'date-fns';
+import {Router} from '@awaitjs/express';
+import {ApiError} from '../utils/errorReporting';
 
 export async function getIcs(
   prismaClient: PrismaClient,
@@ -21,7 +22,7 @@ export async function getIcs(
     },
   });
   if (!reservation) {
-    throw new Error('Reservation token not found');
+    throw new ApiError(404, 'Reservation not found');
   }
 
   const start: DateArray = [
@@ -63,17 +64,18 @@ export async function getIcs(
   });
 }
 
-export default function (app: Express) {
-  app.get<{token: string}>('/ics/:token', async (req, res) => {
-    const {token} = req.params;
+const router = Router({});
 
-    const cal = await getIcs(prismaClient, token);
+router.getAsync<{token: string}>('/:token', async (req, res) => {
+  const {token} = req.params;
+  const cal = await getIcs(prismaClient, token);
 
-    res.set({
+  res
+    .set({
       'Content-type': 'text/calendar',
       'Content-disposition': `attachment; filename=reservation.ics`,
-    });
+    })
+    .send(cal);
+});
 
-    res.send(cal);
-  });
-}
+export default router;

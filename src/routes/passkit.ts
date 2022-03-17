@@ -1,10 +1,10 @@
-import prismaClient from '../../utils/prismaClient';
-import env from '../../utils/env';
-import {Express} from 'express';
+import prismaClient from '../utils/prismaClient';
+import env from '../utils/env';
 import {createPass, createAbstractModel} from 'passkit-generator';
 import {PrismaClient} from '@prisma/client';
 import {Stream} from 'form-data';
-import {ApiError} from '../../utils/errorReporting';
+import {ApiError} from '../utils/errorReporting';
+import {Router} from '@awaitjs/express';
 
 const createModel = createAbstractModel({
   model: __dirname + '/../../../artifacts/model',
@@ -127,17 +127,19 @@ export async function getPass(
   return pass.generate();
 }
 
-export default function (app: Express) {
-  app.get<{token: string}>('/passkit/:token', async (req, res) => {
-    const {token} = req.params;
-    const pass = await getPass(prismaClient, token);
-    if (!pass) {
-      throw new ApiError(404, 'Not Found');
-    }
-    res.set({
-      'Content-type': 'application/vnd.apple.pkpass',
-      'Content-disposition': `attachment; filename=pass.pkpass`,
-    });
-    pass.pipe(res);
+const router = Router({});
+
+router.getAsync<{token: string}>('/:token', async (req, res) => {
+  const {token} = req.params;
+  const pass = await getPass(prismaClient, token);
+  if (!pass) {
+    throw new ApiError(404, 'Reservation Not Found');
+  }
+  res.set({
+    'Content-type': 'application/vnd.apple.pkpass',
+    'Content-disposition': `attachment; filename=pass.pkpass`,
   });
-}
+  pass.pipe(res);
+});
+
+export default router;

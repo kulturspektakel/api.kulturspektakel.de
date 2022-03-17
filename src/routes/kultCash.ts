@@ -1,5 +1,5 @@
 import prismaClient from '../utils/prismaClient';
-import {Express, Request, Response} from 'express';
+import {Request} from 'express';
 import {createHash} from 'crypto';
 import env from '../utils/env';
 import {
@@ -24,7 +24,7 @@ import {homedir} from 'os';
 import {getTimezoneOffset} from 'date-fns-tz';
 import {subMilliseconds} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
-import asyncHandler from 'express-async-handler';
+import {Router} from '@awaitjs/express';
 
 const fs = fsNode.promises;
 
@@ -53,174 +53,174 @@ function auth(req: Request): {id: string; version?: number} {
   throw new ApiError(401, 'Unauthorized');
 }
 
-export default function (app: Express) {
-  app.get(
-    '/\\$\\$\\$/config',
-    asyncHandler(async (req, res) => {
-      const {id} = auth(req);
-      const device = await prismaClient.device.upsert({
-        where: {
-          id,
-        },
-        create: {
-          id,
-          lastSeen: new Date(),
-        },
-        update: {
-          lastSeen: new Date(),
-        },
+const router = Router({});
+
+router.getAsync('/config', async (req, res) => {
+  const {id} = auth(req);
+  const device = await prismaClient.device.upsert({
+    where: {
+      id,
+    },
+    create: {
+      id,
+      lastSeen: new Date(),
+    },
+    update: {
+      lastSeen: new Date(),
+    },
+    include: {
+      productList: {
         include: {
-          productList: {
-            include: {
-              product: {
-                select: {
-                  name: true,
-                  price: true,
-                },
-                orderBy: {
-                  order: 'asc',
-                },
-                take: 9,
+          product: {
+            select: {
+              name: true,
+              price: true,
+            },
+            orderBy: {
+              order: 'asc',
+            },
+            take: 9,
+          },
+        },
+      },
+    },
+  });
+
+  const list = device?.productList;
+  if (!list) {
+    res.status(204).send('No Content');
+    return;
+  }
+
+  const message = DeviceConfig.encode({
+    listId: list.id,
+    name: list.name,
+    products: list.product,
+  }).finish();
+
+  res.setHeader('Content-Type', 'application/x-protobuf');
+  res.send(message);
+});
+
+router.postAsync('/log', async (req, res) => {
+  let buffer: Buffer = Buffer.from('');
+  req.on('data', (chunk: Buffer) => {
+    buffer = Buffer.concat([buffer, chunk]);
+  });
+
+  req.on('end', async () => {
+    const {id} = auth(req);
+
+    let message: CardTransaction;
+    try {
+      message = CardTransaction.decode(buffer);
+    } catch (e) {
+      throw new ApiError(400, 'Bad Request', e as Error);
+    }
+
+    let deviceTime = new Date(message.deviceTime * 1000);
+    if (!message.deviceTimeIsUtc) {
+      deviceTime = subMilliseconds(
+        deviceTime,
+        getTimezoneOffset('Europe/Berlin', deviceTime),
+      );
+    }
+
+    try {
+      await prismaClient.cardTransaction.create({
+        data: {
+          clientId: message.clientId,
+          deviceTime,
+          device: {
+            connectOrCreate: {
+              create: {
+                id,
+                lastSeen: new Date(),
+              },
+              where: {
+                id,
               },
             },
           },
+          cardId: message.cardId,
+          depositBefore: message.depositBefore,
+          depositAfter: message.depositAfter,
+          balanceBefore: message.balanceBefore,
+          balanceAfter: message.balanceAfter,
+          transactionType: mapTransactionType(message.transactionType),
         },
       });
-
-      const list = device?.productList;
-      if (!list) {
-        return res.status(204).send('No Content');
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        // client ID already exists
+        throw new ApiError(409, 'Conflict');
       }
+      throw e;
+    }
 
-      const message = DeviceConfig.encode({
-        listId: list.id,
-        name: list.name,
-        products: list.product,
-      }).finish();
-
-      res.setHeader('Content-Type', 'application/x-protobuf');
-      res.send(message);
-    }),
-  );
-
-  app.post('/\\$\\$\\$/log', (req, res) => {
-    let buffer: Buffer = Buffer.from('');
-    req.on('data', (chunk: Buffer) => {
-      buffer = Buffer.concat([buffer, chunk]);
-    });
-
-    req.on('end', async () => {
-      const {id} = auth(req);
-
-      let message: CardTransaction;
-      try {
-        message = CardTransaction.decode(buffer);
-      } catch (e) {
-        throw new ApiError(400, 'Bad Request', e as Error);
-      }
-
-      let deviceTime = new Date(message.deviceTime * 1000);
-      if (!message.deviceTimeIsUtc) {
-        deviceTime = subMilliseconds(
-          deviceTime,
-          getTimezoneOffset('Europe/Berlin', deviceTime),
-        );
-      }
-
-      try {
-        await prismaClient.cardTransaction.create({
-          data: {
-            clientId: message.clientId,
-            deviceTime,
-            device: {
-              connectOrCreate: {
-                create: {
-                  id,
-                  lastSeen: new Date(),
-                },
-                where: {
-                  id,
-                },
-              },
+    if (message.transactionType === CardTransaction_TransactionType.CHARGE) {
+      await prismaClient.order.create({
+        data: {
+          createdAt: deviceTime,
+          deposit: message.depositBefore - message.depositAfter,
+          payment: mapPayment(message.paymentMethod),
+          items: {
+            createMany: {
+              data:
+                message.cartItems?.map(({amount, product}) => ({
+                  productListId: message.listId,
+                  amount,
+                  name: product!.name, // not sure why product is nullable
+                  perUnitPrice: product!.price,
+                })) ?? [],
             },
-            cardId: message.cardId,
-            depositBefore: message.depositBefore,
-            depositAfter: message.depositAfter,
-            balanceBefore: message.balanceBefore,
-            balanceAfter: message.balanceAfter,
-            transactionType: mapTransactionType(message.transactionType),
           },
-        });
-      } catch (e) {
-        if (
-          e instanceof Prisma.PrismaClientKnownRequestError &&
-          e.code === 'P2002'
-        ) {
-          // client ID already exists
-          throw new ApiError(409, 'Conflict');
-        }
-        throw e;
-      }
+          deviceId: message.deviceId, // made sure device exists earlier
+          cardTransactionClientId: message.clientId,
+        },
+      });
+    }
 
-      if (message.transactionType === CardTransaction_TransactionType.CHARGE) {
-        await prismaClient.order.create({
-          data: {
-            createdAt: deviceTime,
-            deposit: message.depositBefore - message.depositAfter,
-            payment: mapPayment(message.paymentMethod),
-            items: {
-              createMany: {
-                data:
-                  message.cartItems?.map(({amount, product}) => ({
-                    productListId: message.listId,
-                    amount,
-                    name: product!.name, // not sure why product is nullable
-                    perUnitPrice: product!.price,
-                  })) ?? [],
-              },
-            },
-            deviceId: message.deviceId, // made sure device exists earlier
-            cardTransactionClientId: message.clientId,
-          },
-        });
-      }
+    try {
+      await postTransactionToSlack(message);
+    } catch (e) {
+      console.error(e);
+    }
 
-      try {
-        await postTransactionToSlack(message);
-      } catch (e) {
-        console.error(e);
-      }
-
-      return res.status(201).send('Created');
-    });
+    return res.status(201).send('Created');
   });
+});
 
-  app.get('/\\$\\$\\$/update', async (req, res) => {
-    const noUpdate = () => res.status(304).send('Not Modified');
-    const {version} = auth(req);
-    if (!version || version < 1) {
-      return noUpdate();
-    }
-
-    const dir = join(homedir(), 'contactless-firmware');
-    if (!existsSync(dir)) {
-      await fs.mkdir(dir);
-    }
-
-    const latestVersion = (await fs.readdir(dir))
-      .map((i) => i.match(/^(\d+)\.bin$/)?.pop())
-      .map((i) => (i ? parseInt(i, 10) : undefined))
-      .filter((i): i is number => Number.isSafeInteger(i))
-      .sort((a, b) => a - b)
-      .pop();
-
-    if (latestVersion && latestVersion > version) {
-      return res.download(join(dir, `${latestVersion}.bin`));
-    }
-
+router.getAsync('/update', async (req, res) => {
+  const noUpdate = () => {
+    res.status(304).send('Not Modified');
+  };
+  const {version} = auth(req);
+  if (!version || version < 1) {
     return noUpdate();
-  });
-}
+  }
+
+  const dir = join(homedir(), 'contactless-firmware');
+  if (!existsSync(dir)) {
+    await fs.mkdir(dir);
+  }
+
+  const latestVersion = (await fs.readdir(dir))
+    .map((i) => i.match(/^(\d+)\.bin$/)?.pop())
+    .map((i) => (i ? parseInt(i, 10) : undefined))
+    .filter((i): i is number => Number.isSafeInteger(i))
+    .sort((a, b) => a - b)
+    .pop();
+
+  if (latestVersion && latestVersion > version) {
+    return res.download(join(dir, `${latestVersion}.bin`));
+  }
+
+  return noUpdate();
+});
 
 function mapTransactionType(
   payment: CardTransaction_TransactionType,
@@ -371,3 +371,5 @@ async function postTransactionToSlack(message: CardTransaction) {
     ].filter(Boolean),
   });
 }
+
+export default router;

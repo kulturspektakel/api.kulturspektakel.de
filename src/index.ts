@@ -45,10 +45,10 @@ const server = new ApolloServer({
   app.use(cookieParser());
 
   // Routes
-  auth(app);
-  passkit(app);
-  ics(app);
-  kultCash(app);
+  app.use(auth);
+  app.use('/paskit', passkit);
+  app.use('/ics', ics);
+  app.use('/\\$\\$\\$', kultCash);
   app.use(
     '/public',
     express.static(join(__dirname, '..', 'artifacts', 'public')),
@@ -77,7 +77,3 @@ const server = new ApolloServer({
     ),
   );
 })();
-
-export const asyncErrorHandler = (fn) => (req, res, next) => {
-  return Promise.resolve(fn(req, res, next)).catch(next);
-};
