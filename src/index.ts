@@ -15,6 +15,7 @@ import {
   ApolloErrorLoggingPlugin,
   errorReportingMiddleware,
 } from './utils/errorReporting';
+import saml from './routes/saml';
 
 const server = new ApolloServer({
   context,
@@ -48,6 +49,7 @@ const server = new ApolloServer({
   app.use(auth);
   app.use('/paskit', passkit);
   app.use('/ics', ics);
+  app.use('/saml', saml);
   app.use('/\\$\\$\\$', kultCash);
   app.use(
     '/public',

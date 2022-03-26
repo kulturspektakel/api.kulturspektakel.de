@@ -8,6 +8,7 @@ import FormData from 'form-data';
 import {add} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
+import requestUrl from '../utils/requestUrl';
 
 export type TokenInput =
   | {
@@ -33,16 +34,8 @@ function parseToken(token?: string): ParsedToken | null {
   return null;
 }
 
-function requestURL(req: Request): URL {
-  return new URL(
-    `${req.headers['x-forwarded-proto'] ?? req.protocol}://${req.get('host')}${
-      req.path
-    }`,
-  );
-}
-
 function cookieDomain(req: Request): string {
-  return requestURL(req).hostname.split('.').slice(-2).join('.');
+  return requestUrl(req).hostname.split('.').slice(-2).join('.');
 }
 
 function setCookie(req: Request, res: Response, userId: string) {
@@ -56,6 +49,7 @@ function setCookie(req: Request, res: Response, userId: string) {
   const token = jwt.sign(tokenInput, env.JWT_SECRET, {
     expiresIn,
   });
+
   res.cookie('token', token, {
     maxAge: expiresIn * 1000,
     domain: cookieDomain(req),
@@ -80,14 +74,9 @@ router.getAsync('/logout', async (req, res) => {
 router.getAsync(
   '/auth',
   async (req: Request<any, any, any, {code?: string; state?: string}>, res) => {
-    const redirectURI = requestURL(req);
-    // redirectURI.pathname = req.originalUrl.split('?').shift()!;
-    /*
-  if (parseToken(req.cookies.token)) {
-    // valid token
-    return res.send('ok');
-  } else 
-  */
+    const redirectURI = requestUrl(req);
+    redirectURI.search = '';
+
     if (req.query.code != null) {
       const form = new FormData();
       form.append('client_id', env.SLACK_CLIENT_ID);
@@ -163,6 +152,7 @@ router.getAsync(
     const url = new URL('https://slack.com/oauth/authorize');
     url.searchParams.append('client_id', env.SLACK_CLIENT_ID);
     url.searchParams.append('scope', SCOPES.join(' '));
+    url.searchParams.append('team', 'T03EKSJKF'); // TODO move to env
     url.searchParams.append('redirect_uri', redirectURI.toString());
     if (req.query.state) {
       url.searchParams.append('state', encodeURIComponent(req.query.state));

@@ -65,6 +65,7 @@
     "nodemailer": "^6.7.2",
     "normalize-url": "6",
     "passkit-generator": "^2.0.8",
+    "samlify": "^2.8.3",
     "ts-node": "^10.5.0",
     "ts-proto": "^1.105.2",
     "yarn": "^1.22.17"

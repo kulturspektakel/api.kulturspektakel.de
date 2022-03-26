@@ -2,8 +2,6 @@ import fetch from 'node-fetch';
 import env from '../utils/env';
 import querystring from 'querystring';
 
-const workspaceId = 'ac8f47db-4d08-41d1-b245-34058883e72c';
-
 export type APIObject = {
   id: string;
   workspaceId: string;
@@ -67,7 +65,7 @@ export async function items(params: {
     `https://api.nuclino.com/v0/items/?${querystring.stringify({
       // filter non null values
       ...Object.fromEntries(Object.entries(params).filter(([, v]) => v)),
-      workspaceId,
+      workspaceId: env.NUCLINO_WORKSPACE_ID,
     })}`,
   );
   return r.results;

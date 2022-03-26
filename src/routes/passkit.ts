@@ -7,15 +7,15 @@ import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
 
 const createModel = createAbstractModel({
-  model: __dirname + '/../../../artifacts/model',
+  model: __dirname + '/../../artifacts/model',
   certificates: {
-    wwdr: __dirname + '/../../../artifacts/AppleWWDRCAG3.pem',
+    wwdr: __dirname + '/../../artifacts/AppleWWDRCAG3.pem',
     signerCert:
-      __dirname + '/../../../artifacts/pass.de.kulturspektakel.table.pem',
+      __dirname + '/../../artifacts/pass.de.kulturspektakel.table.pem',
     signerKey: {
       passphrase: env.PASSKIT_KEY,
       keyFile:
-        __dirname + '/../../../artifacts/pass.de.kulturspektakel.table.key.pem',
+        __dirname + '/../../artifacts/pass.de.kulturspektakel.table.key.pem',
     },
   },
 });

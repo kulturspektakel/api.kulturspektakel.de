@@ -29,11 +29,22 @@ const e = {
   SLACK_BOT_TOKEN: env.get('SLACK_BOT_TOKEN').required(!ci).asString(),
   KULT_CASH_SALT: env.get('KULT_CASH_SALT').required(!ci).asString(),
   BING_MAPS_KEY: env.get('BING_MAPS_KEY').required(!ci).asString(),
+  NUCLINO_WORKSPACE_ID: env
+    .get('NUCLINO_WORKSPACE_ID')
+    .required(!ci)
+    .asString(),
+  NUCLINO_TEAM_ID: env.get('NUCLINO_TEAM_ID').required(!ci).asString(),
   NUCLINO_API_KEY: env.get('NUCLINO_API_KEY').required(!ci).asString(),
+  NUCLINO_ANONYMOUS_PASSWORD: env
+    .get('NUCLINO_ANONYMOUS_PASSWORD')
+    .required(!ci)
+    .asString(),
   GOOGLE_APPLICATION_CREDENTIALS: env
     .get('GOOGLE_APPLICATION_CREDENTIALS')
     .required(!ci)
     .asString(),
+  SAML_CERT: env.get('SAML_CERT').required(!ci).asString(),
+  SAML_PRIVATE_KEY: env.get('SAML_PRIVATE_KEY').required(!ci).asString(),
 };
 
 export default e;
