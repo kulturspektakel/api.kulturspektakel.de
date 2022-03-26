@@ -12,6 +12,7 @@ const e = {
   JWT_SECRET: env.get('JWT_SECRET').required(!ci).asString(),
   SLACK_CLIENT_ID: env.get('SLACK_CLIENT_ID').required(!ci).asString(),
   SLACK_CLIENT_SECRET: env.get('SLACK_CLIENT_SECRET').required(!ci).asString(),
+  SLACK_TEAM_ID: env.get('SLACK_TEAM_ID').required(!ci).asString(),
   PASSKIT_KEY: env.get('PASSKIT_KEY').required(!ci).asString(),
   AWS_ACCESS_KEY_ID: env.get('AWS_ACCESS_KEY_ID').required(!ci).asString(),
   AWS_SECRET_ACCESS_KEY: env

@@ -49,10 +49,9 @@ function setCookie(req: Request, res: Response, userId: string) {
   const token = jwt.sign(tokenInput, env.JWT_SECRET, {
     expiresIn,
   });
-
   res.cookie('token', token, {
     maxAge: expiresIn * 1000,
-    domain: cookieDomain(req),
+    domain: 'c4b0-85-255-235-152.ngrok.io', //cookieDomain(req),
     secure: env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
@@ -152,7 +151,7 @@ router.getAsync(
     const url = new URL('https://slack.com/oauth/authorize');
     url.searchParams.append('client_id', env.SLACK_CLIENT_ID);
     url.searchParams.append('scope', SCOPES.join(' '));
-    url.searchParams.append('team', 'T03EKSJKF'); // TODO move to env
+    url.searchParams.append('team', env.SLACK_TEAM_ID);
     url.searchParams.append('redirect_uri', redirectURI.toString());
     if (req.query.state) {
       url.searchParams.append('state', encodeURIComponent(req.query.state));
