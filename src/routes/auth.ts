@@ -51,7 +51,7 @@ function setCookie(req: Request, res: Response, userId: string) {
   });
   res.cookie('token', token, {
     maxAge: expiresIn * 1000,
-    domain: 'c4b0-85-255-235-152.ngrok.io', //cookieDomain(req),
+    domain: cookieDomain(req),
     secure: env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
