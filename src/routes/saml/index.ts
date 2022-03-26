@@ -92,10 +92,11 @@ router.getAsync(
               border-radius: 5px;
               border: rgba(0,0,0,0.9);
               box-shadow: rgb(255, 255, 255) 0px 0px 0px 0px, rgba(17, 24, 39, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.1) 0px 8px 10px -6px;
-              max-width: 300px;
+              max-width: 280px;
               padding: 25px;
               margin: 15px;
               text-align: center;
+              line-height: 135%;
             }
             .logo {
               width: 60px;
@@ -111,12 +112,17 @@ router.getAsync(
               justify-content: center;
               font-weight: 600;
               align-items: center;
+            }
+            hr {
+              border: none;
+              border-top: 1px dotted #e5e5e5;
+              margin-top: 30px;
               margin-bottom: 20px;
             }
             form {
               display: flex;
               gap: 10px;
-              margin-top: 20px;
+              margin-top: 10px;
             }
             input {
               flex-grow: 1;
@@ -146,7 +152,8 @@ router.getAsync(
               <svg xmlns="http://www.w3.org/2000/svg" style="height:20px;width:20px;margin-right:12px" viewBox="0 0 122.8 122.8"><path d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9zm6.5 0c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V77.6z" fill="#e01e5a"></path><path d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9H45.2zm0 6.5c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9h32.3z" fill="#36c5f0"></path><path d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97V45.2zm-6.5 0c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3z" fill="#2eb67d"></path><path d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9zm0-6.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z" fill="#ecb22e"></path></svg>
               Anmelden mit Slack
             </a>
-            oder anonym einloggen&hellip;
+            <hr />
+            Falls du keinen Slack-Account frage jemanden aus der Crew nach dem Passwort für das Wiki.
             <form method="post">
               <input type="password" name="password" placeholder="Passwort" />
               <button type="submit">Login</button>
