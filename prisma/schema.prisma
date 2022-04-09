@@ -23,6 +23,7 @@ model Viewer {
   ClearedReservation    ClearedReservation[]
   BandApplicationRating BandApplicationRating[]
   BandApplication       BandApplication[]
+
 }
 
 model Area {
@@ -211,6 +212,7 @@ model BandApplication {
   instagramFollower      Int?
   bandApplicationRating  BandApplicationRating[]
   hasPreviouslyPlayed    PreviouslyPlayed?
+  lastContactedAt        DateTime?
 
   event               Event   @relation(fields: [eventId], references: [id])
   eventId             String

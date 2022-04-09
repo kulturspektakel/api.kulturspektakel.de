@@ -1,0 +1,32 @@
+---
+title: "Absage „{{ dynamic.bandname }}“ - Kulturspektakel {{ dynamic.eventYear }}"
+preheader: "Absage zu eurer Bewerbung mit „{{ dynamic.bandname }}“ für das Kulturspektakel Gauting {{ dynamic.eventYear }}"
+---
+
+<extends src="master.html">
+  <block name="content">
+    <component src="heading.html">Absage „{{ dynamic.bandname }}“</component>
+    <p>
+        Hey,
+    </p>
+    <p>
+        ganz herzlichen Dank für eure Bewerbung mit „{{ dynamic.bandname }}“ für einen Auftritt beim Kulturspektakel Gauting {{ dynamic.eventYear }}.
+    </p>
+    <p>
+        Wir haben einige Hundert Anfragen bekommen, aus denen wir gerade mal etwas über 40 Bands auswählen mussten. Dabei ist es leider unumgänglich, Bewerbungen abzusagen, selbst wenn sie gut auf unser Festival gepasst hätten. 
+    </p>
+    <p>
+        Wir hoffen deshalb auf euer Verständnis, dass wir euch keinen Slot für das diesjährige Kulturspektakel anbieten können. Bei der Planung unseres Festivals achten wir sehr darauf, möglichst vielen verschiedenen Musiker*innen einen Auftritt zu ermöglichen. Deshalb versuchen wir auch in jedem Jahr anderen Bands und neuen Musikrichtungen eine Chance zu geben und natürlich Nachwuchsbands zu fördern.
+    </p>
+    <p>
+        Dementsprechend würden wir uns freuen, wenn ihr euch auch nächstes Jahr wieder bei uns bewerbt. Die Bewerbung für das nächstjährige Kulturspektakel Jahr wird ab August über das Bewerbungsformular auf unserer Webseite möglich sein.
+    </p>
+    <p>
+        Das Line-Up für unser diesjähriges Festival findet ihr unter: <component src="a.html" locals='{"url": "https://kulturspektakel.de/lineup/{{ dynamic.eventYear }}"}'>https://kulturspektakel.de/lineup/{{ dynamic.eventYear }}</component>. Wir würden uns sehr freuen, wenn ihr trotzdem als Gäste beim Kulturspektakel vorbeischaut.
+    </p>
+    <p class="m-0">
+        Viel Erfolg und hoffentlich bis zum nächsten Jahr!<br />
+        Das Bookingteam des Kulturspektakel Gauting
+    </p>
+  </block>
+</extends>
