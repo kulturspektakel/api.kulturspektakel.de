@@ -54,6 +54,7 @@ function getStartEndTime(
   time: string,
   date: Date,
   day: ApiDay,
+  b: any,
 ): {
   startTime: Date;
   endTime: Date;
@@ -66,11 +67,15 @@ function getStartEndTime(
     Sonntag: 2,
   };
 
+  console.log(b);
+
   const startTime = add(date, {
     days: dayOffset[day],
   });
   startTime.setHours(hour);
   startTime.setMinutes(minute);
+  startTime.setSeconds(0);
+  startTime.setMilliseconds(0);
 
   return {
     startTime: zonedTimeToUtc(startTime, 'Europe/Berlin'),
@@ -109,7 +114,7 @@ export const bandsPlayingEvent = extendType({
   },
 });
 
-async function fetchLineUp(
+export async function fetchLineUp(
   eventStart: Date,
   filter: (item: ApiResponse['data'][number]['content']) => boolean = () =>
     true,
@@ -133,12 +138,19 @@ async function fetchLineUp(
         }
         return a.content.day > b.content.day ? 1 : -1;
       })
-      .map(({id, title, content: {genre, description, time, day, stage}}) => ({
+      .map(({id, title, content: {time, day, stage, ...b}}) => ({
         id,
         name: title,
-        ...getStartEndTime(time, eventStart, day),
-        genre: genre ? genre : undefined,
-        description: description ? description : undefined,
+        ...getStartEndTime(time, eventStart, day, {stage, ...b, day}),
+        genre: b.genre || undefined,
+        description: b.description || undefined,
+        shortDescription: b.shortdescription || undefined,
+        soundcloud: b.soundcloud || undefined,
+        spotify: b.spotify || undefined,
+        facebook: b.facebook || undefined,
+        instagram: b.instagram || undefined,
+        website: b.website || undefined,
+        youtube: b.youtube || undefined,
         areaId: stage.toLocaleLowerCase(),
       }));
   }

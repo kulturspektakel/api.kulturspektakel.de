@@ -35,6 +35,7 @@ model Area {
 
   table           Table[]
   areaOpeningHour AreaOpeningHour[]
+  BandPlaying     BandPlaying[]
 }
 
 model AreaOpeningHour {
@@ -268,4 +269,28 @@ model Event {
   bandApplicationStart DateTime?
   bandApplicationEnd   DateTime?
   bandApplication      BandApplication[]
+  BandPlaying          BandPlaying[]
+}
+
+model BandPlaying {
+  id               String   @id @default(uuid())
+  name             String
+  startTime        DateTime
+  endTime          DateTime
+  description      String?
+  shortDescription String?
+  genre            String?
+  instagram        String?
+  spotify          String?
+  facebook         String?
+  website          String?
+  youtube          String?
+  soundcloud       String?
+  areaId           String
+  slug             String
+  area             Area     @relation(fields: [areaId], references: [id])
+  event            Event    @relation(fields: [eventId], references: [id])
+  eventId          String
+
+  @@unique([areaId, startTime])
 }
