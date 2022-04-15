@@ -14,7 +14,7 @@ import rejectBandApplication from '../src/maizzle/mails/rejectBandApplication';
 
   for (const band of data) {
     await sendMail({
-      to: 'daniel@buechele.cc', //TODO, remove safeguard band.email,
+      to: band.email,
       from: 'Kulturspektakel Gauting Booking booking@kulturspektakel.de',
       subject: `Absage „${band.bandname}“ - Kulturspektakel ${eventYear}`,
       html: rejectBandApplication({
@@ -22,6 +22,8 @@ import rejectBandApplication from '../src/maizzle/mails/rejectBandApplication';
         eventYear,
       }),
     });
+
+    console.log(`Sent: ${band.bandname}`);
 
     await prismaClient.bandApplication.update({
       data: {
@@ -31,7 +33,5 @@ import rejectBandApplication from '../src/maizzle/mails/rejectBandApplication';
         id: band.id,
       },
     });
-
-    break;
   }
 })();
