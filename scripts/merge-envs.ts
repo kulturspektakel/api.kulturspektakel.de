@@ -12,7 +12,7 @@ const ENV_PATH = path.join(__dirname, '..', '.env');
     .toString()
     .split('\n')
     // filter empty vars
-    .filter((l) => !l.endsWith('='));
+    .filter((l) => !l.endsWith('=""'));
 
   // adding new line
   prod.unshift('');
