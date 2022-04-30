@@ -49,5 +49,5 @@ jobs:
           Dir: /var/www/virtual/kultursp/api.kulturspektakel.de
         run: |
           rm -rf node_modules src
-          rsync -avz --delete * $Host:$Dir
+          rsync -avz --delete . $Host:$Dir
           ssh $Host "cd $Dir && ./scripts/deploy.sh"
