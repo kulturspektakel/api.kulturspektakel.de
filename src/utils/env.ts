@@ -37,7 +37,6 @@ export default {
     .required()
     .asString(),
   SAML_PRIVATE_KEY: env.get('SAML_PRIVATE_KEY').required().asString(),
-  SENTRY_AUTH_TOKEN: env.get('SENTRY_AUTH_TOKEN').required().asString(),
   SENTRY_DNS: env.get('SENTRY_DNS').required().asString(),
   RELEASE: env.get('RELEASE').default('api@dev').asString(),
 };

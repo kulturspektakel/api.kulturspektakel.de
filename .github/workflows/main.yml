@@ -30,6 +30,7 @@ jobs:
           Dotenv: ${{ secrets.DOTENV_ME }}
         run: |
           echo "DOTENV_ME=$Dotenv" > .env.me
+          yarn dotenv-cli pull
           yarn dotenv-cli pull production
           yarn ts-node scripts/merge-envs.ts
           rm -rf .env.me
