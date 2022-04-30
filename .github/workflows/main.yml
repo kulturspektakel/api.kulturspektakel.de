@@ -37,6 +37,7 @@ jobs:
       - name: Create Sentry release
         env:
           Release: api@${{ github.run_number }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           printf "\nRELEASE=$Release" >> .env
           yarn sentry-cli releases new $Release
