@@ -8,7 +8,10 @@
     "strictNullChecks": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2019"]
+    "lib": ["es2019"],
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/"
   },
   "ts-node": {
     "files": true

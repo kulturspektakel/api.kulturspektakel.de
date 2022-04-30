@@ -12,10 +12,13 @@ import tasks from './tasks';
 import kultCash from './routes/kultCash';
 import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
 import {
+  ApiError,
   ApolloErrorLoggingPlugin,
   errorReportingMiddleware,
 } from './utils/errorReporting';
 import saml from './routes/saml';
+import * as Sentry from '@sentry/node';
+import {RewriteFrames as RewriteFramesIntegration} from '@sentry/integrations';
 
 const server = new ApolloServer({
   context,
@@ -43,6 +46,21 @@ const server = new ApolloServer({
 (async () => {
   await tasks();
   const app = express();
+
+  // The request handler must be the first middleware on the app
+  Sentry.init({
+    environment: env.NODE_ENV,
+    enabled: env.NODE_ENV === 'production',
+    dsn: env.SENTRY_DNS,
+    release: env.RELEASE, // needs to match release name set in github action main.yml
+    integrations: [
+      new RewriteFramesIntegration({
+        root: __dirname,
+      }),
+    ],
+  });
+  app.use(Sentry.Handlers.requestHandler());
+
   app.use(cookieParser());
 
   // Routes
@@ -56,6 +74,12 @@ const server = new ApolloServer({
     express.static(join(__dirname, '..', 'artifacts', 'public')),
   );
 
+  app.use(
+    Sentry.Handlers.errorHandler({
+      // ApiErrors are handled in errorReportingMiddleware
+      shouldHandleError: (error) => !(error instanceof ApiError),
+    }),
+  );
   app.use(errorReportingMiddleware);
 
   await server.start();

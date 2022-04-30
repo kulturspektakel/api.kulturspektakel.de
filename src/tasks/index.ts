@@ -5,7 +5,7 @@ import reservationSlackMessage from './reservationSlackMessage';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
 import nuclinoUpdateMessage from './nuclinoUpdateMessage';
-import logger from './logger';
+import events from './taskEvents';
 
 const taskListProd = {
   clearPendingReservations,
@@ -25,7 +25,7 @@ export default async function () {
     connectionString: env.DATABASE_URL,
     concurrency: 1,
     taskList: (env.NODE_ENV === 'production' ? taskListProd : taskList) as any,
-    logger,
+    events,
     crontab: ['*/5 * * * * nuclinoUpdateMessage ?max=1'].join('\n'),
   });
 }

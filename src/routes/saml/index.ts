@@ -7,6 +7,8 @@ import prismaClient from '../../utils/prismaClient';
 import requestUrl from '../../utils/requestUrl';
 import env from '../../utils/env';
 import {ApiError} from '../../utils/errorReporting';
+import {readFileSync} from 'fs';
+import {join} from 'path';
 
 const router = Router({});
 
@@ -185,6 +187,10 @@ router.getAsync(
   },
 );
 
+const signingCert = readFileSync(
+  join(__dirname, '..', '..', '..', 'artifacts', 'saml.crt'),
+);
+
 async function sendSAMLResponse(
   req: Request,
   res: Response,
@@ -200,7 +206,7 @@ async function sendSAMLResponse(
   const idp = IdentityProvider({
     entityID: url.toString(),
     privateKey: env.SAML_PRIVATE_KEY,
-    signingCert: env.SAML_CERT,
+    signingCert,
     isAssertionEncrypted: false,
     singleSignOnService: [
       {

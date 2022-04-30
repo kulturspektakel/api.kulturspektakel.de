@@ -19,21 +19,33 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
           if_key_exists: replace
-      - name: install
+      - name: Install dependencies
         run: yarn
-      - name: generate
-        run: yarn generate:prisma
-      - name: typecheck
-        run: yarn tsc
-      - name: deploy
+      - name: Typecheck and build
+        run: |
+          yarn generate:prisma
+          yarn build
+      - name: Create ENV
         env:
-          Host: kultursp@kulturspektakel.de
-          Dir: /var/www/virtual/kultursp/api.kulturspektakel.de
           Dotenv: ${{ secrets.DOTENV_ME }}
         run: |
           echo "DOTENV_ME=$Dotenv" > .env.me
-          yarn build
           yarn dotenv-cli pull production
           yarn ts-node scripts/merge-envs.ts
-          rsync -avz --delete artifacts dist prisma scripts package.json yarn.lock .env $Host:$Dir
+          rm -rf .env.me
+      - name: Create Sentry release
+        env:
+          Release: api@${{ github.run_number }}
+        run: |
+          printf "\nRELEASE=$Release" >> .env
+          yarn sentry-cli releases new $Release
+          yarn sentry-cli releases files $Release upload-sourcemaps upload-sourcemaps dist
+          yarn sentry-cli releases finalize $Release
+      - name: Deploy
+        env:
+          Host: kultursp@kulturspektakel.de
+          Dir: /var/www/virtual/kultursp/api.kulturspektakel.de
+        run: |
+          rm -rf node_modules src
+          rsync -avz --delete $Host:$Dir
           ssh $Host "cd $Dir && ./scripts/deploy.sh"
