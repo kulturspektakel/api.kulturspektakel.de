@@ -1,5 +1,5 @@
 import prismaClient from '../utils/prismaClient';
-import {Request} from 'express';
+import express, {Request} from 'express';
 import {createHash} from 'crypto';
 import env from '../utils/env';
 import {
@@ -102,18 +102,18 @@ router.getAsync('/config', async (req, res) => {
   res.send(message);
 });
 
-router.postAsync('/log', async (req, res) => {
-  let buffer: Buffer = Buffer.from('');
-  req.on('data', (chunk: Buffer) => {
-    buffer = Buffer.concat([buffer, chunk]);
-  });
-
-  req.on('end', async () => {
+router.postAsync(
+  '/log',
+  // @ts-ignore postAsync is not typed correctly
+  express.raw({
+    type: '*/*',
+  }),
+  async (req, res) => {
     const {id} = auth(req);
 
     let message: CardTransaction;
     try {
-      message = CardTransaction.decode(buffer);
+      message = CardTransaction.decode(req.body);
     } catch (e) {
       throw new ApiError(400, 'Bad Request', e as Error);
     }
@@ -191,8 +191,8 @@ router.postAsync('/log', async (req, res) => {
     }
 
     return res.status(201).send('Created');
-  });
-});
+  },
+);
 
 router.getAsync('/update', async (req, res) => {
   const noUpdate = () => {
