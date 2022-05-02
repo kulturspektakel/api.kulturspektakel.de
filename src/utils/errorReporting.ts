@@ -53,7 +53,12 @@ export const errorReportingMiddleware: ErrorRequestHandler = (
 ) => {
   res.type('text/plain');
   if (err instanceof ApiError) {
-    Sentry.captureException(err.originalError ?? err);
+    Sentry.withScope((scope) => {
+      scope.addEventProcessor(async (event) =>
+        Sentry.Handlers.parseRequest(event, req),
+      );
+      Sentry.captureException(err.originalError ?? err);
+    });
     res.status(err.code).send(err.message);
   } else {
     res.status(500).send(`Internal Server Error: ${(res as any).sentry}`);
