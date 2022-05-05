@@ -42,16 +42,21 @@ type APIResponse<T> =
     };
 
 async function nuclinoAPIRequest<T>(url: string) {
-  const res: APIResponse<T> = await fetch(url, {
+  const res = await fetch(url, {
     headers: {
       Authorization: env.NUCLINO_API_KEY,
     },
-  }).then((res) => res.json());
+  });
 
-  if (res.status !== 'success') {
-    throw new Error(res.message);
+  if (!res.ok) {
+    throw new Error(`${res.status} ${res.statusText}`);
   }
-  return res.data;
+
+  const data: APIResponse<T> = await res.json();
+  if (data.status !== 'success') {
+    throw new Error(data.message);
+  }
+  return data.data;
 }
 
 export async function items(params: {
