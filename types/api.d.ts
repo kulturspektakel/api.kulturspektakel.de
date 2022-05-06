@@ -149,6 +149,11 @@ export interface NexusGenObjects {
     secretary: string; // String!
     treasurer: string; // String!
   }
+  CardTransaction: { // root type
+    pack: string; // String!
+    password: string; // String!
+    payload: string; // String!
+  }
   Config: { // root type
     board?: NexusGenRootTypes['Board'] | null; // Board
     depositValue: number; // Int!
@@ -333,6 +338,11 @@ export interface NexusGenFieldTypes {
     secretary: string; // String!
     treasurer: string; // String!
   }
+  CardTransaction: { // field return type
+    pack: string; // String!
+    password: string; // String!
+    payload: string; // String!
+  }
   Config: { // field return type
     board: NexusGenRootTypes['Board'] | null; // Board
     depositValue: number; // Int!
@@ -361,6 +371,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
+    cardTransaction: NexusGenRootTypes['CardTransaction'] | null; // CardTransaction
     checkInReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     createBandApplication: NexusGenRootTypes['BandApplication'] | null; // BandApplication
@@ -562,6 +573,11 @@ export interface NexusGenFieldTypeNames {
     secretary: 'String'
     treasurer: 'String'
   }
+  CardTransaction: { // field return type name
+    pack: 'String'
+    password: 'String'
+    payload: 'String'
+  }
   Config: { // field return type name
     board: 'Board'
     depositValue: 'Int'
@@ -590,6 +606,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
+    cardTransaction: 'CardTransaction'
     checkInReservation: 'Reservation'
     confirmReservation: 'Reservation'
     createBandApplication: 'BandApplication'
@@ -764,6 +781,11 @@ export interface NexusGenArgTypes {
   Mutation: {
     cancelReservation: { // args
       token: string; // String!
+    }
+    cardTransaction: { // args
+      balanceAfter: number; // Int!
+      cardUri: string; // String!
+      depositAfter: number; // Int!
     }
     checkInReservation: { // args
       checkedInPersons: number; // Int!

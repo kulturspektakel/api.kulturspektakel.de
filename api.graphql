@@ -68,6 +68,12 @@ type Board {
   treasurer: String!
 }
 
+type CardTransaction {
+  pack: String!
+  password: String!
+  payload: String!
+}
+
 type Config {
   board: Board
   depositValue: Int!
@@ -156,6 +162,7 @@ scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publicati
 
 type Mutation {
   cancelReservation(token: String!): Boolean
+  cardTransaction(balanceAfter: Int!, cardUri: String!, depositAfter: Int!): CardTransaction
   checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
   createBandApplication(data: CreateBandApplicationInput!): BandApplication

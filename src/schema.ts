@@ -56,6 +56,7 @@ import rateBandApplication from './mutations/rateBandApplication';
 import BandApplicationRating from './models/BandApplicationRating';
 import nuclino from './queries/nuclino';
 import {bandsPlayingArea, bandsPlayingEvent} from './queries/bandsPlaying';
+import cardTransaction from './mutations/cardTransaction';
 
 export default makeSchema({
   contextType: {
@@ -127,6 +128,7 @@ export default makeSchema({
     createBandApplication,
     markBandApplicationContacted,
     rateBandApplication,
+    cardTransaction,
   ],
   plugins: [
     fieldAuthorizePlugin({

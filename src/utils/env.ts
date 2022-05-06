@@ -39,4 +39,5 @@ export default {
   SAML_PRIVATE_KEY: env.get('SAML_PRIVATE_KEY').required().asString(),
   SENTRY_DNS: env.get('SENTRY_DNS').required().asString(),
   RELEASE: env.get('RELEASE').default('api@dev').asString(),
+  CONTACTLESS_SALT: env.get('CONTACTLESS_SALT').required().asString(),
 };
