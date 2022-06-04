@@ -115,6 +115,8 @@ router.postAsync(
   async (req, res) => {
     const {id} = auth(req);
 
+    await fs.writeFile(`${Math.random().toString(36)}.log`, req.body);
+
     let message: CardTransaction;
     try {
       message = CardTransaction.decode(req.body);
