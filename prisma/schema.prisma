@@ -180,6 +180,7 @@ model CardTransaction {
   device          Device              @relation(fields: [deviceId], references: [id])
   deviceId        String
   Order           Order[]
+  counter         Int?
 }
 
 enum CardTransactionType {

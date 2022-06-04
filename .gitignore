@@ -13,3 +13,4 @@ newrelic_agent.log
 artifacts/public/maizzle/**/*
 .env*
 !.env.project
+!.env.vault

@@ -19,6 +19,7 @@ export interface CardTransaction {
   listId?: number | undefined;
   cartItems: CardTransaction_CartItem[];
   deviceTimeIsUtc: boolean;
+  counter?: number | undefined;
 }
 
 export enum CardTransaction_PaymentMethod {
@@ -134,19 +135,24 @@ export interface CardTransaction_CartItem {
   product: Product | undefined;
 }
 
-const baseCardTransaction: object = {
-  deviceId: '',
-  clientId: '',
-  transactionType: 0,
-  deviceTime: 0,
-  paymentMethod: 0,
-  balanceBefore: 0,
-  balanceAfter: 0,
-  depositBefore: 0,
-  depositAfter: 0,
-  cardId: '',
-  deviceTimeIsUtc: false,
-};
+function createBaseCardTransaction(): CardTransaction {
+  return {
+    deviceId: '',
+    clientId: '',
+    transactionType: 0,
+    deviceTime: 0,
+    paymentMethod: 0,
+    balanceBefore: 0,
+    balanceAfter: 0,
+    depositBefore: 0,
+    depositAfter: 0,
+    cardId: '',
+    listId: undefined,
+    cartItems: [],
+    deviceTimeIsUtc: false,
+    counter: undefined,
+  };
+}
 
 export const CardTransaction = {
   encode(
@@ -192,14 +198,16 @@ export const CardTransaction = {
     if (message.deviceTimeIsUtc === true) {
       writer.uint32(104).bool(message.deviceTimeIsUtc);
     }
+    if (message.counter !== undefined) {
+      writer.uint32(112).int32(message.counter);
+    }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CardTransaction {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {...baseCardTransaction} as CardTransaction;
-    message.cartItems = [];
+    const message = createBaseCardTransaction();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -244,6 +252,9 @@ export const CardTransaction = {
         case 13:
           message.deviceTimeIsUtc = reader.bool();
           break;
+        case 14:
+          message.counter = reader.int32();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -253,84 +264,38 @@ export const CardTransaction = {
   },
 
   fromJSON(object: any): CardTransaction {
-    const message = {...baseCardTransaction} as CardTransaction;
-    message.cartItems = [];
-    if (object.deviceId !== undefined && object.deviceId !== null) {
-      message.deviceId = String(object.deviceId);
-    } else {
-      message.deviceId = '';
-    }
-    if (object.clientId !== undefined && object.clientId !== null) {
-      message.clientId = String(object.clientId);
-    } else {
-      message.clientId = '';
-    }
-    if (
-      object.transactionType !== undefined &&
-      object.transactionType !== null
-    ) {
-      message.transactionType = cardTransaction_TransactionTypeFromJSON(
-        object.transactionType,
-      );
-    } else {
-      message.transactionType = 0;
-    }
-    if (object.deviceTime !== undefined && object.deviceTime !== null) {
-      message.deviceTime = Number(object.deviceTime);
-    } else {
-      message.deviceTime = 0;
-    }
-    if (object.paymentMethod !== undefined && object.paymentMethod !== null) {
-      message.paymentMethod = cardTransaction_PaymentMethodFromJSON(
-        object.paymentMethod,
-      );
-    } else {
-      message.paymentMethod = 0;
-    }
-    if (object.balanceBefore !== undefined && object.balanceBefore !== null) {
-      message.balanceBefore = Number(object.balanceBefore);
-    } else {
-      message.balanceBefore = 0;
-    }
-    if (object.balanceAfter !== undefined && object.balanceAfter !== null) {
-      message.balanceAfter = Number(object.balanceAfter);
-    } else {
-      message.balanceAfter = 0;
-    }
-    if (object.depositBefore !== undefined && object.depositBefore !== null) {
-      message.depositBefore = Number(object.depositBefore);
-    } else {
-      message.depositBefore = 0;
-    }
-    if (object.depositAfter !== undefined && object.depositAfter !== null) {
-      message.depositAfter = Number(object.depositAfter);
-    } else {
-      message.depositAfter = 0;
-    }
-    if (object.cardId !== undefined && object.cardId !== null) {
-      message.cardId = String(object.cardId);
-    } else {
-      message.cardId = '';
-    }
-    if (object.listId !== undefined && object.listId !== null) {
-      message.listId = Number(object.listId);
-    } else {
-      message.listId = undefined;
-    }
-    if (object.cartItems !== undefined && object.cartItems !== null) {
-      for (const e of object.cartItems) {
-        message.cartItems.push(CardTransaction_CartItem.fromJSON(e));
-      }
-    }
-    if (
-      object.deviceTimeIsUtc !== undefined &&
-      object.deviceTimeIsUtc !== null
-    ) {
-      message.deviceTimeIsUtc = Boolean(object.deviceTimeIsUtc);
-    } else {
-      message.deviceTimeIsUtc = false;
-    }
-    return message;
+    return {
+      deviceId: isSet(object.deviceId) ? String(object.deviceId) : '',
+      clientId: isSet(object.clientId) ? String(object.clientId) : '',
+      transactionType: isSet(object.transactionType)
+        ? cardTransaction_TransactionTypeFromJSON(object.transactionType)
+        : 0,
+      deviceTime: isSet(object.deviceTime) ? Number(object.deviceTime) : 0,
+      paymentMethod: isSet(object.paymentMethod)
+        ? cardTransaction_PaymentMethodFromJSON(object.paymentMethod)
+        : 0,
+      balanceBefore: isSet(object.balanceBefore)
+        ? Number(object.balanceBefore)
+        : 0,
+      balanceAfter: isSet(object.balanceAfter)
+        ? Number(object.balanceAfter)
+        : 0,
+      depositBefore: isSet(object.depositBefore)
+        ? Number(object.depositBefore)
+        : 0,
+      depositAfter: isSet(object.depositAfter)
+        ? Number(object.depositAfter)
+        : 0,
+      cardId: isSet(object.cardId) ? String(object.cardId) : '',
+      listId: isSet(object.listId) ? Number(object.listId) : undefined,
+      cartItems: Array.isArray(object?.cartItems)
+        ? object.cartItems.map((e: any) => CardTransaction_CartItem.fromJSON(e))
+        : [],
+      deviceTimeIsUtc: isSet(object.deviceTimeIsUtc)
+        ? Boolean(object.deviceTimeIsUtc)
+        : false,
+      counter: isSet(object.counter) ? Number(object.counter) : undefined,
+    };
   },
 
   toJSON(message: CardTransaction): unknown {
@@ -341,21 +306,22 @@ export const CardTransaction = {
       (obj.transactionType = cardTransaction_TransactionTypeToJSON(
         message.transactionType,
       ));
-    message.deviceTime !== undefined && (obj.deviceTime = message.deviceTime);
+    message.deviceTime !== undefined &&
+      (obj.deviceTime = Math.round(message.deviceTime));
     message.paymentMethod !== undefined &&
       (obj.paymentMethod = cardTransaction_PaymentMethodToJSON(
         message.paymentMethod,
       ));
     message.balanceBefore !== undefined &&
-      (obj.balanceBefore = message.balanceBefore);
+      (obj.balanceBefore = Math.round(message.balanceBefore));
     message.balanceAfter !== undefined &&
-      (obj.balanceAfter = message.balanceAfter);
+      (obj.balanceAfter = Math.round(message.balanceAfter));
     message.depositBefore !== undefined &&
-      (obj.depositBefore = message.depositBefore);
+      (obj.depositBefore = Math.round(message.depositBefore));
     message.depositAfter !== undefined &&
-      (obj.depositAfter = message.depositAfter);
+      (obj.depositAfter = Math.round(message.depositAfter));
     message.cardId !== undefined && (obj.cardId = message.cardId);
-    message.listId !== undefined && (obj.listId = message.listId);
+    message.listId !== undefined && (obj.listId = Math.round(message.listId));
     if (message.cartItems) {
       obj.cartItems = message.cartItems.map((e) =>
         e ? CardTransaction_CartItem.toJSON(e) : undefined,
@@ -365,88 +331,38 @@ export const CardTransaction = {
     }
     message.deviceTimeIsUtc !== undefined &&
       (obj.deviceTimeIsUtc = message.deviceTimeIsUtc);
+    message.counter !== undefined &&
+      (obj.counter = Math.round(message.counter));
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CardTransaction>): CardTransaction {
-    const message = {...baseCardTransaction} as CardTransaction;
-    message.cartItems = [];
-    if (object.deviceId !== undefined && object.deviceId !== null) {
-      message.deviceId = object.deviceId;
-    } else {
-      message.deviceId = '';
-    }
-    if (object.clientId !== undefined && object.clientId !== null) {
-      message.clientId = object.clientId;
-    } else {
-      message.clientId = '';
-    }
-    if (
-      object.transactionType !== undefined &&
-      object.transactionType !== null
-    ) {
-      message.transactionType = object.transactionType;
-    } else {
-      message.transactionType = 0;
-    }
-    if (object.deviceTime !== undefined && object.deviceTime !== null) {
-      message.deviceTime = object.deviceTime;
-    } else {
-      message.deviceTime = 0;
-    }
-    if (object.paymentMethod !== undefined && object.paymentMethod !== null) {
-      message.paymentMethod = object.paymentMethod;
-    } else {
-      message.paymentMethod = 0;
-    }
-    if (object.balanceBefore !== undefined && object.balanceBefore !== null) {
-      message.balanceBefore = object.balanceBefore;
-    } else {
-      message.balanceBefore = 0;
-    }
-    if (object.balanceAfter !== undefined && object.balanceAfter !== null) {
-      message.balanceAfter = object.balanceAfter;
-    } else {
-      message.balanceAfter = 0;
-    }
-    if (object.depositBefore !== undefined && object.depositBefore !== null) {
-      message.depositBefore = object.depositBefore;
-    } else {
-      message.depositBefore = 0;
-    }
-    if (object.depositAfter !== undefined && object.depositAfter !== null) {
-      message.depositAfter = object.depositAfter;
-    } else {
-      message.depositAfter = 0;
-    }
-    if (object.cardId !== undefined && object.cardId !== null) {
-      message.cardId = object.cardId;
-    } else {
-      message.cardId = '';
-    }
-    if (object.listId !== undefined && object.listId !== null) {
-      message.listId = object.listId;
-    } else {
-      message.listId = undefined;
-    }
-    if (object.cartItems !== undefined && object.cartItems !== null) {
-      for (const e of object.cartItems) {
-        message.cartItems.push(CardTransaction_CartItem.fromPartial(e));
-      }
-    }
-    if (
-      object.deviceTimeIsUtc !== undefined &&
-      object.deviceTimeIsUtc !== null
-    ) {
-      message.deviceTimeIsUtc = object.deviceTimeIsUtc;
-    } else {
-      message.deviceTimeIsUtc = false;
-    }
+  fromPartial<I extends Exact<DeepPartial<CardTransaction>, I>>(
+    object: I,
+  ): CardTransaction {
+    const message = createBaseCardTransaction();
+    message.deviceId = object.deviceId ?? '';
+    message.clientId = object.clientId ?? '';
+    message.transactionType = object.transactionType ?? 0;
+    message.deviceTime = object.deviceTime ?? 0;
+    message.paymentMethod = object.paymentMethod ?? 0;
+    message.balanceBefore = object.balanceBefore ?? 0;
+    message.balanceAfter = object.balanceAfter ?? 0;
+    message.depositBefore = object.depositBefore ?? 0;
+    message.depositAfter = object.depositAfter ?? 0;
+    message.cardId = object.cardId ?? '';
+    message.listId = object.listId ?? undefined;
+    message.cartItems =
+      object.cartItems?.map((e) => CardTransaction_CartItem.fromPartial(e)) ||
+      [];
+    message.deviceTimeIsUtc = object.deviceTimeIsUtc ?? false;
+    message.counter = object.counter ?? undefined;
     return message;
   },
 };
 
-const baseCardTransaction_CartItem: object = {amount: 0};
+function createBaseCardTransaction_CartItem(): CardTransaction_CartItem {
+  return {amount: 0, product: undefined};
+}
 
 export const CardTransaction_CartItem = {
   encode(
@@ -468,9 +384,7 @@ export const CardTransaction_CartItem = {
   ): CardTransaction_CartItem {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseCardTransaction_CartItem,
-    } as CardTransaction_CartItem;
+    const message = createBaseCardTransaction_CartItem();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -489,25 +403,17 @@ export const CardTransaction_CartItem = {
   },
 
   fromJSON(object: any): CardTransaction_CartItem {
-    const message = {
-      ...baseCardTransaction_CartItem,
-    } as CardTransaction_CartItem;
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Number(object.amount);
-    } else {
-      message.amount = 0;
-    }
-    if (object.product !== undefined && object.product !== null) {
-      message.product = Product.fromJSON(object.product);
-    } else {
-      message.product = undefined;
-    }
-    return message;
+    return {
+      amount: isSet(object.amount) ? Number(object.amount) : 0,
+      product: isSet(object.product)
+        ? Product.fromJSON(object.product)
+        : undefined,
+    };
   },
 
   toJSON(message: CardTransaction_CartItem): unknown {
     const obj: any = {};
-    message.amount !== undefined && (obj.amount = message.amount);
+    message.amount !== undefined && (obj.amount = Math.round(message.amount));
     message.product !== undefined &&
       (obj.product = message.product
         ? Product.toJSON(message.product)
@@ -515,22 +421,15 @@ export const CardTransaction_CartItem = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<CardTransaction_CartItem>,
+  fromPartial<I extends Exact<DeepPartial<CardTransaction_CartItem>, I>>(
+    object: I,
   ): CardTransaction_CartItem {
-    const message = {
-      ...baseCardTransaction_CartItem,
-    } as CardTransaction_CartItem;
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = 0;
-    }
-    if (object.product !== undefined && object.product !== null) {
-      message.product = Product.fromPartial(object.product);
-    } else {
-      message.product = undefined;
-    }
+    const message = createBaseCardTransaction_CartItem();
+    message.amount = object.amount ?? 0;
+    message.product =
+      object.product !== undefined && object.product !== null
+        ? Product.fromPartial(object.product)
+        : undefined;
     return message;
   },
 };
@@ -543,6 +442,7 @@ type Builtin =
   | number
   | boolean
   | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Array<infer U>
@@ -553,7 +453,18 @@ export type DeepPartial<T> = T extends Builtin
   ? {[K in keyof T]?: DeepPartial<T[K]>}
   : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P &
+      {[K in keyof P]: Exact<P[K], I[K]>} &
+      Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
+
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -9,7 +9,9 @@ export interface Product {
   price: number;
 }
 
-const baseProduct: object = {name: '', price: 0};
+function createBaseProduct(): Product {
+  return {name: '', price: 0};
+}
 
 export const Product = {
   encode(
@@ -28,7 +30,7 @@ export const Product = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Product {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {...baseProduct} as Product;
+    const message = createBaseProduct();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -47,39 +49,23 @@ export const Product = {
   },
 
   fromJSON(object: any): Product {
-    const message = {...baseProduct} as Product;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = '';
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = Number(object.price);
-    } else {
-      message.price = 0;
-    }
-    return message;
+    return {
+      name: isSet(object.name) ? String(object.name) : '',
+      price: isSet(object.price) ? Number(object.price) : 0,
+    };
   },
 
   toJSON(message: Product): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
-    message.price !== undefined && (obj.price = message.price);
+    message.price !== undefined && (obj.price = Math.round(message.price));
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Product>): Product {
-    const message = {...baseProduct} as Product;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = '';
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = 0;
-    }
+  fromPartial<I extends Exact<DeepPartial<Product>, I>>(object: I): Product {
+    const message = createBaseProduct();
+    message.name = object.name ?? '';
+    message.price = object.price ?? 0;
     return message;
   },
 };
@@ -92,6 +78,7 @@ type Builtin =
   | number
   | boolean
   | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Array<infer U>
@@ -102,7 +89,18 @@ export type DeepPartial<T> = T extends Builtin
   ? {[K in keyof T]?: DeepPartial<T[K]>}
   : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P &
+      {[K in keyof P]: Exact<P[K], I[K]>} &
+      Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
+
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

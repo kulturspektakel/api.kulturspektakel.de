@@ -25,6 +25,7 @@ import {getTimezoneOffset} from 'date-fns-tz';
 import {subMilliseconds} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
+import crc32 from 'crc-32';
 
 const fs = fsNode.promises;
 
@@ -92,12 +93,15 @@ router.getAsync('/config', async (req, res) => {
     return;
   }
 
-  const message = DeviceConfig.encode({
+  const deviceConfig: DeviceConfig = {
     listId: list.id,
     name: list.name,
     products: list.product,
-  }).finish();
+    checksum: 0,
+  };
 
+  deviceConfig.checksum = crc32.buf(DeviceConfig.encode(deviceConfig).finish());
+  const message = DeviceConfig.encode(deviceConfig).finish();
   res.setHeader('Content-Type', 'application/x-protobuf');
   res.send(message);
 });
@@ -148,6 +152,7 @@ router.postAsync(
           balanceBefore: message.balanceBefore,
           balanceAfter: message.balanceAfter,
           transactionType: mapTransactionType(message.transactionType),
+          counter: message.counter,
         },
       });
     } catch (e) {
