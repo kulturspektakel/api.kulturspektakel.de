@@ -141,6 +141,7 @@ model Device {
   productList     ProductList?      @relation(fields: [productListId], references: [id])
   productListId   Int?
   CardTransaction CardTransaction[]
+  softwareVersion String?
 }
 
 model Order {

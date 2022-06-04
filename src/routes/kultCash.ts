@@ -1,5 +1,5 @@
 import prismaClient from '../utils/prismaClient';
-import express, {Request} from 'express';
+import express, {NextFunction, Request, Response} from 'express';
 import {createHash} from 'crypto';
 import env from '../utils/env';
 import {
@@ -31,7 +31,14 @@ const fs = fsNode.promises;
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
-function auth(req: Request): {id: string; version?: number} {
+const router = Router({});
+
+type Res = Response<
+  any,
+  Record<'id', string> & Record<'version', number | undefined>
+>;
+
+router.useAsync('/', async function (req, res: Res, next: NextFunction) {
   const authorization: string | undefined = req.headers['authorization'];
   const macAddress = req.headers['x-esp8266-sta-mac'];
   if (typeof macAddress === 'string' && macAddress.length === 17) {
@@ -47,27 +54,36 @@ function auth(req: Request): {id: string; version?: number} {
       if (!Number.isSafeInteger(version)) {
         version = undefined;
       }
-      return {id, version};
+      res.locals.id = id;
+      res.locals.version = version;
+
+      await prismaClient.device.upsert({
+        where: {
+          id,
+        },
+        create: {
+          id,
+          lastSeen: new Date(),
+          softwareVersion: String(version),
+        },
+        update: {
+          lastSeen: new Date(),
+          softwareVersion: String(version),
+        },
+      });
+
+      return next();
     }
   }
 
   throw new ApiError(401, 'Unauthorized');
-}
+});
 
-const router = Router({});
-
-router.getAsync('/config', async (req, res) => {
-  const {id} = auth(req);
-  const device = await prismaClient.device.upsert({
+router.getAsync('/config', async (_req, res: Res) => {
+  const {id} = res.locals;
+  const device = await prismaClient.device.findUnique({
     where: {
       id,
-    },
-    create: {
-      id,
-      lastSeen: new Date(),
-    },
-    update: {
-      lastSeen: new Date(),
     },
     include: {
       productList: {
@@ -110,13 +126,10 @@ router.postAsync(
   '/log',
   // @ts-ignore postAsync is not typed correctly
   express.raw({
-    type: '*/*',
+    type: () => true, // parse body without Content-Type header
   }),
-  async (req, res) => {
-    const {id} = auth(req);
-
-    await fs.writeFile(`${Math.random().toString(36)}.log`, req.body);
-
+  async (req: Request<{}, any, Buffer>, res: Res) => {
+    const {id} = res.locals;
     let message: CardTransaction;
     try {
       message = CardTransaction.decode(req.body);
@@ -191,21 +204,21 @@ router.postAsync(
       });
     }
 
-    try {
-      await postTransactionToSlack(message);
-    } catch (e) {
-      console.error(e);
-    }
+    // try {
+    //   await postTransactionToSlack(message);
+    // } catch (e) {
+    //   console.error(e);
+    // }
 
     return res.status(201).send('Created');
   },
 );
 
-router.getAsync('/update', async (req, res) => {
+router.getAsync('/update', async (req, res: Res) => {
   const noUpdate = () => {
     res.status(304).send('Not Modified');
   };
-  const {version} = auth(req);
+  const {version} = res.locals;
   if (!version || version < 1) {
     return noUpdate();
   }

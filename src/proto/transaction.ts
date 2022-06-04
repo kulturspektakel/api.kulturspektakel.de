@@ -1,6 +1,6 @@
 /* eslint-disable */
 import Long from 'long';
-import _m0 from 'protobufjs/minimal';
+import * as _m0 from 'protobufjs/minimal';
 import {Product} from './product';
 
 export const protobufPackage = '';
@@ -83,8 +83,9 @@ export function cardTransaction_PaymentMethodToJSON(
       return 'FREE_BAND';
     case CardTransaction_PaymentMethod.KULT_CARD:
       return 'KULT_CARD';
+    case CardTransaction_PaymentMethod.UNRECOGNIZED:
     default:
-      return 'UNKNOWN';
+      return 'UNRECOGNIZED';
   }
 }
 
@@ -125,8 +126,9 @@ export function cardTransaction_TransactionTypeToJSON(
       return 'CHARGE';
     case CardTransaction_TransactionType.CASHOUT:
       return 'CASHOUT';
+    case CardTransaction_TransactionType.UNRECOGNIZED:
     default:
-      return 'UNKNOWN';
+      return 'UNRECOGNIZED';
   }
 }
 
@@ -456,9 +458,10 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P &
-      {[K in keyof P]: Exact<P[K], I[K]>} &
-      Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
+  : P & {[K in keyof P]: Exact<P[K], I[K]>} & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
