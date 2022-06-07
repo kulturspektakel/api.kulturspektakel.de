@@ -3,21 +3,13 @@ import express, {NextFunction, Request, Response} from 'express';
 import {createHash} from 'crypto';
 import env from '../utils/env';
 import {
-  CardTransaction,
-  CardTransaction_PaymentMethod,
-  CardTransaction_TransactionType,
-} from '../proto/transaction';
+  LogMessage,
+  LogMessage_CardTransaction_TransactionType,
+  LogMessage_Order_PaymentMethod,
+} from '../proto/logmessage';
 import {DeviceConfig} from '../proto/config';
-import {
-  OrderPayment,
-  CardTransactionType,
-  Prisma,
-  ProductList,
-} from '@prisma/client';
+import {OrderPayment, CardTransactionType, Prisma} from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {sendMessage, SlackChannel} from '../utils/slack';
-import {config} from '../queries/config';
-import emoji from 'node-emoji';
 import {join} from 'path';
 import fsNode, {existsSync} from 'fs';
 import {homedir} from 'os';
@@ -56,6 +48,8 @@ router.useAsync('/', async function (req, res: Res, next: NextFunction) {
       }
       res.locals.id = id;
       res.locals.version = version;
+      const softwareVersion = version ? String(version) : undefined;
+      const lastSeen = new Date();
 
       await prismaClient.device.upsert({
         where: {
@@ -63,12 +57,12 @@ router.useAsync('/', async function (req, res: Res, next: NextFunction) {
         },
         create: {
           id,
-          lastSeen: new Date(),
-          softwareVersion: String(version),
+          lastSeen,
+          softwareVersion,
         },
         update: {
-          lastSeen: new Date(),
-          softwareVersion: String(version),
+          lastSeen,
+          softwareVersion,
         },
       });
 
@@ -130,11 +124,19 @@ router.postAsync(
   }),
   async (req: Request<{}, any, Buffer>, res: Res) => {
     const {id} = res.locals;
-    let message: CardTransaction;
+    let message: LogMessage;
     try {
-      message = CardTransaction.decode(req.body);
+      message = LogMessage.decode(req.body);
     } catch (e) {
       throw new ApiError(400, 'Bad Request', e as Error);
+    }
+
+    if (!message.deviceId || !message.clientId) {
+      throw new ApiError(
+        400,
+        'Bad Request',
+        new Error('Missing device/cliendID'),
+      );
     }
 
     let deviceTime = new Date(message.deviceTime * 1000);
@@ -145,53 +147,61 @@ router.postAsync(
       );
     }
 
-    try {
-      await prismaClient.cardTransaction.create({
-        data: {
-          clientId: message.clientId,
-          deviceTime,
-          device: {
-            connectOrCreate: {
-              create: {
-                id,
-                lastSeen: new Date(),
-              },
-              where: {
-                id,
+    const {cardTransaction, order} = message;
+
+    if (cardTransaction) {
+      try {
+        await prismaClient.cardTransaction.create({
+          data: {
+            clientId: message.clientId,
+            deviceTime,
+            device: {
+              connectOrCreate: {
+                create: {
+                  id,
+                  lastSeen: new Date(),
+                },
+                where: {
+                  id,
+                },
               },
             },
+            cardId: cardTransaction.cardId,
+            depositBefore: cardTransaction.depositBefore,
+            depositAfter: cardTransaction.depositAfter,
+            balanceBefore: cardTransaction.balanceBefore,
+            balanceAfter: cardTransaction.balanceAfter,
+            transactionType: mapTransactionType(
+              cardTransaction.transactionType,
+            ),
+            counter: cardTransaction.counter,
           },
-          cardId: message.cardId,
-          depositBefore: message.depositBefore,
-          depositAfter: message.depositAfter,
-          balanceBefore: message.balanceBefore,
-          balanceAfter: message.balanceAfter,
-          transactionType: mapTransactionType(message.transactionType),
-          counter: message.counter,
-        },
-      });
-    } catch (e) {
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === 'P2002'
-      ) {
-        // client ID already exists
-        throw new ApiError(409, 'Conflict');
+        });
+      } catch (e) {
+        if (
+          e instanceof Prisma.PrismaClientKnownRequestError &&
+          e.code === 'P2002'
+        ) {
+          // client ID already exists
+          throw new ApiError(409, 'Conflict');
+        }
+        throw e;
       }
-      throw e;
     }
 
-    if (message.transactionType === CardTransaction_TransactionType.CHARGE) {
+    if (order) {
       await prismaClient.order.create({
         data: {
           createdAt: deviceTime,
-          deposit: message.depositBefore - message.depositAfter,
-          payment: mapPayment(message.paymentMethod),
+          deposit: cardTransaction
+            ? cardTransaction.depositBefore - cardTransaction.depositAfter
+            : 0,
+          payment: mapPayment(order.paymentMethod),
           items: {
             createMany: {
               data:
-                message.cartItems?.map(({amount, product}) => ({
-                  productListId: message.listId,
+                order.cartItems.map(({amount, product}) => ({
+                  productListId: order.listId,
                   amount,
                   name: product!.name, // not sure why product is nullable
                   perUnitPrice: product!.price,
@@ -243,45 +253,46 @@ router.getAsync('/update', async (req, res: Res) => {
 });
 
 function mapTransactionType(
-  payment: CardTransaction_TransactionType,
+  payment: LogMessage_CardTransaction_TransactionType,
 ): CardTransactionType {
   switch (payment) {
-    case CardTransaction_TransactionType.CASHOUT:
+    case LogMessage_CardTransaction_TransactionType.CASHOUT:
       return CardTransactionType.Cashout;
-    case CardTransaction_TransactionType.CHARGE:
+    case LogMessage_CardTransaction_TransactionType.CHARGE:
       return CardTransactionType.Charge;
-    case CardTransaction_TransactionType.TOP_UP:
+    case LogMessage_CardTransaction_TransactionType.TOP_UP:
       return CardTransactionType.TopUp;
-    case CardTransaction_TransactionType.UNRECOGNIZED:
+    case LogMessage_CardTransaction_TransactionType.UNRECOGNIZED:
       throw new Error('Unrecognized TransactionType');
     default:
       throw new UnreachableCaseError(payment);
   }
 }
 
-function mapPayment(payment: CardTransaction_PaymentMethod): OrderPayment {
+function mapPayment(payment: LogMessage_Order_PaymentMethod): OrderPayment {
   switch (payment) {
-    case CardTransaction_PaymentMethod.CASH:
+    case LogMessage_Order_PaymentMethod.CASH:
       return OrderPayment.CASH;
-    case CardTransaction_PaymentMethod.BON:
+    case LogMessage_Order_PaymentMethod.BON:
       return OrderPayment.BON;
-    case CardTransaction_PaymentMethod.FREE_BAND:
+    case LogMessage_Order_PaymentMethod.FREE_BAND:
       return OrderPayment.FREE_BAND;
-    case CardTransaction_PaymentMethod.FREE_CREW:
+    case LogMessage_Order_PaymentMethod.FREE_CREW:
       return OrderPayment.FREE_CREW;
-    case CardTransaction_PaymentMethod.SUM_UP:
+    case LogMessage_Order_PaymentMethod.SUM_UP:
       return OrderPayment.SUM_UP;
-    case CardTransaction_PaymentMethod.VOUCHER:
+    case LogMessage_Order_PaymentMethod.VOUCHER:
       return OrderPayment.VOUCHER;
-    case CardTransaction_PaymentMethod.KULT_CARD:
+    case LogMessage_Order_PaymentMethod.KULT_CARD:
       return OrderPayment.KULT_CARD;
-    case CardTransaction_PaymentMethod.UNRECOGNIZED:
+    case LogMessage_Order_PaymentMethod.UNRECOGNIZED:
       throw new Error('Unrecognized PaymentMethod');
     default:
       throw new UnreachableCaseError(payment);
   }
 }
 
+/*
 async function postTransactionToSlack(message: CardTransaction) {
   let list: ProductList | null = null;
   if (message.listId) {
@@ -391,5 +402,6 @@ async function postTransactionToSlack(message: CardTransaction) {
     ].filter(Boolean),
   });
 }
+*/
 
 export default router;
