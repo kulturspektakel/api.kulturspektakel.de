@@ -9,5 +9,6 @@ export default objectType({
     t.implements(Billable);
     t.field(Device.productList);
     t.field(Device.lastSeen);
+    t.field(Device.softwareVersion);
   },
 });
