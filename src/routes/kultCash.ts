@@ -148,10 +148,10 @@ router.postAsync(
     }
 
     const {cardTransaction, order} = message;
-
+    let cardTransactionClientId: string | null = null;
     if (cardTransaction) {
       try {
-        await prismaClient.cardTransaction.create({
+        const cardT = await prismaClient.cardTransaction.create({
           data: {
             clientId: message.clientId,
             deviceTime,
@@ -177,6 +177,7 @@ router.postAsync(
             counter: cardTransaction.counter,
           },
         });
+        cardTransactionClientId = cardT.clientId;
       } catch (e) {
         if (
           e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -209,7 +210,7 @@ router.postAsync(
             },
           },
           deviceId: message.deviceId, // made sure device exists earlier
-          cardTransactionClientId: message.clientId,
+          cardTransactionClientId,
         },
       });
     }
