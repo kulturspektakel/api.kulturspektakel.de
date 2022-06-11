@@ -7,9 +7,9 @@ import authorization from '../utils/authorization';
 export default extendType({
   type: 'Mutation',
   definition: (t) => {
-    t.field('cardTransaction', {
+    t.field('createCardTransaction', {
       type: objectType({
-        name: 'CardTransaction',
+        name: 'CardTransactionInput',
         definition(t) {
           t.nonNull.field({name: 'password', type: 'String'});
           t.nonNull.field({name: 'pack', type: 'String'});

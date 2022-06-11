@@ -68,10 +68,34 @@ type Board {
   treasurer: String!
 }
 
-type CardTransaction {
+type CardTransaction implements Transaction {
+  Order: [Order!]!
+  balanceAfter: Int!
+  balanceBefore: Int!
+  cardId: String!
+  clientId: ID!
+  createdAt: DateTime!
+  depositAfter: Int!
+  depositBefore: Int!
+  deviceTime: DateTime!
+
+  """
+  Total transaction amount, including deposit. Negative values indicate top ups/deposit returns.
+  """
+  total: Int
+  transactionType: CardTransactionType!
+}
+
+type CardTransactionInput {
   pack: String!
   password: String!
   payload: String!
+}
+
+enum CardTransactionType {
+  Cashout
+  Charge
+  TopUp
 }
 
 type Config {
@@ -111,10 +135,17 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Device implements Billable {
+  cardTransactions(limit: Int): [CardTransaction!]!
   id: ID!
   lastSeen: DateTime
   productList: ProductList
   salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
+  softwareVersion: String
+}
+
+enum DeviceType {
+  CONTACTLESS_TERMINAL
+  IPAD
 }
 
 type Event implements Node {
@@ -162,16 +193,17 @@ scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publicati
 
 type Mutation {
   cancelReservation(token: String!): Boolean
-  cardTransaction(balanceAfter: Int!, cardUri: String!, depositAfter: Int!): CardTransaction
   checkInReservation(checkedInPersons: Int!, id: Int!): Reservation
   confirmReservation(token: String!): Reservation
   createBandApplication(data: CreateBandApplicationInput!): BandApplication
+  createCardTransaction(balanceAfter: Int!, cardUri: String!, depositAfter: Int!): CardTransactionInput
   createOrder(deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order
   createReservation(endTime: DateTime!, note: String, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableId: ID!): Reservation
   markBandApplicationContacted(bandApplicationId: ID!, contacted: Boolean!): BandApplication
   rateBandApplication(bandApplicationId: ID!, rating: Int): BandApplication
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
   swapReservations(a: Int!, b: Int!): Boolean
+  updateDeviceProductList(deviceId: ID, productListId: Int): Device
   updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, primaryPerson: String, startTime: DateTime, tableId: ID): Reservation
   updateReservationOtherPersons(otherPersons: [String!]!, token: String!): Reservation
   upsertProductList(active: Boolean, emoji: String, id: Int, name: String, products: [ProductInput!]): ProductList
@@ -279,7 +311,7 @@ type Query {
   areas: [Area!]!
   availableCapacity(time: DateTime): Int!
   config: Config
-  devices: [Device!]!
+  devices(type: DeviceType): [Device!]!
   distanceToKult(origin: String!): Float
   events: [Event!]!
   node(id: ID!): Node
@@ -357,6 +389,18 @@ enum TimeGrouping {
 type TimeSeries {
   time: DateTime!
   value: Int!
+}
+
+interface Transaction {
+  balanceAfter: Int!
+  balanceBefore: Int!
+  depositAfter: Int!
+  depositBefore: Int!
+
+  """
+  Total transaction amount, including deposit. Negative values indicate top ups/deposit returns.
+  """
+  total: Int
 }
 
 type Viewer implements Node {

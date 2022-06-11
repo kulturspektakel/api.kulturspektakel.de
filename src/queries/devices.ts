@@ -1,4 +1,5 @@
-import {extendType} from 'nexus';
+import {enumType, extendType} from 'nexus';
+import {DeviceType} from 'nexus-prisma';
 import authorization from '../utils/authorization';
 
 export default extendType({
@@ -7,7 +8,15 @@ export default extendType({
     t.nonNull.list.nonNull.field('devices', {
       type: 'Device',
       authorize: authorization('user'),
-      resolve: async (_root, _args, {prisma}) => prisma.device.findMany({}),
+      args: {
+        type: enumType(DeviceType),
+      },
+      resolve: async (_root, {type}, {prisma}) =>
+        prisma.device.findMany({
+          where: {
+            type: type ?? undefined,
+          },
+        }),
     });
   },
 });

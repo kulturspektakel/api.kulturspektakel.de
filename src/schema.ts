@@ -44,7 +44,7 @@ import swapReservations from './mutations/swapReservations';
 import Device from './models/Device';
 import devices from './queries/devices';
 import TimeGrouping from './models/TimeGrouping';
-import {TableType} from 'nexus-prisma';
+import {CardTransactionType, TableType} from 'nexus-prisma';
 import productList from './queries/productList';
 import BandApplication from './models/BandApplication';
 import createBandApplication from './mutations/createBandApplication';
@@ -56,8 +56,9 @@ import rateBandApplication from './mutations/rateBandApplication';
 import BandApplicationRating from './models/BandApplicationRating';
 import nuclino from './queries/nuclino';
 import {bandsPlayingArea, bandsPlayingEvent} from './queries/bandsPlaying';
-import cardTransaction from './mutations/cardTransaction';
+import createCardTransaction from './mutations/createCardTransaction';
 import updateDeviceProductList from './mutations/updateDeviceProductList';
+import CardTransaction from './models/CardTransaction';
 
 export default makeSchema({
   contextType: {
@@ -95,6 +96,8 @@ export default makeSchema({
     BandApplication,
     BandApplicationRating,
     Event,
+    CardTransaction,
+    enumType(CardTransactionType),
 
     // type extensions
     availability,
@@ -129,7 +132,7 @@ export default makeSchema({
     createBandApplication,
     markBandApplicationContacted,
     rateBandApplication,
-    cardTransaction,
+    createCardTransaction,
     updateDeviceProductList,
   ],
   plugins: [

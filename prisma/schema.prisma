@@ -134,6 +134,11 @@ enum OrderPayment {
   KULT_CARD
 }
 
+enum DeviceType {
+  CONTACTLESS_TERMINAL
+  IPAD
+}
+
 model Device {
   id              String            @id
   Order           Order[]
@@ -142,6 +147,7 @@ model Device {
   productListId   Int?
   CardTransaction CardTransaction[]
   softwareVersion String?
+  type            DeviceType
 }
 
 model Order {

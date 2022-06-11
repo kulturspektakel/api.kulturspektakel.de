@@ -80,6 +80,8 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  CardTransactionType: "Cashout" | "Charge" | "TopUp"
+  DeviceType: "CONTACTLESS_TERMINAL" | "IPAD"
   GenreCategory: "Blues_Funk_Jazz_Soul" | "Elektro_HipHop" | "Folk_SingerSongwriter_Country" | "Hardrock_Metal_Punk" | "Indie" | "Other" | "Pop" | "Reggae_Ska" | "Rock"
   HeardAboutBookingFrom: "BYon" | "Facebook" | "Friends" | "Instagram" | "Newspaper" | "Website"
   OrderPayment: "BON" | "CASH" | "FREE_BAND" | "FREE_CREW" | "KULT_CARD" | "SUM_UP" | "VOUCHER"
@@ -150,6 +152,17 @@ export interface NexusGenObjects {
     treasurer: string; // String!
   }
   CardTransaction: { // root type
+    balanceAfter: number; // Int!
+    balanceBefore: number; // Int!
+    cardId: string; // String!
+    clientId: string; // ID!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    depositAfter: number; // Int!
+    depositBefore: number; // Int!
+    deviceTime: NexusGenScalars['DateTime']; // DateTime!
+    transactionType: NexusGenEnums['CardTransactionType']; // CardTransactionType!
+  }
+  CardTransactionInput: { // root type
     pack: string; // String!
     password: string; // String!
     payload: string; // String!
@@ -162,6 +175,7 @@ export interface NexusGenObjects {
   Device: { // root type
     id: string; // ID!
     lastSeen?: NexusGenScalars['DateTime'] | null; // DateTime
+    softwareVersion?: string | null; // String
   }
   Event: { // root type
     bandApplicationEnd?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -271,6 +285,7 @@ export interface NexusGenObjects {
 export interface NexusGenInterfaces {
   Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
   Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'] | NexusGenRootTypes['Viewer'];
+  Transaction: NexusGenRootTypes['CardTransaction'];
 }
 
 export interface NexusGenUnions {
@@ -339,6 +354,19 @@ export interface NexusGenFieldTypes {
     treasurer: string; // String!
   }
   CardTransaction: { // field return type
+    Order: NexusGenRootTypes['Order'][]; // [Order!]!
+    balanceAfter: number; // Int!
+    balanceBefore: number; // Int!
+    cardId: string; // String!
+    clientId: string; // ID!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    depositAfter: number; // Int!
+    depositBefore: number; // Int!
+    deviceTime: NexusGenScalars['DateTime']; // DateTime!
+    total: number | null; // Int
+    transactionType: NexusGenEnums['CardTransactionType']; // CardTransactionType!
+  }
+  CardTransactionInput: { // field return type
     pack: string; // String!
     password: string; // String!
     payload: string; // String!
@@ -349,10 +377,12 @@ export interface NexusGenFieldTypes {
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
   }
   Device: { // field return type
+    cardTransactions: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
     id: string; // ID!
     lastSeen: NexusGenScalars['DateTime'] | null; // DateTime
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+    softwareVersion: string | null; // String
   }
   Event: { // field return type
     bandApplication: NexusGenRootTypes['BandApplication'][]; // [BandApplication!]!
@@ -371,16 +401,17 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
-    cardTransaction: NexusGenRootTypes['CardTransaction'] | null; // CardTransaction
     checkInReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     confirmReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     createBandApplication: NexusGenRootTypes['BandApplication'] | null; // BandApplication
+    createCardTransaction: NexusGenRootTypes['CardTransactionInput'] | null; // CardTransactionInput
     createOrder: NexusGenRootTypes['Order'] | null; // Order
     createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     markBandApplicationContacted: NexusGenRootTypes['BandApplication'] | null; // BandApplication
     rateBandApplication: NexusGenRootTypes['BandApplication'] | null; // BandApplication
     requestReservation: boolean; // Boolean!
     swapReservations: boolean | null; // Boolean
+    updateDeviceProductList: NexusGenRootTypes['Device'] | null; // Device
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     updateReservationOtherPersons: NexusGenRootTypes['Reservation'] | null; // Reservation
     upsertProductList: NexusGenRootTypes['ProductList'] | null; // ProductList
@@ -513,6 +544,13 @@ export interface NexusGenFieldTypes {
   Node: { // field return type
     id: string; // ID!
   }
+  Transaction: { // field return type
+    balanceAfter: number; // Int!
+    balanceBefore: number; // Int!
+    depositAfter: number; // Int!
+    depositBefore: number; // Int!
+    total: number | null; // Int
+  }
 }
 
 export interface NexusGenFieldTypeNames {
@@ -574,6 +612,19 @@ export interface NexusGenFieldTypeNames {
     treasurer: 'String'
   }
   CardTransaction: { // field return type name
+    Order: 'Order'
+    balanceAfter: 'Int'
+    balanceBefore: 'Int'
+    cardId: 'String'
+    clientId: 'ID'
+    createdAt: 'DateTime'
+    depositAfter: 'Int'
+    depositBefore: 'Int'
+    deviceTime: 'DateTime'
+    total: 'Int'
+    transactionType: 'CardTransactionType'
+  }
+  CardTransactionInput: { // field return type name
     pack: 'String'
     password: 'String'
     payload: 'String'
@@ -584,10 +635,12 @@ export interface NexusGenFieldTypeNames {
     reservationStart: 'DateTime'
   }
   Device: { // field return type name
+    cardTransactions: 'CardTransaction'
     id: 'ID'
     lastSeen: 'DateTime'
     productList: 'ProductList'
     salesNumbers: 'SalesNumber'
+    softwareVersion: 'String'
   }
   Event: { // field return type name
     bandApplication: 'BandApplication'
@@ -606,16 +659,17 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
-    cardTransaction: 'CardTransaction'
     checkInReservation: 'Reservation'
     confirmReservation: 'Reservation'
     createBandApplication: 'BandApplication'
+    createCardTransaction: 'CardTransactionInput'
     createOrder: 'Order'
     createReservation: 'Reservation'
     markBandApplicationContacted: 'BandApplication'
     rateBandApplication: 'BandApplication'
     requestReservation: 'Boolean'
     swapReservations: 'Boolean'
+    updateDeviceProductList: 'Device'
     updateReservation: 'Reservation'
     updateReservationOtherPersons: 'Reservation'
     upsertProductList: 'ProductList'
@@ -748,6 +802,13 @@ export interface NexusGenFieldTypeNames {
   Node: { // field return type name
     id: 'ID'
   }
+  Transaction: { // field return type name
+    balanceAfter: 'Int'
+    balanceBefore: 'Int'
+    depositAfter: 'Int'
+    depositBefore: 'Int'
+    total: 'Int'
+  }
 }
 
 export interface NexusGenArgTypes {
@@ -767,6 +828,9 @@ export interface NexusGenArgTypes {
     }
   }
   Device: {
+    cardTransactions: { // args
+      limit?: number | null; // Int
+    }
     salesNumbers: { // args
       after: NexusGenScalars['DateTime']; // DateTime!
       before: NexusGenScalars['DateTime']; // DateTime!
@@ -782,11 +846,6 @@ export interface NexusGenArgTypes {
     cancelReservation: { // args
       token: string; // String!
     }
-    cardTransaction: { // args
-      balanceAfter: number; // Int!
-      cardUri: string; // String!
-      depositAfter: number; // Int!
-    }
     checkInReservation: { // args
       checkedInPersons: number; // Int!
       id: number; // Int!
@@ -796,6 +855,11 @@ export interface NexusGenArgTypes {
     }
     createBandApplication: { // args
       data: NexusGenInputs['CreateBandApplicationInput']; // CreateBandApplicationInput!
+    }
+    createCardTransaction: { // args
+      balanceAfter: number; // Int!
+      cardUri: string; // String!
+      depositAfter: number; // Int!
     }
     createOrder: { // args
       deposit: number; // Int!
@@ -833,6 +897,10 @@ export interface NexusGenArgTypes {
       a: number; // Int!
       b: number; // Int!
     }
+    updateDeviceProductList: { // args
+      deviceId?: string | null; // ID
+      productListId?: number | null; // Int
+    }
     updateReservation: { // args
       checkedInPersons?: number | null; // Int
       endTime?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -869,6 +937,9 @@ export interface NexusGenArgTypes {
   Query: {
     availableCapacity: { // args
       time?: NexusGenScalars['DateTime'] | null; // DateTime
+    }
+    devices: { // args
+      type?: NexusGenEnums['DeviceType'] | null; // DeviceType
     }
     distanceToKult: { // args
       origin: string; // String!
@@ -910,11 +981,13 @@ export interface NexusGenArgTypes {
 export interface NexusGenAbstractTypeMembers {
   Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
   Node: "Area" | "BandApplication" | "Event" | "Table" | "Viewer"
+  Transaction: "CardTransaction"
 }
 
 export interface NexusGenTypeInterfaces {
   Area: "Node"
   BandApplication: "Node"
+  CardTransaction: "Transaction"
   Device: "Billable"
   Event: "Node"
   HistoricalProduct: "Billable"
@@ -938,7 +1011,7 @@ export type NexusGenUnionNames = never;
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = "Billable" | "Node";
+export type NexusGenAbstractsUsingStrategyResolveType = "Billable" | "Node" | "Transaction";
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {

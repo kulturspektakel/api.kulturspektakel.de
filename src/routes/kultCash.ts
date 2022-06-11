@@ -59,6 +59,7 @@ router.useAsync('/', async function (req, res: Res, next: NextFunction) {
           id,
           lastSeen,
           softwareVersion,
+          type: 'CONTACTLESS_TERMINAL',
         },
         update: {
           lastSeen,
@@ -160,6 +161,7 @@ router.postAsync(
                 create: {
                   id,
                   lastSeen: new Date(),
+                  type: 'CONTACTLESS_TERMINAL',
                 },
                 where: {
                   id,
