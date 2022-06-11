@@ -11,7 +11,8 @@
     "lib": ["es2019"],
     "sourceMap": true,
     "inlineSources": true,
-    "sourceRoot": "/"
+    "sourceRoot": "/",
+    "downlevelIteration": true
   },
   "ts-node": {
     "files": true

@@ -151,6 +151,12 @@ export interface NexusGenObjects {
     secretary: string; // String!
     treasurer: string; // String!
   }
+  CardStatus: { // root type
+    balance: number; // Int!
+    cardId: string; // ID!
+    deposit: number; // Int!
+    recentTransactions?: NexusGenRootTypes['Transaction'][] | null; // [Transaction!]
+  }
   CardTransaction: { // root type
     balanceAfter: number; // Int!
     balanceBefore: number; // Int!
@@ -353,6 +359,12 @@ export interface NexusGenFieldTypes {
     secretary: string; // String!
     treasurer: string; // String!
   }
+  CardStatus: { // field return type
+    balance: number; // Int!
+    cardId: string; // ID!
+    deposit: number; // Int!
+    recentTransactions: NexusGenRootTypes['Transaction'][] | null; // [Transaction!]
+  }
   CardTransaction: { // field return type
     Order: NexusGenRootTypes['Order'][]; // [Order!]!
     balanceAfter: number; // Int!
@@ -474,6 +486,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     areas: NexusGenRootTypes['Area'][]; // [Area!]!
     availableCapacity: number; // Int!
+    cardStatus: NexusGenRootTypes['CardStatus']; // CardStatus!
     config: NexusGenRootTypes['Config'] | null; // Config
     devices: NexusGenRootTypes['Device'][]; // [Device!]!
     distanceToKult: number | null; // Float
@@ -611,6 +624,12 @@ export interface NexusGenFieldTypeNames {
     secretary: 'String'
     treasurer: 'String'
   }
+  CardStatus: { // field return type name
+    balance: 'Int'
+    cardId: 'ID'
+    deposit: 'Int'
+    recentTransactions: 'Transaction'
+  }
   CardTransaction: { // field return type name
     Order: 'Order'
     balanceAfter: 'Int'
@@ -732,6 +751,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     areas: 'Area'
     availableCapacity: 'Int'
+    cardStatus: 'CardStatus'
     config: 'Config'
     devices: 'Device'
     distanceToKult: 'Float'
@@ -937,6 +957,9 @@ export interface NexusGenArgTypes {
   Query: {
     availableCapacity: { // args
       time?: NexusGenScalars['DateTime'] | null; // DateTime
+    }
+    cardStatus: { // args
+      payload: string; // String!
     }
     devices: { // args
       type?: NexusGenEnums['DeviceType'] | null; // DeviceType
