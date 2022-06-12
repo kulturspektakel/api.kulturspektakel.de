@@ -1,4 +1,4 @@
-import {extendType} from 'nexus';
+import {extendType, nonNull} from 'nexus';
 import authorization from '../utils/authorization';
 
 export default extendType({
@@ -8,7 +8,7 @@ export default extendType({
       type: 'Device',
       args: {
         productListId: 'Int',
-        deviceId: 'ID',
+        deviceId: nonNull('ID'),
       },
       authorize: authorization('user'),
       resolve: (_, {productListId, deviceId}, {prisma}) =>

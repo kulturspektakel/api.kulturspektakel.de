@@ -941,7 +941,7 @@ export interface NexusGenArgTypes {
       b: number; // Int!
     }
     updateDeviceProductList: { // args
-      deviceId?: string | null; // ID
+      deviceId: string; // ID!
       productListId?: number | null; // Int
     }
     updateReservation: { // args

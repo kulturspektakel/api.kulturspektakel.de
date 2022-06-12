@@ -2,6 +2,7 @@ import {sub} from 'date-fns';
 import {extendType, list, nonNull, objectType} from 'nexus';
 import {Transaction} from '../models/CardTransaction';
 import {parsePayload} from '../utils/contactless';
+import {NexusGenObjects} from '../../types/api';
 
 export default extendType({
   type: 'Query',
@@ -60,28 +61,33 @@ export default extendType({
 
           if (transactions.length > 0) {
             let ti = 0;
-            let missing = 0;
+            let numberOfMissingTransactions = 0;
+            let deposit = data.deposit;
+            let balance = data.balance;
             for (
               let c = data.counter!;
-              c <= transactions[transactions.length - 1].counter!;
+              c >= transactions[transactions.length - 1].counter!;
               c--
             ) {
               if (transactions[ti].counter! === c) {
-                if (missing > 0) {
-                  const missingTransaction: MissingTransaction = {
-                    depositAfter: 0,
-                    depositBefore: 0,
-                    balanceAfter: 0,
-                    balanceBefore: 0,
-                    numberOfMissingTransactions: missing,
-                  };
+                if (numberOfMissingTransactions > 0) {
+                  const missingTransaction: NexusGenObjects['MissingTransaction'] =
+                    {
+                      depositAfter: deposit,
+                      balanceAfter: balance,
+                      depositBefore: transactions[ti].depositAfter,
+                      balanceBefore: transactions[ti].balanceAfter,
+                      numberOfMissingTransactions,
+                    };
                   recentTransactions.push(missingTransaction);
-                  missing = 0;
+                  deposit = transactions[ti].depositBefore;
+                  balance = transactions[ti].balanceBefore;
+                  numberOfMissingTransactions = 0;
                 }
                 recentTransactions.push(transactions[ti]);
                 ti++;
               } else {
-                missing++;
+                numberOfMissingTransactions++;
               }
             }
           }

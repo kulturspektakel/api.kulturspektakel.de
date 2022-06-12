@@ -17,7 +17,12 @@ export default objectType({
 
 export const Transaction = interfaceType({
   name: 'Transaction',
-  resolveType: (t) => {},
+  resolveType: (t) => {
+    if ('numberOfMissingTransactions' in t) {
+      return 'MissingTransaction';
+    }
+    return 'CardTransaction';
+  },
   definition(t) {
     t.field('depositAfter', {type: nonNull('Int')});
     t.field('depositBefore', {type: nonNull('Int')});

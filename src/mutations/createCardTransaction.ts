@@ -22,9 +22,8 @@ export default extendType({
         balanceAfter: nonNull('Int'),
         depositAfter: nonNull('Int'),
       },
-      resolve: async (_, {cardUri, balanceAfter, depositAfter}) => {
+      resolve: (_, {cardUri, balanceAfter, depositAfter}) => {
         throw new Error('Not implemented');
-        return {};
       },
     });
   },

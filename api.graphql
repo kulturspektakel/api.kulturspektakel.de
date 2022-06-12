@@ -223,7 +223,7 @@ type Mutation {
   rateBandApplication(bandApplicationId: ID!, rating: Int): BandApplication
   requestReservation(areaId: ID!, endTime: DateTime!, otherPersons: [String!]!, primaryEmail: String!, primaryPerson: String!, startTime: DateTime!, tableType: TableType): Boolean!
   swapReservations(a: Int!, b: Int!): Boolean
-  updateDeviceProductList(deviceId: ID, productListId: Int): Device
+  updateDeviceProductList(deviceId: ID!, productListId: Int): Device
   updateReservation(checkedInPersons: Int, endTime: DateTime, id: Int!, note: String, primaryPerson: String, startTime: DateTime, tableId: ID): Reservation
   updateReservationOtherPersons(otherPersons: [String!]!, token: String!): Reservation
   upsertProductList(active: Boolean, emoji: String, id: Int, name: String, products: [ProductInput!]): ProductList
