@@ -1,4 +1,3 @@
-import {UserInputError} from 'apollo-server-express';
 import {sub} from 'date-fns';
 import {extendType, list, nonNull, objectType} from 'nexus';
 import {Transaction} from '../models/CardTransaction';
@@ -69,9 +68,14 @@ export default extendType({
             ) {
               if (transactions[ti].counter! === c) {
                 if (missing > 0) {
-                  recentTransactions.push({
+                  const missingTransaction: MissingTransaction = {
+                    depositAfter: 0,
+                    depositBefore: 0,
+                    balanceAfter: 0,
+                    balanceBefore: 0,
                     numberOfMissingTransactions: missing,
-                  });
+                  };
+                  recentTransactions.push(missingTransaction);
                   missing = 0;
                 }
                 recentTransactions.push(transactions[ti]);
@@ -94,7 +98,7 @@ export default extendType({
   },
 });
 
-const MissingTransaction = objectType({
+export const MissingTransaction = objectType({
   name: 'MissingTransaction',
   definition(t) {
     t.implements(Transaction);

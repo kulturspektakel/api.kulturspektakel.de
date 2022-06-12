@@ -59,7 +59,7 @@ import {bandsPlayingArea, bandsPlayingEvent} from './queries/bandsPlaying';
 import createCardTransaction from './mutations/createCardTransaction';
 import updateDeviceProductList from './mutations/updateDeviceProductList';
 import CardTransaction from './models/CardTransaction';
-import cardStatus from './queries/cardStatus';
+import cardStatus, {MissingTransaction} from './queries/cardStatus';
 
 export default makeSchema({
   contextType: {
@@ -99,6 +99,7 @@ export default makeSchema({
     Event,
     CardTransaction,
     enumType(CardTransactionType),
+    MissingTransaction,
 
     // type extensions
     availability,

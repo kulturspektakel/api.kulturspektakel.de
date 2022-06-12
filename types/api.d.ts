@@ -195,6 +195,13 @@ export interface NexusGenObjects {
     name: string; // String!
     productListId: number; // Int!
   }
+  MissingTransaction: { // root type
+    balanceAfter: number; // Int!
+    balanceBefore: number; // Int!
+    depositAfter: number; // Int!
+    depositBefore: number; // Int!
+    numberOfMissingTransactions: number; // Int!
+  }
   Mutation: {};
   NuclinoPage: { // root type
     id: string; // ID!
@@ -291,7 +298,7 @@ export interface NexusGenObjects {
 export interface NexusGenInterfaces {
   Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
   Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'] | NexusGenRootTypes['Viewer'];
-  Transaction: NexusGenRootTypes['CardTransaction'];
+  Transaction: NexusGenRootTypes['CardTransaction'] | NexusGenRootTypes['MissingTransaction'];
 }
 
 export interface NexusGenUnions {
@@ -410,6 +417,14 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     productListId: number; // Int!
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+  }
+  MissingTransaction: { // field return type
+    balanceAfter: number; // Int!
+    balanceBefore: number; // Int!
+    depositAfter: number; // Int!
+    depositBefore: number; // Int!
+    numberOfMissingTransactions: number; // Int!
+    total: number | null; // Int
   }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
@@ -675,6 +690,14 @@ export interface NexusGenFieldTypeNames {
     name: 'String'
     productListId: 'Int'
     salesNumbers: 'SalesNumber'
+  }
+  MissingTransaction: { // field return type name
+    balanceAfter: 'Int'
+    balanceBefore: 'Int'
+    depositAfter: 'Int'
+    depositBefore: 'Int'
+    numberOfMissingTransactions: 'Int'
+    total: 'Int'
   }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
@@ -1004,7 +1027,7 @@ export interface NexusGenArgTypes {
 export interface NexusGenAbstractTypeMembers {
   Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
   Node: "Area" | "BandApplication" | "Event" | "Table" | "Viewer"
-  Transaction: "CardTransaction"
+  Transaction: "CardTransaction" | "MissingTransaction"
 }
 
 export interface NexusGenTypeInterfaces {
@@ -1014,6 +1037,7 @@ export interface NexusGenTypeInterfaces {
   Device: "Billable"
   Event: "Node"
   HistoricalProduct: "Billable"
+  MissingTransaction: "Transaction"
   Product: "Billable"
   ProductList: "Billable"
   Table: "Node"
