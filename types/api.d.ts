@@ -382,7 +382,6 @@ export interface NexusGenFieldTypes {
     depositAfter: number; // Int!
     depositBefore: number; // Int!
     deviceTime: NexusGenScalars['DateTime']; // DateTime!
-    total: number | null; // Int
     transactionType: NexusGenEnums['CardTransactionType']; // CardTransactionType!
   }
   CardTransactionInput: { // field return type
@@ -424,7 +423,6 @@ export interface NexusGenFieldTypes {
     depositAfter: number; // Int!
     depositBefore: number; // Int!
     numberOfMissingTransactions: number; // Int!
-    total: number | null; // Int
   }
   Mutation: { // field return type
     cancelReservation: boolean | null; // Boolean
@@ -577,7 +575,6 @@ export interface NexusGenFieldTypes {
     balanceBefore: number; // Int!
     depositAfter: number; // Int!
     depositBefore: number; // Int!
-    total: number | null; // Int
   }
 }
 
@@ -655,7 +652,6 @@ export interface NexusGenFieldTypeNames {
     depositAfter: 'Int'
     depositBefore: 'Int'
     deviceTime: 'DateTime'
-    total: 'Int'
     transactionType: 'CardTransactionType'
   }
   CardTransactionInput: { // field return type name
@@ -697,7 +693,6 @@ export interface NexusGenFieldTypeNames {
     depositAfter: 'Int'
     depositBefore: 'Int'
     numberOfMissingTransactions: 'Int'
-    total: 'Int'
   }
   Mutation: { // field return type name
     cancelReservation: 'Boolean'
@@ -850,7 +845,6 @@ export interface NexusGenFieldTypeNames {
     balanceBefore: 'Int'
     depositAfter: 'Int'
     depositBefore: 'Int'
-    total: 'Int'
   }
 }
 

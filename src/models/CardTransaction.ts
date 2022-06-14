@@ -28,14 +28,5 @@ export const Transaction = interfaceType({
     t.field('depositBefore', {type: nonNull('Int')});
     t.field('balanceAfter', {type: nonNull('Int')});
     t.field('balanceBefore', {type: nonNull('Int')});
-    t.field('total', {
-      description:
-        'Total transaction amount, including deposit. Negative values indicate top ups/deposit returns.',
-      type: 'Int',
-      resolve: ({depositAfter, depositBefore, balanceAfter, balanceBefore}) =>
-        balanceBefore -
-        balanceAfter -
-        (depositBefore - depositAfter) * config.depositValue,
-    });
   },
 });

@@ -85,11 +85,6 @@ type CardTransaction implements Transaction {
   depositAfter: Int!
   depositBefore: Int!
   deviceTime: DateTime!
-
-  """
-  Total transaction amount, including deposit. Negative values indicate top ups/deposit returns.
-  """
-  total: Int
   transactionType: CardTransactionType!
 }
 
@@ -204,11 +199,6 @@ type MissingTransaction implements Transaction {
   depositAfter: Int!
   depositBefore: Int!
   numberOfMissingTransactions: Int!
-
-  """
-  Total transaction amount, including deposit. Negative values indicate top ups/deposit returns.
-  """
-  total: Int
 }
 
 type Mutation {
@@ -417,11 +407,6 @@ interface Transaction {
   balanceBefore: Int!
   depositAfter: Int!
   depositBefore: Int!
-
-  """
-  Total transaction amount, including deposit. Negative values indicate top ups/deposit returns.
-  """
-  total: Int
 }
 
 type Viewer implements Node {
