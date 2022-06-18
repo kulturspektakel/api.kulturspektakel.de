@@ -42,11 +42,11 @@ export function parseClassicPayload(payload: string): CardPaylaod {
 }
 
 export function parseUltralightPayload(payload: string): CardPaylaod {
-  // U5XVlgH+QAIAACoSZ0gXXKQ
+  // U5XVlgH-QAIAACoSZ0gXXKQ
   if (payload.length !== 23) {
     throw new Error('Wrong payload length');
   }
-  const payloadBuffer = Buffer.from(payload, 'base64');
+  const payloadBuffer = Buffer.from(payload, 'base64url');
 
   const counter = payloadBuffer.slice(7, 9);
   const deposit = payloadBuffer.slice(9, 10);
