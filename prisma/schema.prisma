@@ -105,7 +105,7 @@ model Table {
 
 model ProductList {
   id        Int         @id @default(autoincrement())
-  name      String
+  name      String      @db.VarChar(20)
   emoji     String?
   product   Product[]
   OrderItem OrderItem[]
@@ -115,7 +115,7 @@ model ProductList {
 
 model Product {
   id              Int     @id @default(autoincrement())
-  name            String
+  name            String  @db.VarChar(30)
   price           Int
   order           Int
   requiresDeposit Boolean @default(false)

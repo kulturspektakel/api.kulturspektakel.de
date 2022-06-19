@@ -91,7 +91,7 @@ router.getAsync('/config', async (_req, res: Res) => {
             orderBy: {
               order: 'asc',
             },
-            take: 9,
+            take: 30,
           },
         },
       },
