@@ -52,10 +52,12 @@ export default extendType({
 
           // remove everything before last cashout
           const cashout = transactions.findIndex(
-            (t) => t.transactionType === 'Cashout',
+            (t) =>
+              t.transactionType === 'Cashout' ||
+              (t.balanceAfter === 0 && t.depositAfter === 0),
           );
           if (cashout > -1) {
-            transactions.length = cashout;
+            transactions.length = cashout + 1;
             transactions.pop();
           }
 
