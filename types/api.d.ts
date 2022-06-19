@@ -155,6 +155,7 @@ export interface NexusGenObjects {
     balance: number; // Int!
     cardId: string; // ID!
     deposit: number; // Int!
+    hasNewerTransactions?: boolean | null; // Boolean
     recentTransactions?: NexusGenRootTypes['Transaction'][] | null; // [Transaction!]
   }
   CardTransaction: { // root type
@@ -370,6 +371,7 @@ export interface NexusGenFieldTypes {
     balance: number; // Int!
     cardId: string; // ID!
     deposit: number; // Int!
+    hasNewerTransactions: boolean | null; // Boolean
     recentTransactions: NexusGenRootTypes['Transaction'][] | null; // [Transaction!]
   }
   CardTransaction: { // field return type
@@ -640,6 +642,7 @@ export interface NexusGenFieldTypeNames {
     balance: 'Int'
     cardId: 'ID'
     deposit: 'Int'
+    hasNewerTransactions: 'Boolean'
     recentTransactions: 'Transaction'
   }
   CardTransaction: { // field return type name

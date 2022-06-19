@@ -26,12 +26,16 @@ export default extendType({
           t.field('recentTransactions', {
             type: list(nonNull(Transaction)),
           });
+          t.field('hasNewerTransactions', {
+            type: 'Boolean',
+          });
         },
       }),
       resolve: async (_parent, {payload}, {prisma}) => {
         const data = parsePayload(payload);
 
         let recentTransactions = null;
+        let hasNewerTransactions = null;
         if (data.counter) {
           const transactions = await prisma.cardTransaction.findMany({
             where: {
@@ -49,6 +53,16 @@ export default extendType({
           });
 
           recentTransactions = [];
+
+          const startCounter = transactions.findIndex(
+            (t) => t.counter === data.counter,
+          );
+          if (startCounter > 0) {
+            hasNewerTransactions = true;
+            transactions.splice(0, startCounter + 1);
+          } else {
+            hasNewerTransactions = false;
+          }
 
           // remove everything before last cashout
           const cashout = transactions.findIndex(
@@ -98,6 +112,7 @@ export default extendType({
           balance: data.balance,
           cardId: data.cardId,
           recentTransactions,
+          hasNewerTransactions,
         };
       },
     });
