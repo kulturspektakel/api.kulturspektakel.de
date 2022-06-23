@@ -137,11 +137,12 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
-type Device implements Billable {
-  cardTransactions(limit: Int): [CardTransaction!]!
+type Device implements Billable & Node {
+  """Unique identifier for the resource"""
   id: ID!
   lastSeen: DateTime
   productList: ProductList
+  recentTransactions(limit: Int): [CardTransaction!]!
   salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
   softwareVersion: String
 }

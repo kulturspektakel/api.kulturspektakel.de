@@ -5,26 +5,50 @@ import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {Prisma} from '@prisma/client';
 import {ApolloError, UserInputError} from 'apollo-server-express';
 import {ResultValue} from 'nexus/dist/core';
+import authorization from '../utils/authorization';
+
+function getType(id: string): {
+  __typename: NexusGenAbstractTypeMembers['Node'];
+  key: string;
+} {
+  if (!id.includes(':')) {
+    throw new UserInputError('ID must be prefixed with typename');
+  }
+  const [type, ...guid] = id.split(':');
+  const __typename = type as NexusGenAbstractTypeMembers['Node'];
+  if (!__typename) {
+    throw new ApolloError('Unknown type');
+  }
+
+  return {__typename, key: guid.join(':')};
+}
 
 export default extendType({
   type: 'Query',
+
   definition: (t) => {
     t.field('node', {
       type: Node,
+      authorize: (_, {id}, context) => {
+        const {__typename} = getType(id);
+        switch (__typename) {
+          case 'Device':
+            return authorization('user')(_, {id}, context);
+          case 'Area':
+          case 'Table':
+          case 'Event':
+          case 'Viewer':
+          case 'BandApplication':
+            return false;
+          default:
+            throw new UnreachableCaseError(__typename);
+        }
+      },
       args: {
         id: nonNull(idArg()),
       },
       resolve: async (_parent, {id}, {prisma}) => {
-        if (!id.includes(':')) {
-          throw new UserInputError('ID must be prefixed with typename');
-        }
-        const [type, ...guid] = id.split(':');
-        const __typename = type as NexusGenAbstractTypeMembers['Node'];
-        if (!__typename) {
-          throw new ApolloError('Unknown type');
-        }
-
-        const key = guid.join(':');
+        const {__typename, key} = getType(id);
 
         let delegate;
         switch (__typename) {
@@ -43,9 +67,11 @@ export default extendType({
           case 'BandApplication':
             delegate = prisma.bandApplication;
             break;
+          case 'Device':
+            delegate = prisma.device;
+            break;
           default:
-            new UnreachableCaseError(__typename);
-            return null;
+            throw new UnreachableCaseError(__typename);
         }
 
         const node: ResultValue<'Query', 'node'> | null = await (

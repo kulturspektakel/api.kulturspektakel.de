@@ -180,7 +180,6 @@ export interface NexusGenObjects {
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
   }
   Device: { // root type
-    id: string; // ID!
     lastSeen?: NexusGenScalars['DateTime'] | null; // DateTime
     softwareVersion?: string | null; // String
   }
@@ -298,7 +297,7 @@ export interface NexusGenObjects {
 
 export interface NexusGenInterfaces {
   Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
-  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'] | NexusGenRootTypes['Viewer'];
+  Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Device'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'] | NexusGenRootTypes['Viewer'];
   Transaction: NexusGenRootTypes['CardTransaction'] | NexusGenRootTypes['MissingTransaction'];
 }
 
@@ -397,10 +396,10 @@ export interface NexusGenFieldTypes {
     reservationStart: NexusGenScalars['DateTime']; // DateTime!
   }
   Device: { // field return type
-    cardTransactions: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
     id: string; // ID!
     lastSeen: NexusGenScalars['DateTime'] | null; // DateTime
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
+    recentTransactions: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
     salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
     softwareVersion: string | null; // String
   }
@@ -668,10 +667,10 @@ export interface NexusGenFieldTypeNames {
     reservationStart: 'DateTime'
   }
   Device: { // field return type name
-    cardTransactions: 'CardTransaction'
     id: 'ID'
     lastSeen: 'DateTime'
     productList: 'ProductList'
+    recentTransactions: 'CardTransaction'
     salesNumbers: 'SalesNumber'
     softwareVersion: 'String'
   }
@@ -868,7 +867,7 @@ export interface NexusGenArgTypes {
     }
   }
   Device: {
-    cardTransactions: { // args
+    recentTransactions: { // args
       limit?: number | null; // Int
     }
     salesNumbers: { // args
@@ -1023,7 +1022,7 @@ export interface NexusGenArgTypes {
 
 export interface NexusGenAbstractTypeMembers {
   Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
-  Node: "Area" | "BandApplication" | "Event" | "Table" | "Viewer"
+  Node: "Area" | "BandApplication" | "Device" | "Event" | "Table" | "Viewer"
   Transaction: "CardTransaction" | "MissingTransaction"
 }
 
@@ -1031,7 +1030,7 @@ export interface NexusGenTypeInterfaces {
   Area: "Node"
   BandApplication: "Node"
   CardTransaction: "Transaction"
-  Device: "Billable"
+  Device: "Billable" | "Node"
   Event: "Node"
   HistoricalProduct: "Billable"
   MissingTransaction: "Transaction"
