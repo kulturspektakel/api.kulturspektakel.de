@@ -16,6 +16,11 @@ export default extendType({
           where: {
             type: type ?? undefined,
           },
+          orderBy: [
+            {
+              id: 'desc',
+            },
+          ],
         }),
     });
   },
