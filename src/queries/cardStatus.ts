@@ -76,10 +76,10 @@ export default extendType({
           if (transactions.length > 0) {
             let ti = 0;
             let numberOfMissingTransactions = 0;
-            let deposit = transactions[0].depositBefore;
-            let balance = transactions[0].balanceBefore;
+            let deposit = data.deposit;
+            let balance = data.balance;
             for (
-              let c = data.counter!;
+              let c = data.counter;
               c >= transactions[transactions.length - 1].counter!;
               c--
             ) {
@@ -94,10 +94,10 @@ export default extendType({
                       numberOfMissingTransactions,
                     };
                   recentTransactions.push(missingTransaction);
-                  deposit = transactions[ti].depositBefore;
-                  balance = transactions[ti].balanceBefore;
                   numberOfMissingTransactions = 0;
                 }
+                deposit = transactions[ti].depositBefore;
+                balance = transactions[ti].balanceBefore;
                 recentTransactions.push(transactions[ti]);
                 ti++;
               } else {
