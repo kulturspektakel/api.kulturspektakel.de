@@ -59,7 +59,7 @@ export default extendType({
           );
           if (startCounter > 0) {
             hasNewerTransactions = true;
-            transactions.splice(0, startCounter + 1);
+            transactions.splice(0, startCounter);
           } else {
             hasNewerTransactions = false;
           }
