@@ -55,7 +55,7 @@ type BandApplicationRating {
 }
 
 interface Billable {
-  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
 }
 
 type Board {
@@ -143,7 +143,7 @@ type Device implements Billable & Node {
   lastSeen: DateTime
   productList: ProductList
   recentTransactions(limit: Int): [CardTransaction!]!
-  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
   softwareVersion: String
 }
 
@@ -187,7 +187,7 @@ enum HeardAboutBookingFrom {
 type HistoricalProduct implements Billable {
   name: String!
   productListId: Int!
-  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
 }
 
 """
@@ -300,7 +300,7 @@ type Product implements Billable {
   price: Int!
   productListId: Int!
   requiresDeposit: Boolean!
-  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
 }
 
 input ProductInput {
@@ -316,7 +316,7 @@ type ProductList implements Billable {
   id: Int!
   name: String!
   product: [Product!]!
-  salesNumbers(after: DateTime!, before: DateTime!): SalesNumber!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
 }
 
 type Query {
@@ -370,6 +370,7 @@ enum ReservationStatus {
 
 type SalesNumber {
   count: Int!
+  payment: OrderPayment!
   timeSeries(grouping: TimeGrouping): [TimeSeries!]!
   total: Float!
 }

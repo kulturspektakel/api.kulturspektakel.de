@@ -8,7 +8,7 @@ import {
 import authorization from '../utils/authorization';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 import merge from 'lodash.merge';
-import {Order, OrderItem, Prisma} from '@prisma/client';
+import {Order, OrderItem, OrderPayment, Prisma} from '@prisma/client';
 import {
   add,
   differenceInHours,
@@ -28,12 +28,13 @@ type SalesNumberType = NexusGenObjects['SalesNumber'] & {
 export default interfaceType({
   name: 'Billable',
   definition(t) {
-    t.nonNull.field('salesNumbers', {
+    t.nonNull.list.field('salesNumbers', {
       type: objectType({
         name: 'SalesNumber',
         definition(t) {
           t.nonNull.field('count', {type: 'Int'});
           t.nonNull.field('total', {type: 'Float'});
+          t.nonNull.field('payment', {type: 'OrderPayment'});
           t.nonNull.list.nonNull.field('timeSeries', {
             type: objectType({
               name: 'TimeSeries',
@@ -148,19 +149,34 @@ export default interfaceType({
           },
         });
 
-        const result: SalesNumberType = {
-          count: orderItems.reduce((acc, cv) => acc + cv.amount, 0),
-          total:
-            orderItems.reduce(
-              (acc, cv) => acc + cv.amount * cv.perUnitPrice,
-              0,
-            ) / 100,
-          _orderItems: orderItems,
-          _after: after,
-          _before: before,
-        };
+        const payments = orderItems.reduce(
+          (acc, cv) => acc.add(cv.order.payment),
+          new Set<OrderPayment>(),
+        );
 
-        return result;
+        const results = [];
+        for (const payment of payments) {
+          const _orderItems = orderItems.filter(
+            (o) => o.order.payment === payment,
+          );
+
+          const result: SalesNumberType = {
+            count: _orderItems.reduce((acc, cv) => acc + cv.amount, 0),
+            total:
+              _orderItems.reduce(
+                (acc, cv) => acc + cv.amount * cv.perUnitPrice,
+                0,
+              ) / 100,
+            payment,
+            _orderItems,
+            _after: after,
+            _before: before,
+          };
+
+          results.push(result);
+        }
+
+        return results;
       },
     });
   },

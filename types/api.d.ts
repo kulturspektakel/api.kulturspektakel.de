@@ -270,6 +270,7 @@ export interface NexusGenObjects {
   }
   SalesNumber: { // root type
     count: number; // Int!
+    payment: NexusGenEnums['OrderPayment']; // OrderPayment!
     total: number; // Float!
   }
   Table: { // root type
@@ -400,7 +401,7 @@ export interface NexusGenFieldTypes {
     lastSeen: NexusGenScalars['DateTime'] | null; // DateTime
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
     recentTransactions: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
-    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+    salesNumbers: Array<NexusGenRootTypes['SalesNumber'] | null>; // [SalesNumber]!
     softwareVersion: string | null; // String
   }
   Event: { // field return type
@@ -416,7 +417,7 @@ export interface NexusGenFieldTypes {
   HistoricalProduct: { // field return type
     name: string; // String!
     productListId: number; // Int!
-    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+    salesNumbers: Array<NexusGenRootTypes['SalesNumber'] | null>; // [SalesNumber]!
   }
   MissingTransaction: { // field return type
     balanceAfter: number; // Int!
@@ -486,7 +487,7 @@ export interface NexusGenFieldTypes {
     price: number; // Int!
     productListId: number; // Int!
     requiresDeposit: boolean; // Boolean!
-    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+    salesNumbers: Array<NexusGenRootTypes['SalesNumber'] | null>; // [SalesNumber]!
   }
   ProductList: { // field return type
     active: boolean; // Boolean!
@@ -495,7 +496,7 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     name: string; // String!
     product: NexusGenRootTypes['Product'][]; // [Product!]!
-    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+    salesNumbers: Array<NexusGenRootTypes['SalesNumber'] | null>; // [SalesNumber]!
   }
   Query: { // field return type
     areas: NexusGenRootTypes['Area'][]; // [Area!]!
@@ -539,6 +540,7 @@ export interface NexusGenFieldTypes {
   }
   SalesNumber: { // field return type
     count: number; // Int!
+    payment: NexusGenEnums['OrderPayment']; // OrderPayment!
     timeSeries: NexusGenRootTypes['TimeSeries'][]; // [TimeSeries!]!
     total: number; // Float!
   }
@@ -566,7 +568,7 @@ export interface NexusGenFieldTypes {
     profilePicture: string | null; // String
   }
   Billable: { // field return type
-    salesNumbers: NexusGenRootTypes['SalesNumber']; // SalesNumber!
+    salesNumbers: Array<NexusGenRootTypes['SalesNumber'] | null>; // [SalesNumber]!
   }
   Node: { // field return type
     id: string; // ID!
@@ -810,6 +812,7 @@ export interface NexusGenFieldTypeNames {
   }
   SalesNumber: { // field return type name
     count: 'Int'
+    payment: 'OrderPayment'
     timeSeries: 'TimeSeries'
     total: 'Float'
   }
