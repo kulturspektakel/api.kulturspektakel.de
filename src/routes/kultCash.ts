@@ -27,7 +27,7 @@ const router = Router({});
 
 type Res = Response<
   any,
-  Record<'id', string> & Record<'version', number | undefined>
+  Record<'id', string> & Record<'version', string | undefined>
 >;
 
 router.useAsync('/', async function (req, res: Res, next: NextFunction) {
@@ -39,16 +39,10 @@ router.useAsync('/', async function (req, res: Res, next: NextFunction) {
     const match = authorization?.match(/^(Basic )?Bearer (.+)$/);
     const signature = match && match.length > 2 ? match[2] : req.query['token'];
     if (signature === sha1(`${id}${env.KULT_CASH_SALT}`)) {
-      let version: number | undefined = parseInt(
-        req.headers['x-esp8266-version']?.toString() ?? '',
-        10,
-      );
-      if (!Number.isSafeInteger(version)) {
-        version = undefined;
-      }
       res.locals.id = id;
-      res.locals.version = version;
-      const softwareVersion = version ? String(version) : undefined;
+      const softwareVersion =
+        req.headers['x-esp8266-version']?.toString() ?? undefined;
+      res.locals.version = softwareVersion;
       const lastSeen = new Date();
 
       await prismaClient.device.upsert({
@@ -228,31 +222,29 @@ router.postAsync(
 );
 
 router.getAsync('/update', async (req, res: Res) => {
-  const noUpdate = () => {
-    res.status(304).send('Not Modified');
-  };
   const {version} = res.locals;
-  if (!version || version < 1) {
-    return noUpdate();
+  if (version) {
+    const versionNumber = parseInt(version, 10);
+    if (Number.isSafeInteger(versionNumber) && versionNumber > 0) {
+      const dir = join(homedir(), 'contactless-firmware');
+      if (!existsSync(dir)) {
+        await fs.mkdir(dir);
+      }
+
+      const latestVersion = (await fs.readdir(dir))
+        .map((i) => i.match(/^(\d+)\.bin$/)?.pop())
+        .map((i) => (i ? parseInt(i, 10) : undefined))
+        .filter((i): i is number => Number.isSafeInteger(i))
+        .sort((a, b) => a - b)
+        .pop();
+
+      if (latestVersion && latestVersion > versionNumber) {
+        return res.download(join(dir, `${latestVersion}.bin`));
+      }
+    }
   }
 
-  const dir = join(homedir(), 'contactless-firmware');
-  if (!existsSync(dir)) {
-    await fs.mkdir(dir);
-  }
-
-  const latestVersion = (await fs.readdir(dir))
-    .map((i) => i.match(/^(\d+)\.bin$/)?.pop())
-    .map((i) => (i ? parseInt(i, 10) : undefined))
-    .filter((i): i is number => Number.isSafeInteger(i))
-    .sort((a, b) => a - b)
-    .pop();
-
-  if (latestVersion && latestVersion > version) {
-    return res.download(join(dir, `${latestVersion}.bin`));
-  }
-
-  return noUpdate();
+  res.status(304).send('Not Modified');
 });
 
 function mapTransactionType(
