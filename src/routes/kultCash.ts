@@ -211,12 +211,6 @@ router.postAsync(
       });
     }
 
-    // try {
-    //   await postTransactionToSlack(message);
-    // } catch (e) {
-    //   console.error(e);
-    // }
-
     return res.status(201).send('Created');
   },
 );
@@ -239,7 +233,15 @@ router.getAsync('/update', async (req, res: Res) => {
         .pop();
 
       if (latestVersion && latestVersion > versionNumber) {
-        return res.download(join(dir, `${latestVersion}.bin`));
+        await new Promise((resolve, reject) =>
+          res.download(join(dir, `${latestVersion}.bin`), (err) => {
+            if (err) {
+              return reject(err);
+            }
+            return resolve(undefined);
+          }),
+        );
+        return;
       }
     }
   }
@@ -286,117 +288,5 @@ function mapPayment(payment: LogMessage_Order_PaymentMethod): OrderPayment {
       throw new UnreachableCaseError(payment);
   }
 }
-
-/*
-async function postTransactionToSlack(message: CardTransaction) {
-  let list: ProductList | null = null;
-  if (message.listId) {
-    list = await prismaClient.productList.findUnique({
-      where: {
-        id: message.listId,
-      },
-    });
-  }
-
-  const total = (message.balanceBefore - message.balanceAfter) / 100;
-  const totalAbsoluteStr = Math.abs(total).toLocaleString('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  });
-
-  const fields = message.cartItems
-    .flatMap<any[]>(({product, amount}) => [
-      {
-        type: 'mrkdwn',
-        text: `${amount}x ${product?.name}`,
-      },
-      {
-        type: 'mrkdwn',
-        text: ((product?.price ?? 0 * amount) / 100).toLocaleString('de-DE', {
-          style: 'currency',
-          currency: 'EUR',
-        }),
-      },
-    ])
-    .concat([
-      message.depositAfter != message.depositBefore
-        ? {
-            type: 'mrkdwn',
-            text:
-              message.depositAfter > message.depositBefore
-                ? `${message.depositAfter - message.depositBefore}x Pfand`
-                : `${
-                    message.depositBefore - message.depositAfter
-                  }x Pfandrückgabe`,
-          }
-        : null,
-      message.depositAfter != message.depositBefore
-        ? {
-            type: 'mrkdwn',
-            text: (
-              ((message.depositAfter - message.depositBefore) *
-                config.depositValue) /
-              100
-            ).toLocaleString('de-DE', {
-              style: 'currency',
-              currency: 'EUR',
-            }),
-          }
-        : null,
-    ])
-    .filter(Boolean);
-
-  await sendMessage({
-    channel: SlackChannel.dev,
-    text: list
-      ? `${list.emoji} ${list.name}: ${totalAbsoluteStr}`
-      : `Neue Transaktion: ${totalAbsoluteStr}`,
-    username: list?.name ?? 'Neue Transaktion',
-    icon_emoji: `:${emoji.find(list?.emoji ?? '💳')?.key ?? 'credit_card'}:`,
-    blocks: [
-      fields.length > 0
-        ? {
-            type: 'section',
-            fields,
-          }
-        : null,
-      {
-        type: 'section',
-        fields: [
-          {
-            type: 'mrkdwn',
-            text: `*${
-              message.transactionType ===
-              CardTransaction_TransactionType.CASHOUT
-                ? 'Auszahlung'
-                : fields.length > 0
-                ? 'Summe'
-                : total > 0
-                ? 'Abbuchung'
-                : 'Aufladung'
-            }*`,
-          },
-          {
-            type: 'mrkdwn',
-            text: `*${totalAbsoluteStr}*`,
-          },
-        ],
-      },
-      {
-        type: 'context',
-        elements: [
-          {
-            type: 'mrkdwn',
-            text: `*Transaktion* ${message.clientId} · *Geräte-ID* ${message.deviceId} · *Karten-ID* ${message.cardId}`,
-          },
-        ],
-      },
-      {
-        type: 'divider',
-      },
-    ].filter(Boolean),
-  });
-}
-*/
 
 export default router;
