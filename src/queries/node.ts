@@ -39,7 +39,7 @@ export default extendType({
           case 'Event':
           case 'Viewer':
           case 'BandApplication':
-            return false;
+            return true;
           default:
             throw new UnreachableCaseError(__typename);
         }
