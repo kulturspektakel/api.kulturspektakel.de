@@ -11,22 +11,60 @@ export default objectType({
     t.implements(Billable);
     t.field(D.productList);
     t.field(D.lastSeen);
-    t.field('recentTransactions', {
-      type: nonNull(list(nonNull('CardTransaction'))),
+    t.field(D.softwareVersion);
+    t.field('transactions', {
+      type: nonNull(
+        objectType({
+          name: 'CardTransactionConnection',
+          definition(t) {
+            t.field('balanceTotal', {
+              type: nonNull('Int'),
+            });
+            t.field('depositTotal', {
+              type: nonNull('Int'),
+            });
+            t.field('data', {
+              type: nonNull(list(nonNull('CardTransaction'))),
+            });
+          },
+        }),
+      ),
       args: {
         limit: 'Int',
+        after: 'DateTime',
+        before: 'DateTime',
+        type: 'CardTransactionType',
       },
-      resolve: (device, {limit}, {prisma}) =>
-        prisma.cardTransaction.findMany({
+      resolve: async (device, {limit, after, before, type}, {prisma}) => {
+        const data = await prisma.cardTransaction.findMany({
           where: {
             deviceId: (device as Device).id,
+            deviceTime: {
+              gt: after,
+              lt: before,
+            },
+            transactionType: type ?? undefined,
           },
           orderBy: {
             deviceTime: 'desc',
           },
-          take: limit ?? 50,
-        }),
+          take: limit ?? undefined,
+        });
+
+        data.reduce((acc, cv) => acc + (cv.depositAfter - cv.depositBefore), 0);
+
+        return {
+          balanceTotal: data.reduce(
+            (acc, cv) => acc + (cv.balanceAfter - cv.balanceBefore),
+            0,
+          ),
+          depositTotal: data.reduce(
+            (acc, cv) => acc + (cv.depositAfter - cv.depositBefore),
+            0,
+          ),
+          data,
+        };
+      },
     });
-    t.field(D.softwareVersion);
   },
 });

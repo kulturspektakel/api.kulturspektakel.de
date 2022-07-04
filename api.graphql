@@ -89,6 +89,12 @@ type CardTransaction implements Transaction {
   transactionType: CardTransactionType!
 }
 
+type CardTransactionConnection {
+  balanceTotal: Int!
+  data: [CardTransaction!]!
+  depositTotal: Int!
+}
+
 type CardTransactionInput {
   pack: String!
   password: String!
@@ -142,9 +148,9 @@ type Device implements Billable & Node {
   id: ID!
   lastSeen: DateTime
   productList: ProductList
-  recentTransactions(limit: Int): [CardTransaction!]!
   salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
   softwareVersion: String
+  transactions(after: DateTime, before: DateTime, limit: Int, type: CardTransactionType): CardTransactionConnection!
 }
 
 enum DeviceType {

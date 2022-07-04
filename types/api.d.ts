@@ -169,6 +169,11 @@ export interface NexusGenObjects {
     deviceTime: NexusGenScalars['DateTime']; // DateTime!
     transactionType: NexusGenEnums['CardTransactionType']; // CardTransactionType!
   }
+  CardTransactionConnection: { // root type
+    balanceTotal: number; // Int!
+    data: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
+    depositTotal: number; // Int!
+  }
   CardTransactionInput: { // root type
     pack: string; // String!
     password: string; // String!
@@ -386,6 +391,11 @@ export interface NexusGenFieldTypes {
     deviceTime: NexusGenScalars['DateTime']; // DateTime!
     transactionType: NexusGenEnums['CardTransactionType']; // CardTransactionType!
   }
+  CardTransactionConnection: { // field return type
+    balanceTotal: number; // Int!
+    data: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
+    depositTotal: number; // Int!
+  }
   CardTransactionInput: { // field return type
     pack: string; // String!
     password: string; // String!
@@ -400,9 +410,9 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
     lastSeen: NexusGenScalars['DateTime'] | null; // DateTime
     productList: NexusGenRootTypes['ProductList'] | null; // ProductList
-    recentTransactions: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
     salesNumbers: Array<NexusGenRootTypes['SalesNumber'] | null>; // [SalesNumber]!
     softwareVersion: string | null; // String
+    transactions: NexusGenRootTypes['CardTransactionConnection']; // CardTransactionConnection!
   }
   Event: { // field return type
     bandApplication: NexusGenRootTypes['BandApplication'][]; // [BandApplication!]!
@@ -658,6 +668,11 @@ export interface NexusGenFieldTypeNames {
     deviceTime: 'DateTime'
     transactionType: 'CardTransactionType'
   }
+  CardTransactionConnection: { // field return type name
+    balanceTotal: 'Int'
+    data: 'CardTransaction'
+    depositTotal: 'Int'
+  }
   CardTransactionInput: { // field return type name
     pack: 'String'
     password: 'String'
@@ -672,9 +687,9 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     lastSeen: 'DateTime'
     productList: 'ProductList'
-    recentTransactions: 'CardTransaction'
     salesNumbers: 'SalesNumber'
     softwareVersion: 'String'
+    transactions: 'CardTransactionConnection'
   }
   Event: { // field return type name
     bandApplication: 'BandApplication'
@@ -870,12 +885,15 @@ export interface NexusGenArgTypes {
     }
   }
   Device: {
-    recentTransactions: { // args
-      limit?: number | null; // Int
-    }
     salesNumbers: { // args
       after: NexusGenScalars['DateTime']; // DateTime!
       before: NexusGenScalars['DateTime']; // DateTime!
+    }
+    transactions: { // args
+      after?: NexusGenScalars['DateTime'] | null; // DateTime
+      before?: NexusGenScalars['DateTime'] | null; // DateTime
+      limit?: number | null; // Int
+      type?: NexusGenEnums['CardTransactionType'] | null; // CardTransactionType
     }
   }
   HistoricalProduct: {
