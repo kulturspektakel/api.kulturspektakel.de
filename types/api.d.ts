@@ -172,7 +172,10 @@ export interface NexusGenObjects {
   CardTransactionConnection: { // root type
     balanceTotal: number; // Int!
     data: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
-    depositTotal: number; // Int!
+    depositIn: number; // Int!
+    depositOut: number; // Int!
+    totalCount: number; // Int!
+    uniqueCards: number; // Int!
   }
   CardTransactionInput: { // root type
     pack: string; // String!
@@ -305,6 +308,7 @@ export interface NexusGenInterfaces {
   Billable: NexusGenRootTypes['Device'] | NexusGenRootTypes['HistoricalProduct'] | NexusGenRootTypes['Product'] | NexusGenRootTypes['ProductList'];
   Node: NexusGenRootTypes['Area'] | NexusGenRootTypes['BandApplication'] | NexusGenRootTypes['Device'] | NexusGenRootTypes['Event'] | NexusGenRootTypes['Table'] | NexusGenRootTypes['Viewer'];
   Transaction: NexusGenRootTypes['CardTransaction'] | NexusGenRootTypes['MissingTransaction'];
+  Transactionable: NexusGenRootTypes['Device'] | NexusGenRootTypes['Query'];
 }
 
 export interface NexusGenUnions {
@@ -394,7 +398,10 @@ export interface NexusGenFieldTypes {
   CardTransactionConnection: { // field return type
     balanceTotal: number; // Int!
     data: NexusGenRootTypes['CardTransaction'][]; // [CardTransaction!]!
-    depositTotal: number; // Int!
+    depositIn: number; // Int!
+    depositOut: number; // Int!
+    totalCount: number; // Int!
+    uniqueCards: number; // Int!
   }
   CardTransactionInput: { // field return type
     pack: string; // String!
@@ -523,6 +530,7 @@ export interface NexusGenFieldTypes {
     productLists: NexusGenRootTypes['ProductList'][]; // [ProductList!]!
     reservationForToken: NexusGenRootTypes['Reservation'] | null; // Reservation
     reservationsByPerson: NexusGenRootTypes['ReservationByPerson'][]; // [ReservationByPerson!]!
+    transactions: NexusGenRootTypes['CardTransactionConnection']; // CardTransactionConnection!
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
   }
   Reservation: { // field return type
@@ -588,6 +596,9 @@ export interface NexusGenFieldTypes {
     balanceBefore: number; // Int!
     depositAfter: number; // Int!
     depositBefore: number; // Int!
+  }
+  Transactionable: { // field return type
+    transactions: NexusGenRootTypes['CardTransactionConnection']; // CardTransactionConnection!
   }
 }
 
@@ -671,7 +682,10 @@ export interface NexusGenFieldTypeNames {
   CardTransactionConnection: { // field return type name
     balanceTotal: 'Int'
     data: 'CardTransaction'
-    depositTotal: 'Int'
+    depositIn: 'Int'
+    depositOut: 'Int'
+    totalCount: 'Int'
+    uniqueCards: 'Int'
   }
   CardTransactionInput: { // field return type name
     pack: 'String'
@@ -800,6 +814,7 @@ export interface NexusGenFieldTypeNames {
     productLists: 'ProductList'
     reservationForToken: 'Reservation'
     reservationsByPerson: 'ReservationByPerson'
+    transactions: 'CardTransactionConnection'
     viewer: 'Viewer'
   }
   Reservation: { // field return type name
@@ -865,6 +880,9 @@ export interface NexusGenFieldTypeNames {
     balanceBefore: 'Int'
     depositAfter: 'Int'
     depositBefore: 'Int'
+  }
+  Transactionable: { // field return type name
+    transactions: 'CardTransactionConnection'
   }
 }
 
@@ -1022,6 +1040,12 @@ export interface NexusGenArgTypes {
     reservationForToken: { // args
       token: string; // String!
     }
+    transactions: { // args
+      after?: NexusGenScalars['DateTime'] | null; // DateTime
+      before?: NexusGenScalars['DateTime'] | null; // DateTime
+      limit?: number | null; // Int
+      type?: NexusGenEnums['CardTransactionType'] | null; // CardTransactionType
+    }
   }
   SalesNumber: {
     timeSeries: { // args
@@ -1039,24 +1063,34 @@ export interface NexusGenArgTypes {
       before: NexusGenScalars['DateTime']; // DateTime!
     }
   }
+  Transactionable: {
+    transactions: { // args
+      after?: NexusGenScalars['DateTime'] | null; // DateTime
+      before?: NexusGenScalars['DateTime'] | null; // DateTime
+      limit?: number | null; // Int
+      type?: NexusGenEnums['CardTransactionType'] | null; // CardTransactionType
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {
   Billable: "Device" | "HistoricalProduct" | "Product" | "ProductList"
   Node: "Area" | "BandApplication" | "Device" | "Event" | "Table" | "Viewer"
   Transaction: "CardTransaction" | "MissingTransaction"
+  Transactionable: "Device" | "Query"
 }
 
 export interface NexusGenTypeInterfaces {
   Area: "Node"
   BandApplication: "Node"
   CardTransaction: "Transaction"
-  Device: "Billable" | "Node"
+  Device: "Billable" | "Node" | "Transactionable"
   Event: "Node"
   HistoricalProduct: "Billable"
   MissingTransaction: "Transaction"
   Product: "Billable"
   ProductList: "Billable"
+  Query: "Transactionable"
   Table: "Node"
   Viewer: "Node"
 }
@@ -1075,7 +1109,7 @@ export type NexusGenUnionNames = never;
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = "Billable" | "Node" | "Transaction";
+export type NexusGenAbstractsUsingStrategyResolveType = "Billable" | "Node" | "Transaction" | "Transactionable";
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {

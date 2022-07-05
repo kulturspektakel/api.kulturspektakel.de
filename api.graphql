@@ -90,9 +90,13 @@ type CardTransaction implements Transaction {
 }
 
 type CardTransactionConnection {
+  """This includes money made from deposit"""
   balanceTotal: Int!
   data: [CardTransaction!]!
-  depositTotal: Int!
+  depositIn: Int!
+  depositOut: Int!
+  totalCount: Int!
+  uniqueCards: Int!
 }
 
 type CardTransactionInput {
@@ -143,7 +147,7 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
-type Device implements Billable & Node {
+type Device implements Billable & Node & Transactionable {
   """Unique identifier for the resource"""
   id: ID!
   lastSeen: DateTime
@@ -325,7 +329,7 @@ type ProductList implements Billable {
   salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
 }
 
-type Query {
+type Query implements Transactionable {
   areas: [Area!]!
   availableCapacity(time: DateTime): Int!
   cardStatus(payload: String!): CardStatus!
@@ -340,6 +344,7 @@ type Query {
   productLists: [ProductList!]!
   reservationForToken(token: String!): Reservation
   reservationsByPerson: [ReservationByPerson!]!
+  transactions(after: DateTime, before: DateTime, limit: Int, type: CardTransactionType): CardTransactionConnection!
   viewer: Viewer
 }
 
@@ -416,6 +421,10 @@ interface Transaction {
   balanceBefore: Int!
   depositAfter: Int!
   depositBefore: Int!
+}
+
+interface Transactionable {
+  transactions(after: DateTime, before: DateTime, limit: Int, type: CardTransactionType): CardTransactionConnection!
 }
 
 type Viewer implements Node {

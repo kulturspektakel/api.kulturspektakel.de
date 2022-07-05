@@ -60,6 +60,7 @@ import createCardTransaction from './mutations/createCardTransaction';
 import updateDeviceProductList from './mutations/updateDeviceProductList';
 import CardTransaction from './models/CardTransaction';
 import cardStatus, {MissingTransaction} from './queries/cardStatus';
+import transactions from './queries/transactions';
 
 export default makeSchema({
   contextType: {
@@ -121,6 +122,7 @@ export default makeSchema({
     events,
     nuclino,
     cardStatus,
+    transactions,
 
     // mutations
     cancelReservation,
