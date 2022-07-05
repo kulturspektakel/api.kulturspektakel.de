@@ -1,6 +1,4 @@
-import {add} from 'date-fns';
 import {objectType} from 'nexus';
-import authorization from '../utils/authorization';
 
 export default objectType({
   name: 'Band',

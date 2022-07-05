@@ -61,6 +61,7 @@ import updateDeviceProductList from './mutations/updateDeviceProductList';
 import CardTransaction from './models/CardTransaction';
 import cardStatus, {MissingTransaction} from './queries/cardStatus';
 import transactions from './queries/transactions';
+import Card from './models/Card';
 
 export default makeSchema({
   contextType: {
@@ -101,6 +102,7 @@ export default makeSchema({
     CardTransaction,
     enumType(CardTransactionType),
     MissingTransaction,
+    Card,
 
     // type extensions
     availability,

@@ -68,6 +68,12 @@ type Board {
   treasurer: String!
 }
 
+type Card implements Node & Transactionable {
+  """Unique identifier for the resource"""
+  id: ID!
+  transactions(after: DateTime, before: DateTime, limit: Int, type: CardTransactionType): CardTransactionConnection!
+}
+
 type CardStatus {
   balance: Int!
   cardId: ID!

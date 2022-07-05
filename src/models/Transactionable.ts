@@ -57,6 +57,12 @@ export default interfaceType({
               deviceId: (root as Device).id,
             };
             break;
+          case 'Card':
+            console.log(root);
+            where = {
+              cardId: (root as any).id,
+            };
+            break;
           case 'Query':
             break;
           default:

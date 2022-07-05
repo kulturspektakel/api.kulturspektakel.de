@@ -33,6 +33,7 @@ export default extendType({
         const {__typename} = getType(id);
         switch (__typename) {
           case 'Device':
+          case 'Card':
             return authorization('user')(_, {id}, context);
           case 'Area':
           case 'Table':
@@ -70,6 +71,9 @@ export default extendType({
           case 'Device':
             delegate = prisma.device;
             break;
+          case 'Card':
+            delegate = prisma.cardTransaction;
+            return {__typename, id: key};
           default:
             throw new UnreachableCaseError(__typename);
         }
