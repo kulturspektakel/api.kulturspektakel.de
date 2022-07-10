@@ -46,6 +46,7 @@ export default extendType({
           update: {
             name: name ?? undefined,
             emoji,
+            updatedAt: new Date(),
             active: active ?? undefined,
             product: products
               ? {
@@ -72,7 +73,7 @@ export default extendType({
 
         const transactions: [
           typeof upsert,
-          ...PrismaPromise<Prisma.BatchPayload>[]
+          ...PrismaPromise<Prisma.BatchPayload>[],
         ] = [upsert];
 
         if (active === false) {

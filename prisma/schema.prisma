@@ -111,6 +111,7 @@ model ProductList {
   OrderItem OrderItem[]
   Device    Device[]
   active    Boolean     @default(true)
+  updatedAt DateTime?
 }
 
 model Product {
