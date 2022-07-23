@@ -197,12 +197,14 @@ router.postAsync(
           items: {
             createMany: {
               data:
-                order.cartItems.map(({amount, product}) => ({
-                  productListId: order.listId,
-                  amount,
-                  name: product!.name, // not sure why product is nullable
-                  perUnitPrice: product!.price,
-                })) ?? [],
+                order.cartItems
+                  .filter(({product}) => product != undefined)
+                  .map(({amount, product}) => ({
+                    productListId: order.listId,
+                    amount,
+                    name: product!.name, // not sure why product is nullable
+                    perUnitPrice: product!.price,
+                  })) ?? [],
             },
           },
           deviceId: message.deviceId, // made sure device exists earlier
