@@ -1,10 +1,8 @@
-import {objectType} from 'nexus';
-import {BandApplicationRating} from 'nexus-prisma';
+import {builder} from '../pothos/builder';
 
-export default objectType({
-  name: 'BandApplicationRating',
-  definition(t) {
-    t.field(BandApplicationRating.viewer);
-    t.field(BandApplicationRating.rating);
-  },
+builder.prismaObject('BandApplicationRating', {
+  fields: (t) => ({
+    viewer: t.relation('viewer'),
+    rating: t.exposeInt('rating'),
+  }),
 });

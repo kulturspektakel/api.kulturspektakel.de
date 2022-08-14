@@ -1,15 +1,17 @@
 import {builder} from '../pothos/builder';
 import Transactionable from './Transactionable';
 
-// export default objectType({
-//   name: 'Card',
-//   definition(t) {
-//     t.implements(Node);
-//     t.implements(Transactionable);
-//   },
-// });
+class Card {
+  id: string;
 
-builder.node('Card', {
-  id: {field: 'id'},
+  constructor(id: string) {
+    this.id = id;
+  }
+}
+
+builder.node(Card, {
+  id: {
+    resolve: ({id}) => id,
+  },
   interfaces: [Transactionable],
 });

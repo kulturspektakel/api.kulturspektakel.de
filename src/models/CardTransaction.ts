@@ -1,38 +1,9 @@
-import {interfaceType, nonNull, objectType} from 'nexus';
-import {CardTransaction} from 'nexus-prisma';
 import {builder} from '../pothos/builder';
-import {config} from '../queries/config';
 
-export default objectType({
-  name: 'CardTransaction',
-  definition(t) {
-    t.implements(Transaction);
-    t.field(CardTransaction.clientId);
-    t.field(CardTransaction.cardId);
-    t.field(CardTransaction.createdAt);
-    t.field(CardTransaction.deviceTime);
-    t.field(CardTransaction.transactionType);
-    t.field(CardTransaction.Order);
-  },
-});
+export class Transaction {}
 
-// export const Transaction = interfaceType({
-//   name: 'Transaction',
-//   resolveType: (t) => {
-//     if ('numberOfMissingTransactions' in t) {
-//       return 'MissingTransaction';
-//     }
-//     return 'CardTransaction';
-//   },
-//   definition(t) {
-//     t.field('depositAfter', {type: nonNull('Int')});
-//     t.field('depositBefore', {type: nonNull('Int')});
-//     t.field('balanceAfter', {type: nonNull('Int')});
-//     t.field('balanceBefore', {type: nonNull('Int')});
-//   },
-// });
-
-builder.prismaNode('CardTransaction', {
+builder.prismaObject('CardTransaction', {
+  interfaces: [Transaction],
   fields: (t) => ({
     clientId: t.exposeString('clientId'),
     cardId: t.exposeString('cardId'),
@@ -42,8 +13,6 @@ builder.prismaNode('CardTransaction', {
     Order: t.exposeString('Order'),
   }),
 });
-
-export class Transaction {}
 
 builder.interfaceType(Transaction, {
   name: 'Transaction',

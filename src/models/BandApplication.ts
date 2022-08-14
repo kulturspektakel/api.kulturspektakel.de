@@ -1,46 +1,61 @@
-import {objectType} from 'nexus';
-import {BandApplication} from 'nexus-prisma';
-import authorization from '../utils/authorization';
-import Node from './Node';
+import {
+  HeardAboutBookingFrom as HeardAboutBookingFromValues,
+  PreviouslyPlayed as PreviouslyPlayedValues,
+} from '@prisma/client';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
+import './BandApplicationRating';
 
-export default objectType({
-  name: 'BandApplication',
-  definition(t) {
-    t.field(BandApplication.id);
-    t.implements(Node);
-    t.field(BandApplication.bandname);
-    t.field(BandApplication.genre);
-    t.field(BandApplication.genreCategory);
-    t.field(BandApplication.facebook);
-    t.field(BandApplication.facebookLikes);
-    t.field(BandApplication.description);
-    t.field(BandApplication.contactName);
-    t.field(BandApplication.contactPhone);
-    t.field(BandApplication.email);
-    t.field(BandApplication.city);
-    t.field(BandApplication.demo);
-    t.field(BandApplication.instagram);
-    t.field(BandApplication.instagramFollower);
-    t.field(BandApplication.distance);
-    t.field(BandApplication.heardAboutBookingFrom);
-    t.field(BandApplication.knowsKultFrom);
-    t.field(BandApplication.numberOfArtists);
-    t.field(BandApplication.numberOfNonMaleArtists);
-    t.field(BandApplication.hasPreviouslyPlayed);
-    t.field(BandApplication.website);
-    t.field({
-      ...BandApplication.contactedByViewer,
-      authorize: authorization('user'),
-    });
-    t.field({
-      ...BandApplication.bandApplicationRating,
-      authorize: authorization('user'),
-    });
-    t.field('rating', {
+const HeardAboutBookingFrom = builder.enumType('HeardAboutBookingFrom', {
+  values: Object.values(HeardAboutBookingFromValues),
+});
+
+const PreviouslyPlayed = builder.enumType('PreviouslyPlayed', {
+  values: Object.values(PreviouslyPlayedValues),
+});
+
+builder.prismaNode('BandApplication', {
+  id: {field: 'id'},
+  fields: (t) => ({
+    bandname: t.exposeString('bandname'),
+    genre: t.exposeString('genre', {nullable: true}),
+    genreCategory: t.exposeString('genreCategory'),
+    facebook: t.exposeString('facebook', {nullable: true}),
+    facebookLikes: t.exposeInt('facebookLikes', {nullable: true}),
+    description: t.exposeString('description', {nullable: true}),
+    contactName: t.exposeString('contactName'),
+    contactPhone: t.exposeString('contactPhone'),
+    email: t.exposeString('email'),
+    city: t.exposeString('city'),
+    demo: t.exposeString('demo', {nullable: true}),
+    instagram: t.exposeString('instagram', {nullable: true}),
+    instagramFollower: t.exposeInt('instagramFollower', {nullable: true}),
+    distance: t.exposeFloat('distance', {nullable: true}),
+    heardAboutBookingFrom: t.expose('heardAboutBookingFrom', {
+      nullable: true,
+      type: HeardAboutBookingFrom,
+    }),
+    knowsKultFrom: t.exposeString('knowsKultFrom', {nullable: true}),
+    numberOfArtists: t.exposeInt('numberOfArtists', {nullable: true}),
+    numberOfNonMaleArtists: t.exposeInt('numberOfNonMaleArtists', {
+      nullable: true,
+    }),
+    hasPreviouslyPlayed: t.expose('hasPreviouslyPlayed', {
+      nullable: true,
+      type: PreviouslyPlayed,
+    }),
+    website: t.exposeString('website', {nullable: true}),
+
+    // TODO auth
+    contactedByViewer: t.relation('contactedByViewer'),
+    // TODO auth
+    bandApplicationRating: t.relation('bandApplicationRating'),
+    // TODO auth
+    rating: t.field({
+      nullable: true,
       type: 'Float',
-      authorize: authorization('user'),
-      resolve: async (root, _, {prisma, token}) => {
-        const ratings = await prisma.bandApplicationRating.findMany({
+      resolve: async (root, _, {token}) => {
+        const ratings = await prismaClient.bandApplicationRating.findMany({
           where: {
             bandApplicationId: root.id,
           },
@@ -56,6 +71,6 @@ export default objectType({
           return null;
         }
       },
-    });
-  },
+    }),
+  }),
 });
