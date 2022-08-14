@@ -1,14 +1,12 @@
-import {objectType} from 'nexus';
-import {OrderItem} from 'nexus-prisma';
+import {builder} from '../pothos/builder';
 
-export default objectType({
-  name: 'OrderItem',
-  definition(t) {
-    t.field(OrderItem.id);
-    t.field(OrderItem.note);
-    t.field(OrderItem.amount);
-    t.field(OrderItem.name);
-    t.field(OrderItem.productList);
-    t.field(OrderItem.perUnitPrice);
-  },
+builder.prismaObject('OrderItem', {
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    note: t.exposeString('note', {nullable: true}),
+    amount: t.exposeInt('amount'),
+    name: t.exposeString('name'),
+    productList: t.relation('productList'),
+    perUnitPrice: t.exposeInt('perUnitPrice'),
+  }),
 });

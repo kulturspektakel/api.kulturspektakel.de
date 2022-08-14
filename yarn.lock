@@ -2044,6 +2044,23 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-3.0.2.tgz#969054308fe98d130c02844a45cc792199b75670"
   integrity sha512-S/SF/XYJeevwIgHFmVDAFRUvM3m+OjhvCAYMk78ZJQCYCQ5wS7j+LTt1ZEv2jpEEGg2tx/F6TYYWxddNAYHrFQ==
 
+"@pothos/core@^3.13.0":
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/@pothos/core/-/core-3.13.0.tgz#2329f3d643cee8e585842257627e172dee5569e0"
+  integrity sha512-1jm5OI8Rva1UtlbJDFApIS6NrPnQiNlsf3fxBaLqzfXDdk8eFKXfW8wi6Pa9SIZ5AGagjGGVwZBkWFWjq3D5Fw==
+
+"@pothos/plugin-prisma@^3.21.0":
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-prisma/-/plugin-prisma-3.21.0.tgz#60d70983db2a566e8a02ab315faa982268378f05"
+  integrity sha512-vjBjRdbjiSavDjB93wiN1N43Cps693tg+EhVuSJIyYesH1D9wNKz2rXBLKrokfsFyBBLbPlFKFiXRCryBw/U5g==
+  dependencies:
+    "@prisma/generator-helper" "^4.1.1"
+
+"@pothos/plugin-relay@^3.18.0":
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-relay/-/plugin-relay-3.18.0.tgz#3c2854a60311e246dee1d3fc57d1147bfb6929db"
+  integrity sha512-iUJ1TFnJmE+M5FVRTxbFALKh/b28f6XrdmIK4kYHDQUzozJU6q4TfiSNxaw+75BlkPO31wfjbDqXO0DY9nR2xA==
+
 "@prisma/client@^3.14.0":
   version "3.14.0"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-3.14.0.tgz#bb90405c012fcca11f4647d91153ed4c58f3bd48"
@@ -2058,6 +2075,15 @@
   dependencies:
     "@types/debug" "4.1.7"
     ms "2.1.3"
+    strip-ansi "6.0.1"
+
+"@prisma/debug@4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@prisma/debug/-/debug-4.2.0.tgz#9b70dae35713fc34200ffb11d57260553d6ba5eb"
+  integrity sha512-G4hOCx3mQEXLjdSSl9XcUsE80Gyt7QeACKc/Xjlt63zwOj87LLWt2v+1N2Fp82b9AvQSPDoa0/IeL8eyfflyIw==
+  dependencies:
+    "@types/debug" "4.1.7"
+    debug "4.3.4"
     strip-ansi "6.0.1"
 
 "@prisma/engines-version@3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a":
@@ -2076,6 +2102,16 @@
   integrity sha512-3zSy+XTEjmjLj6NO+/YPN1Cu7or3xA11TOoOnLRJ9G4pTT67RJXjK0L9Xy5n+3I0Xlb7xrWCgo8MvQQLMWzxPA==
   dependencies:
     "@prisma/debug" "3.8.1"
+    "@types/cross-spawn" "6.0.2"
+    chalk "4.1.2"
+    cross-spawn "7.0.3"
+
+"@prisma/generator-helper@^4.1.1":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@prisma/generator-helper/-/generator-helper-4.2.0.tgz#5b26e2effe08c8fbee2cacb2e31503ce0ecd2168"
+  integrity sha512-3zENcOVbOG8fVrpgDDkzUtHslOflcKh75G/FM5dxO8e9V+XuQMfboqo6Vy1FwCTwpoEzTz/JcN7clmGW5HWRVw==
+  dependencies:
+    "@prisma/debug" "4.2.0"
     "@types/cross-spawn" "6.0.2"
     chalk "4.1.2"
     cross-spawn "7.0.3"
@@ -4055,17 +4091,17 @@ debug@4.3.1:
   dependencies:
     ms "2.1.2"
 
+debug@4.3.4, debug@^4.3.4:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
+  integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
+  dependencies:
+    ms "2.1.2"
+
 debug@^4.1.1, debug@^4.3.3:
   version "4.3.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.3.tgz#04266e0b70a98d4462e6e288e38259213332b664"
   integrity sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==
-  dependencies:
-    ms "2.1.2"
-
-debug@^4.3.4:
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
-  integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
   dependencies:
     ms "2.1.2"
 
@@ -5228,12 +5264,12 @@ graphql-scalars@^1.13.6:
   dependencies:
     tslib "~2.3.0"
 
-graphql-scalars@^1.17.0:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/graphql-scalars/-/graphql-scalars-1.17.0.tgz#10e4f0fe44472d475dd72f14412c065fd1b7aff8"
-  integrity sha512-y1WtSu6jiW5QdDjK3RWMRTdK+xAAtSIq3IxmtnhxzH7bCkHV/z8VZa8fsSG4BcWbjQQtCQYQvMnvbQ+TBCyJRQ==
+graphql-scalars@^1.18.0:
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/graphql-scalars/-/graphql-scalars-1.18.0.tgz#096fd953f24087c4cf617ee08539daab32e7b062"
+  integrity sha512-XrMwSim4xJ5n1UdT3YMJh9uT3oB/th5jR5bIMJvYxmgq/rGDkfXNtCRSL/+dLMHxGM0thYPfIZDua1+aQlKBMA==
   dependencies:
-    tslib "~2.3.0"
+    tslib "~2.4.0"
 
 graphql-sse@^1.0.1:
   version "1.0.4"

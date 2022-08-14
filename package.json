@@ -41,6 +41,9 @@
   "dependencies": {
     "@awaitjs/express": "^0.9.0",
     "@aws-sdk/client-ses": "^3.107.0",
+    "@pothos/core": "^3.13.0",
+    "@pothos/plugin-prisma": "^3.21.0",
+    "@pothos/plugin-relay": "^3.18.0",
     "@prisma/client": "^3.14.0",
     "@sentry/integrations": "^7.1.1",
     "@sentry/node": "^7.1.1",
@@ -57,7 +60,7 @@
     "form-data": "^4.0.0",
     "graphile-worker": "^0.13.0",
     "graphql": "^16.5.0",
-    "graphql-scalars": "^1.17.0",
+    "graphql-scalars": "^1.18.0",
     "ics": "^2.35.0",
     "jsonwebtoken": "^8.5.1",
     "lodash.merge": "^4.6.2",

@@ -1,6 +1,6 @@
 import express from 'express';
 import {ApolloServer, ApolloError} from 'apollo-server-express';
-import schema from './schema';
+import schema from './pothos/schema';
 import context from './context';
 import env from './utils/env';
 import cookieParser from 'cookie-parser';
@@ -22,7 +22,7 @@ import {RewriteFrames as RewriteFramesIntegration} from '@sentry/integrations';
 
 const server = new ApolloServer({
   context,
-  schema: schema as any, // nexus problem, probably fixed in next version
+  schema,
   formatError: (err) => {
     if (!(err instanceof ApolloError)) {
       const e = new ApolloError(err.message);

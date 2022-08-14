@@ -1,6 +1,12 @@
 import {objectType} from 'nexus';
 import {Order} from 'nexus-prisma';
+import {builder} from '../pothos/builder';
 import {config} from '../queries/config';
+
+builder.prismaNode('Order', {
+  id: {field: 'id'},
+  fields: (t) => ({}),
+});
 
 export default objectType({
   name: 'Order',

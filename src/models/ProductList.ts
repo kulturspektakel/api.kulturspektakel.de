@@ -1,55 +1,54 @@
-import {nonNull, objectType} from 'nexus';
-import authorization from '../utils/authorization';
-import Billable from './Billable';
-import {ProductList} from 'nexus-prisma';
+import {Billable} from './Billable';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
 
-export default objectType({
-  name: 'ProductList',
-  definition(t) {
-    t.field(ProductList.id);
-    t.field(ProductList.name);
-    t.field(ProductList.emoji);
-    t.field(ProductList.active);
-    t.field({
-      ...ProductList.product,
-      resolve: ({id}, _, {prisma}) =>
-        prisma.product.findMany({
-          where: {
-            productListId: id,
-          },
-          orderBy: {
-            order: 'asc',
-          },
-        }),
-    });
-    t.nonNull.list.nonNull.field('historicalProducts', {
-      type: objectType({
-        name: 'HistoricalProduct',
-        definition(t) {
-          t.field('name', {
-            type: nonNull('String'),
-          });
-          t.field('productListId', {
-            type: nonNull('Int'),
-          });
-          t.implements(Billable);
+class HistoricalProduct implements Billable {
+  name: string;
+  productListId: number;
+  constructor(name: string, productListId: number) {
+    this.name = name;
+    this.productListId = productListId;
+  }
+}
+
+builder.objectType(HistoricalProduct, {
+  name: 'HistoricalProduct',
+  fields: (t) => ({
+    name: t.field({type: 'String', resolve: ({name}) => name}),
+    productListId: t.field({
+      type: 'ID',
+      resolve: ({productListId}) => productListId,
+    }),
+  }),
+});
+
+builder.prismaNode('ProductList', {
+  id: {field: 'id'},
+  interfaces: [Billable],
+  fields: (t) => ({
+    name: t.exposeString('name'),
+    emoji: t.exposeString('emoji'),
+    active: t.exposeBoolean('active'),
+    product: t.relation('product', {
+      query: () => ({
+        orderBy: {
+          order: 'asc',
         },
       }),
-      authorize: authorization('user'),
-      resolve: async ({id}, {}, {prisma}) => {
-        const products = await prisma.orderItem.groupBy({
+    }),
+    historicalProducts: t.field({
+      type: [HistoricalProduct],
+      // TODO auth
+      resolve: async ({id}) => {
+        const products = await prismaClient.orderItem.groupBy({
           where: {
             productListId: id,
           },
           by: ['name'],
         });
 
-        return products.map((p) => ({
-          name: p.name,
-          productListId: id,
-        }));
+        return products.map((p) => new HistoricalProduct(p.name, id));
       },
-    });
-    t.implements(Billable);
-  },
+    }),
+  }),
 });

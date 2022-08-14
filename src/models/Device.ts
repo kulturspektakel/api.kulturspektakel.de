@@ -1,17 +1,13 @@
-import {objectType} from 'nexus';
-import Billable from './Billable';
-import {Device as D} from 'nexus-prisma';
-import Node from './Node';
 import Transactionable from './Transactionable';
+import {builder} from '../pothos/builder';
+import {Billable} from './Billable';
 
-export default objectType({
-  name: 'Device',
-  definition(t) {
-    t.implements(Node);
-    t.implements(Billable);
-    t.implements(Transactionable);
-    t.field(D.productList);
-    t.field(D.lastSeen);
-    t.field(D.softwareVersion);
-  },
+builder.prismaNode('Device', {
+  id: {field: 'id'},
+  interfaces: [Billable, Transactionable],
+  fields: (t) => ({
+    lastSeen: t.expose('lastSeen', {type: 'DateTime', nullable: true}),
+    softwareVersion: t.exposeString('softwareVersion', {nullable: true}),
+    productList: t.relation('productList'),
+  }),
 });

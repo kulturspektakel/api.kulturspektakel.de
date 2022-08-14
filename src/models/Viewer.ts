@@ -1,14 +1,10 @@
-import {objectType} from 'nexus';
-import {Viewer} from 'nexus-prisma';
-import Node from './Node';
+import {builder} from '../pothos/builder';
 
-export default objectType({
-  name: 'Viewer',
-  definition(t) {
-    t.field(Viewer.id);
-    t.implements(Node);
-    t.field(Viewer.displayName);
-    t.field(Viewer.email);
-    t.field(Viewer.profilePicture);
-  },
+builder.prismaNode('Viewer', {
+  id: {field: 'id'},
+  fields: (t) => ({
+    displayName: t.exposeString('displayName'),
+    email: t.exposeString('email'),
+    profilePicture: t.exposeString('profilePicture'),
+  }),
 });

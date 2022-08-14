@@ -1,6 +1,5 @@
-import {enumType} from 'nexus';
+import {builder} from '../pothos/builder';
 
-export default enumType({
-  name: 'TimeGrouping',
-  members: ['Hour', 'Day'],
+export default builder.enumType('TimeGrouping', {
+  values: ['Hour', 'Day'] as const,
 });
