@@ -1,19 +1,17 @@
-import {extendType, nonNull} from 'nexus';
 import fetch from 'node-fetch';
+import {builder} from '../pothos/builder';
 import env from '../utils/env';
 
-export default extendType({
-  type: 'Query',
-  definition: (t) => {
-    t.field('distanceToKult', {
-      type: 'Float',
-      args: {
-        origin: nonNull('String'),
-      },
-      resolve: (_root, {origin}) => getDistanceToKult(origin),
-    });
-  },
-});
+builder.queryField('distanceToKult', (t) =>
+  t.field({
+    type: 'Float',
+    nullable: true,
+    args: {
+      origin: t.arg.string({required: true}),
+    },
+    resolve: (_root, {origin}) => getDistanceToKult(origin),
+  }),
+);
 
 export async function getDistanceToKult(
   origin: string,

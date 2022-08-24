@@ -1,10 +1,13 @@
 import {builder} from '../pothos/builder';
 
-builder.prismaNode('Viewer', {
+export default builder.prismaNode('Viewer', {
   id: {field: 'id'},
+  authScopes: {
+    user: true,
+  },
   fields: (t) => ({
     displayName: t.exposeString('displayName'),
     email: t.exposeString('email'),
-    profilePicture: t.exposeString('profilePicture'),
+    profilePicture: t.exposeString('profilePicture', {nullable: true}),
   }),
 });

@@ -1,25 +1,26 @@
 import {
   HeardAboutBookingFrom as HeardAboutBookingFromValues,
-  PreviouslyPlayed as PreviouslyPlayedValues,
+  GenreCategory as GenreCategoryValues,
 } from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import './BandApplicationRating';
+import PreviouslyPlayed from './PreviouslyPlayed';
 
-const HeardAboutBookingFrom = builder.enumType('HeardAboutBookingFrom', {
+export const HeardAboutBookingFrom = builder.enumType('HeardAboutBookingFrom', {
   values: Object.values(HeardAboutBookingFromValues),
 });
 
-const PreviouslyPlayed = builder.enumType('PreviouslyPlayed', {
-  values: Object.values(PreviouslyPlayedValues),
+export const GenreCategory = builder.enumType('GenreCategory', {
+  values: Object.values(GenreCategoryValues),
 });
 
-builder.prismaNode('BandApplication', {
+export default builder.prismaNode('BandApplication', {
   id: {field: 'id'},
   fields: (t) => ({
     bandname: t.exposeString('bandname'),
     genre: t.exposeString('genre', {nullable: true}),
-    genreCategory: t.exposeString('genreCategory'),
+    genreCategory: t.expose('genreCategory', {type: GenreCategory}),
     facebook: t.exposeString('facebook', {nullable: true}),
     facebookLikes: t.exposeInt('facebookLikes', {nullable: true}),
     description: t.exposeString('description', {nullable: true}),
@@ -45,13 +46,20 @@ builder.prismaNode('BandApplication', {
       type: PreviouslyPlayed,
     }),
     website: t.exposeString('website', {nullable: true}),
-
-    // TODO auth
-    contactedByViewer: t.relation('contactedByViewer'),
-    // TODO auth
-    bandApplicationRating: t.relation('bandApplicationRating'),
-    // TODO auth
+    contactedByViewer: t.relation('contactedByViewer', {
+      authScopes: {
+        user: true,
+      },
+    }),
+    bandApplicationRating: t.relation('bandApplicationRating', {
+      authScopes: {
+        user: true,
+      },
+    }),
     rating: t.field({
+      authScopes: {
+        user: true,
+      },
       nullable: true,
       type: 'Float',
       resolve: async (root, _, {token}) => {

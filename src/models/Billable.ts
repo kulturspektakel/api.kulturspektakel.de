@@ -1,14 +1,13 @@
-import {interfaceType, nonNull, objectType} from 'nexus';
-import {
-  NexusGenAbstractTypeMembers,
-  NexusGenEnums,
-  NexusGenFieldTypes,
-  NexusGenObjects,
-} from '../../types/api';
-import authorization from '../utils/authorization';
-import UnreachableCaseError from '../utils/UnreachableCaseError';
 import merge from 'lodash.merge';
-import {Order, OrderItem, OrderPayment, Prisma} from '@prisma/client';
+import {
+  Device,
+  Order,
+  OrderItem,
+  OrderPayment,
+  Prisma,
+  Product,
+  ProductList,
+} from '@prisma/client';
 import {
   add,
   differenceInHours,
@@ -107,21 +106,22 @@ builder.objectType(SalesNumber, {
   }),
 });
 
-export class Billable {
-  constructor() {}
-}
+export class Billable {}
 
 builder.interfaceType(Billable, {
   name: 'Billable',
   fields: (t) => ({
     salesNumbers: t.field({
-      // TODO auth
+      // authScopes: {
+      //   user: true,
+      // },
       type: [SalesNumber],
       args: {
         after: t.arg({type: 'DateTime', required: true}),
         before: t.arg({type: 'DateTime', required: true}),
       },
-      resolve: async (root, {after, before}, ctx, {parentType}) => {
+      resolve: async (root, {after, before}, _ctx, {parentType}) => {
+        console.log(root);
         if (isAfter(after, before)) {
           throw new UserInputError(
             'Argument "after" needs to be earlier than argument "before"',
@@ -129,28 +129,24 @@ builder.interfaceType(Billable, {
         }
 
         let where: Prisma.OrderItemWhereInput = {};
-        switch (parentType.name) {
-          case 'ProductList':
-            where = {
-              productListId: root.id,
-            };
-            break;
-          case 'Product':
-          case 'HistoricalProduct':
-            where = {
-              name: root.name,
-              productListId: root.productListId,
-            };
-            break;
-          case 'Device':
-            where = {
-              order: {
-                deviceId: root.id,
-              },
-            };
-            break;
-          default:
-            throw new UnreachableCaseError(parentType.name);
+        if (parentType.name === 'Device') {
+          where = {
+            order: {
+              deviceId: (root as Device).id,
+            },
+          };
+        } else if (parentType.name === 'ProductList') {
+          where = {
+            productListId: (root as ProductList).id,
+          };
+        } else if (
+          parentType.name === 'Product' ||
+          parentType.name === 'HistoricalProduct'
+        ) {
+          where = {
+            name: (root as Product).name,
+            productListId: (root as Product).productListId,
+          };
         }
 
         const orderItems = await prismaClient.orderItem.findMany({

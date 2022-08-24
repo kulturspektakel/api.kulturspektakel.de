@@ -1,56 +1,45 @@
-import {extendType, nonNull, list, inputObjectType} from 'nexus';
-import authorization from '../utils/authorization';
+import Order from '../models/Order';
+import OrderPayment from '../models/OrderPayment';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
 
-export default extendType({
-  type: 'Mutation',
-  definition: (t) => {
-    t.field('createOrder', {
-      type: 'Order',
-      args: {
-        products: nonNull(
-          list(
-            nonNull(
-              inputObjectType({
-                name: 'OrderItemInput',
-                definition: (t) => {
-                  t.nonNull.field('perUnitPrice', {type: 'Int'});
-                  t.nonNull.field('name', {type: 'String'});
-                  t.nonNull.field('amount', {type: 'Int'});
-                  t.field('productListId', {type: 'Int'});
-                  t.field('note', {type: 'String'});
-                },
-              }),
-            ),
-          ),
-        ),
-        payment: nonNull('OrderPayment'),
-        deposit: nonNull('Int'),
-        deviceTime: nonNull('DateTime'),
-      },
-      authorize: authorization('device'),
-      resolve: async (
-        _,
-        {products, payment, deposit, deviceTime},
-        {prisma, token},
-      ) => {
-        if (token?.type !== 'device') {
-          throw new Error('No device authentication');
-        }
+const OrderItemInput = builder.inputType('OrderItemInput', {
+  fields: (t) => ({
+    perUnitPrice: t.int({required: true}),
+    name: t.string({required: true}),
+    amount: t.int({required: true}),
+    productListId: t.int(),
+    note: t.string(),
+  }),
+});
 
-        return await prisma.order.create({
-          data: {
-            payment,
-            deviceId: token.deviceId!,
-            deposit,
-            createdAt: deviceTime,
-            items: {
-              createMany: {
-                data: products,
-              },
+builder.mutationField('createOrder', (t) =>
+  t.field({
+    type: Order,
+    args: {
+      products: t.arg({type: [OrderItemInput], required: true}),
+      payment: t.arg({type: OrderPayment, required: true}),
+      deposit: t.arg.int({required: true}),
+      deviceTime: t.arg({type: 'DateTime', required: true}),
+    },
+    resolve: async (_, {payment, deposit, deviceTime, products}, {token}) => {
+      if (token?.type !== 'device') {
+        throw new Error('No device authentication');
+      }
+
+      return await prismaClient.order.create({
+        data: {
+          payment,
+          deviceId: token.deviceId!,
+          deposit,
+          createdAt: deviceTime,
+          items: {
+            createMany: {
+              data: products,
             },
           },
-        });
-      },
-    });
-  },
-});
+        },
+      });
+    },
+  }),
+);

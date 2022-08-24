@@ -4,8 +4,15 @@ import RelayPlugin from '@pothos/plugin-relay';
 import prismaClient from '../utils/prismaClient';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import {GraphQLDate, GraphQLDateTime} from 'graphql-scalars';
+import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
+import {Context} from '../context';
 
 export const builder = new SchemaBuilder<{
+  AuthScopes: {
+    user: boolean;
+    device: boolean;
+  };
+  Context: Context;
   PrismaTypes: PrismaTypes;
   Scalars: {
     Date: {
@@ -18,7 +25,7 @@ export const builder = new SchemaBuilder<{
     };
   };
 }>({
-  plugins: [PrismaPlugin, RelayPlugin],
+  plugins: [ScopeAuthPlugin, PrismaPlugin, RelayPlugin],
   prisma: {
     client: prismaClient,
   },
@@ -26,10 +33,19 @@ export const builder = new SchemaBuilder<{
     // These will become the defaults in the next major version
     clientMutationId: 'omit',
     cursorType: 'String',
+    decodeGlobalID: (globalID) => {
+      const [typename, ...id] = globalID.split(':');
+      return {id: id.join(':'), typename};
+    },
+    encodeGlobalID: (typename, id) => `${typename}:${id}`,
   },
+  authScopes: async (context) => ({
+    user: context.token?.type === 'user',
+    device: context.token?.type === 'device',
+  }),
 });
 
 builder.addScalarType('Date', GraphQLDate, {});
 builder.addScalarType('DateTime', GraphQLDateTime, {});
-
 builder.queryType({});
+builder.mutationType({});

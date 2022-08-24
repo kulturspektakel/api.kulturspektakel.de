@@ -1,16 +1,16 @@
-import {extendType} from 'nexus';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
+import Area from '../models/Area';
 
-export default extendType({
-  type: 'Query',
-  definition: (t) => {
-    t.nonNull.list.nonNull.field('areas', {
-      type: 'Area',
-      resolve: (_root, _args, {prisma}) =>
-        prisma.area.findMany({
-          orderBy: {
-            order: 'asc',
-          },
-        }),
-    });
-  },
-});
+builder.queryField('areas', (t) =>
+  t.prismaField({
+    type: [Area],
+    resolve: (query) =>
+      prismaClient.area.findMany({
+        ...query,
+        orderBy: {
+          order: 'asc',
+        },
+      }),
+  }),
+);

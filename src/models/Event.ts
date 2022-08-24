@@ -1,6 +1,6 @@
 import {builder} from '../pothos/builder';
 
-builder.prismaNode('Event', {
+export default builder.prismaNode('Event', {
   id: {field: 'id'},
   fields: (t) => ({
     name: t.exposeString('name'),
@@ -16,7 +16,9 @@ builder.prismaNode('Event', {
       nullable: true,
     }),
     bandApplication: t.relation('bandApplication', {
-      // TODO auth
+      authScopes: {
+        user: true,
+      },
       query: () => ({
         orderBy: {
           createdAt: 'asc',

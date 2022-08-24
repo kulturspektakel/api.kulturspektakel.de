@@ -1,97 +1,91 @@
 import {Prisma, PrismaPromise} from '@prisma/client';
-import {extendType, list, inputObjectType, nonNull} from 'nexus';
-import authorization from '../utils/authorization';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
+import ProductList from '../models/ProductList';
 
-export default extendType({
-  type: 'Mutation',
-  definition: (t) => {
-    t.field('upsertProductList', {
-      type: 'ProductList',
-      args: {
-        id: 'Int',
-        name: 'String',
-        emoji: 'String',
-        active: 'Boolean',
-        products: list(
-          nonNull(
-            inputObjectType({
-              name: 'ProductInput',
-              definition: (t) => {
-                t.nonNull.field('name', {type: 'String'});
-                t.nonNull.field('price', {type: 'Int'});
-                t.field('requiresDeposit', {type: 'Boolean'});
-              },
-            }),
-          ),
-        ),
-      },
-      authorize: authorization('user'),
-      resolve: async (_, {id, name, emoji, products, active}, {prisma}) => {
-        const upsert = prisma.productList.upsert({
-          create: {
-            name: name ?? '',
-            emoji,
-            active: active ?? undefined,
-            product: {
-              createMany: {
-                data:
-                  products?.map((p, order) => ({
+const ProductListInput = builder.inputType('ProductListInput', {
+  fields: (t) => ({
+    name: t.string({required: true}),
+    price: t.int({required: true}),
+    requiresDeposit: t.boolean(),
+  }),
+});
+
+builder.mutationField('upsertProductList', (t) =>
+  t.field({
+    type: ProductList,
+    args: {
+      id: t.arg({type: 'Int'}),
+      name: t.arg({type: 'String'}),
+      emoji: t.arg({type: 'String'}),
+      active: t.arg({type: 'Boolean'}),
+      products: t.arg({type: [ProductListInput]}),
+    },
+    resolve: async (_, {id, name, emoji, active, products}) => {
+      const upsert = prismaClient.productList.upsert({
+        create: {
+          name: name ?? '',
+          emoji,
+          active: active ?? undefined,
+          product: {
+            createMany: {
+              data:
+                products?.map((p, order) => ({
+                  ...p,
+                  order,
+                  requiresDeposit: p.requiresDeposit ?? false,
+                })) ?? [],
+            },
+          },
+        },
+        update: {
+          name: name ?? undefined,
+          emoji,
+          updatedAt: new Date(),
+          active: active ?? undefined,
+          product: products
+            ? {
+                deleteMany: {
+                  productListId: id ?? -1,
+                },
+                createMany: {
+                  data: products.map((p, order) => ({
                     ...p,
                     order,
                     requiresDeposit: p.requiresDeposit ?? false,
-                  })) ?? [],
-              },
+                  })),
+                },
+              }
+            : undefined,
+        },
+        where: {
+          id: id ?? -1,
+        },
+        include: {
+          product: true,
+        },
+      });
+
+      const transactions: [
+        typeof upsert,
+        ...PrismaPromise<Prisma.BatchPayload>[],
+      ] = [upsert];
+
+      if (active === false) {
+        // remove from connected devices when product list is disabled
+        transactions.push(
+          prismaClient.device.updateMany({
+            where: {
+              productListId: id,
             },
-          },
-          update: {
-            name: name ?? undefined,
-            emoji,
-            updatedAt: new Date(),
-            active: active ?? undefined,
-            product: products
-              ? {
-                  deleteMany: {
-                    productListId: id ?? -1,
-                  },
-                  createMany: {
-                    data: products.map((p, order) => ({
-                      ...p,
-                      order,
-                      requiresDeposit: p.requiresDeposit ?? false,
-                    })),
-                  },
-                }
-              : undefined,
-          },
-          where: {
-            id: id ?? -1,
-          },
-          include: {
-            product: true,
-          },
-        });
+            data: {
+              productListId: null,
+            },
+          }),
+        );
+      }
 
-        const transactions: [
-          typeof upsert,
-          ...PrismaPromise<Prisma.BatchPayload>[],
-        ] = [upsert];
-
-        if (active === false) {
-          // remove from connected devices when product list is disabled
-          transactions.push(
-            prisma.device.updateMany({
-              where: {
-                productListId: id,
-              },
-              data: {
-                productListId: null,
-              },
-            }),
-          );
-        }
-
-        return prisma.$transaction(transactions).then(([data]) => data);
-      },
-    });
-  },
-});
+      return prismaClient.$transaction(transactions).then(([data]) => data);
+    },
+  }),
+);

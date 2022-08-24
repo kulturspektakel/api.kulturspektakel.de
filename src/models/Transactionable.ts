@@ -1,80 +1,77 @@
-import {interfaceType, list, nonNull, objectType} from 'nexus';
-import {NexusGenAbstractTypeMembers} from '../../types/api';
-import authorization from '../utils/authorization';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {Device, Prisma} from '@prisma/client';
+import {
+  CardTransaction as CardTransactionT,
+  Device,
+  Prisma,
+} from '@prisma/client';
 import {isAfter} from 'date-fns';
 import {UserInputError} from 'apollo-server-express';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
+import CardTransaction, {CardTransactionType} from './CardTransaction';
 
-export default interfaceType({
-  name: 'Transactionable',
-  definition(t) {
-    t.nonNull.field('transactions', {
-      type: objectType({
-        name: 'CardTransactionConnection',
-        definition(t) {
-          t.field('balanceTotal', {
-            type: nonNull('Int'),
-            description: 'This includes money made from deposit',
-          });
-          t.field('depositIn', {
-            type: nonNull('Int'),
-          });
-          t.field('depositOut', {
-            type: nonNull('Int'),
-          });
-          t.field('uniqueCards', {
-            type: nonNull('Int'),
-          });
-          t.field('totalCount', {
-            type: nonNull('Int'),
-          });
-          t.field('data', {
-            type: nonNull(list(nonNull('CardTransaction'))),
-          });
-        },
+export class Transactionable {}
+
+const CardTransactionConnection = builder
+  .objectRef<{
+    balanceTotal: number;
+    depositIn: number;
+    depositOut: number;
+    uniqueCards: number;
+    totalCount: number;
+    data: CardTransactionT[];
+  }>('CardTransactionConnection')
+  .implement({
+    fields: (t) => ({
+      balanceTotal: t.exposeInt('balanceTotal', {
+        description: 'This includes money made from deposit',
       }),
-      args: {
-        limit: 'Int',
-        after: 'DateTime',
-        before: 'DateTime',
-        type: 'CardTransactionType',
+      depositIn: t.exposeInt('depositIn'),
+      depositOut: t.exposeInt('depositOut'),
+      uniqueCards: t.exposeInt('uniqueCards'),
+      totalCount: t.exposeInt('totalCount'),
+      data: t.expose('data', {type: [CardTransaction]}),
+    }),
+  });
+
+builder.interfaceType(Transactionable, {
+  name: 'Transactionable',
+  fields: (t) => ({
+    transactions: t.field({
+      type: CardTransactionConnection,
+      authScopes: {
+        user: true,
       },
-      authorize: authorization('user'),
-      resolve: async (root, {limit, after, before, type}, {prisma}, {path}) => {
-        if (isAfter(after, before)) {
+      args: {
+        limit: t.arg({type: 'Int'}),
+        after: t.arg({type: 'DateTime'}),
+        before: t.arg({type: 'DateTime'}),
+        type: t.arg({type: CardTransactionType}),
+      },
+      resolve: async (root, {limit, after, before, type}, _, {parentType}) => {
+        if (after && before && isAfter(after, before)) {
           throw new UserInputError(
             'Argument "after" needs to be earlier than argument "before"',
           );
         }
 
-        const typename: NexusGenAbstractTypeMembers['Transactionable'] =
-          path.typename as any;
         let where: Prisma.CardTransactionWhereInput = {};
-        switch (typename) {
-          case 'Device':
-            where = {
-              deviceId: (root as Device).id,
-            };
-            break;
-          case 'Card':
-            console.log(root);
-            where = {
-              cardId: (root as any).id,
-            };
-            break;
-          case 'Query':
-            break;
-          default:
-            throw new UnreachableCaseError(typename);
+        if (parentType.name === 'Device') {
+          where = {
+            deviceId: (root as Device).id,
+          };
+        } else if (parentType.name === 'Card') {
+          where = {
+            cardId: (root as any).id,
+          };
         }
 
-        const data = await prisma.cardTransaction.findMany({
+        const data = await prismaClient.cardTransaction.findMany({
           where: {
             ...where,
             deviceTime: {
-              gt: after,
-              lt: before,
+              gt: after ?? undefined,
+              lt: before ?? undefined,
             },
             transactionType: type ?? undefined,
           },
@@ -102,12 +99,6 @@ export default interfaceType({
           data,
         };
       },
-    });
-  },
-  resolveType: (node) =>
-    (
-      node as any as {
-        __typename: NexusGenAbstractTypeMembers['Transactionable'];
-      }
-    ).__typename,
+    }),
+  }),
 });

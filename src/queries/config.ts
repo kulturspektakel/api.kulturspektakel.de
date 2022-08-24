@@ -1,8 +1,6 @@
-import {extendType, nonNull, objectType} from 'nexus';
+import {builder} from '../pothos/builder';
 
 export const config = Object.freeze({
-  reservationStart: new Date('2021-07-03T13:00:00.000Z'),
-  capacityLimit: 1500,
   depositValue: 200,
   board: {
     chair: 'Gabriel Knoll',
@@ -15,36 +13,30 @@ export const config = Object.freeze({
   },
 });
 
-export default extendType({
-  type: 'Query',
-  definition: (t) => {
-    t.field('config', {
-      type: objectType({
-        name: 'Config',
-        definition: (t) => {
-          t.field('reservationStart', {
-            type: nonNull('DateTime'),
-          });
-          t.field('depositValue', {
-            type: nonNull('Int'),
-          });
-          t.field('board', {
-            type: objectType({
-              name: 'Board',
-              definition: (t) => {
-                t.nonNull.field('chair', {type: 'String'});
-                t.nonNull.field('deputy', {type: 'String'});
-                t.nonNull.field('deputy2', {type: 'String'});
-                t.nonNull.field('treasurer', {type: 'String'});
-                t.nonNull.field('secretary', {type: 'String'});
-                t.nonNull.field('observer', {type: 'String'});
-                t.nonNull.field('observer2', {type: 'String'});
-              },
-            }),
-          });
-        },
-      }),
-      resolve: () => config,
-    });
-  },
+const Board = builder.objectRef<typeof config['board']>('Board').implement({
+  fields: (t) => ({
+    chair: t.exposeString('chair'),
+    deputy: t.exposeString('deputy'),
+    deputy2: t.exposeString('deputy2'),
+    treasurer: t.exposeString('treasurer'),
+    secretary: t.exposeString('secretary'),
+    observer: t.exposeString('observer'),
+    observer2: t.exposeString('observer2'),
+  }),
 });
+
+const Config = builder.objectRef<typeof config>('Config').implement({
+  fields: (t) => ({
+    depositValue: t.exposeInt('depositValue'),
+    board: t.expose('board', {
+      type: Board,
+    }),
+  }),
+});
+
+builder.queryField('config', (t) =>
+  t.field({
+    type: Config,
+    resolve: () => config,
+  }),
+);

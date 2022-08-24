@@ -1,25 +1,22 @@
-import {extendType, nonNull} from 'nexus';
-import authorization from '../utils/authorization';
+import Device from '../models/Device';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
 
-export default extendType({
-  type: 'Mutation',
-  definition: (t) => {
-    t.field('updateDeviceProductList', {
-      type: 'Device',
-      args: {
-        productListId: 'Int',
-        deviceId: nonNull('ID'),
-      },
-      authorize: authorization('user'),
-      resolve: (_, {productListId, deviceId}, {prisma}) =>
-        prisma.device.update({
-          where: {
-            id: deviceId,
-          },
-          data: {
-            productListId,
-          },
-        }),
-    });
-  },
-});
+builder.mutationField('updateDeviceProductList', (t) =>
+  t.field({
+    type: Device,
+    args: {
+      productListId: t.arg.int(),
+      deviceId: t.arg.string({required: true}),
+    },
+    resolve: async (_, {productListId, deviceId}, {token}) =>
+      prismaClient.device.update({
+        where: {
+          id: deviceId,
+        },
+        data: {
+          productListId,
+        },
+      }),
+  }),
+);

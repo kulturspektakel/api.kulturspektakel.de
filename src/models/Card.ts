@@ -1,5 +1,5 @@
 import {builder} from '../pothos/builder';
-import Transactionable from './Transactionable';
+import {Transactionable} from './Transactionable';
 
 class Card {
   id: string;
@@ -10,6 +10,10 @@ class Card {
 }
 
 builder.node(Card, {
+  name: 'Card',
+  authScopes: {
+    user: true,
+  },
   id: {
     resolve: ({id}) => id,
   },

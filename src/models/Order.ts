@@ -1,33 +1,20 @@
-import {objectType} from 'nexus';
 import {builder} from '../pothos/builder';
 import {config} from '../queries/config';
+import prismaClient from '../utils/prismaClient';
+import OrderPayment from './OrderPayment';
 
-builder.prismaObject('Order', {
-  id: {field: 'id'},
-  fields: (t) => ({}),
-});
-
-export default objectType({
-  name: 'Order',
-  definition(t) {
-    t.field(Order.id);
-    t.field(Order.payment);
-    t.field(Order.deposit);
-    t.field(Order.createdAt);
-    t.field(Order.deviceId);
-    t.nonNull.list.nonNull.field('items', {
-      type: 'OrderItem',
-      resolve: (parent, _, {prisma}) =>
-        prisma.orderItem.findMany({
-          where: {
-            orderId: parent.id,
-          },
-        }),
-    });
-    t.field('total', {
+export default builder.prismaObject('Order', {
+  fields: (t) => ({
+    id: t.exposeInt('id'),
+    payment: t.expose('payment', {type: OrderPayment}),
+    deposit: t.exposeInt('deposit'),
+    createdAt: t.expose('createdAt', {type: 'DateTime'}),
+    deviceId: t.exposeID('deviceId', {nullable: true}),
+    items: t.relation('items'),
+    total: t.field({
       type: 'Int',
-      resolve: async (parent, _, {prisma}) => {
-        const order = await prisma.order.findUnique({
+      resolve: async (parent) => {
+        const order = await prismaClient.order.findUnique({
           where: {id: parent.id},
           include: {
             items: true,
@@ -44,6 +31,6 @@ export default objectType({
           order.deposit * config.depositValue
         );
       },
-    });
-  },
+    }),
+  }),
 });

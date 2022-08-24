@@ -5,7 +5,7 @@ generator client {
 
 generator pothos {
   provider     = "prisma-pothos-types"
-  clientOutput = "./src/utils/prismaClient"
+  clientOutput = "@prisma/client"
 }
 
 datasource db {
@@ -21,7 +21,6 @@ model Viewer {
   slackToken            String
   slackScopes           String[]
   updatedAt             DateTime                @default(now()) @updatedAt
-  ClearedReservation    ClearedReservation[]
   BandApplicationRating BandApplicationRating[]
   BandApplication       BandApplication[]
 }
@@ -34,7 +33,6 @@ model Area {
   latitude    Float
   longitude   Float
 
-  table           Table[]
   areaOpeningHour AreaOpeningHour[]
   BandPlaying     BandPlaying[]
 }
@@ -45,63 +43,6 @@ model AreaOpeningHour {
   startTime DateTime
   endTime   DateTime
   areaId    String
-}
-
-enum ReservationStatus {
-  Pending
-  Confirmed
-  CheckedIn
-}
-
-model Reservation {
-  id               Int               @id @default(autoincrement())
-  token            String            @unique @default(uuid())
-  primaryEmail     String
-  primaryPerson    String
-  otherPersons     String[]
-  startTime        DateTime
-  checkInTime      DateTime?
-  endTime          DateTime
-  createdAt        DateTime          @default(now())
-  status           ReservationStatus @default(Pending)
-  table            Table             @relation(fields: [tableId], references: [id])
-  tableId          String
-  checkedInPersons Int               @default(0)
-  note             String?
-}
-
-model ReservationReminderSent {
-  email                String   @id
-  numberOfReservations Int
-  sentAt               DateTime @default(now())
-}
-
-model ClearedReservation {
-  id        Int      @id
-  data      Json
-  clearedBy Viewer?  @relation(fields: [viewerId], references: [id])
-  clearedAt DateTime @default(now())
-  viewerId  String?
-}
-
-enum TableType {
-  TABLE
-  ISLAND
-}
-
-model Table {
-  id           String    @id @default(uuid())
-  areaId       String
-  maxCapacity  Int
-  minOccupancy Int
-  displayName  String
-  type         TableType @default(TABLE)
-
-  area Area @relation(fields: [areaId], references: [id])
-
-  reservations Reservation[]
-
-  @@unique([areaId, displayName])
 }
 
 model ProductList {

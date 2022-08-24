@@ -1,16 +1,16 @@
-import {extendType} from 'nexus';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
+import ProductList from '../models/ProductList';
 
-export default extendType({
-  type: 'Query',
-  definition: (t) => {
-    t.nonNull.list.nonNull.field('productLists', {
-      type: 'ProductList',
-      resolve: (_root, _args, {prisma}) =>
-        prisma.productList.findMany({
-          orderBy: {
-            name: 'asc',
-          },
-        }),
-    });
-  },
-});
+builder.queryField('events', (t) =>
+  t.prismaField({
+    type: [ProductList],
+    resolve: (query) =>
+      prismaClient.productList.findMany({
+        ...query,
+        orderBy: {
+          name: 'asc',
+        },
+      }),
+  }),
+);

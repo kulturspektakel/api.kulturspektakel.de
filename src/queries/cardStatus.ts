@@ -118,13 +118,3 @@ export default extendType({
     });
   },
 });
-
-export const MissingTransaction = objectType({
-  name: 'MissingTransaction',
-  definition(t) {
-    t.implements(Transaction);
-    t.nonNull.field('numberOfMissingTransactions', {
-      type: 'Int',
-    });
-  },
-});

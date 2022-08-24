@@ -9,6 +9,13 @@ class HistoricalProduct implements Billable {
     this.name = name;
     this.productListId = productListId;
   }
+
+  getOrderItemWhere() {
+    return {
+      name: this.name,
+      productListId: this.productListId,
+    };
+  }
 }
 
 builder.objectType(HistoricalProduct, {
@@ -22,12 +29,12 @@ builder.objectType(HistoricalProduct, {
   }),
 });
 
-builder.prismaNode('ProductList', {
+export default builder.prismaNode('ProductList', {
   id: {field: 'id'},
   interfaces: [Billable],
   fields: (t) => ({
     name: t.exposeString('name'),
-    emoji: t.exposeString('emoji'),
+    emoji: t.exposeString('emoji', {nullable: true}),
     active: t.exposeBoolean('active'),
     product: t.relation('product', {
       query: () => ({
@@ -38,7 +45,9 @@ builder.prismaNode('ProductList', {
     }),
     historicalProducts: t.field({
       type: [HistoricalProduct],
-      // TODO auth
+      authScopes: {
+        user: true,
+      },
       resolve: async ({id}) => {
         const products = await prismaClient.orderItem.groupBy({
           where: {

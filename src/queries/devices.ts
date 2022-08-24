@@ -1,27 +1,30 @@
-import {enumType, extendType} from 'nexus';
-import {DeviceType} from 'nexus-prisma';
-import authorization from '../utils/authorization';
+import Device from '../models/Device';
+import DeviceType from '../models/DeviceType';
+import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
 
-export default extendType({
-  type: 'Query',
-  definition: (t) => {
-    t.nonNull.list.nonNull.field('devices', {
-      type: 'Device',
-      authorize: authorization('user'),
-      args: {
-        type: enumType(DeviceType),
-      },
-      resolve: async (_root, {type}, {prisma}) =>
-        prisma.device.findMany({
-          where: {
-            type: type ?? undefined,
+builder.queryField('devices', (t) =>
+  t.prismaField({
+    type: [Device],
+    args: {
+      type: t.arg({
+        type: DeviceType,
+      }),
+    },
+    authScopes: {
+      user: true,
+    },
+    resolve: (query, _root, {type}) =>
+      prismaClient.device.findMany({
+        ...query,
+        where: {
+          type: type ?? undefined,
+        },
+        orderBy: [
+          {
+            id: 'desc',
           },
-          orderBy: [
-            {
-              id: 'desc',
-            },
-          ],
-        }),
-    });
-  },
-});
+        ],
+      }),
+  }),
+);

@@ -2044,22 +2044,27 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-3.0.2.tgz#969054308fe98d130c02844a45cc792199b75670"
   integrity sha512-S/SF/XYJeevwIgHFmVDAFRUvM3m+OjhvCAYMk78ZJQCYCQ5wS7j+LTt1ZEv2jpEEGg2tx/F6TYYWxddNAYHrFQ==
 
-"@pothos/core@^3.13.0":
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/@pothos/core/-/core-3.13.0.tgz#2329f3d643cee8e585842257627e172dee5569e0"
-  integrity sha512-1jm5OI8Rva1UtlbJDFApIS6NrPnQiNlsf3fxBaLqzfXDdk8eFKXfW8wi6Pa9SIZ5AGagjGGVwZBkWFWjq3D5Fw==
+"@pothos/core@^3.15.0":
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/@pothos/core/-/core-3.15.0.tgz#a1ae97dac7dbad8581659df4ed1d84dd328445e8"
+  integrity sha512-vDdllrL4fWuBGyQab5d87DJZFd5AWeYTHJAW1/ppOvYA9J9iij7R87nvY3feJmwwA2cpgF3NrRxo4+4ZSYW+Xg==
 
-"@pothos/plugin-prisma@^3.21.0":
-  version "3.21.0"
-  resolved "https://registry.yarnpkg.com/@pothos/plugin-prisma/-/plugin-prisma-3.21.0.tgz#60d70983db2a566e8a02ab315faa982268378f05"
-  integrity sha512-vjBjRdbjiSavDjB93wiN1N43Cps693tg+EhVuSJIyYesH1D9wNKz2rXBLKrokfsFyBBLbPlFKFiXRCryBw/U5g==
+"@pothos/plugin-prisma@^3.23.0":
+  version "3.23.0"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-prisma/-/plugin-prisma-3.23.0.tgz#6429f3913b4353f0838c4094b23219a26529e965"
+  integrity sha512-K0NN5wIueqLRa+2Hy97SoWTP9uNcPLftbgfhDu4ehhgzJyDokU5vsdRs220te5CrzNvS6A9jjocMJRPHaWHlhg==
   dependencies:
     "@prisma/generator-helper" "^4.1.1"
 
-"@pothos/plugin-relay@^3.18.0":
-  version "3.18.0"
-  resolved "https://registry.yarnpkg.com/@pothos/plugin-relay/-/plugin-relay-3.18.0.tgz#3c2854a60311e246dee1d3fc57d1147bfb6929db"
-  integrity sha512-iUJ1TFnJmE+M5FVRTxbFALKh/b28f6XrdmIK4kYHDQUzozJU6q4TfiSNxaw+75BlkPO31wfjbDqXO0DY9nR2xA==
+"@pothos/plugin-relay@^3.21.0":
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-relay/-/plugin-relay-3.21.0.tgz#ea08bead73b3fe787ff9d27217d74da4f907d880"
+  integrity sha512-bJsRzS/R4ymc0w8h9+LLCrbVljzlToJyd8jsxioLxanH3D7O5LsFP7wh7n1kHNYUDMK4wt1PHXM+V6KJZZ/FXQ==
+
+"@pothos/plugin-scope-auth@^3.11.2":
+  version "3.11.2"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-scope-auth/-/plugin-scope-auth-3.11.2.tgz#fbf6a2d8d2ff5ac503164c717a7401fcb9e37032"
+  integrity sha512-DOhrh9OjB5tsdsjxtZpZjnHtCCiwl/rt57vIJAlENxLYTidCo2KzU76c8gHhvVwRVoJ4DkidGXmPUhK0NGX+Ww==
 
 "@prisma/client@^3.14.0":
   version "3.14.0"
@@ -9720,10 +9725,10 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^4.7.3:
-  version "4.7.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.3.tgz#8364b502d5257b540f9de4c40be84c98e23a129d"
-  integrity sha512-WOkT3XYvrpXx4vMMqlD+8R8R37fZkjyLGlxavMc4iB8lrl8L0DeTcHbYgw/v0N/z9wAFsgBhcsF0ruoySS22mA==
+typescript@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
+  integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
 
 ua-parser-js@^0.7.18, ua-parser-js@^0.7.28:
   version "0.7.28"
