@@ -13,29 +13,44 @@ import BandApplication, {
 } from '../models/BandApplication';
 import PreviouslyPlayed from '../models/PreviouslyPlayed';
 
+const CreateBandApplicationInput = builder.inputType(
+  'CreateBandApplicationInput',
+  {
+    fields: (t) => ({
+      email: t.field({type: 'String', required: true}),
+      bandname: t.field({type: 'String', required: true}),
+      genreCategory: t.field({type: GenreCategory, required: true}),
+      genre: t.field({type: 'String'}),
+      city: t.field({type: 'String', required: true}),
+      facebook: t.field({type: 'String'}),
+      instagram: t.field({type: 'String'}),
+      website: t.field({type: 'String'}),
+      demo: t.field({type: 'String', required: true}),
+      description: t.field({type: 'String', required: true}),
+      numberOfArtists: t.field({type: 'Int', required: true}),
+      numberOfNonMaleArtists: t.field({type: 'Int', required: true}),
+      contactName: t.field({type: 'String', required: true}),
+      contactPhone: t.field({type: 'String', required: true}),
+      knowsKultFrom: t.field({type: 'String'}),
+      heardAboutBookingFrom: t.field({type: HeardAboutBookingFrom}),
+      hasPreviouslyPlayed: t.field({type: PreviouslyPlayed}),
+    }),
+  },
+);
+
 builder.mutationField('createBandApplication', (t) =>
   t.field({
     type: BandApplication,
     args: {
-      email: t.arg({type: 'String', required: true}),
-      bandname: t.arg({type: 'String', required: true}),
-      genreCategory: t.arg({type: GenreCategory, required: true}),
-      genre: t.arg({type: 'String'}),
-      city: t.arg({type: 'String', required: true}),
-      facebook: t.arg({type: 'String'}),
-      instagram: t.arg({type: 'String'}),
-      website: t.arg({type: 'String'}),
-      demo: t.arg({type: 'String', required: true}),
-      description: t.arg({type: 'String', required: true}),
-      numberOfArtists: t.arg({type: 'Int', required: true}),
-      numberOfNonMaleArtists: t.arg({type: 'Int', required: true}),
-      contactName: t.arg({type: 'String', required: true}),
-      contactPhone: t.arg({type: 'String', required: true}),
-      knowsKultFrom: t.arg({type: 'String'}),
-      heardAboutBookingFrom: t.arg({type: HeardAboutBookingFrom}),
-      hasPreviouslyPlayed: t.arg({type: PreviouslyPlayed}),
+      data: t.arg({
+        type: CreateBandApplicationInput,
+        required: true,
+      }),
     },
-    resolve: async (_, {demo, website, facebook, instagram, ...data}) => {
+    resolve: async (
+      _,
+      {data: {demo, website, facebook, instagram, ...data}},
+    ) => {
       demo = normalizeUrl(demo);
       website = website ? normalizeUrl(website) : null;
       facebook = facebook ? normalizeUrl(facebook) : null;

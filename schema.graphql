@@ -1,0 +1,316 @@
+type Area implements Node {
+  bandsPlaying(day: Date!): [BandPlaying!]!
+  displayName: String!
+  id: ID!
+  openingHour(day: Date): [OpeningHour!]!
+  themeColor: String!
+}
+
+type BandApplication implements Node {
+  bandApplicationRating: [BandApplicationRating!]!
+  bandname: String!
+  city: String!
+  contactName: String!
+  contactPhone: String!
+  contactedByViewer: Viewer!
+  demo: String
+  description: String
+  distance: Float
+  email: String!
+  facebook: String
+  facebookLikes: Int
+  genre: String
+  genreCategory: GenreCategory!
+  hasPreviouslyPlayed: PreviouslyPlayed
+  heardAboutBookingFrom: HeardAboutBookingFrom
+  id: ID!
+  instagram: String
+  instagramFollower: Int
+  knowsKultFrom: String
+  numberOfArtists: Int
+  numberOfNonMaleArtists: Int
+  rating: Float
+  website: String
+}
+
+type BandApplicationRating {
+  rating: Int!
+  viewer: Viewer!
+}
+
+type BandPlaying implements Node {
+  description: String
+  endTime: DateTime!
+  genre: String
+  id: ID!
+  name: String!
+  startTime: DateTime!
+}
+
+interface Billable {
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber!]!
+}
+
+type Board {
+  chair: String!
+  deputy: String!
+  deputy2: String!
+  observer: String!
+  observer2: String!
+  secretary: String!
+  treasurer: String!
+}
+
+type CardTransaction implements Transaction {
+  Order: [Order!]!
+  balanceAfter: Int!
+  balanceBefore: Int!
+  cardId: String!
+  clientId: String!
+  createdAt: DateTime!
+  depositAfter: Int!
+  depositBefore: Int!
+  deviceTime: DateTime!
+  transactionType: CardTransactionType!
+}
+
+type CardTransactionConnection {
+  # This includes money made from deposit
+  balanceTotal: Int!
+  data: [CardTransaction!]!
+  depositIn: Int!
+  depositOut: Int!
+  totalCount: Int!
+  uniqueCards: Int!
+}
+
+enum CardTransactionType {
+  Cashout
+  Charge
+  TopUp
+}
+
+type Config {
+  board: Board!
+  depositValue: Int!
+}
+
+# A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+scalar Date
+
+# A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+scalar DateTime
+
+type Device implements Billable & Node & Transactionable {
+  id: ID!
+  lastSeen: DateTime
+  productList: ProductList!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber!]!
+  softwareVersion: String
+  transactions(
+    after: DateTime
+    before: DateTime
+    limit: Int
+    type: CardTransactionType
+  ): CardTransactionConnection!
+}
+
+enum GenreCategory {
+  Blues_Funk_Jazz_Soul
+  Elektro_HipHop
+  Folk_SingerSongwriter_Country
+  Hardrock_Metal_Punk
+  Indie
+  Other
+  Pop
+  Reggae_Ska
+  Rock
+}
+
+enum HeardAboutBookingFrom {
+  BYon
+  Facebook
+  Friends
+  Instagram
+  Newspaper
+  Website
+}
+
+type HistoricalProduct {
+  name: String!
+  productListId: ID!
+}
+
+type MissingTransaction implements Transaction {
+  balanceAfter: Int!
+  balanceBefore: Int!
+  depositAfter: Int!
+  depositBefore: Int!
+  numberOfMissingTransactions: Int!
+}
+
+type Mutation {
+  createBandApplication(
+    bandname: String!
+    city: String!
+    contactName: String!
+    contactPhone: String!
+    demo: String!
+    description: String!
+    email: String!
+    facebook: String
+    genre: String
+    genreCategory: GenreCategory!
+    hasPreviouslyPlayed: PreviouslyPlayed
+    heardAboutBookingFrom: HeardAboutBookingFrom
+    instagram: String
+    knowsKultFrom: String
+    numberOfArtists: Int!
+    numberOfNonMaleArtists: Int!
+    website: String
+  ): BandApplication!
+  createOrder(
+    deposit: Int!
+    deviceTime: DateTime!
+    payment: OrderPayment!
+    products: [OrderItemInput!]!
+  ): Order!
+  markBandApplicationContacted(
+    bandApplicationId: ID!
+    contacted: Boolean!
+  ): BandApplication!
+  rateBandApplication(bandApplicationId: String!, rating: Int): BandApplication!
+  updateDeviceProductList(deviceId: String!, productListId: Int): Device!
+  upsertProductList(
+    active: Boolean
+    emoji: String
+    id: Int
+    name: String
+    products: [ProductListInput!]
+  ): ProductList!
+}
+
+interface Node {
+  id: ID!
+}
+
+type OpeningHour {
+  endTime: DateTime!
+  startTime: DateTime!
+}
+
+type Order {
+  createdAt: DateTime!
+  deposit: Int!
+  deviceId: ID
+  id: Int!
+  items: [OrderItem!]!
+  payment: OrderPayment!
+  total: Int!
+}
+
+type OrderItem {
+  amount: Int!
+  id: ID!
+  name: String!
+  note: String
+  perUnitPrice: Int!
+  productList: ProductList!
+}
+
+input OrderItemInput {
+  amount: Int!
+  name: String!
+  note: String
+  perUnitPrice: Int!
+  productListId: Int
+}
+
+enum OrderPayment {
+  BON
+  CASH
+  FREE_BAND
+  FREE_CREW
+  KULT_CARD
+  SUM_UP
+  VOUCHER
+}
+
+enum PreviouslyPlayed {
+  No
+  OtherFormation
+  Yes
+}
+
+type Product implements Billable & Node {
+  id: ID!
+  name: String!
+  price: Int!
+  productListId: ID!
+  requiresDeposit: Boolean!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber!]!
+}
+
+type ProductList implements Billable & Node {
+  active: Boolean!
+  emoji: String
+  historicalProducts: [HistoricalProduct!]!
+  id: ID!
+  name: String!
+  product: [Product!]!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber!]!
+}
+
+input ProductListInput {
+  name: String!
+  price: Int!
+  requiresDeposit: Boolean
+}
+
+type Query {
+  config: Config!
+  distanceToKult(origin: String!): Float
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
+  viewer: Viewer
+}
+
+type SalesNumber {
+  count: Int!
+  payment: OrderPayment!
+  timeSeries(grouping: TimeGrouping): [TimeSeries!]!
+  total: Float!
+}
+
+enum TimeGrouping {
+  Day
+  Hour
+}
+
+type TimeSeries {
+  time: DateTime!
+  value: Int!
+}
+
+interface Transaction {
+  balanceAfter: Int!
+  balanceBefore: Int!
+  depositAfter: Int!
+  depositBefore: Int!
+}
+
+interface Transactionable {
+  transactions(
+    after: DateTime
+    before: DateTime
+    limit: Int
+    type: CardTransactionType
+  ): CardTransactionConnection!
+}
+
+type Viewer implements Node {
+  displayName: String!
+  email: String!
+  id: ID!
+  profilePicture: String
+}

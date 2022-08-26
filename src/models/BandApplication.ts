@@ -47,6 +47,7 @@ export default builder.prismaNode('BandApplication', {
     }),
     website: t.exposeString('website', {nullable: true}),
     contactedByViewer: t.relation('contactedByViewer', {
+      nullable: true,
       authScopes: {
         user: true,
       },

@@ -1,8 +1,12 @@
 import '../models/Area';
 import '../models/BandApplication';
 import '../models/BandPlaying';
+import '../models/Card';
 import '../models/CardTransaction';
+import '../models/CardStatus';
 import '../models/Device';
+import '../models/DeviceType';
+import '../models/Event';
 import '../models/Order';
 import '../models/OrderItem';
 import '../models/PreviouslyPlayed';

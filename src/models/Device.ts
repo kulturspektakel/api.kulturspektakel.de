@@ -5,12 +5,14 @@ import {Billable} from './Billable';
 export default builder.prismaNode('Device', {
   id: {field: 'id'},
   interfaces: [Billable, Transactionable],
-  // authScopes: {
-  //   user: true,
-  // },
+  authScopes: {
+    user: true,
+  },
   fields: (t) => ({
     lastSeen: t.expose('lastSeen', {type: 'DateTime', nullable: true}),
     softwareVersion: t.exposeString('softwareVersion', {nullable: true}),
-    productList: t.relation('productList'),
+    productList: t.relation('productList', {
+      nullable: true, // why is this not automatic from prisma
+    }),
   }),
 });

@@ -1,0 +1,489 @@
+type Area implements Node {
+  availability(partySize: Int!, day: Date!): [TableAvailability!]!
+  availableTables(time: DateTime): Int!
+  bandsPlaying(day: Date!): [Band!]!
+  displayName: String!
+  id: ID!
+  openingHour(day: Date): [OpeningHour!]!
+  table: [Table!]!
+  themeColor: String!
+}
+
+type Band {
+  description: String
+  endTime: DateTime!
+  genre: String
+  id: ID!
+  name: String!
+  startTime: DateTime!
+}
+
+type BandApplication implements Node {
+  bandApplicationRating: [BandApplicationRating!]!
+  bandname: String!
+  city: String!
+  contactedByViewer: Viewer
+  contactName: String!
+  contactPhone: String!
+  demo: String
+  description: String
+  distance: Float
+  email: String!
+  facebook: String
+  facebookLikes: Int
+  genre: String
+  genreCategory: GenreCategory!
+  hasPreviouslyPlayed: PreviouslyPlayed
+  heardAboutBookingFrom: HeardAboutBookingFrom
+  id: ID!
+  instagram: String
+  instagramFollower: Int
+  knowsKultFrom: String
+  numberOfArtists: Int
+  numberOfNonMaleArtists: Int
+  rating: Float
+  website: String
+}
+
+type BandApplicationRating {
+  rating: Int!
+  viewer: Viewer!
+}
+
+interface Billable {
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
+}
+
+type Board {
+  chair: String!
+  deputy: String!
+  deputy2: String!
+  observer: String!
+  observer2: String!
+  secretary: String!
+  treasurer: String!
+}
+
+type Card implements Node & Transactionable {
+  id: ID!
+  transactions(
+    limit: Int
+    after: DateTime
+    before: DateTime
+    type: CardTransactionType
+  ): CardTransactionConnection!
+}
+
+type CardStatus {
+  balance: Int!
+  cardId: ID!
+  deposit: Int!
+  hasNewerTransactions: Boolean
+  recentTransactions: [Transaction!]
+}
+
+type CardTransaction implements Transaction {
+  balanceAfter: Int!
+  balanceBefore: Int!
+  cardId: String!
+  clientId: ID!
+  createdAt: DateTime!
+  depositAfter: Int!
+  depositBefore: Int!
+  deviceTime: DateTime!
+  Order: [Order!]!
+  transactionType: CardTransactionType!
+}
+
+type CardTransactionConnection {
+  balanceTotal: Int!
+  data: [CardTransaction!]!
+  depositIn: Int!
+  depositOut: Int!
+  totalCount: Int!
+  uniqueCards: Int!
+}
+
+type CardTransactionInput {
+  pack: String!
+  password: String!
+  payload: String!
+}
+
+enum CardTransactionType {
+  TopUp
+  Charge
+  Cashout
+}
+
+type Config {
+  board: Board
+  depositValue: Int!
+  reservationStart: DateTime!
+}
+
+input CreateBandApplicationInput {
+  bandname: String!
+  city: String!
+  contactName: String!
+  contactPhone: String!
+  demo: String!
+  description: String!
+  email: String!
+  facebook: String
+  genre: String
+  genreCategory: GenreCategory!
+  hasPreviouslyPlayed: PreviouslyPlayed
+  heardAboutBookingFrom: HeardAboutBookingFrom
+  instagram: String
+  knowsKultFrom: String
+  numberOfArtists: Int!
+  numberOfNonMaleArtists: Int!
+  website: String
+}
+
+scalar Date
+
+scalar DateTime
+
+type Device implements Node & Billable & Transactionable {
+  id: ID!
+  lastSeen: DateTime
+  productList: ProductList
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
+  softwareVersion: String
+  transactions(
+    limit: Int
+    after: DateTime
+    before: DateTime
+    type: CardTransactionType
+  ): CardTransactionConnection!
+}
+
+enum DeviceType {
+  CONTACTLESS_TERMINAL
+  IPAD
+}
+
+type Event implements Node {
+  bandApplication: [BandApplication!]!
+  bandApplicationEnd: DateTime
+  bandApplicationStart: DateTime
+  bandsPlaying: [Band!]!
+  end: DateTime!
+  id: ID!
+  name: String!
+  start: DateTime!
+}
+
+enum GenreCategory {
+  Rock
+  Pop
+  Indie
+  Reggae_Ska
+  Blues_Funk_Jazz_Soul
+  Folk_SingerSongwriter_Country
+  Elektro_HipHop
+  Hardrock_Metal_Punk
+  Other
+}
+
+enum HeardAboutBookingFrom {
+  BYon
+  Newspaper
+  Friends
+  Website
+  Facebook
+  Instagram
+}
+
+type HistoricalProduct implements Billable {
+  name: String!
+  productListId: Int!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
+}
+
+scalar JSONObject
+
+type MissingTransaction implements Transaction {
+  balanceAfter: Int!
+  balanceBefore: Int!
+  depositAfter: Int!
+  depositBefore: Int!
+  numberOfMissingTransactions: Int!
+}
+
+type Mutation {
+  cancelReservation(token: String!): Boolean
+  checkInReservation(id: Int!, checkedInPersons: Int!): Reservation
+  confirmReservation(token: String!): Reservation
+  createBandApplication(data: CreateBandApplicationInput!): BandApplication
+  createCardTransaction(
+    cardUri: String!
+    balanceAfter: Int!
+    depositAfter: Int!
+  ): CardTransactionInput
+  createOrder(
+    products: [OrderItemInput!]!
+    payment: OrderPayment!
+    deposit: Int!
+    deviceTime: DateTime!
+  ): Order
+  createReservation(
+    tableId: ID!
+    primaryEmail: String!
+    primaryPerson: String!
+    otherPersons: [String!]!
+    startTime: DateTime!
+    endTime: DateTime!
+    note: String
+  ): Reservation
+  markBandApplicationContacted(
+    bandApplicationId: ID!
+    contacted: Boolean!
+  ): BandApplication
+  rateBandApplication(bandApplicationId: ID!, rating: Int): BandApplication
+  requestReservation(
+    primaryEmail: String!
+    primaryPerson: String!
+    otherPersons: [String!]!
+    startTime: DateTime!
+    endTime: DateTime!
+    areaId: ID!
+    tableType: TableType
+  ): Boolean!
+  swapReservations(a: Int!, b: Int!): Boolean
+  updateDeviceProductList(productListId: Int, deviceId: ID!): Device
+  updateReservation(
+    id: Int!
+    startTime: DateTime
+    endTime: DateTime
+    tableId: ID
+    checkedInPersons: Int
+    note: String
+    primaryPerson: String
+  ): Reservation
+  updateReservationOtherPersons(
+    token: String!
+    otherPersons: [String!]!
+  ): Reservation
+  upsertProductList(
+    id: Int
+    name: String
+    emoji: String
+    active: Boolean
+    products: [ProductInput!]
+  ): ProductList
+}
+
+interface Node {
+  id: ID!
+}
+
+type NuclinoPage {
+  content: String!
+  id: ID!
+  lastUpdatedAt: DateTime!
+  lastUpdatedUser: NuclinoUser!
+  title: String!
+}
+
+type NuclinoSearchResult {
+  highlight: String!
+  page: NuclinoPage!
+}
+
+type NuclinoUser {
+  email: String!
+  firstName: String!
+  id: ID!
+  lastName: String!
+}
+
+type OpeningHour {
+  endTime: DateTime!
+  startTime: DateTime!
+}
+
+type Order {
+  createdAt: DateTime!
+  deposit: Int!
+  deviceId: String
+  id: Int!
+  items: [OrderItem!]!
+  payment: OrderPayment!
+  total: Int
+}
+
+type OrderItem {
+  amount: Int!
+  id: Int!
+  name: String!
+  note: String
+  perUnitPrice: Int!
+  productList: ProductList
+}
+
+input OrderItemInput {
+  amount: Int!
+  name: String!
+  note: String
+  perUnitPrice: Int!
+  productListId: Int
+}
+
+enum OrderPayment {
+  CASH
+  BON
+  SUM_UP
+  VOUCHER
+  FREE_CREW
+  FREE_BAND
+  KULT_CARD
+}
+
+enum PreviouslyPlayed {
+  Yes
+  OtherFormation
+  No
+}
+
+type Product implements Billable {
+  id: Int!
+  name: String!
+  price: Int!
+  productListId: Int!
+  requiresDeposit: Boolean!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
+}
+
+input ProductInput {
+  name: String!
+  price: Int!
+  requiresDeposit: Boolean
+}
+
+type ProductList implements Billable {
+  active: Boolean!
+  emoji: String
+  historicalProducts: [HistoricalProduct!]!
+  id: Int!
+  name: String!
+  product: [Product!]!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber]!
+}
+
+type Query implements Transactionable {
+  areas: [Area!]!
+  availableCapacity(time: DateTime): Int!
+  cardStatus(payload: String!): CardStatus!
+  config: Config
+  devices(type: DeviceType): [Device!]!
+  distanceToKult(origin: String!): Float
+  events: [Event!]!
+  node(id: ID!): Node
+  nuclinoPage(id: ID!): NuclinoPage
+  nuclinoPages(query: String!): [NuclinoSearchResult!]!
+  productList(id: Int!): ProductList
+  productLists: [ProductList!]!
+  reservationForToken(token: String!): Reservation
+  reservationsByPerson: [ReservationByPerson!]!
+  transactions(
+    limit: Int
+    after: DateTime
+    before: DateTime
+    type: CardTransactionType
+  ): CardTransactionConnection!
+  viewer: Viewer
+}
+
+type Reservation {
+  alternativeTables: [Table]!
+  availableToCheckIn: Int!
+  checkedInPersons: Int!
+  checkInTime: DateTime
+  endTime: DateTime!
+  id: Int!
+  note: String
+  otherPersons: [String!]!
+  primaryEmail: String!
+  primaryPerson: String!
+  reservationsFromSamePerson: [Reservation!]!
+  startTime: DateTime!
+  status: ReservationStatus!
+  swappableWith: [Reservation]!
+  table: Table!
+  tableId: String!
+  token: String!
+}
+
+type ReservationByPerson {
+  email: String!
+  reservations: [Reservation!]!
+}
+
+enum ReservationStatus {
+  Pending
+  Confirmed
+  CheckedIn
+}
+
+type SalesNumber {
+  count: Int!
+  payment: OrderPayment!
+  timeSeries(grouping: TimeGrouping): [TimeSeries!]!
+  total: Float!
+}
+
+type Table implements Node {
+  area: Area!
+  displayName: String!
+  id: ID!
+  maxCapacity: Int!
+  reservations(day: Date): [Reservation!]!
+  type: TableType!
+}
+
+type TableAvailability {
+  endTime: DateTime!
+  startTime: DateTime!
+  tableType: TableType!
+}
+
+enum TableType {
+  TABLE
+  ISLAND
+}
+
+enum TimeGrouping {
+  Hour
+  Day
+}
+
+type TimeSeries {
+  time: DateTime!
+  value: Int!
+}
+
+interface Transaction {
+  balanceAfter: Int!
+  balanceBefore: Int!
+  depositAfter: Int!
+  depositBefore: Int!
+}
+
+interface Transactionable {
+  transactions(
+    limit: Int
+    after: DateTime
+    before: DateTime
+    type: CardTransactionType
+  ): CardTransactionConnection!
+}
+
+type Viewer implements Node {
+  displayName: String!
+  email: String!
+  id: ID!
+  profilePicture: String
+}

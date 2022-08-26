@@ -20,6 +20,7 @@ class HistoricalProduct implements Billable {
 
 builder.objectType(HistoricalProduct, {
   name: 'HistoricalProduct',
+  interfaces: [Billable],
   fields: (t) => ({
     name: t.field({type: 'String', resolve: ({name}) => name}),
     productListId: t.field({

@@ -3,7 +3,7 @@ import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import ProductList from '../models/ProductList';
 
-const ProductListInput = builder.inputType('ProductListInput', {
+const ProductInput = builder.inputType('ProductInput', {
   fields: (t) => ({
     name: t.string({required: true}),
     price: t.int({required: true}),
@@ -19,7 +19,7 @@ builder.mutationField('upsertProductList', (t) =>
       name: t.arg({type: 'String'}),
       emoji: t.arg({type: 'String'}),
       active: t.arg({type: 'Boolean'}),
-      products: t.arg({type: [ProductListInput]}),
+      products: t.arg({type: [ProductInput]}),
     },
     resolve: async (_, {id, name, emoji, active, products}) => {
       const upsert = prismaClient.productList.upsert({
