@@ -21,6 +21,9 @@ import '../mutations/rateBandApplication';
 import '../mutations/updateDeviceProductList';
 import '../mutations/upsertProductList';
 
+import '../queries/areas';
+import '../queries/bandsPlaying';
+import '../queries/cardStatus';
 import '../queries/config';
 import '../queries/distanceToKult';
 import '../queries/viewer';

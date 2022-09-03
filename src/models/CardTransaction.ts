@@ -2,7 +2,31 @@ import {builder} from '../pothos/builder';
 import {CardTransactionType as CardTransactionTypeValues} from '@prisma/client';
 import {Transactionable} from './Transactionable';
 
-export class Transaction implements Transactionable {}
+type TransactionData = {
+  depositAfter: number;
+  depositBefore: number;
+  balanceAfter: number;
+  balanceBefore: number;
+};
+
+export class Transaction implements Transactionable {
+  depositAfter: number;
+  depositBefore: number;
+  balanceAfter: number;
+  balanceBefore: number;
+
+  constructor({
+    depositAfter,
+    depositBefore,
+    balanceAfter,
+    balanceBefore,
+  }: TransactionData) {
+    this.depositAfter = depositAfter;
+    this.depositBefore = depositBefore;
+    this.balanceAfter = balanceAfter;
+    this.balanceBefore = balanceBefore;
+  }
+}
 
 export const CardTransactionType = builder.enumType('CardTransactionType', {
   values: Object.values(CardTransactionTypeValues),
@@ -20,23 +44,32 @@ export default builder.prismaObject('CardTransaction', {
   }),
 });
 
-builder.interfaceType(Transaction, {
+export const TransactionInterface = builder.interfaceType(Transaction, {
   name: 'Transaction',
   fields: (t) => ({
-    depositAfter: t.field({type: 'Int'}),
-    depositBefore: t.field({type: 'Int'}),
-    balanceAfter: t.field({type: 'Int'}),
-    balanceBefore: t.field({type: 'Int'}),
+    depositAfter: t.exposeInt('depositAfter'),
+    depositBefore: t.exposeInt('depositBefore'),
+    balanceAfter: t.exposeInt('balanceAfter'),
+    balanceBefore: t.exposeInt('balanceBefore'),
   }),
 });
 
-builder
-  .objectRef<{
-    numberOfMissingTransactions: number;
-  }>('MissingTransaction')
-  .implement({
-    interfaces: [Transaction],
-    fields: (t) => ({
-      numberOfMissingTransactions: t.exposeInt('numberOfMissingTransactions'),
-    }),
-  });
+export class MissingTransaction extends Transaction {
+  numberOfMissingTransactions: number;
+
+  constructor(
+    transactionData: TransactionData,
+    numberOfMissingTransactions: number,
+  ) {
+    super(transactionData);
+    this.numberOfMissingTransactions = numberOfMissingTransactions;
+  }
+}
+
+builder.objectType(MissingTransaction, {
+  name: 'MissingTransaction',
+  interfaces: [Transaction],
+  fields: (t) => ({
+    numberOfMissingTransactions: t.exposeInt('numberOfMissingTransactions'),
+  }),
+});

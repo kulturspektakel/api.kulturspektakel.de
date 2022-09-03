@@ -4,6 +4,8 @@ import {add} from 'date-fns';
 import {extendType, nonNull} from 'nexus';
 import fetch from 'node-fetch';
 import env from '../utils/env';
+import {builder} from '../pothos/builder';
+import BandPlaying from '../models/BandPlaying';
 
 type ApiError = {
   status: 'error';
@@ -84,6 +86,16 @@ function getStartEndTime(
     }),
   };
 }
+
+builder.queryField('bandsPlaying', (t) =>
+  t.field({
+    type: [BandPlaying],
+    args: {
+      day: t.arg({type: 'Day', required: true}),
+    },
+    resolve: async (_root, {day}) => fetchLineUp(start),
+  }),
+);
 
 export const bandsPlayingArea = extendType({
   type: 'Area',

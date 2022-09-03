@@ -1,6 +1,6 @@
 import {builder} from '../pothos/builder';
 
-builder.prismaNode('BandPlaying', {
+export default builder.prismaNode('BandPlaying', {
   id: {field: 'id'},
   fields: (t) => ({
     name: t.exposeString('name'),
