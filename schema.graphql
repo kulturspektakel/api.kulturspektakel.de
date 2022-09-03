@@ -12,7 +12,7 @@ type BandApplication implements Node {
   city: String!
   contactName: String!
   contactPhone: String!
-  contactedByViewer: Viewer!
+  contactedByViewer: Viewer
   demo: String
   description: String
   distance: Float
@@ -61,6 +61,19 @@ type Board {
   treasurer: String!
 }
 
+type Card implements Node & Transactionable {
+  id: ID!
+  transactions(after: DateTime, before: DateTime, limit: Int, type: CardTransactionType): CardTransactionConnection!
+}
+
+type CardStatus {
+  balance: Int!
+  cardId: String!
+  deposit: Int!
+  hasNewerTransactions: Boolean
+  recentTransactions: [Transaction!]
+}
+
 type CardTransaction implements Transaction {
   Order: [Order!]!
   balanceAfter: Int!
@@ -75,7 +88,7 @@ type CardTransaction implements Transaction {
 }
 
 type CardTransactionConnection {
-  # This includes money made from deposit
+  """This includes money made from deposit"""
   balanceTotal: Int!
   data: [CardTransaction!]!
   depositIn: Int!
@@ -95,24 +108,59 @@ type Config {
   depositValue: Int!
 }
 
-# A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+input CreateBandApplicationInput {
+  bandname: String!
+  city: String!
+  contactName: String!
+  contactPhone: String!
+  demo: String!
+  description: String!
+  email: String!
+  facebook: String
+  genre: String
+  genreCategory: GenreCategory!
+  hasPreviouslyPlayed: PreviouslyPlayed
+  heardAboutBookingFrom: HeardAboutBookingFrom
+  instagram: String
+  knowsKultFrom: String
+  numberOfArtists: Int!
+  numberOfNonMaleArtists: Int!
+  website: String
+}
+
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
 scalar Date
 
-# A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
 scalar DateTime
 
 type Device implements Billable & Node & Transactionable {
   id: ID!
   lastSeen: DateTime
-  productList: ProductList!
+  productList: ProductList
   salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber!]!
   softwareVersion: String
-  transactions(
-    after: DateTime
-    before: DateTime
-    limit: Int
-    type: CardTransactionType
-  ): CardTransactionConnection!
+  transactions(after: DateTime, before: DateTime, limit: Int, type: CardTransactionType): CardTransactionConnection!
+}
+
+enum DeviceType {
+  CONTACTLESS_TERMINAL
+  IPAD
+}
+
+type Event implements Node {
+  bandApplication: [BandApplication!]!
+  bandApplicationEnd: DateTime
+  bandApplicationStart: DateTime
+  bandsPlaying: [BandPlaying!]!
+  end: DateTime!
+  id: ID!
+  name: String!
+  start: DateTime!
 }
 
 enum GenreCategory {
@@ -136,9 +184,10 @@ enum HeardAboutBookingFrom {
   Website
 }
 
-type HistoricalProduct {
+type HistoricalProduct implements Billable {
   name: String!
   productListId: ID!
+  salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber!]!
 }
 
 type MissingTransaction implements Transaction {
@@ -150,48 +199,36 @@ type MissingTransaction implements Transaction {
 }
 
 type Mutation {
-  createBandApplication(
-    bandname: String!
-    city: String!
-    contactName: String!
-    contactPhone: String!
-    demo: String!
-    description: String!
-    email: String!
-    facebook: String
-    genre: String
-    genreCategory: GenreCategory!
-    hasPreviouslyPlayed: PreviouslyPlayed
-    heardAboutBookingFrom: HeardAboutBookingFrom
-    instagram: String
-    knowsKultFrom: String
-    numberOfArtists: Int!
-    numberOfNonMaleArtists: Int!
-    website: String
-  ): BandApplication!
-  createOrder(
-    deposit: Int!
-    deviceTime: DateTime!
-    payment: OrderPayment!
-    products: [OrderItemInput!]!
-  ): Order!
-  markBandApplicationContacted(
-    bandApplicationId: ID!
-    contacted: Boolean!
-  ): BandApplication!
+  createBandApplication(data: CreateBandApplicationInput!): BandApplication!
+  createOrder(deposit: Int!, deviceTime: DateTime!, payment: OrderPayment!, products: [OrderItemInput!]!): Order!
+  markBandApplicationContacted(bandApplicationId: ID!, contacted: Boolean!): BandApplication!
   rateBandApplication(bandApplicationId: String!, rating: Int): BandApplication!
   updateDeviceProductList(deviceId: String!, productListId: Int): Device!
-  upsertProductList(
-    active: Boolean
-    emoji: String
-    id: Int
-    name: String
-    products: [ProductListInput!]
-  ): ProductList!
+  upsertProductList(active: Boolean, emoji: String, id: Int, name: String, products: [ProductInput!]): ProductList!
 }
 
 interface Node {
   id: ID!
+}
+
+type NuclinoPage {
+  content: String!
+  id: String!
+  lastUpdatedAt: DateTime!
+  lastUpdatedUser: NuclinoUser!
+  title: String!
+}
+
+type NuclinoSearchResult {
+  highlight: String!
+  page: NuclinoPage!
+}
+
+type NuclinoUser {
+  email: String!
+  firstName: String!
+  id: String!
+  lastName: String!
 }
 
 type OpeningHour {
@@ -251,6 +288,12 @@ type Product implements Billable & Node {
   salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber!]!
 }
 
+input ProductInput {
+  name: String!
+  price: Int!
+  requiresDeposit: Boolean
+}
+
 type ProductList implements Billable & Node {
   active: Boolean!
   emoji: String
@@ -261,17 +304,17 @@ type ProductList implements Billable & Node {
   salesNumbers(after: DateTime!, before: DateTime!): [SalesNumber!]!
 }
 
-input ProductListInput {
-  name: String!
-  price: Int!
-  requiresDeposit: Boolean
-}
-
 type Query {
+  areas: [Area!]!
+  bandsPlaying(day: Date!): [BandPlaying!]!
+  cardStatus(payload: String!): CardStatus!
   config: Config!
   distanceToKult(origin: String!): Float
   node(id: ID!): Node
   nodes(ids: [ID!]!): [Node]!
+  nuclinoPage(id: String!): NuclinoPage!
+  nuclinoPages(query: String!): [NuclinoSearchResult!]!
+  transactions: Transactions!
   viewer: Viewer
 }
 
@@ -300,12 +343,11 @@ interface Transaction {
 }
 
 interface Transactionable {
-  transactions(
-    after: DateTime
-    before: DateTime
-    limit: Int
-    type: CardTransactionType
-  ): CardTransactionConnection!
+  transactions(after: DateTime, before: DateTime, limit: Int, type: CardTransactionType): CardTransactionConnection!
+}
+
+type Transactions implements Transactionable {
+  transactions(after: DateTime, before: DateTime, limit: Int, type: CardTransactionType): CardTransactionConnection!
 }
 
 type Viewer implements Node {

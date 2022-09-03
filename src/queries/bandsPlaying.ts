@@ -1,11 +1,12 @@
-import {Area} from '@prisma/client';
+import {Area as AreaT} from '@prisma/client';
 import {zonedTimeToUtc} from 'date-fns-tz';
 import {add} from 'date-fns';
-import {extendType, nonNull} from 'nexus';
 import fetch from 'node-fetch';
 import env from '../utils/env';
 import {builder} from '../pothos/builder';
 import BandPlaying from '../models/BandPlaying';
+import Area from '../models/Area';
+import Event from '../models/Event';
 
 type ApiError = {
   status: 'error';
@@ -96,35 +97,6 @@ builder.queryField('bandsPlaying', (t) =>
     resolve: (_root, {day}) => fetchLineUp(day),
   }),
 );
-
-export const bandsPlayingArea = extendType({
-  type: 'Area',
-  definition: (t) => {
-    t.nonNull.list.nonNull.field('bandsPlaying', {
-      type: 'Band',
-      args: {
-        day: nonNull('Date'),
-      },
-      resolve: (area, {day}) =>
-        fetchLineUp(
-          day,
-          ({stage, day: weekday}) =>
-            stage.toLowerCase() === (area as Area).id.toLowerCase() &&
-            isSameWeekDay(day, weekday),
-        ),
-    });
-  },
-});
-
-export const bandsPlayingEvent = extendType({
-  type: 'Event',
-  definition: (t) => {
-    t.nonNull.list.nonNull.field('bandsPlaying', {
-      type: 'Band',
-      resolve: ({start}) => fetchLineUp(start),
-    });
-  },
-});
 
 export async function fetchLineUp(
   eventStart: Date,
