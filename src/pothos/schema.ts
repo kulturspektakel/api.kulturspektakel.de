@@ -27,6 +27,7 @@ import '../queries/cardStatus';
 import '../queries/config';
 import '../queries/distanceToKult';
 import '../queries/nuclino';
+import '../queries/transactions';
 import '../queries/viewer';
 
 import {builder} from './builder';

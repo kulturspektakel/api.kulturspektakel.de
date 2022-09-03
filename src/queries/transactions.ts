@@ -1,9 +1,13 @@
-import {extendType} from 'nexus';
-import Transactionable from '../models/Transactionable';
+import {Transactionable} from '../models/Transactionable';
+import {builder} from '../pothos/builder';
 
-export default extendType({
-  type: 'Query',
-  definition: (t) => {
-    t.implements(Transactionable);
-  },
+const Transactions = builder.objectRef<{}>('Transactions').implement({
+  interfaces: [Transactionable],
 });
+
+builder.queryField('transactions', (t) =>
+  t.field({
+    type: Transactions,
+    resolve: () => ({}),
+  }),
+);

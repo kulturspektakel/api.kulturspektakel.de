@@ -1,15 +1,11 @@
 import {run, makeWorkerUtils, WorkerUtils, TaskSpec} from 'graphile-worker';
 import env from '../utils/env';
-import clearPendingReservations from './clearPendingReservations';
-import reservationSlackMessage from './reservationSlackMessage';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
 import nuclinoUpdateMessage from './nuclinoUpdateMessage';
 import events from './taskEvents';
 
 const taskListProd = {
-  clearPendingReservations,
-  reservationSlackMessage,
   nuclinoUpdateMessage,
 };
 
