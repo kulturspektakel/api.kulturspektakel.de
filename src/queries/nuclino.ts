@@ -11,16 +11,23 @@ import {
 
 const NuclinoUser = builder.objectRef<NuclinoUserT>('NuclinoUser').implement({
   fields: (t) => ({
-    id: t.exposeString('id'),
+    id: t.exposeID('id'),
     firstName: t.exposeString('firstName'),
     lastName: t.exposeString('lastName'),
     email: t.exposeString('email'),
   }),
 });
 
-const NuclinoPage = builder.objectRef<APIObject>('NuclinoPage').implement({
+const NuclinoPageT = builder.node(builder.objectRef<APIObject>('NumberRef'), {
+  name: 'NuclinoPage',
+  authScopes: {
+    user: true,
+  },
+  id: {
+    resolve: ({id}) => id,
+  },
+  loadOne: (id) => item(id),
   fields: (t) => ({
-    id: t.exposeString('id'),
     title: t.exposeString('title'),
     lastUpdatedAt: t.field({
       type: 'DateTime',
@@ -48,7 +55,7 @@ const NuclinoSearchResult = builder
   .implement({
     fields: (t) => ({
       page: t.field({
-        type: NuclinoPage,
+        type: NuclinoPageT,
         resolve: (res) => res,
       }),
       highlight: t.exposeString('highlight'),
@@ -68,18 +75,5 @@ builder.queryField('nuclinoPages', (t) =>
       const res = await items({search: query, limit: 20});
       return res.filter((i) => i.object === 'item');
     },
-  }),
-);
-
-builder.queryField('nuclinoPage', (t) =>
-  t.field({
-    type: NuclinoPage,
-    args: {
-      id: t.arg({type: 'String', required: true}),
-    },
-    authScopes: {
-      user: true,
-    },
-    resolve: (_root, {id}) => item(id),
   }),
 );

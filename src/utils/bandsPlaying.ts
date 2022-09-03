@@ -1,12 +1,7 @@
-import {Area as AreaT} from '@prisma/client';
 import {zonedTimeToUtc} from 'date-fns-tz';
 import {add} from 'date-fns';
 import fetch from 'node-fetch';
 import env from '../utils/env';
-import {builder} from '../pothos/builder';
-import BandPlaying from '../models/BandPlaying';
-import Area from '../models/Area';
-import Event from '../models/Event';
 
 type ApiError = {
   status: 'error';
@@ -87,16 +82,6 @@ function getStartEndTime(
     }),
   };
 }
-
-builder.queryField('bandsPlaying', (t) =>
-  t.field({
-    type: [BandPlaying],
-    args: {
-      day: t.arg({type: 'Date', required: true}),
-    },
-    resolve: (_root, {day}) => fetchLineUp(day),
-  }),
-);
 
 export async function fetchLineUp(
   eventStart: Date,

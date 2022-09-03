@@ -12,7 +12,7 @@ export default builder
   .implement({
     fields: (t) => ({
       balance: t.exposeInt('balance'),
-      cardId: t.exposeString('cardId'),
+      cardId: t.exposeID('cardId'),
       deposit: t.exposeInt('deposit'),
       hasNewerTransactions: t.exposeBoolean('hasNewerTransactions', {
         nullable: true,

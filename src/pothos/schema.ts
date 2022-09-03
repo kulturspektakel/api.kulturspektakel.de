@@ -22,11 +22,12 @@ import '../mutations/updateDeviceProductList';
 import '../mutations/upsertProductList';
 
 import '../queries/areas';
-import '../queries/bandsPlaying';
 import '../queries/cardStatus';
 import '../queries/config';
+import '../queries/devices';
 import '../queries/distanceToKult';
 import '../queries/nuclino';
+import '../queries/productLists';
 import '../queries/transactions';
 import '../queries/viewer';
 
