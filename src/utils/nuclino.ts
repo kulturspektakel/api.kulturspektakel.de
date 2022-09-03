@@ -59,13 +59,15 @@ async function nuclinoAPIRequest<T>(url: string) {
   return data.data;
 }
 
+export type NuclinoSearchResult = APIObject & {highlight: string};
+
 export async function items(params: {
   search?: string;
   limit?: number;
   after?: string;
 }) {
   const r = await nuclinoAPIRequest<{
-    results: Array<APIObject & {highlight: string}>;
+    results: Array<NuclinoSearchResult>;
   }>(
     `https://api.nuclino.com/v0/items/?${querystring.stringify({
       // filter non null values
@@ -82,15 +84,19 @@ export function item(id: string) {
   );
 }
 
+export type NuclinoUser = {
+  object: 'user';
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarUrl: string | undefined;
+};
+
 export function user(id: string) {
-  return nuclinoAPIRequest<{
-    object: 'user';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    avatarUrl: string | undefined;
-  }>(`https://api.nuclino.com/v0/users/${id}`);
+  return nuclinoAPIRequest<NuclinoUser>(
+    `https://api.nuclino.com/v0/users/${id}`,
+  );
 }
 
 export async function allItems() {

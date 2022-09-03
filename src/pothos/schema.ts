@@ -26,6 +26,7 @@ import '../queries/bandsPlaying';
 import '../queries/cardStatus';
 import '../queries/config';
 import '../queries/distanceToKult';
+import '../queries/nuclino';
 import '../queries/viewer';
 
 import {builder} from './builder';

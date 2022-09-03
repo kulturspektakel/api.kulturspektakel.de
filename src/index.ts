@@ -5,8 +5,6 @@ import context from './context';
 import env from './utils/env';
 import cookieParser from 'cookie-parser';
 import auth from './routes/auth';
-import passkit from './routes/passkit';
-import ics from './routes/ics';
 import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
@@ -26,7 +24,7 @@ const server = new ApolloServer({
   formatError: (err) => {
     if (!(err instanceof ApolloError)) {
       const e = new ApolloError(err.message);
-      // TODO: Check original error is not displayed buy logged
+      // TODO: Check original error is not displayed but logged
       e.originalError = err;
       return e;
     }
@@ -65,8 +63,6 @@ const server = new ApolloServer({
 
   // Routes
   app.use(auth);
-  app.use('/paskit', passkit);
-  app.use('/ics', ics);
   app.use('/saml', saml);
   app.use('/\\$\\$\\$', kultCash);
   app.use(

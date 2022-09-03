@@ -1,27 +1,36 @@
-import {extendType, nonNull, objectType} from 'nexus';
-import authorization from '../utils/authorization';
-import {APIObjectWithContent, item, items, user} from '../utils/nuclino';
+import {builder} from '../pothos/builder';
+import {
+  APIObjectWithContent,
+  item,
+  items,
+  NuclinoSearchResult as NuclinoSearchResultT,
+  user,
+  NuclinoUser as NuclinoUserT,
+  APIObject,
+} from '../utils/nuclino';
 
-const NuclinoPage = objectType({
-  name: 'NuclinoPage',
-  definition(t) {
-    t.nonNull.field('id', {type: 'ID'});
-    t.nonNull.field('title', {type: 'String'});
-    t.nonNull.field('lastUpdatedAt', {type: 'DateTime'});
-    t.nonNull.field('lastUpdatedUser', {
-      type: objectType({
-        name: 'NuclinoUser',
-        definition(t) {
-          t.nonNull.field('id', {type: 'ID'});
-          t.nonNull.field('firstName', {type: 'String'});
-          t.nonNull.field('lastName', {type: 'String'});
-          t.nonNull.field('email', {type: 'String'});
-        },
-      }),
-      resolve: async (root) =>
-        user((root as APIObjectWithContent).lastUpdatedUserId),
-    });
-    t.nonNull.field('content', {
+const NuclinoUser = builder.objectRef<NuclinoUserT>('NuclinoUser').implement({
+  fields: (t) => ({
+    id: t.exposeString('id'),
+    firstName: t.exposeString('firstName'),
+    lastName: t.exposeString('lastName'),
+    email: t.exposeString('email'),
+  }),
+});
+
+const NuclinoPage = builder.objectRef<APIObject>('NuclinoPage').implement({
+  fields: (t) => ({
+    id: t.exposeString('id'),
+    title: t.exposeString('title'),
+    lastUpdatedAt: t.field({
+      type: 'DateTime',
+      resolve: ({lastUpdatedAt}) => new Date(lastUpdatedAt),
+    }),
+    lastUpdatedUser: t.field({
+      type: NuclinoUser,
+      resolve: (root) => user(root.lastUpdatedUserId),
+    }),
+    content: t.field({
       type: 'String',
       resolve: async (root) => {
         if (root.hasOwnProperty('content')) {
@@ -30,45 +39,47 @@ const NuclinoPage = objectType({
         const page = await item(root.id);
         return page.content;
       },
-    });
-  },
+    }),
+  }),
 });
 
-export default extendType({
-  type: 'Query',
-  definition: (t) => {
-    t.nonNull.list.nonNull.field('nuclinoPages', {
-      type: objectType({
-        name: 'NuclinoSearchResult',
-        definition(t) {
-          t.nonNull.field('page', {
-            type: NuclinoPage,
-          });
-          t.nonNull.field('highlight', {type: 'String'});
-        },
+const NuclinoSearchResult = builder
+  .objectRef<NuclinoSearchResultT>('NuclinoSearchResult')
+  .implement({
+    fields: (t) => ({
+      page: t.field({
+        type: NuclinoPage,
+        resolve: (res) => res,
       }),
-      args: {
-        query: nonNull('String'),
-      },
-      authorize: authorization('user'),
-      resolve: async (_root, {query}) => {
-        const res = await items({search: query, limit: 20});
-        return res
-          .filter((i) => i.object === 'item')
-          .map(({highlight, ...page}) => ({
-            highlight,
-            page,
-          }));
-      },
-    });
+      highlight: t.exposeString('highlight'),
+    }),
+  });
 
-    t.field('nuclinoPage', {
-      type: NuclinoPage,
-      args: {
-        id: nonNull('ID'),
-      },
-      authorize: authorization('user'),
-      resolve: async (_root, {id}) => item(id),
-    });
-  },
-});
+builder.queryField('nuclinoPages', (t) =>
+  t.field({
+    type: [NuclinoSearchResult],
+    args: {
+      query: t.arg({type: 'String', required: true}),
+    },
+    authScopes: {
+      user: true,
+    },
+    resolve: async (_root, {query}) => {
+      const res = await items({search: query, limit: 20});
+      return res.filter((i) => i.object === 'item');
+    },
+  }),
+);
+
+builder.queryField('nuclinoPage', (t) =>
+  t.field({
+    type: NuclinoPage,
+    args: {
+      id: t.arg({type: 'String', required: true}),
+    },
+    authScopes: {
+      user: true,
+    },
+    resolve: (_root, {id}) => item(id),
+  }),
+);

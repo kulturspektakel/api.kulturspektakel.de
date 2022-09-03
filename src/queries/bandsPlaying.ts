@@ -91,9 +91,9 @@ builder.queryField('bandsPlaying', (t) =>
   t.field({
     type: [BandPlaying],
     args: {
-      day: t.arg({type: 'Day', required: true}),
+      day: t.arg({type: 'Date', required: true}),
     },
-    resolve: async (_root, {day}) => fetchLineUp(start),
+    resolve: (_root, {day}) => fetchLineUp(day),
   }),
 );
 
@@ -154,16 +154,18 @@ export async function fetchLineUp(
         id,
         name: title,
         ...getStartEndTime(time, eventStart, day, {stage, ...b, day}),
-        genre: b.genre || undefined,
-        description: b.description || undefined,
-        shortDescription: b.shortdescription || undefined,
-        soundcloud: b.soundcloud || undefined,
-        spotify: b.spotify || undefined,
-        facebook: b.facebook || undefined,
-        instagram: b.instagram || undefined,
-        website: b.website || undefined,
-        youtube: b.youtube || undefined,
+        genre: b.genre || null,
+        description: b.description || null,
+        shortDescription: b.shortdescription || null,
+        soundcloud: b.soundcloud || null,
+        spotify: b.spotify || null,
+        facebook: b.facebook || null,
+        instagram: b.instagram || null,
+        website: b.website || null,
+        youtube: b.youtube || null,
         areaId: stage.toLocaleLowerCase(),
+        slug: '',
+        eventId: `kult${eventStart.getFullYear()}`,
       }));
   }
   return [];

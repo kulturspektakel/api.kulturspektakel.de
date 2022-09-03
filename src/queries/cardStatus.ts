@@ -3,29 +3,7 @@ import {parsePayload} from '../utils/contactless';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import {MissingTransaction, Transaction} from '../models/CardTransaction';
-
-const CardStatus = builder
-  .objectRef<{
-    balance: number;
-    deposit: number;
-    cardId: string;
-    recentTransactions: Transaction[] | null;
-    hasNewerTransactions: boolean | null;
-  }>('CardStatus')
-  .implement({
-    fields: (t) => ({
-      balance: t.exposeInt('balance'),
-      deposit: t.exposeInt('deposit'),
-      cardId: t.exposeString('cardId'),
-      recentTransactions: t.expose('recentTransactions', {
-        type: [Transaction],
-        nullable: true,
-      }),
-      hasNewerTransactions: t.exposeBoolean('hasNewerTransactions', {
-        nullable: true,
-      }),
-    }),
-  });
+import CardStatus from '../models/CardStatus';
 
 builder.queryField('cardStatus', (t) =>
   t.field({
