@@ -6,7 +6,7 @@ builder.mutationField('markBandApplicationContacted', (t) =>
   t.field({
     type: BandApplication,
     args: {
-      bandApplicationId: t.arg.id({required: true}),
+      bandApplicationId: t.arg.globalID({required: true}),
       contacted: t.arg.boolean({required: true}),
     },
     resolve: async (_, {bandApplicationId, contacted}, {token}) =>
@@ -16,7 +16,7 @@ builder.mutationField('markBandApplicationContacted', (t) =>
             contacted && token?.type === 'user' ? token.userId : null,
         },
         where: {
-          id: String(bandApplicationId),
+          id: bandApplicationId.id,
         },
       }),
   }),

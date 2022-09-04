@@ -6,16 +6,16 @@ builder.mutationField('updateDeviceProductList', (t) =>
   t.field({
     type: Device,
     args: {
-      productListId: t.arg.int(),
-      deviceId: t.arg.id({required: true}),
+      productListId: t.arg.globalID({required: true}),
+      deviceId: t.arg.globalID({required: true}),
     },
     resolve: async (_, {productListId, deviceId}, {token}) =>
       prismaClient.device.update({
         where: {
-          id: String(deviceId),
+          id: deviceId.id,
         },
         data: {
-          productListId,
+          productListId: parseInt(productListId?.id, 10),
         },
       }),
   }),

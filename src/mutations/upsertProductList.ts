@@ -2,7 +2,6 @@ import {Prisma, PrismaPromise} from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import ProductList from '../models/ProductList';
-import {UserInputError} from 'apollo-server-express';
 
 const ProductInput = builder.inputType('ProductInput', {
   fields: (t) => ({
@@ -16,20 +15,14 @@ builder.mutationField('upsertProductList', (t) =>
   t.field({
     type: ProductList,
     args: {
-      id: t.arg({type: 'ID'}),
-      name: t.arg({type: 'String'}),
-      emoji: t.arg({type: 'String'}),
-      active: t.arg({type: 'Boolean'}),
+      id: t.arg.globalID(),
+      name: t.arg.string(),
+      emoji: t.arg.string(),
+      active: t.arg.boolean(),
       products: t.arg({type: [ProductInput]}),
     },
-    resolve: async (_, {id, name, emoji, active, products}) => {
-      if (typeof id === 'string') {
-        const [type, key] = id.split(':');
-        if (type !== 'ProductList' || !/^\d+$/.test(key)) {
-          throw new UserInputError('ID is invalid');
-        }
-        id = parseInt(key, 10);
-      }
+    resolve: async (_, {id: globalId, name, emoji, active, products}) => {
+      const productListId = globalId ? parseInt(globalId.id, 10) : -1;
 
       const upsert = prismaClient.productList.upsert({
         create: {
@@ -55,7 +48,7 @@ builder.mutationField('upsertProductList', (t) =>
           product: products
             ? {
                 deleteMany: {
-                  productListId: id ?? -1,
+                  productListId,
                 },
                 createMany: {
                   data: products.map((p, order) => ({
@@ -68,7 +61,7 @@ builder.mutationField('upsertProductList', (t) =>
             : undefined,
         },
         where: {
-          id: id ?? -1,
+          id: productListId,
         },
         include: {
           product: true,
@@ -85,7 +78,7 @@ builder.mutationField('upsertProductList', (t) =>
         transactions.push(
           prismaClient.device.updateMany({
             where: {
-              productListId: id,
+              productListId,
             },
             data: {
               productListId: null,

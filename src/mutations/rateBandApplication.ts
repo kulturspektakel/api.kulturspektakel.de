@@ -7,14 +7,17 @@ builder.mutationField('rateBandApplication', (t) =>
   t.field({
     type: BandApplication,
     args: {
-      bandApplicationId: t.arg.id({required: true}),
+      bandApplicationId: t.arg.globalID({required: true}),
       rating: t.arg.int(),
     },
-    resolve: async (_, {bandApplicationId, rating}, {token}) => {
+    resolve: async (
+      _,
+      {bandApplicationId: {id: bandApplicationId}, rating},
+      {token},
+    ) => {
       if (token?.type !== 'user' || !token.userId) {
         throw new UserInputError('Wrong token');
       }
-      bandApplicationId = String(bandApplicationId);
 
       const where = {
         viewerId_bandApplicationId: {
