@@ -36,7 +36,7 @@ module.exports = {
           if (property in target) {
             return target[property];
           }
-          if (typeof property === 'string') {
+          if (typeof property === 'string' && property !== '$$typeof') {
             variables.add(property);
             return '${' + property + '}';
           }

@@ -38,7 +38,9 @@ module.exports = {
       {},
       {
         get: function (target, property) {
-          if (target in target) {
+          if (property.toString() === '$$typeof') {
+            return;
+          } else if (target in target) {
             return target[property];
           } else {
             return `$${property.toString()}`;

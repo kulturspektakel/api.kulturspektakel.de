@@ -1,6 +1,6 @@
 // auto-generated file using yarn generate:mail
 // prettier-ignore
-export default ({bandname, eventYear, $$typeof}: {bandname: string, eventYear: string, $$typeof: string}) => `<!DOCTYPE html>
+export default ({bandname, eventYear}: {bandname: string, eventYear: string}) => `<!DOCTYPE html>
 <html lang="de" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="utf-8">
