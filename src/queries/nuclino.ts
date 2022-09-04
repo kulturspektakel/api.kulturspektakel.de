@@ -26,6 +26,12 @@ const NuclinoPageT = builder.node(builder.objectRef<APIObject>('NumberRef'), {
   id: {
     resolve: ({id}) => id,
   },
+  isTypeOf: (a) => {
+    if (typeof a === 'object' && a && 'workspaceId' in a && 'object' in a) {
+      return (a as any)['object'] === 'item';
+    }
+    return false;
+  },
   loadOne: (id) => item(id),
   fields: (t) => ({
     title: t.exposeString('title'),
