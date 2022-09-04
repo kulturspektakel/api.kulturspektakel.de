@@ -16,8 +16,7 @@
     "mail": "maizzle serve"
   },
   "devDependencies": {
-    "@maizzle/cli": "1.4.0",
-    "@maizzle/framework": "^3.7.3",
+    "@maizzle/framework": "^4.0.2",
     "@sentry/cli": "^2.1.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/date-fns": "^2.6.0",

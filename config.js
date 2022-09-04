@@ -32,7 +32,7 @@ module.exports = {
       css: 'src/maizzle/assets/css/main.css',
     },
   },
-  baseImageURL: '/public/',
+  baseURL: '/public/',
   locals: {
     dynamic: new Proxy(
       {},

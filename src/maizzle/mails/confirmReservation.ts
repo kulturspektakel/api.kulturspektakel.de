@@ -1,9 +1,7 @@
-// auto-generated file using yarn generate:mail
-// prettier-ignore
-export default ({number, day, startTime, token}: {number: string, day: string, startTime: string, token: string}) => `<!DOCTYPE html>
-<html lang="de" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<!DOCTYPE {{{ page.doctype || 'html' }}}>
+<html lang="{{ page.language || 'de' }}" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-  <meta charset="utf-8">
+  <meta charset="{{ page.charset || 'utf-8' }}">
   <meta name="x-apple-disable-message-reformatting">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,95 +12,69 @@ export default ({number, day, startTime, token}: {number: string, day: string, s
       td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule: exactly;}
     </style>
   <![endif]-->
-    <title>Reservierungsanfrage #${number}</title>
-    <style>
-.hover-bg-brand-dark:hover {
-  background-color: #bf2626 !important;
-}
-.hover-underline:hover {
-  text-decoration: underline !important;
-}
-.hover-bg-brand-dark:hover {
-  background-color: #bf2626 !important;
-}
-.hover-underline:hover {
-  text-decoration: underline !important;
-}
-@media (max-width: 600px) {
-  .sm-w-full {
-    width: 100% !important;
-  }
-  .sm-p-24 {
-    padding: 24px !important;
-  }
-  .sm-px-24 {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-  }
-  .sm-leading-32 {
-    line-height: 32px !important;
-  }
-  .sm-w-full {
-    width: 100% !important;
-  }
-  .sm-p-24 {
-    padding: 24px !important;
-  }
-  .sm-px-24 {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-  }
-  .sm-leading-32 {
-    line-height: 32px !important;
-  }
-}
-</style>
+  <if condition="page.title">
+    <title>{{{ page.title }}}</title>
+  </if>
+  <if condition="page.googleFonts">
+    <link href="/public/https://fonts.googleapis.com/css?family={{ page.googleFonts }}" rel="stylesheet" media="screen">
+  </if>
+  <if condition="page.css">
+    <!-- <style>{{{ page.css }}}</style> -->
+  </if>
+  
 </head>
-<body style="width: 100%; margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f4f4f5;">
-    <div style="display: none;">Bitte bestätige deine Reservierung für das Kulturspektakel&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
+<body class=" page_bodyClass or-or- -bg-gray-100- ">
+  <if condition="page.preheader">
+    <div class="hidden">{{{ page.preheader }}}&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
       &#160;&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
       &#160;&#847; &#847; &#847; &#847; &#847; </div>
-  <div role="article" aria-roledescription="email" aria-label="Reservierungsanfrage #${number}" lang="de">
-    <table style="width: 100%; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;" cellpadding="0" cellspacing="0" role="presentation">
+  </if>
+  <div role="article" aria-roledescription="email" aria-label="{{{ page.title || '' }}}" lang="{{ page.language || 'de' }}">
+    <table class="w-full font-sans" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
-        <td align="center" style="background-color: #f4f4f5;">
-          <table class="sm-w-full" style="width: 600px;" cellpadding="0" cellspacing="0" role="presentation">
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm-w-full" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
-              <td style="height: 24px;"></td>
+              <td class="h-24"></td>
             </tr>
             <tr>
               <td align="center" class="sm-px-24">
-                <table style="width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
+                <table class="w-full" cellpadding="0" cellspacing="0" role="presentation">
                   <tr>
-                    <td class="sm-p-24" style="border-radius: 4px; background-color: #ffffff; padding: 48px; text-align: left; font-size: 16px; line-height: 24px; color: #27272a;">
-    <h1 class="sm-leading-32" style="margin: 0; margin-bottom: 24px; font-size: 24px; font-weight: 600; color: #000000;">Reservierungsanfrage #${number}</h1>
-    <p>Wir freuen uns, dass du am ${day} um ${startTime} Uhr zum Kult kommst. Bitte bestätige deine Reservierung, in dem du den folgenden Link anklickst.</p>
-    <div style="line-height: 100%;">
-    <a href="https://table.kulturspektakel.de/reservation/${token}" class="hover-bg-brand-dark" style="display: inline-block; border-radius: 4px; background-color: #e12e2e; padding-left: 24px; padding-right: 24px; padding-top: 12px; padding-bottom: 12px; text-align: center; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none;">
+                    <td class="bg-white text-gray-800 text-base text-left p-48 sm-p-24 leading-24 rounded">
+                      
+    <h1 class="text-2xl sm-leading-32 text-black font-semibold m-0 mb-24">Reservierungsanfrage #$number</h1>
+    <p>Wir freuen uns, dass du am $day um $startTime Uhr zum Kult kommst. Bitte bestätige deine Reservierung, in dem du den folgenden Link anklickst.</p>
+
+    <div class="leading-full">
+    <a href="https://table.kulturspektakel.de/reservation/$token" class="inline-block py-12 px-24 rounded text-base font-semibold text-center no-underline text-white bg-brand hover-bg-brand-dark">
         <!--[if mso]><i style="letter-spacing: 24px; mso-font-width: -100%; mso-text-raise:30px;">&#8202;</i><![endif]-->
-        <span style="mso-text-raise: 16px;">
+        <span style="mso-text-raise: 16px">
       Reservierung bestätigen
      &rarr;</span>
         <!--[if mso]><i style="letter-spacing: 24px; mso-font-width: -100%;">&#8202;</i><![endif]-->
     </a>
 </div>
+
+
     <p>Die Reservierung verfällt, wenn sie nicht innerhalb der nächsten 30 Minuten bestätigt wird.</p>
-    <p style="margin: 0;">Viele Grüße,<br>Das Kult-Team</p>
+    <p class="m-0">Viele Grüße,<br>Das Kult-Team</p>
+  
                     </td>
                   </tr>
                   <tr>
-                    <td style="height: 36px;"></td>
+                    <td class="h-36"></td>
                   </tr>
                   <tr>
-                    <td style="padding-left: 24px; padding-right: 24px; text-align: center; font-size: 12px; color: #52525b;">
-                      <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" alt="Kulturspektakel Gauting" style="border: 0; max-width: 100%; vertical-align: middle; line-height: 100%; max-width: 100%; vertical-align: middle; line-height: 100%;">
-                      <p style="margin: 0; margin-top: 6px; margin-bottom: 4px; font-weight: 600;">Kulturspektakel Gauting e.V.</p>
-                      <p style="margin: 0; font-style: italic;">Anschrift: Bahnhofstr. 6, 82131 Gauting</p>
-                      <p style="margin: 0; font-style: italic;">Festivalgelände: Germeringer Str. 41, Gauting</p>
-                      <p style="cursor: default;">
-                        <a href="https://kulturspektakel.de" class="hover-underline" style="color: #e12e2e; text-decoration: none;">Webseite</a> &bull;
-                        <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: #e12e2e; text-decoration: none;">Facebook</a> &bull;
-                        <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: #e12e2e; text-decoration: none;">Instagram</a>
+                    <td class="text-center text-gray-600 text-xs px-24">
+                      <img src="/public/logo.png" width="40" alt="Kulturspektakel Gauting">
+                      <p class="m-0 mt-6 mb-4 font-semibold">Kulturspektakel Gauting e.V.</p>
+                      <p class="m-0 italic">Anschrift: Bahnhofstr. 6, 82131 Gauting</p>
+                      <p class="m-0 italic">Festivalgelände: Germeringer Str. 41, Gauting</p>
+                      <p class="cursor-default">
+                        <a href="https://kulturspektakel.de" class="text-brand no-underline hover-underline">Webseite</a> &bull;
+                        <a href="https://facebook.com/kulturspektakel" class="text-brand no-underline hover-underline">Facebook</a> &bull;
+                        <a href="https://instagram.com/kulturspektakel" class="text-brand no-underline hover-underline">Instagram</a>
                       </p>
                     </td>
                   </tr>
@@ -116,4 +88,4 @@ export default ({number, day, startTime, token}: {number: string, day: string, s
   </div>
 </body>
 </html>
-`;
+

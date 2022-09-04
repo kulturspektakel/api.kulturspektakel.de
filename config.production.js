@@ -23,8 +23,9 @@ module.exports = {
         destination: '../../../artifacts/public/maizzle',
       },
     },
+    fail: 'verbose',
   },
-  baseImageURL: 'https://api.kulturspektakel.de/public/maizzle/',
+  baseURL: 'https://api.kulturspektakel.de/public/maizzle/',
   inlineCSS: true,
   removeUnusedCSS: true,
   locals: {
