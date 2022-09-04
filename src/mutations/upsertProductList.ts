@@ -2,6 +2,7 @@ import {Prisma, PrismaPromise} from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import ProductList from '../models/ProductList';
+import {UserInputError} from 'apollo-server-express';
 
 const ProductInput = builder.inputType('ProductInput', {
   fields: (t) => ({
@@ -15,13 +16,21 @@ builder.mutationField('upsertProductList', (t) =>
   t.field({
     type: ProductList,
     args: {
-      id: t.arg({type: 'Int'}),
+      id: t.arg({type: 'ID'}),
       name: t.arg({type: 'String'}),
       emoji: t.arg({type: 'String'}),
       active: t.arg({type: 'Boolean'}),
       products: t.arg({type: [ProductInput]}),
     },
     resolve: async (_, {id, name, emoji, active, products}) => {
+      if (typeof id === 'string') {
+        const [type, key] = id.split(':');
+        if (type !== 'ProductList' || !/^\d+$/.test(key)) {
+          throw new UserInputError('ID is invalid');
+        }
+        id = parseInt(key, 10);
+      }
+
       const upsert = prismaClient.productList.upsert({
         create: {
           name: name ?? '',
