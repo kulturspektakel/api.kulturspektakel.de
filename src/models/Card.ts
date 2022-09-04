@@ -18,4 +18,5 @@ builder.node(Card, {
     resolve: ({id}) => id,
   },
   interfaces: [Transactionable],
+  loadOne: (id) => new Card(id),
 });
