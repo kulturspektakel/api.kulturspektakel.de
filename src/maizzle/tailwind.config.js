@@ -1,8 +1,17 @@
+const colors = require('tailwindcss/colors');
+
 module.exports = {
   theme: {
     screens: {
       xs: {max: '425px'},
       sm: {max: '600px'},
+    },
+    colors: {
+      ...colors,
+      brand: {
+        DEFAULT: '#E12E2E',
+        dark: '#BF2626',
+      },
     },
     extend: {
       spacing: {
