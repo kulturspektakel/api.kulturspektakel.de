@@ -26,6 +26,7 @@ import '../queries/cardStatus';
 import '../queries/config';
 import '../queries/devices';
 import '../queries/distanceToKult';
+import '../queries/events';
 import '../queries/nuclino';
 import '../queries/productLists';
 import '../queries/transactions';
