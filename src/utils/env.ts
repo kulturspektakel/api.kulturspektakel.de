@@ -32,12 +32,17 @@ export default {
     .get('NUCLINO_ANONYMOUS_PASSWORD')
     .required()
     .asString(),
-  GOOGLE_APPLICATION_CREDENTIALS: env
-    .get('GOOGLE_APPLICATION_CREDENTIALS')
-    .required()
-    .asString(),
+
   SAML_PRIVATE_KEY: env.get('SAML_PRIVATE_KEY').required().asString(),
   SENTRY_DNS: env.get('SENTRY_DNS').required().asString(),
   RELEASE: env.get('RELEASE').default('api@dev').asString(),
   CONTACTLESS_SALT: env.get('CONTACTLESS_SALT').required().asString(),
+  GOOGLE_SERVICE_ACCOUNT_EMAIL: env
+    .get('GOOGLE_SERVICE_ACCOUNT_EMAIL')
+    .required()
+    .asString(),
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: env
+    .get('GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY')
+    .required()
+    .asString(),
 };

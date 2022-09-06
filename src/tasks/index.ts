@@ -3,10 +3,13 @@ import env from '../utils/env';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
 import nuclinoUpdateMessage from './nuclinoUpdateMessage';
+import gmailReminder from './gmailReminder';
 import events from './taskEvents';
+import {SlackChannel} from '../utils/slack';
 
 const taskListProd = {
   nuclinoUpdateMessage,
+  gmailReminder,
 };
 
 const taskList = {
@@ -22,7 +25,14 @@ export default async function () {
     concurrency: 1,
     taskList: (env.NODE_ENV === 'production' ? taskListProd : taskList) as any,
     events,
-    crontab: ['*/5 * * * * nuclinoUpdateMessage ?max=1'].join('\n'),
+    crontab: [
+      '*/5 * * * * nuclinoUpdateMessage ?max=1',
+      `30 10 * * * gmailReminder ?max=1 ${JSON.stringify({
+        account: 'booking@kulturspektakel.de',
+        channel: SlackChannel.dev,
+        afterDays: [2, 5],
+      })}`,
+    ].join('\n'),
   });
 }
 
