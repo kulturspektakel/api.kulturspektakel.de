@@ -5,6 +5,7 @@ export enum SlackChannel {
   dev = 'C93K75X61',
   bandbewerbungen = 'C3U99AB54',
   wiki = 'C03F5E07Z',
+  booking = 'C3KKL3727',
 }
 
 export async function sendMessage({

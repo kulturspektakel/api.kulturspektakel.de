@@ -5,12 +5,20 @@ import notEmpty from '../utils/notEmpty';
 import {gmail_v1, google} from 'googleapis';
 import env from '../utils/env';
 
+type ReminderArgs = {
+  account: string;
+  channel: SlackChannel;
+  afterDays: number[];
+};
+
+export const booking: ReminderArgs = {
+  account: 'booking@kulturspektakel.de',
+  channel: SlackChannel.booking,
+  afterDays: [2, 5],
+};
+
 export default async function (
-  {
-    account,
-    channel,
-    afterDays,
-  }: {account: string; channel: SlackChannel; afterDays: number[]},
+  {account, channel, afterDays}: ReminderArgs,
   {}: JobHelpers,
 ) {
   const client = new google.auth.JWT({
@@ -62,41 +70,42 @@ export default async function (
 
   const messages = await Promise.all(todos);
 
-  await Promise.all(
-    messages.filter(notEmpty).map(
-      (lastMessage) =>
-        new Promise(async (resolve) => {
-          const days = ageInDays(lastMessage);
-          const url = `https://mail.google.com/mail/u/${account}/#inbox/${lastMessage.threadId}`;
-          const slackMessage = await sendMessage({
-            channel,
-            text: `Folgende E-Mail ist seit ${days} Tag${
-              days === 1 ? 'en' : ''
-            } unbeantwortet im Posteingang von ${account}. Kann bitte jemand die Mail beantworten oder sie archivieren, wenn keine Antwort notwendig ist.`,
-            attachments: [
-              {
-                author_name: getHeaderField(lastMessage, 'from'),
-                callback_id: lastMessage.threadId,
-                fallback: url,
-                title: getHeaderField(lastMessage, 'subject'),
-                text: lastMessage.snippet,
-                color: afterDays[0] === days ? 'warning' : 'danger',
-                ts: Math.round(parseInternalDate(lastMessage).getTime() / 1000),
-                actions: [
-                  {
-                    type: 'button',
-                    text: 'Öffnen',
-                    url,
-                  },
-                ],
-              },
-            ],
-          });
+  let days = null;
+  const attachments = messages.filter(notEmpty).map((lastMessage) => {
+    days = ageInDays(lastMessage);
+    const url = `https://mail.google.com/mail/u/${account}/#inbox/${lastMessage.threadId}`;
 
-          resolve(slackMessage);
-        }),
-    ),
-  );
+    return {
+      author_name: getHeaderField(lastMessage, 'from'),
+      callback_id: lastMessage.threadId,
+      fallback: url,
+      title: getHeaderField(lastMessage, 'subject'),
+      text: lastMessage.snippet,
+      color: afterDays[0] === days ? 'warning' : 'danger',
+      ts: Math.round(parseInternalDate(lastMessage).getTime() / 1000),
+      actions: [
+        {
+          type: 'button',
+          text: 'Öffnen',
+          url,
+        },
+      ],
+    };
+  });
+
+  if (attachments.length === 0) {
+    return;
+  }
+
+  await sendMessage({
+    channel,
+    text: `${
+      attachments.length === 1
+        ? `Folgende E-Mail ist seit ${days} Tag${days === 1 ? '' : 'en'}`
+        : `Folgende ${attachments.length} E-Mails sind`
+    } unbeantwortet im Posteingang von ${account}. Kann sie bitte jemand beantworten oder sie archivieren, wenn keine Antwort notwendig ist.`,
+    attachments,
+  });
 }
 
 function parseInternalDate(message: gmail_v1.Schema$Message): Date {

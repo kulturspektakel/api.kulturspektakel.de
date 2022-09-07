@@ -3,9 +3,8 @@ import env from '../utils/env';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
 import nuclinoUpdateMessage from './nuclinoUpdateMessage';
-import gmailReminder from './gmailReminder';
+import gmailReminder, {booking} from './gmailReminder';
 import events from './taskEvents';
-import {SlackChannel} from '../utils/slack';
 
 const taskListProd = {
   nuclinoUpdateMessage,
@@ -27,11 +26,7 @@ export default async function () {
     events,
     crontab: [
       '*/5 * * * * nuclinoUpdateMessage ?max=1',
-      `30 10 * * * gmailReminder ?max=1 ${JSON.stringify({
-        account: 'booking@kulturspektakel.de',
-        channel: SlackChannel.dev,
-        afterDays: [2, 5],
-      })}`,
+      `30 9 * * * gmailReminder ?max=1 ${JSON.stringify(booking)}`,
     ].join('\n'),
   });
 }
