@@ -17,7 +17,7 @@ export const booking: ReminderArgs = {
   afterDays: [2, 5],
 };
 
-export const vorstand: ReminderArgs = {
+export const info: ReminderArgs = {
   account: 'info@kulturspektakel.de',
   channel: SlackChannel.vorstand,
   afterDays: [2, 5],
