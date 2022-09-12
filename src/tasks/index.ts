@@ -3,7 +3,7 @@ import env from '../utils/env';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
 import nuclinoUpdateMessage from './nuclinoUpdateMessage';
-import gmailReminder, {booking} from './gmailReminder';
+import gmailReminder, {booking, vorstand} from './gmailReminder';
 import events from './taskEvents';
 
 const taskListProd = {
@@ -27,6 +27,7 @@ export default async function () {
     crontab: [
       '*/5 * * * * nuclinoUpdateMessage ?max=1',
       `30 9 * * * gmailReminder ?max=1 ${JSON.stringify(booking)}`,
+      `0 8 * * * gmailReminder ?max=1 ${JSON.stringify(vorstand)}`,
     ].join('\n'),
   });
 }

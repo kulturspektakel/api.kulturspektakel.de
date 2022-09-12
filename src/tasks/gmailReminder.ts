@@ -17,6 +17,12 @@ export const booking: ReminderArgs = {
   afterDays: [2, 5],
 };
 
+export const vorstand: ReminderArgs = {
+  account: 'info@kulturspektakel.de',
+  channel: SlackChannel.vorstand,
+  afterDays: [2, 5],
+};
+
 export default async function (
   {account, channel, afterDays}: ReminderArgs,
   {}: JobHelpers,
