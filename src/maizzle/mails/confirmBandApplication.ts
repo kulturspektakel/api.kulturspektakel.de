@@ -17,18 +17,21 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
   text-decoration-line: underline !important;
 }
 @media (max-width: 600px) {
+  .sm-h-0 {
+    height: 0 !important;
+  }
   .sm-w-full {
     width: 100% !important;
   }
-  .sm-p-24 {
-    padding: 96px !important;
+  .sm-p-6 {
+    padding: 24px !important;
   }
-  .sm-px-24 {
-    padding-left: 96px !important;
-    padding-right: 96px !important;
+  .sm-px-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
-  .sm-leading-32 {
-    line-height: 128px !important;
+  .sm-leading-6 {
+    line-height: 24px !important;
   }
 }</style></head>
 <body style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f3f4f6">    <div style="display: none">Eure Bewerbung mit „undefined“ für das Kulturspektakel Gauting undefined&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
@@ -38,31 +41,31 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
     <table style="width: 100%; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center" style="background-color: #f3f4f6">
-          <table class="sm-w-full" cellpadding="0" cellspacing="0" role="presentation">
+          <table class="sm-w-full" style="width: 600px" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
-              <td style="height: 96px"></td>
+              <td class="sm-h-0" style="height: 24px"></td>
             </tr>
             <tr>
-              <td align="center" class="sm-px-24">
+              <td align="center" class="sm-px-0">
                 <table style="width: 100%" cellpadding="0" cellspacing="0" role="presentation">
                   <tr>
-                    <td class="sm-p-24" style="border-radius: 4px; background-color: #fff; padding: 192px; text-align: left; font-size: 16px; line-height: 96px; color: #1f2937">    <h1 class="sm-leading-32" style="margin: 0; margin-bottom: 96px; font-size: 24px; font-weight: 600; color: #000">Bewerbung für das Kulturspektakel ${eventYear}</h1>
+                    <td class="sm-p-6" style="border-radius: 4px; background-color: #fff; padding: 32px; text-align: left; font-size: 16px; line-height: 24px; color: #1f2937">    <h1 class="sm-leading-6" style="margin: 0; margin-bottom: 16px; font-size: 24px; font-weight: 600; color: #000">Bewerbung für das Kulturspektakel ${eventYear}</h1>
     <p>Vielen Dank für eure Bewerbung mit „${bandname}“ für das Kulturspektakel Gauting ${eventYear}. Jede Bewerbung bekommt von uns eine Zu- oder Absage. Es kann allerdings bis wenige Monate vor dem Kulturspektakel dauern, bis ihr eine Antwort bekommt. Daher bitten wir euch gedulig zu sein.</p>
     <p style="margin: 0">Viele Grüße,<br>Das Kulturspektakel-Booking-Team</p>                    </td>
                   </tr>
                   <tr>
-                    <td style="height: 144px"></td>
+                    <td style="height: 24px"></td>
                   </tr>
                   <tr>
-                    <td style="padding-left: 96px; padding-right: 96px; text-align: center; font-size: 12px; color: #4b5563">
+                    <td style="padding-left: 24px; padding-right: 24px; text-align: center; font-size: 12px; color: #4b5563">
                       <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" alt="Kulturspektakel Gauting" style="border: 0; max-width: 100%; vertical-align: middle; line-height: 100%">
-                      <p style="margin: 0; margin-top: 24px; margin-bottom: 16px; font-weight: 600">Kulturspektakel Gauting e.V.</p>
+                      <p style="margin: 0; margin-top: 16px; font-weight: 600">Kulturspektakel Gauting e.V.</p>
                       <p style="margin: 0; font-style: italic">Anschrift: Bahnhofstr. 6, 82131 Gauting</p>
                       <p style="margin: 0; font-style: italic">Festivalgelände: Germeringer Str. 41, Gauting</p>
                       <p style="cursor: default">
-                        <a href="https://kulturspektakel.de" class="hover-underline" style="text-decoration-line: none">Webseite</a> &bull;
-                        <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="text-decoration-line: none">Facebook</a> &bull;
-                        <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="text-decoration-line: none">Instagram</a>
+                        <a href="https://kulturspektakel.de" class="hover-underline" style="color: #E12E2E; text-decoration-line: none">Webseite</a> &bull;
+                        <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: #E12E2E; text-decoration-line: none">Facebook</a> &bull;
+                        <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: #E12E2E; text-decoration-line: none">Instagram</a>
                       </p>
                     </td>
                   </tr>
