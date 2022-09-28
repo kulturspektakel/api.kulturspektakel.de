@@ -20,7 +20,11 @@ builder.queryField('cardStatus', (t) =>
           where: {
             cardId: data.cardId,
             deviceTime: {
-              gte: sub(new Date(), {days: 3}),
+              gte:
+                // test card
+                data.cardId === '536FA7C8300001'
+                  ? undefined
+                  : sub(new Date(), {days: 3}),
             },
             counter: {
               not: null,

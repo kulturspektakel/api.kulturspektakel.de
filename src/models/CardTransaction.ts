@@ -52,6 +52,8 @@ export const TransactionInterface = builder.interfaceType(Transaction, {
     balanceAfter: t.exposeInt('balanceAfter'),
     balanceBefore: t.exposeInt('balanceBefore'),
   }),
+  resolveType: (t) =>
+    t instanceof MissingTransaction ? 'MissingTransaction' : 'CardTransaction',
 });
 
 export class MissingTransaction extends Transaction {
