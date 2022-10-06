@@ -1,7 +1,7 @@
 import prismaClient from '../utils/prismaClient';
 import jwt from 'jsonwebtoken';
 import env from '../utils/env';
-import {Request, Response} from 'express';
+import express, {Request, Response} from 'express';
 import {URL} from 'url';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
@@ -176,5 +176,39 @@ router.use((req, res, next) => {
 
   next();
 });
+
+router.postAsync(
+  '/slack-token',
+  // @ts-ignore postAsync is not typed correctly
+  express.urlencoded(),
+  async (
+    req: Request<
+      any,
+      any,
+      {
+        token: string;
+        team_id: string;
+        team_domain: string;
+        enterprise_id?: string;
+        enterprise_name?: string;
+        channel_id: string;
+        channel_name: string;
+        user_id: string;
+        user_name: string;
+        command: string;
+        text: string;
+        response_url: string;
+        trigger_id: string;
+        api_app_id: string;
+      }
+    >,
+    res,
+  ) => {
+    return res.json({
+      response_type: 'ephemeral',
+      text: `Danke ${req.body.user_name}`,
+    });
+  },
+);
 
 export default router;

@@ -55,7 +55,7 @@ export const errorReportingMiddleware: ErrorRequestHandler = (
   if (err instanceof ApiError) {
     Sentry.withScope((scope) => {
       scope.addEventProcessor(async (event) =>
-        Sentry.Handlers.parseRequest(event, req),
+        Sentry.addRequestDataToEvent(event, req),
       );
       Sentry.captureException(err.originalError ?? err);
     });
