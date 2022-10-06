@@ -64,7 +64,7 @@ const NuclinoSearchResult = builder
         type: NuclinoPageT,
         resolve: (res) => res,
       }),
-      highlight: t.exposeString('highlight'),
+      highlight: t.exposeString('highlight', {nullable: true}),
     }),
   });
 

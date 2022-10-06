@@ -59,7 +59,7 @@ async function nuclinoAPIRequest<T>(url: string) {
   return data.data;
 }
 
-export type NuclinoSearchResult = APIObject & {highlight: string};
+export type NuclinoSearchResult = APIObject & {highlight?: string};
 
 export async function items(params: {
   search?: string;
