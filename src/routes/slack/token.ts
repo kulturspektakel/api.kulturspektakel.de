@@ -1,19 +1,17 @@
-import prismaClient from '../utils/prismaClient';
-import env from '../utils/env';
+import prismaClient from '../../utils/prismaClient';
+import env from '../../utils/env';
 import express, {Request} from 'express';
 import {URL} from 'url';
 import {add, isPast} from 'date-fns';
-import {ApiError} from '../utils/errorReporting';
-import {scheduleTask} from '../tasks';
-import {fetchUser} from '../utils/slack';
+import {ApiError} from '../../utils/errorReporting';
+import {scheduleTask} from '../../tasks';
+import {fetchUser} from '../../utils/slack';
 import {Prisma, Viewer} from '@prisma/client';
-import {setCookie} from './auth';
-import {Router} from '@awaitjs/express';
-
-const router = Router({});
+import {setCookie} from '../auth';
+import router from './index';
 
 router.postAsync(
-  '/slack-token',
+  '/token',
   // @ts-ignore postAsync is not typed correctly
   express.urlencoded(),
   async (
@@ -93,7 +91,7 @@ router.postAsync(
 );
 
 router.getAsync(
-  '/slack-token',
+  '/token',
   async (
     req: Request<any, any, any, {nonce?: string; redirect?: string}>,
     res,
