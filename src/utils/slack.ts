@@ -9,6 +9,45 @@ export enum SlackChannel {
   vorstand = 'G03HP9QM2',
 }
 
+type SlackApiUser = {
+  id: string;
+  team_id: string;
+  name: string;
+  deleted: boolean;
+  color: string;
+  real_name: string;
+  tz: string;
+  tz_label: string;
+  tz_offset: number;
+  profile: {
+    avatar_hash: string;
+    status_text: string;
+    status_emoji: string;
+    real_name: string;
+    display_name: string;
+    real_name_normalized: string;
+    display_name_normalized: string;
+    email: string;
+    image_original: string;
+    image_24: string;
+    image_32: string;
+    image_48: string;
+    image_72: string;
+    image_192: string;
+    image_512: string;
+    team: string;
+  };
+  is_admin: boolean;
+  is_owner: boolean;
+  is_primary_owner: boolean;
+  is_restricted: boolean;
+  is_ultra_restricted: boolean;
+  is_bot: boolean;
+  updated: 1502138686;
+  is_app_user: boolean;
+  has_2fa: boolean;
+};
+
 export async function sendMessage({
   ...body
 }: {
@@ -29,49 +68,14 @@ export async function sendMessage({
 
 export async function fetchUser(user: string) {
   const res = await slackApiRequest<{
-    user: {
-      id: string;
-      team_id: string;
-      name: string;
-      deleted: boolean;
-      color: string;
-      real_name: string;
-      tz: string;
-      tz_label: string;
-      tz_offset: number;
-      profile: {
-        avatar_hash: string;
-        status_text: string;
-        status_emoji: string;
-        real_name: string;
-        display_name: string;
-        real_name_normalized: string;
-        display_name_normalized: string;
-        email: string;
-        image_original: string;
-        image_24: string;
-        image_32: string;
-        image_48: string;
-        image_72: string;
-        image_192: string;
-        image_512: string;
-        team: string;
-      };
-      is_admin: boolean;
-      is_owner: boolean;
-      is_primary_owner: boolean;
-      is_restricted: boolean;
-      is_ultra_restricted: boolean;
-      is_bot: boolean;
-      updated: 1502138686;
-      is_app_user: boolean;
-      has_2fa: boolean;
-    };
+    user: SlackApiUser;
   }>('users.info', {user});
   if (!res.ok) {
     console.error(res);
     return;
   }
+
+  return res.user;
 }
 
 async function slackApiRequest<T>(

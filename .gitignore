@@ -14,3 +14,4 @@ artifacts/public/maizzle/**/*
 .env*
 !.env.project
 !.env.vault
+.flaskenv*

@@ -10,6 +10,8 @@ import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
 import requestUrl from '../utils/requestUrl';
 import {scheduleTask} from '../tasks';
+import {fetchUser} from '../utils/slack';
+import {Nonce, Prisma, Viewer} from '@prisma/client';
 
 export type TokenInput =
   | {
@@ -205,12 +207,21 @@ router.postAsync(
     >,
     res,
   ) => {
-    //TODO: fetch slack user
+    const slackUser = await fetchUser(req.body.user_id);
+    if (!slackUser) {
+      throw new ApiError(404, 'User not found');
+    }
 
-    // upsert user
+    const userData = {
+      displayName: slackUser.profile.real_name,
+      profilePicture: slackUser.profile.image_192,
+      email: slackUser.profile.email,
+    };
     const user = await prismaClient.viewer.upsert({
-      create: {
-        displayName: '',
+      create: userData,
+      update: userData,
+      where: {
+        id: slackUser.id,
       },
     });
 
@@ -229,9 +240,22 @@ router.postAsync(
       },
     );
 
+    const nuclinoSsoUrl = new URL(
+      `https://api.nuclino.com/api/sso/${env.NUCLINO_TEAM_ID}/login`,
+    );
+    nuclinoSsoUrl.searchParams.append(
+      'redirectUrl',
+      'https://app.nuclino.com/Kulturspektakel/General',
+    );
+    const url = new URL('https://api.kulturspektakel.de/slack-token');
+    url.searchParams.append('nonce', nonce.nonce);
+    url.searchParams.append('redirect', nuclinoSsoUrl.toString());
+
     return res.json({
       response_type: 'ephemeral',
-      text: `Danke ${req.body.user_name} (der Link ist 5 Minuten lang gültig)`,
+      text: `<${url.toString()}|Nuclino Login-Link für ${user.displayName}> ${
+        req.body.user_name
+      } (der Link ist 5 Minuten lang gültig)`,
     });
   },
 );
@@ -244,24 +268,37 @@ router.getAsync(
   ) => {
     const {nonce, redirect} = req.query;
     if (!nonce) {
-      throw new Error();
-    }
-    const {createdFor} = await prismaClient.nonce.delete({
-      where: {nonce},
-      select: {
-        createdFor: true,
-      },
-    });
-
-    const viewerId = createdFor?.id;
-    if (!viewerId) {
-      throw new Error();
+      throw new ApiError(400, 'Missing nonce');
     }
 
-    setCookie(req, res, viewerId);
-    res.redirect(
-      'https://api.nuclino.com/api/sso/86824bda-858c-453c-b093-a295e2103b95/login?redirectUrl=https%3A%2F%2Fapp.nuclino.com%2FKulturspektakel%2FGeneral',
-    );
+    let viewer: Viewer | null = null;
+    try {
+      const {createdFor} = await prismaClient.nonce.delete({
+        where: {nonce},
+        select: {
+          createdFor: true,
+        },
+      });
+      viewer = createdFor;
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2025'
+      ) {
+        throw new ApiError(400, 'Nonce invalid');
+      } else {
+        throw e;
+      }
+    }
+
+    if (!viewer) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    setCookie(req, res, viewer.id);
+    if (redirect) {
+      res.redirect(redirect);
+    }
   },
 );
 

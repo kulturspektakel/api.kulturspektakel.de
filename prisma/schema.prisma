@@ -18,7 +18,7 @@ model Viewer {
   displayName           String
   email                 String
   profilePicture        String?
-  slackToken            String
+  slackToken            String?
   slackScopes           String[]
   updatedAt             DateTime                @default(now()) @updatedAt
   BandApplicationRating BandApplicationRating[]
