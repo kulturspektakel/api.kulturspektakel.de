@@ -5,13 +5,13 @@ import express, {Request, Response} from 'express';
 import {URL} from 'url';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
-import {add} from 'date-fns';
+import {add, isPast} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
 import requestUrl from '../utils/requestUrl';
 import {scheduleTask} from '../tasks';
 import {fetchUser} from '../utils/slack';
-import {Nonce, Prisma, Viewer} from '@prisma/client';
+import {Prisma, Viewer} from '@prisma/client';
 
 export type TokenInput =
   | {
@@ -273,13 +273,17 @@ router.getAsync(
 
     let viewer: Viewer | null = null;
     try {
-      const {createdFor} = await prismaClient.nonce.delete({
+      const {createdFor, expiresAt} = await prismaClient.nonce.delete({
         where: {nonce},
         select: {
           createdFor: true,
+          expiresAt: true,
         },
       });
       viewer = createdFor;
+      if (isPast(expiresAt)) {
+        throw new ApiError(400, 'Nonce invalid');
+      }
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&

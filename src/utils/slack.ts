@@ -69,7 +69,7 @@ export async function sendMessage({
 export async function fetchUser(user: string) {
   const res = await slackApiRequest<{
     user: SlackApiUser;
-  }>('users.info', {user});
+  }>(`users.info?user=${user}`);
   if (!res.ok) {
     console.error(res);
     return;
@@ -80,7 +80,7 @@ export async function fetchUser(user: string) {
 
 async function slackApiRequest<T>(
   endpoint: string,
-  body: Object,
+  body?: Object,
 ): Promise<
   | {
       ok: false;
@@ -92,7 +92,7 @@ async function slackApiRequest<T>(
 > {
   const res = await fetch(`https://slack.com/api/${endpoint}`, {
     method: 'POST',
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
     headers: {
       authorization: `Bearer ${env.SLACK_BOT_TOKEN}`,
       'Content-type': 'application/json; charset=utf-8',
