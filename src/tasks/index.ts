@@ -3,12 +3,14 @@ import env from '../utils/env';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
 import nuclinoUpdateMessage from './nuclinoUpdateMessage';
+import nonceInvalidate from './nonceInvalidate';
 import gmailReminder, {booking, info} from './gmailReminder';
 import events from './taskEvents';
 
 const taskListProd = {
   nuclinoUpdateMessage,
   gmailReminder,
+  nonceInvalidate,
 };
 
 const taskList = {

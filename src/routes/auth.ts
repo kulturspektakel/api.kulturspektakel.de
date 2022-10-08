@@ -9,6 +9,7 @@ import {add} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
 import requestUrl from '../utils/requestUrl';
+import {scheduleTask} from '../tasks';
 
 export type TokenInput =
   | {
@@ -204,10 +205,63 @@ router.postAsync(
     >,
     res,
   ) => {
+    //TODO: fetch slack user
+
+    // upsert user
+    const user = await prismaClient.viewer.upsert({
+      create: {
+        displayName: '',
+      },
+    });
+
+    const expiresAt = add(new Date(), {minutes: 5});
+    const nonce = await prismaClient.nonce.create({
+      data: {
+        createdForId: user.id,
+        expiresAt,
+      },
+    });
+    await scheduleTask(
+      'nonceInvalidate',
+      {nonce: nonce.nonce},
+      {
+        runAt: expiresAt,
+      },
+    );
+
     return res.json({
       response_type: 'ephemeral',
-      text: `Danke ${req.body.user_name}`,
+      text: `Danke ${req.body.user_name} (der Link ist 5 Minuten lang gültig)`,
     });
+  },
+);
+
+router.getAsync(
+  '/slack-token',
+  async (
+    req: Request<any, any, any, {nonce?: string; redirect?: string}>,
+    res,
+  ) => {
+    const {nonce, redirect} = req.query;
+    if (!nonce) {
+      throw new Error();
+    }
+    const {createdFor} = await prismaClient.nonce.delete({
+      where: {nonce},
+      select: {
+        createdFor: true,
+      },
+    });
+
+    const viewerId = createdFor?.id;
+    if (!viewerId) {
+      throw new Error();
+    }
+
+    setCookie(req, res, viewerId);
+    res.redirect(
+      'https://api.nuclino.com/api/sso/86824bda-858c-453c-b093-a295e2103b95/login?redirectUrl=https%3A%2F%2Fapp.nuclino.com%2FKulturspektakel%2FGeneral',
+    );
   },
 );
 

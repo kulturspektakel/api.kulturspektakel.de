@@ -23,6 +23,7 @@ model Viewer {
   updatedAt             DateTime                @default(now()) @updatedAt
   BandApplicationRating BandApplicationRating[]
   BandApplication       BandApplication[]
+  Nonce                 Nonce[]
 }
 
 model Area {
@@ -246,4 +247,11 @@ model BandPlaying {
   eventId          String
 
   @@unique([areaId, startTime])
+}
+
+model Nonce {
+  nonce        String   @id @default(uuid())
+  expiresAt    DateTime
+  createdFor   Viewer?  @relation(fields: [createdForId], references: [id])
+  createdForId String?
 }
