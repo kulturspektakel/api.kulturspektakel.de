@@ -1,5 +1,7 @@
+import {Router} from '@awaitjs/express';
 import express, {Request} from 'express';
-import router from './index';
+
+const router = Router({});
 
 router.postAsync(
   '/token',
@@ -19,5 +21,10 @@ router.postAsync(
       }
     >,
     res,
-  ) => {},
+  ) => {
+    console.log(req.body);
+    res.send('ok');
+  },
 );
+
+export default router;

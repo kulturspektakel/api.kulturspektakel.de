@@ -5,7 +5,8 @@ import context from './context';
 import env from './utils/env';
 import cookieParser from 'cookie-parser';
 import auth from './routes/auth';
-import slack from './routes/slack';
+import slackInteraction from './routes/slack/interaction';
+import slackToken from './routes/slack/token';
 import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
@@ -64,7 +65,8 @@ const server = new ApolloServer({
 
   // Routes
   app.use(auth);
-  app.use('/slack', slack);
+  app.use('/slack', slackInteraction);
+  app.use('/slack', slackToken);
   app.use('/saml', saml);
   app.use('/\\$\\$\\$', kultCash);
   app.use(

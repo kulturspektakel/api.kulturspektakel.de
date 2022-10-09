@@ -8,7 +8,9 @@ import {scheduleTask} from '../../tasks';
 import {fetchUser} from '../../utils/slack';
 import {Prisma, Viewer} from '@prisma/client';
 import {setCookie} from '../auth';
-import router from './index';
+import {Router} from '@awaitjs/express';
+
+const router = Router({});
 
 router.postAsync(
   '/token',
