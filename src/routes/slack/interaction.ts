@@ -4,9 +4,9 @@ import express, {Request} from 'express';
 const router = Router({});
 
 router.postAsync(
-  '/token',
+  '/interaction',
   // @ts-ignore postAsync is not typed correctly
-  express.json(),
+  express.urlencoded(),
   async (
     req: Request<
       any,

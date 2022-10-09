@@ -88,6 +88,22 @@ router.postAsync(
       text: `<${url.toString()}|Nuclino Login-Link für ${
         user.displayName
       }> (der Link ist 5 Minuten lang gültig)`,
+      attachments: [
+        {
+          text: 'Choose a game to play',
+          fallback: 'You are unable to choose a game',
+          callback_id: 'wopr_game',
+          attachment_type: 'default',
+          actions: [
+            {
+              name: 'game',
+              text: 'Chess',
+              type: 'button',
+              value: 'chess',
+            },
+          ],
+        },
+      ],
     });
   },
 );
