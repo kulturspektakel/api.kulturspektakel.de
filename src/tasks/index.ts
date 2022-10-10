@@ -6,11 +6,13 @@ import nuclinoUpdateMessage from './nuclinoUpdateMessage';
 import nonceInvalidate from './nonceInvalidate';
 import gmailReminder, {booking, info} from './gmailReminder';
 import events from './taskEvents';
+import unfurlLink from './unfurlLink';
 
 const taskListProd = {
   nuclinoUpdateMessage,
   gmailReminder,
   nonceInvalidate,
+  unfurlLink,
 };
 
 const taskList = {

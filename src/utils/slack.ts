@@ -101,3 +101,15 @@ async function slackApiRequest<T>(
 
   return res;
 }
+
+export async function unfurl(body: {
+  channel: string;
+  ts: string;
+  unfurls: Object;
+}) {
+  const res = await slackApiRequest('chat.unfurl', body);
+
+  if (!res.ok) {
+    console.error(res);
+  }
+}
