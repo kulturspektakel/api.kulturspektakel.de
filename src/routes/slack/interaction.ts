@@ -1,5 +1,7 @@
 import {Router} from '@awaitjs/express';
 import express, {Request} from 'express';
+import UnreachableCaseError from '../../utils/UnreachableCaseError';
+import {nuclinoTokenResponse} from './token';
 
 const router = Router({});
 
@@ -20,7 +22,13 @@ router.postAsync(
     console.log(req.body);
     const payload: {
       type: 'interactive_message';
-      actions: Array<{name: string; type: 'button'; value: string}>;
+      actions: Array<{
+        name: string;
+        type: 'button';
+        value: string;
+        block_id?: string;
+        action_id: 'nuclino-login-generation' | 'nuclino-login-open';
+      }>;
       callback_id: string;
       team: {id: string; domain: string};
       channel: {id: string; name: string};
@@ -35,9 +43,23 @@ router.postAsync(
       response_url: string;
       trigger_id: string;
     } = JSON.parse(req.body.payload);
-    console.log(payload);
+    const [action] = payload.actions ?? [];
+    if (action) {
+      switch (action.action_id) {
+        case 'nuclino-login-generation':
+          const response = await nuclinoTokenResponse(
+            payload.user.id,
+            action.value,
+          );
+          return res.json(response);
+        case 'nuclino-login-open':
+          return res.json({});
+        default:
+          throw new UnreachableCaseError(action.action_id);
+      }
+    }
 
-    res.send('ok');
+    res.status(404).send('Not found');
   },
 );
 

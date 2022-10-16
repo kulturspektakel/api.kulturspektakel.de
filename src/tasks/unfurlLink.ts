@@ -71,7 +71,7 @@ async function unfurlNuclinoLink(url: string) {
               emoji: true,
             },
             value: nuclinoItem.id,
-            action_id: 'nuclino-login',
+            action_id: 'nuclino-login-generation',
           },
         },
         {
