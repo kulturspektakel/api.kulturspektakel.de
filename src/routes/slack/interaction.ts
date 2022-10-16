@@ -12,28 +12,31 @@ router.postAsync(
       any,
       any,
       {
-        payload: {
-          type: 'interactive_message';
-          actions: Array<{name: string; type: 'button'; value: string}>;
-          callback_id: string;
-          team: {id: string; domain: string};
-          channel: {id: string; name: string};
-          user: {id: string; name: string};
-          action_ts: string;
-          message_ts: string;
-          attachment_id: string;
-          token: string;
-          is_app_unfurl: boolean;
-          enterprise: null;
-          is_enterprise_install: boolean;
-          response_url: string;
-          trigger_id: string;
-        };
+        payload: string;
       }
     >,
     res,
   ) => {
     console.log(req.body);
+    const payload: {
+      type: 'interactive_message';
+      actions: Array<{name: string; type: 'button'; value: string}>;
+      callback_id: string;
+      team: {id: string; domain: string};
+      channel: {id: string; name: string};
+      user: {id: string; name: string};
+      action_ts: string;
+      message_ts: string;
+      attachment_id: string;
+      token: string;
+      is_app_unfurl: boolean;
+      enterprise: null;
+      is_enterprise_install: boolean;
+      response_url: string;
+      trigger_id: string;
+    } = JSON.parse(req.body.payload);
+    console.log(payload);
+
     res.send('ok');
   },
 );

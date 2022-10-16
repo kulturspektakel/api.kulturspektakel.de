@@ -1,6 +1,6 @@
 import {JobHelpers} from 'graphile-worker';
 import notEmpty from '../utils/notEmpty';
-import {item} from '../utils/nuclino';
+import {item, user} from '../utils/nuclino';
 import {unfurl} from '../utils/slack';
 
 export default async function (
@@ -42,11 +42,18 @@ export default async function (
 
 async function unfurlNuclinoLink(url: string) {
   const match = url.match(
-    /https:\/\/app\.nuclino\.com\/([^\/]+)\/([^\/]+)\/.+([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/,
+    /https:\/\/app\.nuclino\.com\/([^\/]+)\/([^\/]+)\/.*([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/,
   );
 
   if (match && match.length === 4) {
     const nuclinoItem = await item(match[3]);
+
+    const updateAuthor = await user(nuclinoItem.lastUpdatedUserId);
+    const content = nuclinoItem.content
+      .split('\n')
+      .slice(0, 2)
+      .join('\n')
+      .substring(0, 150);
 
     return {
       blocks: [
@@ -54,16 +61,32 @@ async function unfurlNuclinoLink(url: string) {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `**<${nuclinoItem.url}|${nuclinoItem.title}>**`,
+            text: `*<${nuclinoItem.url}|${nuclinoItem.title}>*\n${content}…`,
           },
           accessory: {
             type: 'button',
             text: {
               type: 'plain_text',
-              text: 'Login',
+              text: 'Nuclino-Login',
               emoji: true,
             },
+            value: nuclinoItem.id,
+            action_id: 'nuclino-login',
           },
+        },
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'plain_text',
+              text: `aktualisiert von ${updateAuthor.firstName} ${
+                updateAuthor.lastName
+              } am ${new Date(nuclinoItem.lastUpdatedAt).toLocaleString(
+                'de-DE',
+              )}`,
+              emoji: true,
+            },
+          ],
         },
       ],
     };
