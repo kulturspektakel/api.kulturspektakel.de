@@ -19,7 +19,6 @@ router.postAsync(
     >,
     res,
   ) => {
-    console.log(req.body);
     const payload: {
       type: 'interactive_message';
       actions: Array<{
@@ -43,6 +42,7 @@ router.postAsync(
       response_url: string;
       trigger_id: string;
     } = JSON.parse(req.body.payload);
+    console.log(payload);
     const [action] = payload.actions ?? [];
     if (action) {
       switch (action.action_id) {
@@ -55,7 +55,7 @@ router.postAsync(
           );
           return;
         case 'nuclino-login-open':
-          return res.json({});
+          return res.send('ok');
         default:
           throw new UnreachableCaseError(action.action_id);
       }

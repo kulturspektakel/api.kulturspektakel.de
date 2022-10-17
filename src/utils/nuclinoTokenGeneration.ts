@@ -84,7 +84,9 @@ export default async function nuclinoTokenGeneration(
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error);
+    throw new Error(await response.text());
+  } else {
+    const j = await response.json();
+    console.log(j.response_url);
   }
 }

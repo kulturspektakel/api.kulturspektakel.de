@@ -57,15 +57,17 @@ router.postAsync(
       case 'event_callback':
         switch (req.body.event.type) {
           case 'link_shared':
-            await scheduleTask(
-              'unfurlLink',
-              {
-                links: req.body.event.links,
-                channel: req.body.event.channel ?? '',
-                ts: req.body.event.message_ts ?? '',
-              },
-              {maxAttempts: 1},
-            );
+            if (req.body.event.source === 'conversations_history') {
+              await scheduleTask(
+                'unfurlLink',
+                {
+                  links: req.body.event.links,
+                  channel: req.body.event.channel ?? '',
+                  ts: req.body.event.message_ts ?? '',
+                },
+                {maxAttempts: 1},
+              );
+            }
             return res.status(200);
         }
     }
