@@ -53,7 +53,7 @@ export default async function nuclinoTokenGeneration(
   url.searchParams.append('nonce', nonce.nonce);
   url.searchParams.append('redirect', nuclinoSsoUrl.toString());
 
-  await fetch(responseUrl, {
+  const response = await fetch(responseUrl, {
     headers: {
       'Content-type': 'application/json',
     },
@@ -82,4 +82,9 @@ export default async function nuclinoTokenGeneration(
       ],
     }),
   });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error);
+  }
 }
