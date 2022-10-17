@@ -1,7 +1,7 @@
 import {Router} from '@awaitjs/express';
 import express, {Request} from 'express';
+import nuclinoTokenGeneration from '../../utils/nuclinoTokenGeneration';
 import UnreachableCaseError from '../../utils/UnreachableCaseError';
-import {nuclinoTokenResponse} from './token';
 
 const router = Router({});
 
@@ -47,11 +47,13 @@ router.postAsync(
     if (action) {
       switch (action.action_id) {
         case 'nuclino-login-generation':
-          const response = await nuclinoTokenResponse(
+          res.send('ok');
+          await nuclinoTokenGeneration(
             payload.user.id,
+            payload.response_url,
             action.value,
           );
-          return res.json(response);
+          return;
         case 'nuclino-login-open':
           return res.json({});
         default:
