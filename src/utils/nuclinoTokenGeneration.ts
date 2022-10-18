@@ -5,7 +5,6 @@ import {ApiError} from './errorReporting';
 import prismaClient from './prismaClient';
 import {scheduleTask} from '../tasks';
 import env from './env';
-import fetch from 'node-fetch';
 
 export default async function nuclinoTokenGeneration(
   userId: string,
@@ -54,46 +53,42 @@ export default async function nuclinoTokenGeneration(
   url.searchParams.append('redirect', nuclinoSsoUrl.toString());
 
   const response = await slackApiRequest('views.open', {
-    headers: {
-      'Content-type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify({
-      trigger_id,
-      view: {
-        type: 'modal',
-        callback_id: 'modal-identifier',
-        title: {
-          type: 'plain_text',
-          text: 'Nuclino Login',
-        },
-        blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `Nuclino-Login für ${user.displayName}. Klicke den Button in den nächsten 5 Minuten um Nuclino zu öffnen.`,
-            },
-          },
-          {
-            type: 'actions',
-            elements: [
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Nuclino öffnen',
-                  emoji: true,
-                },
-                value: 'click_me_123',
-                url: url.toString(),
-              },
-            ],
-          },
-        ],
+    trigger_id,
+    view: {
+      type: 'modal',
+      callback_id: 'modal-identifier',
+      title: {
+        type: 'plain_text',
+        text: 'Nuclino Login',
       },
-    }),
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `Nuclino-Login für ${user.displayName}. Klicke den Button in den nächsten 5 Minuten um Nuclino zu öffnen.`,
+          },
+        },
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Nuclino öffnen',
+                emoji: true,
+              },
+              value: 'click_me_123',
+              url: url.toString(),
+            },
+          ],
+        },
+      ],
+    },
   });
+
+  console.log(response);
 
   if (!response.ok) {
     throw new Error(response.error);
