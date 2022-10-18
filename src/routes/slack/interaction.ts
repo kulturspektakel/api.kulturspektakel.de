@@ -50,7 +50,7 @@ router.postAsync(
           res.send('ok');
           await nuclinoTokenGeneration(
             payload.user.id,
-            payload.response_url,
+            payload.trigger_id,
             action.value,
           );
           return;

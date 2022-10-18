@@ -78,7 +78,7 @@ export async function fetchUser(user: string) {
   return res.user;
 }
 
-async function slackApiRequest<T>(
+export async function slackApiRequest<T>(
   endpoint: string,
   body?: Object,
 ): Promise<
