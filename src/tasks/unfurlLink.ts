@@ -69,7 +69,6 @@ async function unfurlNuclinoLink(url: string) {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            emoji: true,
             text: content,
           },
         },
@@ -97,7 +96,6 @@ async function unfurlNuclinoLink(url: string) {
                 text: 'Öffnen',
                 emoji: true,
               },
-
               value: url,
               action_id: 'nuclino-login-generation',
             },
