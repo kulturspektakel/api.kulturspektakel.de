@@ -58,20 +58,19 @@ async function unfurlNuclinoLink(url: string) {
     return {
       blocks: [
         {
+          type: 'header',
+          text: {
+            type: 'plain_text',
+            text: nuclinoItem.title,
+            emoji: true,
+          },
+        },
+        {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `*<${nuclinoItem.url}|${nuclinoItem.title}>*\n${content}…`,
-          },
-          accessory: {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Nuclino-Login',
-              emoji: true,
-            },
-            value: url,
-            action_id: 'nuclino-login-generation',
+            emoji: true,
+            text: content,
           },
         },
         {
@@ -85,6 +84,22 @@ async function unfurlNuclinoLink(url: string) {
                 'de-DE',
               )}`,
               emoji: true,
+            },
+          ],
+        },
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Öffnen',
+                emoji: true,
+              },
+
+              value: url,
+              action_id: 'nuclino-login-generation',
             },
           ],
         },

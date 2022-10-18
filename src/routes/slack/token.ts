@@ -36,7 +36,7 @@ router.postAsync(
     >,
     res,
   ) => {
-    res.send('ok');
+    res.status(200).send();
     await nuclinoTokenGeneration(req.body.user_id, req.body.trigger_id);
   },
 );

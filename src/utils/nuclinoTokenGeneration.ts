@@ -56,7 +56,7 @@ export default async function nuclinoTokenGeneration(
     trigger_id,
     view: {
       type: 'modal',
-      callback_id: 'modal-identifier',
+      callback_id: 'nuclino-login',
       title: {
         type: 'plain_text',
         text: 'Nuclino Login',
@@ -66,7 +66,7 @@ export default async function nuclinoTokenGeneration(
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Nuclino-Login für ${user.displayName}. Klicke den Button in den nächsten 5 Minuten um Nuclino zu öffnen.`,
+            text: `Falls du nicht bei Nuclino eingeloggt bist, klicke auf den Button um dich einzuloggen.`,
           },
         },
         {
@@ -76,19 +76,28 @@ export default async function nuclinoTokenGeneration(
               type: 'button',
               text: {
                 type: 'plain_text',
-                text: 'Nuclino öffnen',
+                text: 'Einloggen und Nuclino öffnen',
                 emoji: true,
               },
-              value: 'click_me_123',
               url: url.toString(),
+              value: url.toString(),
+              action_id: 'nuclino-login-open',
+            },
+          ],
+        },
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'plain_text',
+              text: 'Der Button funktioniert nur 5 Minuten lang. Danach muss der Dialog geschlossen und erneut geöffnet werden.',
+              emoji: true,
             },
           ],
         },
       ],
     },
   });
-
-  console.log(response);
 
   if (!response.ok) {
     throw new Error(response.error);

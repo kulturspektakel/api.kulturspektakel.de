@@ -47,7 +47,7 @@ router.postAsync(
     if (action) {
       switch (action.action_id) {
         case 'nuclino-login-generation':
-          res.send('ok');
+          res.send();
           await nuclinoTokenGeneration(
             payload.user.id,
             payload.trigger_id,
@@ -55,7 +55,7 @@ router.postAsync(
           );
           return;
         case 'nuclino-login-open':
-          return res.send('ok');
+          return res.send();
         default:
           throw new UnreachableCaseError(action.action_id);
       }
