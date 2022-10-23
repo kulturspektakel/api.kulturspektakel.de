@@ -90,7 +90,7 @@ export default async function nuclinoTokenGeneration(
           elements: [
             {
               type: 'plain_text',
-              text: 'Der Button funktioniert nur 5 Minuten lang. Danach muss der Dialog geschlossen und erneut geöffnet werden.',
+              text: 'Der Button funktioniert nur einmalig und 5 Minuten lang. Danach muss der Dialog geschlossen und erneut geöffnet werden.',
               emoji: true,
             },
           ],
