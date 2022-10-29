@@ -64,14 +64,23 @@ builder.mutationField('createBandApplication', (t) =>
 
       let distance = await getDistanceToKult(data.city);
       const now = new Date();
+      const isDJ = data.genreCategory === 'DJ';
+
       const event = await prismaClient.event.findFirst({
         where: {
           bandApplicationStart: {
             lte: now,
           },
-          bandApplicationEnd: {
-            gte: now,
-          },
+          bandApplicationEnd: !isDJ
+            ? {
+                gte: now,
+              }
+            : undefined,
+          djApplicationEnd: isDJ
+            ? {
+                gte: now,
+              }
+            : undefined,
         },
       });
       if (!event) {
@@ -102,7 +111,9 @@ builder.mutationField('createBandApplication', (t) =>
       }
 
       await sendMail({
-        from: 'Kulturspektakel Gauting Booking booking@kulturspektakel.de',
+        from: isDJ
+          ? 'Kulturspektakel Gauting info@kulturspektakel.de'
+          : 'Kulturspektakel Gauting Booking booking@kulturspektakel.de',
         to: data.email,
         subject: `Bewerbung „${data.bandname}“ beim Kulturspektakel ${eventYear}`,
         html: confirmBandApplication({
@@ -112,7 +123,7 @@ builder.mutationField('createBandApplication', (t) =>
       });
 
       await sendMessage({
-        channel: SlackChannel.bandbewerbungen,
+        channel: isDJ ? SlackChannel.dj : SlackChannel.bandbewerbungen,
         text: `Bewerbung von „${data.bandname}“`,
         blocks: [
           {

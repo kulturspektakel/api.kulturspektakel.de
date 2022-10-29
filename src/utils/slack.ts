@@ -7,6 +7,7 @@ export enum SlackChannel {
   wiki = 'C03F5E07Z',
   booking = 'C3KKL3727',
   vorstand = 'G03HP9QM2',
+  dj = 'C0491HCU5G9',
 }
 
 type SlackApiUser = {
