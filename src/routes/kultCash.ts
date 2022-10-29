@@ -38,7 +38,7 @@ router.useAsync('/', async function (req, res: Res, next: NextFunction) {
     // ESPhttpUpdate.setAuthorization prefixes auth header with "Basic " :-/
     const match = authorization?.match(/^(Basic )?Bearer (.+)$/);
     const signature = match && match.length > 2 ? match[2] : req.query['token'];
-    if (signature === sha1(`${id}${env.KULT_CASH_SALT}`)) {
+    if (signature === sha1(`${id}${env.CONTACTLESS_SALT}`)) {
       res.locals.id = id;
       const softwareVersion =
         req.headers['x-esp8266-version']?.toString() ?? undefined;

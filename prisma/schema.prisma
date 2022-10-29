@@ -187,6 +187,7 @@ enum GenreCategory {
   Folk_SingerSongwriter_Country
   Elektro_HipHop
   Hardrock_Metal_Punk
+  DJ
   Other
 }
 
@@ -222,6 +223,7 @@ model Event {
   eventType            EventType
   bandApplicationStart DateTime?
   bandApplicationEnd   DateTime?
+  djApplicationEnd     DateTime?
   bandApplication      BandApplication[]
   BandPlaying          BandPlaying[]
 }

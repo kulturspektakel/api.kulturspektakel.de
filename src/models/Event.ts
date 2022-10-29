@@ -15,6 +15,10 @@ export default builder.prismaNode('Event', {
       type: 'DateTime',
       nullable: true,
     }),
+    djApplicationEnd: t.expose('djApplicationEnd', {
+      type: 'DateTime',
+      nullable: true,
+    }),
     bandApplication: t.relation('bandApplication', {
       authScopes: {
         user: true,

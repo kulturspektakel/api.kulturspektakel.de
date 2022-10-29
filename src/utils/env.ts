@@ -23,7 +23,6 @@ export default {
     .required()
     .asString(),
   SLACK_BOT_TOKEN: env.get('SLACK_BOT_TOKEN').required().asString(),
-  KULT_CASH_SALT: env.get('KULT_CASH_SALT').required().asString(),
   BING_MAPS_KEY: env.get('BING_MAPS_KEY').required().asString(),
   NUCLINO_WORKSPACE_ID: env.get('NUCLINO_WORKSPACE_ID').required().asString(),
   NUCLINO_TEAM_ID: env.get('NUCLINO_TEAM_ID').required().asString(),
