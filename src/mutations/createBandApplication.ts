@@ -25,7 +25,7 @@ const CreateBandApplicationInput = builder.inputType(
       facebook: t.field({type: 'String'}),
       instagram: t.field({type: 'String'}),
       website: t.field({type: 'String'}),
-      demo: t.field({type: 'String', required: true}),
+      demo: t.field({type: 'String'}),
       description: t.field({type: 'String', required: true}),
       numberOfArtists: t.field({type: 'Int'}),
       numberOfNonMaleArtists: t.field({type: 'Int'}),
@@ -51,7 +51,12 @@ builder.mutationField('createBandApplication', (t) =>
       _,
       {data: {demo, website, facebook, instagram, ...data}},
     ) => {
-      demo = normalizeUrl(demo);
+      const isDJ = data.genreCategory === 'DJ';
+      if (!demo && !isDJ) {
+        throw new UserInputError('Demo material required');
+      }
+
+      demo = demo ? normalizeUrl(demo) : null;
       website = website ? normalizeUrl(website) : null;
       facebook = facebook ? normalizeUrl(facebook) : null;
 
@@ -64,7 +69,6 @@ builder.mutationField('createBandApplication', (t) =>
 
       let distance = await getDistanceToKult(data.city);
       const now = new Date();
-      const isDJ = data.genreCategory === 'DJ';
 
       const event = await prismaClient.event.findFirst({
         where: {
@@ -130,7 +134,7 @@ builder.mutationField('createBandApplication', (t) =>
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: '*<' + demo + '|' + data.bandname + '>*',
+              text: demo ? '*<' + demo + '|' + data.bandname + '>*' : `*${data.bandname}*`,
             },
           },
           {
