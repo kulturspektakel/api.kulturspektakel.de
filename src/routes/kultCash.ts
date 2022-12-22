@@ -1,5 +1,5 @@
 import prismaClient from '../utils/prismaClient';
-import express, {NextFunction, Request, Response} from 'express';
+import express, {NextFunction, Request} from 'express';
 import {createHash} from 'crypto';
 import env from '../utils/env';
 import {
@@ -25,12 +25,7 @@ const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
 const router = Router({});
 
-type Res = Response<
-  any,
-  Record<'id', string> & Record<'version', string | undefined>
->;
-
-router.useAsync('/', async function (req, res: Res, next: NextFunction) {
+router.useAsync('/', async function (req, res, next: NextFunction) {
   const authorization: string | undefined = req.headers['authorization'];
   const macAddress = req.headers['x-esp8266-sta-mac'];
   if (typeof macAddress === 'string' && macAddress.length === 17) {
@@ -68,7 +63,7 @@ router.useAsync('/', async function (req, res: Res, next: NextFunction) {
   throw new ApiError(401, 'Unauthorized');
 });
 
-router.getAsync('/config', async (_req, res: Res) => {
+router.getAsync('/config', async (_req, res) => {
   const {id} = res.locals;
   const device = await prismaClient.device.findUnique({
     where: {
@@ -117,7 +112,7 @@ router.postAsync(
   express.raw({
     type: () => true, // parse body without Content-Type header
   }),
-  async (req: Request<{}, any, Buffer>, res: Res) => {
+  async (req: Request<{}, any, Buffer>, res) => {
     const {id} = res.locals;
     let message: LogMessage;
     try {
@@ -217,7 +212,7 @@ router.postAsync(
   },
 );
 
-router.getAsync('/update', async (req, res: Res) => {
+router.getAsync('/update', async (req, res) => {
   const {version} = res.locals;
   if (version) {
     const versionNumber = parseInt(version, 10);
