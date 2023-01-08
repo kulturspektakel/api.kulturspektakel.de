@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-import {fetchLineUp} from '../src/queries/bandsPlaying';
+import {fetchLineUp} from '../src/utils/bandsPlaying';
 import prismaClient from '../src/utils/prismaClient';
 
 (async () => {
@@ -11,16 +11,25 @@ import prismaClient from '../src/utils/prismaClient';
 
   const date = new Date();
   date.setFullYear(year);
-  const data = await fetchLineUp(date);
 
-  console.log(data);
-
-  const a = await prismaClient.bandPlaying.createMany({
-    data: data.map(({id, ...b}) => ({
-      ...b,
-      eventId: `kult${year}`,
-      slug: id.split('/').pop() ?? '',
-    })),
+  const eventId = `kult${date.getFullYear()}`;
+  const event = await prismaClient.event.findUniqueOrThrow({
+    where: {
+      id: eventId,
+    },
   });
-  console.log(a);
+
+  const data = await fetchLineUp(event.start);
+  console.log(`Fetched ${data.length} bands`);
+
+  await prismaClient.$transaction([
+    prismaClient.bandPlaying.deleteMany({
+      where: {
+        eventId,
+      },
+    }),
+    prismaClient.bandPlaying.createMany({
+      data,
+    }),
+  ]);
 })();

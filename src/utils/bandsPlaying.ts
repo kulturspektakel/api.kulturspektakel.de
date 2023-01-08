@@ -65,8 +65,6 @@ function getStartEndTime(
     Sonntag: 2,
   };
 
-  console.log(b);
-
   const startTime = add(date, {
     days: dayOffset[day],
   });
@@ -74,6 +72,7 @@ function getStartEndTime(
   startTime.setMinutes(minute);
   startTime.setSeconds(0);
   startTime.setMilliseconds(0);
+  console.log(startTime, hour);
 
   return {
     startTime: zonedTimeToUtc(startTime, 'Europe/Berlin'),
@@ -107,23 +106,27 @@ export async function fetchLineUp(
         }
         return a.content.day > b.content.day ? 1 : -1;
       })
-      .map(({id, title, content: {time, day, stage, ...b}}) => ({
-        id,
-        name: title,
-        ...getStartEndTime(time, eventStart, day, {stage, ...b, day}),
-        genre: b.genre || null,
-        description: b.description || null,
-        shortDescription: b.shortdescription || null,
-        soundcloud: b.soundcloud || null,
-        spotify: b.spotify || null,
-        facebook: b.facebook || null,
-        instagram: b.instagram || null,
-        website: b.website || null,
-        youtube: b.youtube || null,
-        areaId: stage.toLocaleLowerCase(),
-        slug: '',
-        eventId: `kult${eventStart.getFullYear()}`,
-      }));
+      .map(({id, title, content: {time, day, stage, ...b}}) => {
+        console.log(day);
+
+        return {
+          id,
+          name: title,
+          ...getStartEndTime(time, eventStart, day, {stage, ...b, day}),
+          genre: b.genre || null,
+          description: b.description || null,
+          shortDescription: b.shortdescription || null,
+          soundcloud: b.soundcloud || null,
+          spotify: b.spotify || null,
+          facebook: b.facebook || null,
+          instagram: b.instagram || null,
+          website: b.website || null,
+          youtube: b.youtube || null,
+          areaId: stage.toLocaleLowerCase(),
+          slug: id.split('/').pop() ?? '',
+          eventId: `kult${eventStart.getFullYear()}`,
+        };
+      });
   }
   return [];
 }
