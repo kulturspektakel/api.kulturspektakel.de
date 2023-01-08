@@ -4,32 +4,26 @@ import {fetchLineUp} from '../src/utils/bandsPlaying';
 import prismaClient from '../src/utils/prismaClient';
 
 (async () => {
-  const year = parseInt(process.argv.pop() ?? '');
-  if (!year || year < 2000 || year > 2030) {
-    throw new Error('Call with valid year.');
-  }
-
-  const date = new Date();
-  date.setFullYear(year);
-
-  const eventId = `kult${date.getFullYear()}`;
-  const event = await prismaClient.event.findUniqueOrThrow({
+  const events = await prismaClient.event.findMany({
     where: {
-      id: eventId,
+      eventType: 'Kulturspektakel',
     },
   });
 
-  const data = await fetchLineUp(event.start);
-  console.log(`Fetched ${data.length} bands`);
+  for (const event of events) {
+    console.log(`${event.id}: Fetching lineup...`);
+    const data = await fetchLineUp(event.start);
 
-  await prismaClient.$transaction([
-    prismaClient.bandPlaying.deleteMany({
-      where: {
-        eventId,
-      },
-    }),
-    prismaClient.bandPlaying.createMany({
-      data,
-    }),
-  ]);
+    await prismaClient.$transaction([
+      prismaClient.bandPlaying.deleteMany({
+        where: {
+          eventId: event.id,
+        },
+      }),
+      prismaClient.bandPlaying.createMany({
+        data,
+      }),
+    ]);
+    console.log(`${event.id}: Imported ${data.length} bands`);
+  }
 })();
