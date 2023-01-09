@@ -27,6 +27,7 @@ export default builder.prismaNode('BandApplication', {
     contactName: t.exposeString('contactName'),
     contactPhone: t.exposeString('contactPhone'),
     email: t.exposeString('email'),
+    eventId: t.exposeID('eventId'),
     city: t.exposeString('city'),
     demo: t.exposeString('demo', {nullable: true}),
     instagram: t.exposeString('instagram', {nullable: true}),
@@ -80,6 +81,17 @@ export default builder.prismaNode('BandApplication', {
           return null;
         }
       },
+    }),
+    otherApplications: t.prismaField({
+      type: ['BandApplication'],
+      resolve: (query, parent) =>
+        prismaClient.bandApplication.findMany({
+          ...query,
+          where: {
+            id: {not: parent.id},
+            bandname: parent.bandname,
+          },
+        }),
     }),
   }),
 });
