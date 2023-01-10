@@ -8,5 +8,8 @@ export default builder.prismaNode('BandPlaying', {
     startTime: t.expose('startTime', {type: 'DateTime'}),
     endTime: t.expose('endTime', {type: 'DateTime'}),
     description: t.exposeString('description', {nullable: true}),
+    eventId: t.exposeID('eventId'),
+    event: t.relation('event'),
+    area: t.relation('area'),
   }),
 });
