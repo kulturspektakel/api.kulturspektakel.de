@@ -9,6 +9,9 @@ builder.mutationField('markBandApplicationContacted', (t) =>
       bandApplicationId: t.arg.globalID({required: true}),
       contacted: t.arg.boolean({required: true}),
     },
+    authScopes: {
+      user: true,
+    },
     resolve: async (_, {bandApplicationId, contacted}, {token}) =>
       prismaClient.bandApplication.update({
         data: {

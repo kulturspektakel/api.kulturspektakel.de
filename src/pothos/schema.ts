@@ -1,5 +1,6 @@
 import '../models/Area';
 import '../models/BandApplication';
+import '../models/BandApplicationComment';
 import '../models/BandPlaying';
 import '../models/Card';
 import '../models/CardTransaction';
@@ -15,6 +16,8 @@ import '../models/ProductList';
 import '../models/Viewer';
 
 import '../mutations/createBandApplication';
+import '../mutations/createBandApplicationComment';
+import '../mutations/deleteBandApplicationComment';
 import '../mutations/createOrder';
 import '../mutations/markBandApplicationContacted';
 import '../mutations/rateBandApplication';

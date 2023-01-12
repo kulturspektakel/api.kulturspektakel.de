@@ -16,16 +16,17 @@ datasource db {
 }
 
 model Viewer {
-  id                    String                  @id @default(uuid())
-  displayName           String
-  email                 String
-  profilePicture        String?
-  slackToken            String?
-  slackScopes           String[]
-  updatedAt             DateTime                @default(now()) @updatedAt
-  BandApplicationRating BandApplicationRating[]
-  BandApplication       BandApplication[]
-  Nonce                 Nonce[]
+  id                     String                   @id @default(uuid())
+  displayName            String
+  email                  String
+  profilePicture         String?
+  slackToken             String?
+  slackScopes            String[]
+  updatedAt              DateTime                 @default(now()) @updatedAt
+  BandApplicationRating  BandApplicationRating[]
+  BandApplication        BandApplication[]
+  Nonce                  Nonce[]
+  BandApplicationComment BandApplicationComment[]
 }
 
 model Area {
@@ -168,10 +169,11 @@ model BandApplication {
   hasPreviouslyPlayed    PreviouslyPlayed?
   lastContactedAt        DateTime?
 
-  event               Event   @relation(fields: [eventId], references: [id])
-  eventId             String
-  contactedByViewer   Viewer? @relation(fields: [contactedByViewerId], references: [id])
-  contactedByViewerId String?
+  event                  Event                    @relation(fields: [eventId], references: [id])
+  eventId                String
+  contactedByViewer      Viewer?                  @relation(fields: [contactedByViewerId], references: [id])
+  contactedByViewerId    String?
+  bandApplicationComment BandApplicationComment[]
 }
 
 enum PreviouslyPlayed {
@@ -211,6 +213,16 @@ model BandApplicationRating {
 
   @@id([viewerId, bandApplicationId])
   @@index([bandApplicationId])
+}
+
+model BandApplicationComment {
+  id                String          @id @default(uuid())
+  createdAt         DateTime        @default(now())
+  viewer            Viewer          @relation(fields: [viewerId], references: [id])
+  viewerId          String
+  comment           String
+  bandApplication   BandApplication @relation(fields: [bandApplicationId], references: [id])
+  bandApplicationId String
 }
 
 enum EventType {

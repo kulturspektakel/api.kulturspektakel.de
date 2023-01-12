@@ -59,6 +59,23 @@ export default builder.prismaNode('BandApplication', {
         user: true,
       },
     }),
+    comments: t.relatedConnection(
+      'bandApplicationComment',
+      {
+        cursor: 'id',
+        totalCount: true,
+        query: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
+      {
+        authScopes: {
+          user: true,
+        },
+      },
+    ),
     rating: t.field({
       authScopes: {
         user: true,
