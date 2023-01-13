@@ -18,6 +18,7 @@ export const GenreCategory = builder.enumType('GenreCategory', {
 export default builder.prismaNode('BandApplication', {
   id: {field: 'id'},
   fields: (t) => ({
+    createdAt: t.expose('createdAt', {type: 'DateTime'}),
     bandname: t.exposeString('bandname'),
     genre: t.exposeString('genre', {nullable: true}),
     genreCategory: t.expose('genreCategory', {type: GenreCategory}),

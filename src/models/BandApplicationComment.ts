@@ -2,7 +2,7 @@ import {builder} from '../pothos/builder';
 
 export default builder.prismaObject('BandApplicationComment', {
   fields: (t) => ({
-    viewer: t.relation('viewer'),
+    user: t.relation('viewer'),
     comment: t.exposeString('comment'),
     createdAt: t.expose('createdAt', {type: 'DateTime'}),
   }),
