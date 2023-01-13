@@ -75,6 +75,7 @@ export default builder.prismaNode('BandApplication', {
         authScopes: {
           user: true,
         },
+        nodeNullable: false,
       },
     ),
     rating: t.field({
