@@ -1,29 +1,33 @@
+import BandApplication from '../models/BandApplication';
 import {builder} from '../pothos/builder';
 import {ApiError} from '../utils/errorReporting';
 import prismaClient from '../utils/prismaClient';
 
 builder.mutationField('deleteBandApplicationComment', (t) =>
   t.field({
-    type: 'Boolean',
+    type: BandApplication,
     args: {
       id: t.arg.globalID({required: true}),
     },
     authScopes: {
       user: true,
     },
-    resolve: async (_, {id}, {token}) => {
+    resolve: async (_, {id: {id}}, {token}) => {
       const viewerId = token?.type === 'user' ? token.userId : undefined;
       if (!viewerId) {
         throw new ApiError(401, 'Must be user authenticated');
       }
-      const del = await prismaClient.bandApplicationComment.deleteMany({
+
+      const res = await prismaClient.bandApplicationComment.delete({
         where: {
-          id: id.id,
-          viewerId,
+          id,
+        },
+        include: {
+          bandApplication: true,
         },
       });
 
-      return del.count === 1;
+      return res.bandApplication;
     },
   }),
 );
