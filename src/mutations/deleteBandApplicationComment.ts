@@ -18,6 +18,17 @@ builder.mutationField('deleteBandApplicationComment', (t) =>
         throw new ApiError(401, 'Must be user authenticated');
       }
 
+      const comment =
+        await prismaClient.bandApplicationComment.findUniqueOrThrow({
+          where: {
+            id,
+          },
+        });
+
+      if (comment.viewerId !== viewerId) {
+        throw new ApiError(401, 'Must be user authenticated');
+      }
+
       const res = await prismaClient.bandApplicationComment.delete({
         where: {
           id,
