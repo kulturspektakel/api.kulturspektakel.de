@@ -6,6 +6,7 @@ import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import './BandApplicationRating';
 import PreviouslyPlayed from './PreviouslyPlayed';
+import {isPast} from 'date-fns';
 
 export const HeardAboutBookingFrom = builder.enumType('HeardAboutBookingFrom', {
   values: Object.values(HeardAboutBookingFromValues),
@@ -86,15 +87,26 @@ export default builder.prismaNode('BandApplication', {
       nullable: true,
       type: 'Float',
       resolve: async (root, _, {token}) => {
-        const ratings = await prismaClient.bandApplicationRating.findMany({
-          where: {
-            bandApplicationId: root.id,
-          },
-        });
+        const [ratings, event] = await Promise.all([
+          prismaClient.bandApplicationRating.findMany({
+            where: {
+              bandApplicationId: root.id,
+            },
+          }),
+          prismaClient.event.findUniqueOrThrow({
+            where: {
+              id: root.eventId,
+            },
+          }),
+        ]);
+
         const viewerId = token?.type === 'user' ? token.userId : undefined;
         if (ratings.length === 0) {
           return null;
-        } else if (ratings.find((r) => r.viewerId === viewerId)) {
+        } else if (
+          isPast(event.end) ||
+          ratings.find((r) => r.viewerId === viewerId)
+        ) {
           return (
             ratings.reduce((acc, cv) => acc + cv.rating, 0) / ratings.length
           );
