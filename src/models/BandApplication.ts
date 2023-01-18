@@ -36,6 +36,8 @@ export default builder.prismaNode('BandApplication', {
     instagram: t.exposeString('instagram', {nullable: true}),
     instagramFollower: t.exposeInt('instagramFollower', {nullable: true}),
     distance: t.exposeFloat('distance', {nullable: true}),
+    latitude: t.exposeFloat('latitude', {nullable: true}),
+    longitude: t.exposeFloat('longitude', {nullable: true}),
     heardAboutBookingFrom: t.expose('heardAboutBookingFrom', {
       nullable: true,
       type: HeardAboutBookingFrom,

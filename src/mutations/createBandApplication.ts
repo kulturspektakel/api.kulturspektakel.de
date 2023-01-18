@@ -2,7 +2,6 @@ import confirmBandApplication from '../maizzle/mails/confirmBandApplication';
 import {scheduleTask} from '../tasks';
 import sendMail from '../utils/sendMail';
 import {sendMessage, SlackChannel} from '../utils/slack';
-import {getDistanceToKult} from '../queries/distanceToKult';
 import {UserInputError} from 'apollo-server-express';
 import normalizeUrl from 'normalize-url';
 import {builder} from '../pothos/builder';
@@ -67,7 +66,6 @@ builder.mutationField('createBandApplication', (t) =>
       // remove whitespaces, @ and trailing /
       instagram = instagram?.replace(/\s|@|\//g, '');
 
-      let distance = await getDistanceToKult(data.city);
       const now = new Date();
 
       const event = await prismaClient.event.findFirst({
@@ -94,7 +92,6 @@ builder.mutationField('createBandApplication', (t) =>
       const application = await prismaClient.bandApplication.create({
         data: {
           ...data,
-          distance,
           eventId: event.id,
           website,
           demo,
@@ -102,17 +99,6 @@ builder.mutationField('createBandApplication', (t) =>
           instagram,
         },
       });
-
-      try {
-        if (facebook) {
-          await scheduleTask('facebookLikes', {id: application.id});
-        }
-        if (instagram) {
-          await scheduleTask('instagramFollower', {id: application.id});
-        }
-      } catch (e) {
-        console.error(e);
-      }
 
       await sendMail({
         from: isDJ
@@ -126,46 +112,61 @@ builder.mutationField('createBandApplication', (t) =>
         }),
       });
 
-      await sendMessage({
-        channel: isDJ ? SlackChannel.dj : SlackChannel.bandbewerbungen,
-        text: `Bewerbung von „${data.bandname}“`,
-        blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: demo ? '*<' + demo + '|' + data.bandname + '>*' : `*${data.bandname}*`,
+      const jobs = [
+        scheduleTask('bandApplicationDistance', {id: application.id}),
+        sendMessage({
+          channel: isDJ ? SlackChannel.dj : SlackChannel.bandbewerbungen,
+          text: `Bewerbung von „${data.bandname}“`,
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: demo
+                  ? '*<' + demo + '|' + data.bandname + '>*'
+                  : `*${data.bandname}*`,
+              },
             },
-          },
-          {
-            type: 'section',
-            fields: [
-              {
-                type: 'mrkdwn',
-                text: `*Genre:*\n${data.genre ?? data.genreCategory}`,
-              },
-              {
-                type: 'mrkdwn',
-                text: `*Ort:*\n${data.city}${
-                  distance ? ` (${distance.toFixed()}km)` : ''
-                }`,
-              },
-            ],
-          },
-          {
-            type: 'context',
-            elements: [
-              {
-                type: 'mrkdwn',
-                text: `*AnsprechpartnerIn:* ${data.contactName} (${data.contactPhone}) ${data.email}`,
-              },
-            ],
-          },
-          {
-            type: 'divider',
-          },
-        ],
-      });
+            {
+              type: 'section',
+              fields: [
+                {
+                  type: 'mrkdwn',
+                  text: `*Genre:*\n${data.genre ?? data.genreCategory}`,
+                },
+                {
+                  type: 'mrkdwn',
+                  text: `*Ort:*\n${data.city}`,
+                },
+              ],
+            },
+            {
+              type: 'context',
+              elements: [
+                {
+                  type: 'mrkdwn',
+                  text: `*AnsprechpartnerIn:* ${data.contactName} (${data.contactPhone}) ${data.email}`,
+                },
+              ],
+            },
+            {
+              type: 'divider',
+            },
+          ],
+        }),
+      ];
+      if (facebook) {
+        jobs.push(scheduleTask('facebookLikes', {id: application.id}));
+      }
+      if (instagram) {
+        jobs.push(scheduleTask('instagramFollower', {id: application.id}));
+      }
+
+      await Promise.allSettled(jobs).then((res) =>
+        res.forEach((r) =>
+          r.status === 'rejected' ? console.error(r.reason) : null,
+        ),
+      );
 
       return application;
     },

@@ -7,12 +7,14 @@ import nonceInvalidate from './nonceInvalidate';
 import gmailReminder, {booking, info} from './gmailReminder';
 import events from './taskEvents';
 import unfurlLink from './unfurlLink';
+import bandApplicationDistance from './bandApplicationDistance';
 
 const taskListProd = {
   nuclinoUpdateMessage,
   gmailReminder,
   nonceInvalidate,
   unfurlLink,
+  bandApplicationDistance,
 };
 
 const taskList = {

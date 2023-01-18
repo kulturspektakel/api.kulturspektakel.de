@@ -168,6 +168,8 @@ model BandApplication {
   bandApplicationRating  BandApplicationRating[]
   hasPreviouslyPlayed    PreviouslyPlayed?
   lastContactedAt        DateTime?
+  latitude               Float?
+  longitude              Float?
 
   event                  Event                    @relation(fields: [eventId], references: [id])
   eventId                String
