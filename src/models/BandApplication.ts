@@ -33,6 +33,7 @@ export default builder.prismaNode('BandApplication', {
     event: t.relation('event'),
     city: t.exposeString('city'),
     demo: t.exposeString('demo', {nullable: true}),
+    demoEmbedUrl: t.exposeString('demoEmbedUrl', {nullable: true}),
     instagram: t.exposeString('instagram', {nullable: true}),
     instagramFollower: t.exposeInt('instagramFollower', {nullable: true}),
     distance: t.exposeFloat('distance', {nullable: true}),

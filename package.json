@@ -43,6 +43,7 @@
     "@sentry/integrations": "^7.28.1",
     "@sentry/node": "^7.28.1",
     "apollo-server-express": "^3.11.1",
+    "bandcamp-scraper": "^1.5.0",
     "cookie-parser": "^1.4.6",
     "crc-32": "^1.2.2",
     "date-fns": "^2.29.3",

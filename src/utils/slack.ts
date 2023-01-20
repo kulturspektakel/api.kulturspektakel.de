@@ -63,7 +63,7 @@ export async function sendMessage({
   const res = await slackApiRequest('chat.postMessage', body);
 
   if (!res.ok) {
-    console.error(res);
+    throw res.error;
   }
 }
 

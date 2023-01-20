@@ -8,6 +8,8 @@ import gmailReminder, {booking, info} from './gmailReminder';
 import events from './taskEvents';
 import unfurlLink from './unfurlLink';
 import bandApplicationDistance from './bandApplicationDistance';
+import slackMessage from './slackMessage';
+import bandApplicationDemo from './bandApplicationDemo';
 
 const taskListProd = {
   nuclinoUpdateMessage,
@@ -15,6 +17,8 @@ const taskListProd = {
   nonceInvalidate,
   unfurlLink,
   bandApplicationDistance,
+  slackMessage,
+  bandApplicationDemo,
 };
 
 const taskList = {

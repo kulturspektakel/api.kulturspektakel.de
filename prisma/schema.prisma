@@ -155,6 +155,7 @@ model BandApplication {
   instagram              String?
   website                String?
   demo                   String?
+  demoEmbedUrl           String?
   description            String?
   numberOfArtists        Int?
   numberOfNonMaleArtists Int?

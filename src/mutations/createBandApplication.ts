@@ -1,7 +1,7 @@
 import confirmBandApplication from '../maizzle/mails/confirmBandApplication';
 import {scheduleTask} from '../tasks';
 import sendMail from '../utils/sendMail';
-import {sendMessage, SlackChannel} from '../utils/slack';
+import {SlackChannel} from '../utils/slack';
 import {UserInputError} from 'apollo-server-express';
 import normalizeUrl from 'normalize-url';
 import {builder} from '../pothos/builder';
@@ -114,7 +114,7 @@ builder.mutationField('createBandApplication', (t) =>
 
       const jobs = [
         scheduleTask('bandApplicationDistance', {id: application.id}),
-        sendMessage({
+        scheduleTask('slackMessage', {
           channel: isDJ ? SlackChannel.dj : SlackChannel.bandbewerbungen,
           text: `Bewerbung von „${data.bandname}“`,
           blocks: [
@@ -155,6 +155,14 @@ builder.mutationField('createBandApplication', (t) =>
           ],
         }),
       ];
+      if (demo) {
+        jobs.push(
+          scheduleTask('bandApplicationDemo', {
+            id: application.id,
+            demo,
+          }),
+        );
+      }
       if (facebook) {
         jobs.push(scheduleTask('facebookLikes', {id: application.id}));
       }
