@@ -4,7 +4,6 @@ import bandcamp from 'bandcamp-scraper';
 import fetch from 'node-fetch';
 import env from '../utils/env';
 import {promisify} from 'util';
-import {reseller} from 'googleapis/build/src/apis/reseller';
 
 export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const bandApplication = await prismaClient.bandApplication.findUniqueOrThrow({

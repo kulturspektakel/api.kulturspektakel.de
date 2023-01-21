@@ -159,7 +159,6 @@ builder.mutationField('createBandApplication', (t) =>
         jobs.push(
           scheduleTask('bandApplicationDemo', {
             id: application.id,
-            demo,
           }),
         );
       }
