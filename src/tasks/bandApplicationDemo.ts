@@ -4,6 +4,7 @@ import bandcamp from 'bandcamp-scraper';
 import fetch from 'node-fetch';
 import env from '../utils/env';
 import {promisify} from 'util';
+import {reseller} from 'googleapis/build/src/apis/reseller';
 
 export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const bandApplication = await prismaClient.bandApplication.findUniqueOrThrow({
@@ -85,9 +86,18 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
       }
       break;
     case 'soundcloud.com':
-      // demoEmbedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
-      //   demo,
-      // )}&auto_play=false&show_artwork=false`;
+      let pathname = url.pathname;
+      if (url.host === 'on.soundcloud.com') {
+        const res = await fetch(url, {
+          redirect: 'follow',
+          follow: 10,
+        });
+        pathname = new URL(res.url).pathname;
+      }
+
+      demoEmbedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
+        `https://soundcloud.com${pathname}`,
+      )}&auto_play=false`;
       break;
     case 'spotify.com':
       demoEmbedUrl = `https://open.spotify.com/embed${url.pathname}`;
