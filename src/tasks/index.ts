@@ -58,5 +58,8 @@ export const scheduleTask = async <T extends keyof typeof taskList>(
       connectionString: env.DATABASE_URL,
     }));
 
-  return workerUtils.addJob(identifier, payload, spec);
+  return workerUtils.addJob(identifier, payload, {
+    maxAttempts: 1,
+    ...spec,
+  });
 };

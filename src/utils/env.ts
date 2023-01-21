@@ -44,4 +44,5 @@ export default {
     .get('GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY')
     .required()
     .asString(),
+  YOUTUBE_API_KEY: env.get('YOUTUBE_API_KEY').required().asString(),
 };

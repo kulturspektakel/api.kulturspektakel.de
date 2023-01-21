@@ -19,19 +19,6 @@ module 'bandcamp-scraper' {
     name: string;
   }
 
-  export interface AlbumProduct {
-    name: string;
-    artist: string;
-    format: string;
-    url: string;
-    imageUrls: string[];
-    priceInCents: null | number;
-    description: string;
-    soldOut: boolean;
-    nameYourPrice: boolean;
-    offerMore: boolean;
-    currency: null | string;
-  }
   export interface ArtistInfo {
     name?: string;
     location?: string;
@@ -56,14 +43,6 @@ module 'bandcamp-scraper' {
     name?: string;
     url?: string;
   }
-
-  export interface TagResult {
-    name: string;
-    artist: string;
-    url: string;
-    artist_url: string;
-  }
-
   export interface TrackInfo {
     artist?: string;
     title: string;
@@ -82,4 +61,16 @@ module 'bandcamp-scraper' {
     page?: number;
   };
   function search(params: Params);
+  function getAlbumInfo(
+    albumUrl: string,
+    cb: (err?: Error, data?: AlbumInfo) => void,
+  );
+  function getArtistInfo(
+    artistUrl: string,
+    cb: (err?: Error, data?: ArtistInfo) => void,
+  );
+  function getTrackInfo(
+    trackUrl: string,
+    cb: (err?: Error, data?: TrackInfo) => void,
+  );
 }
