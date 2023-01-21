@@ -188,7 +188,7 @@ async function youTubeVideoForUsername(forUsername: string) {
   const unsubscribedTrailer =
     res.items[0].brandingSettings.channel.unsubscribedTrailer;
   if (unsubscribedTrailer) {
-    return unsubscribedTrailer;
+    return youTubeEmbedUrlForVideoId(unsubscribedTrailer);
   }
 
   return youTubeVideoForChannelId(res.items[0].id);
@@ -224,7 +224,7 @@ async function youTubeVideoForChannelId(channelId: string) {
   const res: YouTubeChannelSearchResponse = await fetch(url).then((res) =>
     res.json(),
   );
-  console.log(channelId, res);
+
   if (res.items.length > 0) {
     return youTubeEmbedUrlForVideoId(res.items[0].id.videoId);
   }
