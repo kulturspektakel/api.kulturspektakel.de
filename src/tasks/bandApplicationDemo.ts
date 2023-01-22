@@ -10,10 +10,11 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const bandApplication = await prismaClient.bandApplication.findUniqueOrThrow({
     where: {id},
   });
-  if (bandApplication.demo == null) {
+  const demo = bandApplication.demo?.split(' ').shift();
+  if (demo == null) {
     return;
   }
-  const url = new URL(bandApplication.demo);
+  const url = new URL(demo);
   const domain = url.hostname.toLowerCase().split('.').slice(-2).join('.');
   const path = url.pathname.split('/');
   let demoEmbed: string | undefined = undefined;
