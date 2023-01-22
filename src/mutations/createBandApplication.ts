@@ -55,7 +55,9 @@ builder.mutationField('createBandApplication', (t) =>
         throw new UserInputError('Demo material required');
       }
 
-      demo = demo ? normalizeUrl(demo) : null;
+      if (demo?.indexOf(' ') === -1) {
+        demo = normalizeUrl(demo);
+      }
       website = website ? normalizeUrl(website) : null;
       facebook = facebook ? normalizeUrl(facebook) : null;
 

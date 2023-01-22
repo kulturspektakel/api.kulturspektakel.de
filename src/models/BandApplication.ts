@@ -1,6 +1,7 @@
 import {
   HeardAboutBookingFrom as HeardAboutBookingFromValues,
   GenreCategory as GenreCategoryValues,
+  DemoEmbedType,
 } from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
@@ -34,6 +35,11 @@ export default builder.prismaNode('BandApplication', {
     city: t.exposeString('city'),
     demo: t.exposeString('demo', {nullable: true}),
     demoEmbedUrl: t.exposeString('demoEmbedUrl', {nullable: true}),
+    demoEmbed: t.exposeString('demoEmbed', {nullable: true}),
+    demoEmbedType: t.expose('demoEmbedType', {
+      type: DemoEmbedType,
+      nullable: true,
+    }),
     instagram: t.exposeString('instagram', {nullable: true}),
     instagramFollower: t.exposeInt('instagramFollower', {nullable: true}),
     distance: t.exposeFloat('distance', {nullable: true}),

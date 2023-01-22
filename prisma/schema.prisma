@@ -143,6 +143,18 @@ enum CardTransactionType {
   Cashout
 }
 
+enum DemoEmbedType {
+  Unresolvable
+  YouTubeVideo
+  YouTubePlaylist
+  BandcampAlbum
+  BandcampTrack
+  SoundcloudUrl
+  SpotifyTrack
+  SpotifyArtist
+  SpotifyAlbum
+}
+
 model BandApplication {
   id                     String                  @id @default(uuid())
   createdAt              DateTime                @default(now())
@@ -156,6 +168,8 @@ model BandApplication {
   website                String?
   demo                   String?
   demoEmbedUrl           String?
+  demoEmbedType          DemoEmbedType?
+  demoEmbed              String?
   description            String?
   numberOfArtists        Int?
   numberOfNonMaleArtists Int?

@@ -4,6 +4,7 @@ import bandcamp from 'bandcamp-scraper';
 import fetch from 'node-fetch';
 import env from '../utils/env';
 import {promisify} from 'util';
+import {DemoEmbedType} from '@prisma/client';
 
 export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const bandApplication = await prismaClient.bandApplication.findUniqueOrThrow({
@@ -15,24 +16,27 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const url = new URL(bandApplication.demo);
   const domain = url.hostname.toLowerCase().split('.').slice(-2).join('.');
   const path = url.pathname.split('/');
-  let demoEmbedUrl: string | undefined = undefined;
+  let demoEmbed: string | undefined = undefined;
+  let demoEmbedType: DemoEmbedType = DemoEmbedType.Unresolvable;
+
   let channelId: string | undefined = undefined;
 
   switch (domain) {
     case 'youtube.com':
       switch (path[1]) {
         case 'watch':
-          demoEmbedUrl = youTubeEmbedUrlForVideoId(url.searchParams.get('v'));
+          demoEmbedType = DemoEmbedType.YouTubeVideo;
+          demoEmbed = url.searchParams.get('v')?.toString();
           break;
         case 'user':
           // forUsername
           const username = path[2];
-          demoEmbedUrl = await youTubeVideoForUsername(username);
+          demoEmbedType = DemoEmbedType.YouTubeVideo;
+          demoEmbed = await youTubeVideoForUsername(username);
           break;
         case 'playlist':
-          demoEmbedUrl = `https://www.youtube.com/embed/videoseries?list=${url.searchParams.get(
-            'list',
-          )}`;
+          demoEmbedType = DemoEmbedType.YouTubePlaylist;
+          demoEmbed = url.searchParams.get('list')?.toString();
           break;
         case 'channel':
           channelId = path[2];
@@ -54,19 +58,21 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
             break;
           }
 
-          demoEmbedUrl = await youTubeVideoForChannelId(channelId);
+          demoEmbedType = DemoEmbedType.YouTubeVideo;
+          demoEmbed = await youTubeVideoForChannelId(channelId);
       }
 
       break;
     case 'youtu.be':
-      demoEmbedUrl = youTubeEmbedUrlForVideoId(path[1]);
+      demoEmbed = youTubeEmbedUrlForVideoId(path[1]);
       break;
     case 'bandcamp.com':
       let albumUrl: string | undefined = url.toString();
       if (path[1] === 'track') {
         const track = await promisify(bandcamp.getTrackInfo)(albumUrl);
         if (track?.raw.id != null) {
-          demoEmbedUrl = bandcampEmbedUrl('track', String(track.raw.id));
+          demoEmbed = track.raw.id.toString();
+          demoEmbedType = DemoEmbedType.BandcampTrack;
           break;
         }
       } else if (path[1] !== 'album') {
@@ -80,7 +86,8 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
       if (albumUrl != null) {
         const album = await promisify(bandcamp.getAlbumInfo)(albumUrl);
         if (album?.raw.id) {
-          demoEmbedUrl = bandcampEmbedUrl('album', String(album.raw.id));
+          demoEmbedType = DemoEmbedType.BandcampAlbum;
+          demoEmbed = album.raw.id.toString();
         }
       }
       break;
@@ -94,18 +101,31 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
         pathname = new URL(res.url).pathname;
       }
 
-      demoEmbedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
-        `https://soundcloud.com${pathname}`,
-      )}&auto_play=false`;
+      demoEmbed = pathname;
+      demoEmbedType = DemoEmbedType.SoundcloudUrl;
       break;
     case 'spotify.com':
-      demoEmbedUrl = `https://open.spotify.com/embed${url.pathname}`;
+      switch (path[2]) {
+        case 'artist':
+          demoEmbedType = DemoEmbedType.SpotifyArtist;
+          break;
+        case 'album':
+          demoEmbedType = DemoEmbedType.SpotifyAlbum;
+          break;
+        case 'track':
+          demoEmbedType = DemoEmbedType.SpotifyTrack;
+          break;
+      }
+      if (demoEmbedType !== DemoEmbedType.Unresolvable) {
+        demoEmbed = path[3];
+      }
       break;
   }
 
   await prismaClient.bandApplication.update({
     data: {
-      demoEmbedUrl,
+      demoEmbed,
+      demoEmbedType,
     },
     where: {
       id,
