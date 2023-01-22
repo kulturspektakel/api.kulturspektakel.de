@@ -64,7 +64,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
 
       break;
     case 'youtu.be':
-      demoEmbed = youTubeEmbedUrlForVideoId(path[1]);
+      demoEmbed = path[1];
       break;
     case 'bandcamp.com':
       let albumUrl: string | undefined = url.toString();
@@ -131,10 +131,6 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
       id,
     },
   });
-}
-
-function bandcampEmbedUrl(type: 'track' | 'album', id: string) {
-  return `https://bandcamp.com/EmbeddedPlayer/${type}=${id}/size=large/bgcol=ffffff/linkcol=0687f5/artwork=small/transparent=true/`;
 }
 
 async function youTubeChannelIdForHandle(handle: string | undefined) {
@@ -208,7 +204,7 @@ async function youTubeVideoForUsername(forUsername: string) {
   const unsubscribedTrailer =
     res.items[0].brandingSettings.channel.unsubscribedTrailer;
   if (unsubscribedTrailer) {
-    return youTubeEmbedUrlForVideoId(unsubscribedTrailer);
+    return unsubscribedTrailer;
   }
 
   return youTubeVideoForChannelId(res.items[0].id);
@@ -246,13 +242,6 @@ async function youTubeVideoForChannelId(channelId: string) {
   );
 
   if (res.items.length > 0) {
-    return youTubeEmbedUrlForVideoId(res.items[0].id.videoId);
+    return res.items[0].id.videoId;
   }
-}
-
-function youTubeEmbedUrlForVideoId(id: string | null) {
-  if (!id) {
-    return;
-  }
-  return `https://www.youtube.com/embed/${id}?autoplay=0&fs=0&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0`;
 }
