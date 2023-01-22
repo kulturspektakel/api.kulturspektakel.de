@@ -19,8 +19,6 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   let demoEmbed: string | undefined = undefined;
   let demoEmbedType: DemoEmbedType = DemoEmbedType.Unresolvable;
 
-  let channelId: string | undefined = undefined;
-
   switch (domain) {
     case 'youtube.com':
       switch (path[1]) {
@@ -39,27 +37,33 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
           demoEmbed = url.searchParams.get('list')?.toString();
           break;
         case 'channel':
-          channelId = path[2];
-        // Fall through!
+          const channelId = path[2];
+          demoEmbed = await youTubeVideoForChannelId(channelId);
+          if (demoEmbed != null) {
+            demoEmbedType = DemoEmbedType.YouTubeVideo;
+          }
+          break;
         case 'c':
-          channelId = await youTubeChannelIdForHandle(path[2]);
-        // Fall through!
+          const channelIdForHandle = await youTubeChannelIdForHandle(path[2]);
+          demoEmbed = await youTubeVideoForChannelId(channelIdForHandle);
+          if (demoEmbed != null) {
+            demoEmbedType = DemoEmbedType.YouTubeVideo;
+          }
+          break;
         default:
-          if (channelId == null && path[1] != null) {
+          if (path[1] != null) {
             let handle = path[1];
             if (handle.startsWith('@')) {
               handle = handle.substring(1);
             }
 
-            channelId = await youTubeChannelIdForHandle(handle);
+            const channelId = await youTubeChannelIdForHandle(handle);
+            demoEmbed = await youTubeVideoForChannelId(channelId);
+            if (demoEmbed != null) {
+              demoEmbedType = DemoEmbedType.YouTubeVideo;
+            }
           }
-
-          if (channelId == null) {
-            break;
-          }
-
-          demoEmbedType = DemoEmbedType.YouTubeVideo;
-          demoEmbed = await youTubeVideoForChannelId(channelId);
+          break;
       }
 
       break;
@@ -229,12 +233,16 @@ type YouTubeChannelSearchResponse = {
   }>;
 };
 
-async function youTubeVideoForChannelId(channelId: string) {
+async function youTubeVideoForChannelId(channelId: string | undefined) {
+  if (!channelId) {
+    return;
+  }
   const url = new URL('https://www.googleapis.com/youtube/v3/search');
   url.searchParams.append('key', env.YOUTUBE_API_KEY);
   url.searchParams.append('part', 'snippet');
   url.searchParams.append('maxResults', '1');
   url.searchParams.append('order', 'viewCount');
+  url.searchParams.append('type', 'video');
   url.searchParams.append('channelId', channelId);
 
   const res: YouTubeChannelSearchResponse = await fetch(url).then((res) =>
