@@ -110,7 +110,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
       demoEmbedType = DemoEmbedType.SoundcloudUrl;
       break;
     case 'spotify.com':
-      switch (path[2]) {
+      switch (path[1]) {
         case 'artist':
           demoEmbedType = DemoEmbedType.SpotifyArtist;
           break;
@@ -122,7 +122,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
           break;
       }
       if (demoEmbedType !== DemoEmbedType.Unresolvable) {
-        demoEmbed = path[3];
+        demoEmbed = path[2];
       }
       break;
   }
