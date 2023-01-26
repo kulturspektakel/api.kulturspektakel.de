@@ -70,6 +70,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
       break;
     case 'youtu.be':
       demoEmbed = path[1];
+      demoEmbedType = DemoEmbedType.YouTubeVideo;
       break;
     case 'bandcamp.com':
       let albumUrl: string | undefined = url.toString();
