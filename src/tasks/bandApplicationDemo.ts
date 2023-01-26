@@ -16,7 +16,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   }
   const url = new URL(demo);
   const domain = url.hostname.toLowerCase().split('.').slice(-2).join('.');
-  const path = url.pathname.split('/');
+  let path = url.pathname.split('/');
   let demoEmbed: string | undefined = undefined;
   let demoEmbedType: DemoEmbedType = DemoEmbedType.Unresolvable;
 
@@ -109,6 +109,14 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
       demoEmbed = pathname;
       demoEmbedType = DemoEmbedType.SoundcloudUrl;
       break;
+    case 'spoti.fi':
+      const res = await fetch(url, {
+        redirect: 'follow',
+        follow: 10,
+      });
+      console.log(res.url);
+      path = new URL(res.url).pathname.split('/');
+    // Fallthrough
     case 'spotify.com':
       switch (path[1]) {
         case 'artist':
