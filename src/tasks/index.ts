@@ -1,4 +1,10 @@
-import {run, makeWorkerUtils, WorkerUtils, TaskSpec} from 'graphile-worker';
+import {
+  run,
+  makeWorkerUtils,
+  WorkerUtils,
+  TaskSpec,
+  Logger,
+} from 'graphile-worker';
 import env from '../utils/env';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
