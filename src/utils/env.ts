@@ -5,7 +5,7 @@ export default {
     .get('NODE_ENV')
     .required()
     .asEnum(['development', 'production', 'test']),
-  PORT: env.get('PORT').required().asIntPositive(),
+  PORT: env.get('PORT').required().asPortNumber(),
   DATABASE_URL: env.get('DATABASE_URL').required().asString(),
   JWT_SECRET: env.get('JWT_SECRET').required().asString(),
   SLACK_CLIENT_ID: env.get('SLACK_CLIENT_ID').required().asString(),
@@ -43,6 +43,8 @@ export default {
   GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: env
     .get('GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY')
     .required()
-    .asString(),
+    .asString()
+    // https://github.com/motdotla/dotenv/issues/664
+    .replace(/\\n/g, '\n'),
   YOUTUBE_API_KEY: env.get('YOUTUBE_API_KEY').required().asString(),
 };

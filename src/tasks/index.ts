@@ -10,6 +10,7 @@ import unfurlLink from './unfurlLink';
 import bandApplicationDistance from './bandApplicationDistance';
 import slackMessage from './slackMessage';
 import bandApplicationDemo from './bandApplicationDemo';
+import {Logging} from '@google-cloud/logging';
 
 const taskListProd = {
   nuclinoUpdateMessage,
@@ -28,11 +29,52 @@ const taskList = {
   instagramFollower,
 };
 
+export const logger = new Logger((scope) => async (level, message) => {
+  const logging = new Logging({
+    projectId: 'gmail-reminder-api',
+    credentials: {
+      client_email: env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+    },
+  });
+  const log = logging.log('projects/gmail-reminder-api/logs/worker');
+  let severity = 'DEFAULT';
+  switch (level) {
+    case 'warning':
+      severity = 'WARNING';
+      break;
+    case 'debug':
+      severity = 'DEBUG';
+      break;
+    case 'error':
+      severity = 'ERROR';
+      break;
+    case 'info':
+      severity = 'INFO';
+      break;
+  }
+
+  const entry = log.entry(
+    {
+      resource: {
+        type: 'generic_task',
+      },
+      labels: {
+        instance_id: 'graphile-worker',
+      },
+      severity,
+    },
+    {...scope, message},
+  );
+  await log.write(entry);
+});
+
 export default async function () {
   return run({
     connectionString: env.DATABASE_URL,
     concurrency: 1,
     taskList: (env.NODE_ENV === 'production' ? taskListProd : taskList) as any,
+    logger: env.NODE_ENV === 'production' ? logger : undefined,
     events,
     crontab: [
       '*/5 * * * * nuclinoUpdateMessage ?max=1',

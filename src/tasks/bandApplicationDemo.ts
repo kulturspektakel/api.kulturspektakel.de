@@ -45,7 +45,10 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
           }
           break;
         case 'c':
-          const channelIdForHandle = await youTubeChannelIdForHandle(path[2]);
+          const channelIdForHandle = await youTubeChannelIdForHandle(
+            path[2],
+            logger,
+          );
           demoEmbed = await youTubeVideoForChannelId(channelIdForHandle);
           if (demoEmbed != null) {
             demoEmbedType = DemoEmbedType.YouTubeVideo;
@@ -58,7 +61,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
               handle = handle.substring(1);
             }
 
-            const channelId = await youTubeChannelIdForHandle(handle);
+            const channelId = await youTubeChannelIdForHandle(handle, logger);
             demoEmbed = await youTubeVideoForChannelId(channelId);
             if (demoEmbed != null) {
               demoEmbedType = DemoEmbedType.YouTubeVideo;
@@ -147,7 +150,10 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   });
 }
 
-async function youTubeChannelIdForHandle(handle: string | undefined) {
+async function youTubeChannelIdForHandle(
+  handle: string | undefined,
+  logger: JobHelpers['logger'],
+) {
   if (!handle) {
     return;
   }
@@ -162,10 +168,19 @@ async function youTubeChannelIdForHandle(handle: string | undefined) {
       },
     ];
   } = await fetch(`https://yt.lemnoslife.com/channels?handle=@${handle}`).then(
-    (res) => res.json().catch(() => null),
+    (res) =>
+      res.json().catch(async (e) => {
+        const text = await res.text();
+        logger.debug(`${e}: ${text}`);
+      }),
   );
 
-  return res?.items?.pop()?.id;
+  const id = res?.items?.pop()?.id;
+
+  if (id) {
+    return id;
+  }
+  logger.debug(JSON.stringify(res));
 }
 
 type YouTubeChannelListResponse = {

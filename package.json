@@ -35,6 +35,7 @@
   "dependencies": {
     "@awaitjs/express": "^0.9.0",
     "@aws-sdk/client-ses": "^3.236.0",
+    "@google-cloud/logging": "^10.3.3",
     "@pothos/core": "^3.23.2",
     "@pothos/plugin-prisma": "^3.38.1",
     "@pothos/plugin-relay": "^3.30.2",

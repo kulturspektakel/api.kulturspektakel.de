@@ -37,16 +37,9 @@ type ApiResponse = {
     };
     id: string;
     title: string;
+    url?: string;
   }>;
 };
-
-function isSameWeekDay(date: Date, day: ApiDay): boolean {
-  return (
-    (date.getDay() === 5 && day === 'Freitag') ||
-    (date.getDay() === 6 && day === 'Samstag') ||
-    (date.getDay() === 0 && day === 'Sonntag')
-  );
-}
 
 function getStartEndTime(
   time: string,
@@ -81,6 +74,27 @@ function getStartEndTime(
   };
 }
 
+const headers = {
+  Authorization: `Basic ${Buffer.from(
+    `${env.KULT_WEBSITE_API_EMAIL}:${env.KULT_WEBSITE_API_PASSWORD}`,
+  ).toString('base64')}`,
+};
+
+export async function fetchFiles(id: string) {
+  const res: ApiError | ApiResponse = await fetch(
+    `https://kulturspektakel.de/api/pages/${id.replace(
+      /\//g,
+      '+',
+    )}/files?select=url`,
+    {
+      headers,
+    },
+  ).then((res) => res.json());
+  if (res.status === 'ok' && res.data.length > 0) {
+    return res.data[0].url;
+  }
+}
+
 export async function fetchLineUp(
   eventStart: Date,
   filter: (item: ApiResponse['data'][number]['content']) => boolean = () =>
@@ -89,11 +103,7 @@ export async function fetchLineUp(
   const res: ApiError | ApiResponse = await fetch(
     `https://kulturspektakel.de/api/pages/lineup+${eventStart.getFullYear()}/children?select=id,title,content`,
     {
-      headers: {
-        Authorization: `Basic ${Buffer.from(
-          `${env.KULT_WEBSITE_API_EMAIL}:${env.KULT_WEBSITE_API_PASSWORD}`,
-        ).toString('base64')}`,
-      },
+      headers,
     },
   ).then((res) => res.json());
   if (res.status === 'ok') {
