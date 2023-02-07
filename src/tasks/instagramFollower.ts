@@ -14,7 +14,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   }
 
   const res = await fetch(
-    `https://i.instagram.com/api/v1/users/web_profile_info/?username=${application.instagram}/`,
+    `https://i.instagram.com/api/v1/users/web_profile_info/?username=${application.instagram}`,
     {
       headers: {
         'X-IG-App-ID': '936619743392459',
