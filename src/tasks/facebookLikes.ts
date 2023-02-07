@@ -43,13 +43,13 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   if (res.followers_count != null) {
     await prismaClient.bandApplication.update({
       data: {
-        facebookLikes: res.followers_count,
+        facebookLikes: res.followers_count!,
       },
       where: {
         id,
       },
     });
   } else {
-    logger.debug(res);
+    logger.debug(JSON.stringify(res));
   }
 }
