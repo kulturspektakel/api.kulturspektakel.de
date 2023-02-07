@@ -45,5 +45,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
     } else {
       logger.debug(JSON.stringify(json));
     }
-  } catch (e) {}
+  } catch (e) {
+    logger.debug(String(e));
+  }
 }
