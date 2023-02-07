@@ -19,6 +19,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   if (
     !url.hostname.endsWith('facebook.com') &&
     !url.hostname.endsWith('fb.com') &&
+    !url.hostname.endsWith('facebook.de') &&
     !url.hostname.endsWith('fb.me')
   ) {
     return;
