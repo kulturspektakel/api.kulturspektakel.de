@@ -24,6 +24,7 @@ export default {
     .asString(),
   SLACK_BOT_TOKEN: env.get('SLACK_BOT_TOKEN').required().asString(),
   BING_MAPS_KEY: env.get('BING_MAPS_KEY').required().asString(),
+  FACEBOOK_ACCESS_TOKEN: env.get('FACEBOOK_ACCESS_TOKEN').required().asString(),
   NUCLINO_WORKSPACE_ID: env.get('NUCLINO_WORKSPACE_ID').required().asString(),
   NUCLINO_TEAM_ID: env.get('NUCLINO_TEAM_ID').required().asString(),
   NUCLINO_API_KEY: env.get('NUCLINO_API_KEY').required().asString(),

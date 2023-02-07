@@ -13,25 +13,37 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
     return;
   }
 
-  const text = await fetch(
-    `https://www.instagram.com/${application.instagram}/`,
+  const res = await fetch(
+    `https://i.instagram.com/api/v1/users/web_profile_info/?username=${application.instagram}/`,
     {
       headers: {
-        'User-Agent': 'Paw/3.2.2 (Macintosh; OS X/11.4.0) GCDHTTPRequest',
+        'X-IG-App-ID': '936619743392459',
       },
     },
-  ).then((r) => r.text());
+  );
 
-  const match = text.match(/"userInteractionCount":"?(\d+)/);
-  if (match && match?.length > 1) {
-    console.log(match[1]);
-    await prismaClient.bandApplication.update({
-      data: {
-        instagramFollower: parseInt(match[1], 10),
-      },
-      where: {
-        id,
-      },
-    });
-  }
+  try {
+    const json: {
+      data?: {
+        user?: {
+          edge_followed_by?: {
+            count?: number;
+          };
+        };
+      };
+    } = await res.json();
+
+    if (json?.data?.user?.edge_followed_by?.count != null) {
+      await prismaClient.bandApplication.update({
+        data: {
+          instagramFollower: json.data.user.edge_followed_by.count,
+        },
+        where: {
+          id,
+        },
+      });
+    } else {
+      logger.debug(JSON.stringify(json));
+    }
+  } catch (e) {}
 }

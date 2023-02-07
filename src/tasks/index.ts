@@ -18,7 +18,7 @@ import slackMessage from './slackMessage';
 import bandApplicationDemo from './bandApplicationDemo';
 import {Logging} from '@google-cloud/logging';
 
-const taskListProd = {
+const taskList = {
   nuclinoUpdateMessage,
   gmailReminder,
   nonceInvalidate,
@@ -26,11 +26,6 @@ const taskListProd = {
   bandApplicationDistance,
   slackMessage,
   bandApplicationDemo,
-};
-
-const taskList = {
-  ...taskListProd,
-  // These jobs are only executed in dev environment
   facebookLikes,
   instagramFollower,
 };
@@ -79,7 +74,7 @@ export default async function () {
   return run({
     connectionString: env.DATABASE_URL,
     concurrency: 1,
-    taskList: (env.NODE_ENV === 'production' ? taskListProd : taskList) as any,
+    taskList: taskList as any,
     logger: env.NODE_ENV === 'production' ? logger : undefined,
     events,
     crontab: [

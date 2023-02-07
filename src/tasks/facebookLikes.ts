@@ -2,6 +2,7 @@ import prismaClient from '../utils/prismaClient';
 import {JobHelpers} from 'graphile-worker';
 import fetch from 'node-fetch';
 import {URL} from 'url';
+import env from '../utils/env';
 
 export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const application = await prismaClient.bandApplication.findUnique({
@@ -14,30 +15,41 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   }
 
   const url = new URL(application.facebook);
+
+  if (
+    !url.hostname.endsWith('facebook.com') &&
+    !url.hostname.endsWith('fb.com') &&
+    !url.hostname.endsWith('fb.me')
+  ) {
+    return;
+  }
+
   const path = url.pathname.split('/');
   let fbid: string | null = null;
-  if (path[1] === 'pg') {
-    fbid = path[2];
+  const match = path[1].match(/[a-z-]+-(\d{7}\d+)$/i);
+  if (match != null && match.length > 1) {
+    fbid = match[1];
   } else if (path[1] === 'pages' && path[2] === 'category') {
     fbid = path[3];
   } else {
     fbid = path[1];
   }
-  const text = await fetch(`https://www.facebook.com/${fbid}`, {
-    headers: {
-      'User-Agent': 'Paw/3.2.2 (Macintosh; OS X/11.4.0) GCDHTTPRequest',
-    },
-  }).then((r) => r.text());
+  const res: {
+    followers_count?: number;
+  } = await fetch(
+    `https://graph.facebook.com/v16.0/${fbid}?fields=followers_count&access_token=${env.FACEBOOK_ACCESS_TOKEN}`,
+  ).then((r) => r.json());
 
-  const match = text.match(/FollowAction","userInteractionCount":"?(\d+)/);
-  if (match && match?.length > 1) {
+  if (res.followers_count != null) {
     await prismaClient.bandApplication.update({
       data: {
-        facebookLikes: parseInt(match[1], 10),
+        facebookLikes: res.followers_count,
       },
       where: {
         id,
       },
     });
+  } else {
+    logger.debug(res);
   }
 }
