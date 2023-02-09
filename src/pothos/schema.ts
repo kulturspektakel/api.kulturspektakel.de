@@ -23,6 +23,7 @@ import '../mutations/markBandApplicationContacted';
 import '../mutations/rateBandApplication';
 import '../mutations/updateDeviceProductList';
 import '../mutations/upsertProductList';
+import '../mutations/updateBandApplication';
 
 import '../queries/areas';
 import '../queries/cardStatus';
