@@ -7,10 +7,12 @@ export default async function viewerIdFromToken(
   if (parsedToken == null) {
     return;
   } else if (parsedToken.iss === 'directus') {
-    const user = await prismaClient.$queryRaw<{
-      external_identifier: string;
-    } | null>`select "external_identifier" from "directus"."directus_users" where "id"=${parsedToken.id}::uuid`;
-    return user?.external_identifier;
+    const user = await prismaClient.$queryRaw<
+      Array<{
+        external_identifier: string;
+      }>
+    >`select "external_identifier" from "directus"."directus_users" where "id"=${parsedToken.id}::uuid`;
+    return user.pop()?.external_identifier;
   } else if (parsedToken.iss == null && parsedToken.type === 'user') {
     return parsedToken.userId;
   }
