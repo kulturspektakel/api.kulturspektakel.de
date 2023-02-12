@@ -2,7 +2,10 @@ import prismaClient from '../utils/prismaClient';
 import {JobHelpers} from 'graphile-worker';
 import fetch from 'node-fetch';
 
-export default async function ({id}: {id: string}, {logger}: JobHelpers) {
+export default async function (
+  {id, cookie = ''}: {id: string; cookie?: string},
+  {logger}: JobHelpers,
+) {
   const application = await prismaClient.bandApplication.findUnique({
     where: {
       id,
@@ -18,6 +21,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
     {
       headers: {
         'X-IG-App-ID': '936619743392459',
+        cookie,
       },
     },
   );
