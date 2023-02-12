@@ -22,15 +22,19 @@ builder.mutationField('createOrder', (t) =>
       deposit: t.arg.int({required: true}),
       deviceTime: t.arg({type: 'DateTime', required: true}),
     },
-    resolve: async (_, {payment, deposit, deviceTime, products}, {token}) => {
-      if (token?.type !== 'device') {
+    resolve: async (
+      _,
+      {payment, deposit, deviceTime, products},
+      {parsedToken},
+    ) => {
+      if (parsedToken?.iss !== 'device') {
         throw new Error('No device authentication');
       }
 
       return await prismaClient.order.create({
         data: {
           payment,
-          deviceId: token.deviceId!,
+          deviceId: parsedToken.deviceId,
           deposit,
           createdAt: deviceTime,
           items: {

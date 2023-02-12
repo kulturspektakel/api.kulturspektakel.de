@@ -2,13 +2,13 @@ import {Router} from '@awaitjs/express';
 import {IdentityProvider, ServiceProvider, setSchemaValidator} from 'samlify';
 import express, {Request, Response} from 'express';
 import {add} from 'date-fns';
-import {ParsedToken} from '../auth';
 import prismaClient from '../../utils/prismaClient';
 import requestUrl from '../../utils/requestUrl';
 import env from '../../utils/env';
 import {ApiError} from '../../utils/errorReporting';
 import {readFileSync} from 'fs';
 import {join} from 'path';
+import viewerIdFromToken from '../../utils/viewerIdFromToken';
 
 const router = Router({});
 
@@ -70,8 +70,9 @@ router.getAsync(
     req: Request<any, any, any, {SAMLRequest?: string; RelayState?: string}>,
     res,
   ) => {
-    const token: ParsedToken | null = (req as any)._token;
-    if (!token || token.type != 'user') {
+    const userId = await viewerIdFromToken(req._parsedToken);
+
+    if (userId == null) {
       // no token, redirect to login flow
       res.send(`
       <!doctype html>
@@ -169,12 +170,12 @@ router.getAsync(
 
     const viewer = await prismaClient.viewer.findUnique({
       where: {
-        id: token.userId,
+        id: userId,
       },
     });
 
     if (!viewer) {
-      throw new Error(`Could not find viewer ${token.userId}`);
+      throw new Error(`Could not find viewer ${userId}`);
     }
 
     const [firstName, ...lastNames] = viewer.displayName.split(' ');

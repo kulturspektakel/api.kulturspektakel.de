@@ -1,6 +1,7 @@
 import BandApplication from '../models/BandApplication';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
+import viewerIdFromToken from '../utils/viewerIdFromToken';
 
 const BandApplicationUpdateInput = builder.inputType(
   'BandApplicationUpdateInput',
@@ -22,20 +23,17 @@ builder.mutationField('updateBandApplication', (t) =>
     authScopes: {
       user: true,
     },
-    resolve: async (_, {bandApplicationId, data}, {token}) =>
-      prismaClient.bandApplication.update({
+    resolve: async (_, {bandApplicationId, data}, {parsedToken}) => {
+      const viewerId = await viewerIdFromToken(parsedToken);
+      return prismaClient.bandApplication.update({
         data: {
-          contactedByViewerId:
-            data?.contacted === false
-              ? null
-              : data?.contacted === true && token?.type === 'user'
-              ? token.userId
-              : undefined,
+          contactedByViewerId: data?.contacted === false ? null : viewerId,
           instagramFollower: data?.instagramFollower,
         },
         where: {
           id: bandApplicationId.id,
         },
-      }),
+      });
+    },
   }),
 );

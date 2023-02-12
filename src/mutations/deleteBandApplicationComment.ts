@@ -2,6 +2,7 @@ import BandApplication from '../models/BandApplication';
 import {builder} from '../pothos/builder';
 import {ApiError} from '../utils/errorReporting';
 import prismaClient from '../utils/prismaClient';
+import viewerIdFromToken from '../utils/viewerIdFromToken';
 
 builder.mutationField('deleteBandApplicationComment', (t) =>
   t.field({
@@ -12,9 +13,9 @@ builder.mutationField('deleteBandApplicationComment', (t) =>
     authScopes: {
       user: true,
     },
-    resolve: async (_, {id: {id}}, {token}) => {
-      const viewerId = token?.type === 'user' ? token.userId : undefined;
-      if (!viewerId) {
+    resolve: async (_, {id: {id}}, {parsedToken}) => {
+      const viewerId = await viewerIdFromToken(parsedToken);
+      if (viewerId == null) {
         throw new ApiError(401, 'Must be user authenticated');
       }
 

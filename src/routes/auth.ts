@@ -9,21 +9,32 @@ import {add} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
 import requestUrl from '../utils/requestUrl';
+import {Viewer} from '@prisma/client';
+import {createHash} from 'crypto';
 
-export type TokenInput =
+export type ParsedToken =
   | {
-      type: 'user';
-      userId: string;
+      iat: number;
+      exp: number;
+      iss: 'device';
+      deviceId: string;
     }
   | {
-      type: 'device';
-      deviceId: string;
+      iat: number;
+      exp: number;
+      type: 'user';
+      userId: string;
+      iss: undefined;
+    }
+  | {
+      id: string;
+      role: string;
+      app_access: boolean;
+      admin_access: boolean;
+      iat: number;
+      exp: number;
+      iss: 'directus';
     };
-
-export type ParsedToken = TokenInput & {
-  iat: number;
-  exp: number;
-};
 
 function parseToken(token?: string): ParsedToken | null {
   try {
@@ -41,7 +52,7 @@ function cookieDomain(req: Request): string {
 export function setCookie(req: Request, res: Response, userId: string) {
   const expiresIn = 60 * 60 * 24 * 30;
 
-  const tokenInput: TokenInput = {
+  const tokenInput = {
     type: 'user',
     userId,
   };
@@ -160,17 +171,48 @@ router.getAsync(
   },
 );
 
-router.use((req, res, next) => {
-  const auth = req.headers.authorization?.match(/^Bearer (.+)$/) ?? [];
-  const token = parseToken(req.cookies.token ?? auth[1]);
-  // @ts-ignore: put token on request object so it can be used elsewhere
-  req._token = token;
+const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
-  if (token?.type === 'user') {
+router.use(async (req, res, next) => {
+  let [_, token] =
+    // ESPhttpUpdate.setAuthorization prefixes auth header with "Basic " :-/
+    req.headers.authorization?.match(/^(?:Basic )?Bearer (.+)$/) ?? [];
+
+  if (token == null && req.cookies.token != null) {
+    token = req.cookies.token;
+  }
+
+  if (token == null) {
+    return next();
+  }
+
+  if (req.header('x-esp8266-sta-mac') != null) {
+    // Contactless device
+    const id = req.header('x-esp8266-sta-mac')!.substring(9);
+    if (token === sha1(`${id}${env.CONTACTLESS_SALT}`)) {
+      req._parsedToken = {
+        iat: -1,
+        exp: -1,
+        iss: 'device',
+        deviceId: id,
+      };
+    }
+
+    return next();
+  }
+
+  try {
+    req._parsedToken = jwt.verify(token, env.JWT_SECRET) as ParsedToken;
+  } catch (e) {
+    return next();
+  }
+
+  if (req._parsedToken.iss == null && req._parsedToken.type === 'user') {
+    // old cookie
     // extend cookie lifetime, if necessary
     const renewal = add(new Date(), {days: 7}).getTime();
-    if (token.exp * 1000 < renewal) {
-      setCookie(req, res, token.userId);
+    if (req._parsedToken.exp * 1000 < renewal) {
+      setCookie(req, res, req._parsedToken.userId);
     }
   }
 

@@ -1,7 +1,5 @@
 import prismaClient from '../utils/prismaClient';
 import express, {NextFunction, Request} from 'express';
-import {createHash} from 'crypto';
-import env from '../utils/env';
 import {
   LogMessage,
   LogMessage_CardTransaction_TransactionType,
@@ -18,53 +16,44 @@ import {subMilliseconds} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
 import crc32 from 'crc-32';
+import {ParsedToken} from './auth';
 
 const fs = fsNode.promises;
-
-const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
-
 const router = Router({});
 
+function getSoftwareVersion(req: Request) {
+  return req.header('x-esp8266-version')?.toString() ?? undefined;
+}
+
 router.useAsync('/', async function (req, res, next: NextFunction) {
-  const authorization: string | undefined = req.headers['authorization'];
-  const macAddress = req.headers['x-esp8266-sta-mac'];
-  if (typeof macAddress === 'string' && macAddress.length === 17) {
-    const id = macAddress.substr(9);
-    // ESPhttpUpdate.setAuthorization prefixes auth header with "Basic " :-/
-    const match = authorization?.match(/^(Basic )?Bearer (.+)$/);
-    const signature = match && match.length > 2 ? match[2] : req.query['token'];
-    if (signature === sha1(`${id}${env.CONTACTLESS_SALT}`)) {
-      res.locals.id = id;
-      const softwareVersion =
-        req.headers['x-esp8266-version']?.toString() ?? undefined;
-      res.locals.version = softwareVersion;
-      const lastSeen = new Date();
-
-      await prismaClient.device.upsert({
-        where: {
-          id,
-        },
-        create: {
-          id,
-          lastSeen,
-          softwareVersion,
-          type: 'CONTACTLESS_TERMINAL',
-        },
-        update: {
-          lastSeen,
-          softwareVersion,
-        },
-      });
-
-      return next();
-    }
+  if (req._parsedToken?.iss != 'device') {
+    throw new ApiError(401, 'Unauthorized');
   }
-
-  throw new ApiError(401, 'Unauthorized');
+  const id = req._parsedToken.deviceId;
+  const softwareVersion = getSoftwareVersion(req);
+  const lastSeen = new Date();
+  await prismaClient.device.upsert({
+    where: {
+      id,
+    },
+    create: {
+      id,
+      lastSeen,
+      softwareVersion,
+      type: 'CONTACTLESS_TERMINAL',
+    },
+    update: {
+      lastSeen,
+      softwareVersion,
+    },
+  });
+  next();
 });
 
-router.getAsync('/config', async (_req, res) => {
-  const {id} = res.locals;
+type ParsedDeviceToken = Extract<ParsedToken, {iss: 'device'}>;
+
+router.getAsync('/config', async (req, res) => {
+  const {deviceId: id} = req._parsedToken as ParsedDeviceToken;
   const device = await prismaClient.device.findUnique({
     where: {
       id,
@@ -113,7 +102,8 @@ router.postAsync(
     type: () => true, // parse body without Content-Type header
   }),
   async (req: Request<{}, any, Buffer>, res) => {
-    const {id} = res.locals;
+    const {deviceId: id} = req._parsedToken as ParsedDeviceToken;
+
     let message: LogMessage;
     try {
       message = LogMessage.decode(req.body);
@@ -213,8 +203,9 @@ router.postAsync(
 );
 
 router.getAsync('/update', async (req, res) => {
-  const {version} = res.locals;
-  if (version) {
+  const version = getSoftwareVersion(req);
+
+  if (version != null) {
     const versionNumber = parseInt(version, 10);
     if (Number.isSafeInteger(versionNumber) && versionNumber > 0) {
       const dir = join(homedir(), 'contactless-firmware');

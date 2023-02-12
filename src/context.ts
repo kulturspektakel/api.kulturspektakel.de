@@ -3,15 +3,12 @@ import {ParsedToken} from './routes/auth';
 import {Request} from 'express';
 
 export type Context = {
-  token?: Partial<ParsedToken>;
+  parsedToken?: ParsedToken;
 };
 
 const context: ContextFunction<{
-  req: Request & {
-    _token?: ParsedToken;
-    _deviceId?: string;
-  };
+  req: Request;
 }> = ({req}): Context => ({
-  token: req._token,
+  parsedToken: req._parsedToken,
 });
 export default context;

@@ -39,9 +39,11 @@ export const builder = new SchemaBuilder<{
     },
     encodeGlobalID: (typename, id) => `${typename}:${id}`,
   },
-  authScopes: async (context) => ({
-    user: context.token?.type === 'user',
-    device: context.token?.type === 'device',
+  authScopes: async ({parsedToken}) => ({
+    user:
+      parsedToken?.iss === 'directus' ||
+      (parsedToken?.iss == null && parsedToken?.type === 'user'),
+    device: parsedToken?.iss === 'device',
   }),
 });
 

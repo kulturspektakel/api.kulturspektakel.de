@@ -8,6 +8,7 @@ import prismaClient from '../utils/prismaClient';
 import './BandApplicationRating';
 import PreviouslyPlayed from './PreviouslyPlayed';
 import {isPast} from 'date-fns';
+import viewerIdFromToken from '../utils/viewerIdFromToken';
 
 export const HeardAboutBookingFrom = builder.enumType('HeardAboutBookingFrom', {
   values: Object.values(HeardAboutBookingFromValues),
@@ -99,7 +100,7 @@ export default builder.prismaNode('BandApplication', {
       },
       nullable: true,
       type: 'Float',
-      resolve: async (root, _, {token}) => {
+      resolve: async (root, _, {parsedToken}) => {
         const [ratings, event] = await Promise.all([
           prismaClient.bandApplicationRating.findMany({
             where: {
@@ -113,7 +114,7 @@ export default builder.prismaNode('BandApplication', {
           }),
         ]);
 
-        const viewerId = token?.type === 'user' ? token.userId : undefined;
+        const viewerId = await viewerIdFromToken(parsedToken);
         if (ratings.length === 0) {
           return null;
         } else if (

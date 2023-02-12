@@ -1,17 +1,19 @@
 import {Context} from '../context';
-import {TokenInput} from '../routes/auth';
 
 const authProp =
-  (...authTypes: TokenInput['type'][]) =>
-  (_root: unknown, _args: unknown, {token}: Context) => {
+  (...authTypes: ('user' | 'device')[]) =>
+  (_root: unknown, _args: unknown, {parsedToken}: Context) => {
     for (const authType of authTypes) {
       switch (authType) {
         case 'user':
-          if (token?.type === 'user' && Boolean(token.userId)) {
+          if (
+            parsedToken?.iss === 'directus' ||
+            (parsedToken?.iss === undefined && parsedToken?.type === 'user')
+          ) {
             return true;
           }
         case 'device':
-          if (token?.type === 'device' && Boolean(token.deviceId)) {
+          if (parsedToken?.iss === 'device') {
             return true;
           }
       }

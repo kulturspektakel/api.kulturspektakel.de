@@ -2,6 +2,7 @@ import {UserInputError} from 'apollo-server-express';
 import BandApplication from '../models/BandApplication';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
+import viewerIdFromToken from '../utils/viewerIdFromToken';
 
 builder.mutationField('rateBandApplication', (t) =>
   t.field({
@@ -13,16 +14,17 @@ builder.mutationField('rateBandApplication', (t) =>
     resolve: async (
       _,
       {bandApplicationId: {id: bandApplicationId}, rating},
-      {token},
+      {parsedToken},
     ) => {
-      if (token?.type !== 'user' || !token.userId) {
+      const viewerId = await viewerIdFromToken(parsedToken);
+      if (viewerId == null) {
         throw new UserInputError('Wrong token');
       }
 
       const where = {
         viewerId_bandApplicationId: {
           bandApplicationId,
-          viewerId: token.userId,
+          viewerId,
         },
       };
 
@@ -44,12 +46,12 @@ builder.mutationField('rateBandApplication', (t) =>
           await prismaClient.bandApplicationRating.upsert({
             create: {
               rating,
-              viewerId: token.userId,
+              viewerId,
               bandApplicationId,
             },
             update: {
               rating,
-              viewerId: token.userId,
+              viewerId,
             },
             where,
             include,

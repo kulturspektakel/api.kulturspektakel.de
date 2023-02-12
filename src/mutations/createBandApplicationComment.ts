@@ -1,6 +1,7 @@
 import BandApplication from '../models/BandApplication';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
+import viewerIdFromToken from '../utils/viewerIdFromToken';
 
 const BandApplicationCommentInput = builder.inputType(
   'BandApplicationCommentInput',
@@ -21,12 +22,17 @@ builder.mutationField('createBandApplicationComment', (t) =>
     authScopes: {
       user: true,
     },
-    resolve: async (_, {input: {bandApplicationId, comment}}, {token}) => {
+    resolve: async (
+      _,
+      {input: {bandApplicationId, comment}},
+      {parsedToken},
+    ) => {
+      const viewerId = await viewerIdFromToken(parsedToken);
       const res = await prismaClient.bandApplicationComment.create({
         data: {
           bandApplicationId: bandApplicationId.id,
           comment,
-          viewerId: token?.type === 'user' ? token.userId! : '',
+          viewerId: viewerId!,
         },
         select: {
           bandApplication: true,

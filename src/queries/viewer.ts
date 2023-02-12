@@ -1,6 +1,7 @@
 import Viewer from '../models/Viewer';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
+import viewerIdFromToken from '../utils/viewerIdFromToken';
 
 builder.queryField('viewer', (t) =>
   t.prismaField({
@@ -9,14 +10,12 @@ builder.queryField('viewer', (t) =>
       user: true,
     },
     nullable: true,
-    resolve: (query, _root, _args, {token}) => {
-      if (token?.type !== 'user') {
-        return null;
-      }
+    resolve: async (query, _root, _args, {parsedToken}) => {
+      const viewerId = await viewerIdFromToken(parsedToken);
       return prismaClient.viewer.findUnique({
         ...query,
         where: {
-          id: token.userId,
+          id: viewerId!,
         },
       });
     },
