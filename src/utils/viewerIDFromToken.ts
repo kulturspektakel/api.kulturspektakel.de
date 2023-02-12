@@ -1,7 +1,7 @@
 import {ParsedToken} from '../routes/auth';
 import prismaClient from './prismaClient';
 
-export default async function viewerIDFromToken(
+export default async function viewerIdFromToken(
   parsedToken: ParsedToken | undefined,
 ): Promise<string | undefined> {
   if (parsedToken == null) {
