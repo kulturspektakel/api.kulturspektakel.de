@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
-  binaryTargets   = ["native"]
   previewFeatures = ["postgresqlExtensions"]
+  binaryTargets   = ["native"]
 }
 
 generator pothos {
@@ -12,7 +12,7 @@ generator pothos {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
-  extensions = [pg_trgm]
+  extensions = [pg_trgm, uuid_ossp(map: "uuid-ossp", schema: "public")]
 }
 
 model Viewer {
@@ -23,52 +23,205 @@ model Viewer {
   slackToken             String?
   slackScopes            String[]
   updatedAt              DateTime                 @default(now()) @updatedAt
-  BandApplicationRating  BandApplicationRating[]
   BandApplication        BandApplication[]
-  Nonce                  Nonce[]
   BandApplicationComment BandApplicationComment[]
+  BandApplicationRating  BandApplicationRating[]
+  Nonce                  Nonce[]
 }
 
 model Area {
-  id          String @id
-  displayName String
-  order       Int
-  themeColor  String
-  latitude    Float
-  longitude   Float
-
+  id              String            @id
+  displayName     String
+  order           Int
+  themeColor      String
+  latitude        Float
+  longitude       Float
   areaOpeningHour AreaOpeningHour[]
   BandPlaying     BandPlaying[]
 }
 
 model AreaOpeningHour {
   id        Int      @id @default(autoincrement())
-  area      Area     @relation(fields: [areaId], references: [id])
   startTime DateTime
   endTime   DateTime
   areaId    String
+  area      Area     @relation(fields: [areaId], references: [id])
 }
 
 model ProductList {
   id        Int         @id @default(autoincrement())
   name      String      @db.VarChar(20)
   emoji     String?
-  product   Product[]
-  OrderItem OrderItem[]
-  Device    Device[]
-  active    Boolean     @default(true)
+  active    Boolean?    @default(true)
   updatedAt DateTime?
+  Device    Device[]
+  OrderItem OrderItem[]
+  product   Product[]
 }
 
 model Product {
-  id              Int     @id @default(autoincrement())
-  name            String  @db.VarChar(30)
+  id              Int         @id @default(autoincrement())
+  name            String      @db.VarChar(30)
   price           Int
   order           Int
-  requiresDeposit Boolean @default(false)
+  productListId   Int
+  requiresDeposit Boolean     @default(false)
+  productList     ProductList @relation(fields: [productListId], references: [id])
+}
 
-  productList   ProductList @relation(fields: [productListId], references: [id])
-  productListId Int
+model Device {
+  id              String            @id
+  lastSeen        DateTime?
+  productListId   Int?
+  softwareVersion String?
+  type            DeviceType
+  CardTransaction CardTransaction[]
+  productList     ProductList?      @relation(fields: [productListId], references: [id])
+  Order           Order[]
+}
+
+model Order {
+  id                      Int              @id @default(autoincrement())
+  createdAt               DateTime         @default(now())
+  payment                 OrderPayment
+  deposit                 Int              @default(0)
+  deviceId                String?
+  cardTransactionClientId String?
+  CardTransaction         CardTransaction? @relation(fields: [cardTransactionClientId], references: [clientId])
+  device                  Device?          @relation(fields: [deviceId], references: [id])
+  items                   OrderItem[]
+}
+
+model OrderItem {
+  id            Int          @id @default(autoincrement())
+  orderId       Int
+  amount        Int
+  note          String?
+  name          String
+  perUnitPrice  Int
+  productListId Int?
+  order         Order        @relation(fields: [orderId], references: [id])
+  productList   ProductList? @relation(fields: [productListId], references: [id])
+}
+
+model CardTransaction {
+  clientId        String              @id
+  cardId          String
+  depositBefore   Int
+  depositAfter    Int
+  balanceBefore   Int
+  balanceAfter    Int
+  transactionType CardTransactionType
+  deviceId        String
+  createdAt       DateTime            @default(now())
+  deviceTime      DateTime
+  counter         Int?
+  device          Device              @relation(fields: [deviceId], references: [id])
+  Order           Order[]
+}
+
+model BandApplication {
+  id                     String                   @id @default(uuid())
+  createdAt              DateTime                 @default(now())
+  email                  String
+  bandname               String
+  genre                  String?
+  city                   String
+  facebook               String?
+  demo                   String?
+  description            String?
+  numberOfArtists        Int?
+  numberOfNonMaleArtists Int?
+  contactName            String
+  contactPhone           String
+  knowsKultFrom          String?
+  distance               Float?
+  facebookLikes          Int?
+  website                String?
+  genreCategory          GenreCategory
+  heardAboutBookingFrom  HeardAboutBookingFrom?
+  contactedByViewerId    String?
+  instagram              String?
+  instagramFollower      Int?
+  eventId                String
+  hasPreviouslyPlayed    PreviouslyPlayed?
+  lastContactedAt        DateTime?
+  latitude               Float?
+  longitude              Float?
+  demoEmbedUrl           String?
+  demoEmbed              String?
+  demoEmbedType          DemoEmbedType?
+  contactedByViewer      Viewer?                  @relation(fields: [contactedByViewerId], references: [id])
+  event                  Event                    @relation(fields: [eventId], references: [id])
+  bandApplicationComment BandApplicationComment[]
+  bandApplicationRating  BandApplicationRating[]
+}
+
+model BandApplicationRating {
+  viewerId          String
+  rating            Int
+  bandApplicationId String
+  bandApplication   BandApplication @relation(fields: [bandApplicationId], references: [id])
+  viewer            Viewer          @relation(fields: [viewerId], references: [id])
+
+  @@id([viewerId, bandApplicationId])
+  @@index([bandApplicationId])
+}
+
+model BandApplicationComment {
+  id                String          @id @default(uuid())
+  createdAt         DateTime        @default(now())
+  viewerId          String
+  comment           String
+  bandApplicationId String
+  bandApplication   BandApplication @relation(fields: [bandApplicationId], references: [id])
+  viewer            Viewer          @relation(fields: [viewerId], references: [id])
+}
+
+model Event {
+  id                   String            @id
+  name                 String
+  start                DateTime
+  end                  DateTime
+  eventType            EventType
+  bandApplicationStart DateTime?
+  bandApplicationEnd   DateTime?
+  djApplicationEnd     DateTime?
+  poster               String?           @db.Uuid
+  bandApplication      BandApplication[]
+  BandPlaying          BandPlaying[]
+}
+
+model BandPlaying {
+  id               String   @id @default(uuid())
+  name             String
+  startTime        DateTime
+  endTime          DateTime
+  description      String?
+  shortDescription String?
+  genre            String?
+  instagram        String?
+  spotify          String?
+  facebook         String?
+  website          String?
+  youtube          String?
+  soundcloud       String?
+  areaId           String
+  eventId          String
+  slug             String
+  photo            String?  @db.Uuid
+  area             Area     @relation(fields: [areaId], references: [id])
+  event            Event    @relation(fields: [eventId], references: [id])
+
+  @@unique([areaId, startTime])
+  @@unique([eventId, slug])
+}
+
+model Nonce {
+  nonce        String   @id @default(uuid())
+  expiresAt    DateTime
+  createdForId String?
+  createdFor   Viewer?  @relation(fields: [createdForId], references: [id])
 }
 
 enum OrderPayment {
@@ -84,57 +237,6 @@ enum OrderPayment {
 enum DeviceType {
   CONTACTLESS_TERMINAL
   IPAD
-}
-
-model Device {
-  id              String            @id
-  Order           Order[]
-  lastSeen        DateTime?
-  productList     ProductList?      @relation(fields: [productListId], references: [id])
-  productListId   Int?
-  CardTransaction CardTransaction[]
-  softwareVersion String?
-  type            DeviceType
-}
-
-model Order {
-  id                      Int              @id @default(autoincrement())
-  createdAt               DateTime         @default(now())
-  payment                 OrderPayment
-  deposit                 Int              @default(0)
-  device                  Device?          @relation(fields: [deviceId], references: [id])
-  deviceId                String?
-  items                   OrderItem[]
-  CardTransaction         CardTransaction? @relation(fields: [cardTransactionClientId], references: [clientId])
-  cardTransactionClientId String?
-}
-
-model OrderItem {
-  id            Int          @id @default(autoincrement())
-  order         Order        @relation(fields: [orderId], references: [id])
-  orderId       Int
-  amount        Int
-  note          String?
-  name          String
-  perUnitPrice  Int
-  productList   ProductList? @relation(fields: [productListId], references: [id])
-  productListId Int?
-}
-
-model CardTransaction {
-  clientId        String              @id
-  createdAt       DateTime            @default(now())
-  deviceTime      DateTime
-  cardId          String
-  depositBefore   Int
-  depositAfter    Int
-  balanceBefore   Int
-  balanceAfter    Int
-  transactionType CardTransactionType
-  device          Device              @relation(fields: [deviceId], references: [id])
-  deviceId        String
-  Order           Order[]
-  counter         Int?
 }
 
 enum CardTransactionType {
@@ -155,44 +257,6 @@ enum DemoEmbedType {
   SpotifyAlbum
 }
 
-model BandApplication {
-  id                     String                  @id @default(uuid())
-  createdAt              DateTime                @default(now())
-  email                  String
-  bandname               String
-  genreCategory          GenreCategory
-  genre                  String?
-  city                   String
-  facebook               String?
-  instagram              String?
-  website                String?
-  demo                   String?
-  demoEmbedUrl           String?
-  demoEmbedType          DemoEmbedType?
-  demoEmbed              String?
-  description            String?
-  numberOfArtists        Int?
-  numberOfNonMaleArtists Int?
-  contactName            String
-  contactPhone           String
-  knowsKultFrom          String?
-  heardAboutBookingFrom  HeardAboutBookingFrom?
-  distance               Float?
-  facebookLikes          Int?
-  instagramFollower      Int?
-  bandApplicationRating  BandApplicationRating[]
-  hasPreviouslyPlayed    PreviouslyPlayed?
-  lastContactedAt        DateTime?
-  latitude               Float?
-  longitude              Float?
-
-  event                  Event                    @relation(fields: [eventId], references: [id])
-  eventId                String
-  contactedByViewer      Viewer?                  @relation(fields: [contactedByViewerId], references: [id])
-  contactedByViewerId    String?
-  bandApplicationComment BandApplicationComment[]
-}
-
 enum PreviouslyPlayed {
   Yes
   OtherFormation
@@ -208,8 +272,8 @@ enum GenreCategory {
   Folk_SingerSongwriter_Country
   Elektro_HipHop
   Hardrock_Metal_Punk
-  DJ
   Other
+  DJ
 }
 
 enum HeardAboutBookingFrom {
@@ -221,70 +285,8 @@ enum HeardAboutBookingFrom {
   Instagram
 }
 
-model BandApplicationRating {
-  viewer            Viewer          @relation(fields: [viewerId], references: [id])
-  viewerId          String
-  rating            Int
-  bandApplication   BandApplication @relation(fields: [bandApplicationId], references: [id])
-  bandApplicationId String
-
-  @@id([viewerId, bandApplicationId])
-  @@index([bandApplicationId])
-}
-
-model BandApplicationComment {
-  id                String          @id @default(uuid())
-  createdAt         DateTime        @default(now())
-  viewer            Viewer          @relation(fields: [viewerId], references: [id])
-  viewerId          String
-  comment           String
-  bandApplication   BandApplication @relation(fields: [bandApplicationId], references: [id])
-  bandApplicationId String
-}
-
 enum EventType {
   Kulturspektakel
-}
-
-model Event {
-  id                   String            @id
-  name                 String
-  start                DateTime
-  end                  DateTime
-  eventType            EventType
-  bandApplicationStart DateTime?
-  bandApplicationEnd   DateTime?
-  djApplicationEnd     DateTime?
-  bandApplication      BandApplication[]
-  BandPlaying          BandPlaying[]
-}
-
-model BandPlaying {
-  id               String   @id @default(uuid())
-  name             String
-  startTime        DateTime
-  endTime          DateTime
-  description      String?
-  shortDescription String?
-  genre            String?
-  instagram        String?
-  spotify          String?
-  facebook         String?
-  website          String?
-  youtube          String?
-  soundcloud       String?
-  areaId           String
-  slug             String
-  area             Area     @relation(fields: [areaId], references: [id])
-  event            Event    @relation(fields: [eventId], references: [id])
-  eventId          String
-
-  @@unique([areaId, startTime])
-}
-
-model Nonce {
-  nonce        String   @id @default(uuid())
-  expiresAt    DateTime
-  createdFor   Viewer?  @relation(fields: [createdForId], references: [id])
-  createdForId String?
+  Other
+  Locker
 }
