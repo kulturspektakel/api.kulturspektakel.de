@@ -12,7 +12,7 @@ generator pothos {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
-  extensions = [pg_trgm, uuid_ossp(map: "uuid-ossp", schema: "public")]
+  extensions = [pg_trgm, uuid_ossp(map: "uuid-ossp", schema: "public"), unaccent]
 }
 
 model Viewer {
@@ -222,6 +222,13 @@ model Nonce {
   expiresAt    DateTime
   createdForId String?
   createdFor   Viewer?  @relation(fields: [createdForId], references: [id])
+}
+
+model News {
+  slug      String   @id
+  title     String
+  content   String
+  createdAt DateTime @default(now())
 }
 
 enum OrderPayment {
