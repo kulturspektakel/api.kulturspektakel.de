@@ -28,14 +28,33 @@ import prismaClient from '../src/utils/prismaClient';
     }
 
     while (
-      (result = /\(link: ([^)]+) text: ([^)]++)\)/gm.exec(news.content.text)) !=
-      null
+      (result = /\(link: ?([^) ]+)(?: text: ?([^)]+))?\)/gm.exec(
+        news.content.text,
+      )) != null
     ) {
       news.content.text = news.content.text.replace(
         result[0],
-        `[${result[2]}](${result[1]})`,
+        `[${result[2] ?? result[1]}](${result[1]})`,
       );
     }
+
+    while (
+      (result = /\(email: ?([^) ]+)(?: text: ?([^)]+))?\)/gm.exec(
+        news.content.text,
+      )) != null
+    ) {
+      news.content.text = news.content.text.replace(
+        result[0],
+        `[${result[2] ?? result[1]}](mailto:${result[1]})`,
+      );
+    }
+
+    news.content.text = news.content.text.replace(/\r/gm, '\n');
+    news.content.text = news.content.text.replace(/(?<!\n)\n(?!\n)/gm, '  \n');
+    news.content.text = news.content.text.replace(
+      / *\n *(?: *\n *)+/gm,
+      '\n\n',
+    );
   }
 
   await prismaClient.$transaction([
