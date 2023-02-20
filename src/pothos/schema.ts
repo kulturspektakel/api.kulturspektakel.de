@@ -27,6 +27,7 @@ import '../mutations/updateBandApplication';
 
 import '../queries/areas';
 import '../queries/cardStatus';
+import '../queries/checkDuplicateApplication';
 import '../queries/config';
 import '../queries/devices';
 import '../queries/distanceToKult';
