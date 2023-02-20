@@ -22,7 +22,7 @@ builder.queryField('checkDuplicateApplication', (t) =>
     nullable: true,
     args: {
       bandname: t.arg.string({required: true}),
-      eventId: t.arg.string({required: true}),
+      eventId: t.arg.globalID({required: true}),
     },
     resolve: async (_root, {bandname, eventId}) => {
       const application = await prismaClient.bandApplication.findFirst({
@@ -31,7 +31,7 @@ builder.queryField('checkDuplicateApplication', (t) =>
             equals: bandname,
             mode: 'insensitive',
           },
-          eventId,
+          eventId: eventId.id,
         },
       });
 
