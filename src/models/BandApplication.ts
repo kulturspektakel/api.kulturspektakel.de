@@ -136,7 +136,9 @@ export default builder.prismaNode('BandApplication', {
           ...query,
           where: {
             id: {not: parent.id},
-            bandname: parent.bandname,
+            bandname: {
+              search: parent.bandname.split(' ').join('<->'),
+            },
           },
           orderBy: {
             eventId: 'desc',
@@ -150,7 +152,9 @@ export default builder.prismaNode('BandApplication', {
           ...query,
           where: {
             id: {not: parent.id},
-            name: parent.bandname,
+            name: {
+              search: parent.bandname.split(' ').join('<->'),
+            },
           },
           orderBy: {
             eventId: 'desc',
