@@ -7,7 +7,7 @@ export default builder.prismaNode('Event', {
     start: t.expose('start', {type: 'DateTime'}),
     end: t.expose('end', {type: 'DateTime'}),
     bandsPlaying: t.relation('BandPlaying'),
-    description: t.exposeString('description'),
+    description: t.exposeString('description', {nullable: true}),
     bandApplicationStart: t.expose('bandApplicationStart', {
       type: 'DateTime',
       nullable: true,
