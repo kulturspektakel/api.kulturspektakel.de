@@ -1,5 +1,5 @@
 import {builder} from '../pothos/builder';
-import Asset from './Asset';
+import {pixelImageField} from './Asset';
 
 export default builder.prismaNode('Event', {
   id: {field: 'id'},
@@ -31,14 +31,6 @@ export default builder.prismaNode('Event', {
         },
       }),
     }),
-    poster: t.field({
-      type: Asset,
-      nullable: true,
-      resolve: () => {
-        return {
-          uri: `https://cms.kulturspektakel.de/assets/id`,
-        };
-      },
-    }),
+    poster: pixelImageField(t as any, 'poster'),
   }),
 });
