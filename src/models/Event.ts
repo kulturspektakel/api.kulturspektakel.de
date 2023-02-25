@@ -1,4 +1,5 @@
 import {builder} from '../pothos/builder';
+import Asset from './Asset';
 
 export default builder.prismaNode('Event', {
   id: {field: 'id'},
@@ -29,6 +30,15 @@ export default builder.prismaNode('Event', {
           createdAt: 'asc',
         },
       }),
+    }),
+    poster: t.field({
+      type: Asset,
+      nullable: true,
+      resolve: () => {
+        return {
+          uri: `https://cms.kulturspektakel.de/assets/id`,
+        };
+      },
     }),
   }),
 });

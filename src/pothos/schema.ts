@@ -1,4 +1,5 @@
 import '../models/Area';
+import '../models/Asset';
 import '../models/BandApplication';
 import '../models/BandApplicationComment';
 import '../models/BandPlaying';
