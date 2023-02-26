@@ -6,6 +6,7 @@ builder.queryField('news', (t) =>
   t.prismaConnection({
     type: News,
     nodeNullable: false,
+    edgesNullable: false,
     nullable: false,
     cursor: 'slug',
     resolve: (query, _parent, args) =>
