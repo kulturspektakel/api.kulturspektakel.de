@@ -5,7 +5,7 @@ import prismaClient from '../utils/prismaClient';
 builder.queryField('findBandPlaying', (t) =>
   t.field({
     type: [BandPlaying],
-    nullable: true,
+    nullable: false,
     args: {
       query: t.arg.string({required: true}),
     },
