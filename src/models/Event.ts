@@ -7,7 +7,25 @@ export default builder.prismaNode('Event', {
     name: t.exposeString('name'),
     start: t.expose('start', {type: 'DateTime'}),
     end: t.expose('end', {type: 'DateTime'}),
-    bandsPlaying: t.relation('BandPlaying'),
+    bandsPlaying: t.relatedConnection('BandPlaying', {
+      cursor: 'id',
+      edgesNullable: false,
+      nullable: false,
+      nodeNullable: false,
+      query: () => ({
+        orderBy: [
+          {
+            startTime: 'asc',
+          },
+          {
+            area: {
+              order: 'asc',
+            },
+          },
+        ],
+      }),
+      totalCount: true,
+    }),
     description: t.exposeString('description', {nullable: true}),
     bandApplicationStart: t.expose('bandApplicationStart', {
       type: 'DateTime',
