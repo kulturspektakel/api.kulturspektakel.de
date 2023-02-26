@@ -34,6 +34,7 @@ import '../queries/devices';
 import '../queries/distanceToKult';
 import '../queries/findBandPlaying';
 import '../queries/events';
+import '../queries/news';
 import '../queries/nuclino';
 import '../queries/productLists';
 import '../queries/transactions';

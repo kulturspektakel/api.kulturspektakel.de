@@ -73,15 +73,11 @@ export function pixelImageField(
             copyright?: string;
           },
         ]
-      >`
-          select * from "directus"."directus_files" where "id"=${id}::uuid
-        `;
+      >`select * from "directus"."directus_files" where "id"=${id}::uuid`;
 
       if (row == null) {
         return null;
       }
-
-      console.log(row);
 
       const uri = new URL(`https://cms.kulturspektakel.de/assets/${id}`);
 
