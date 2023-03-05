@@ -8,17 +8,19 @@ builder.queryField('findBandPlaying', (t) =>
     nullable: false,
     args: {
       query: t.arg.string({required: true}),
+      limit: t.arg.int(),
     },
-    resolve: (_root, {query}) => {
+    resolve: (_root, {query, limit}) => {
       if (!query) {
         return [];
       }
       return prismaClient.bandPlaying.findMany({
         where: {
           name: {
-            search: `${query.split(' ').join('<->')}:*`,
+            search: `${query.trim().split(' ').join('<->')}:*`,
           },
         },
+        take: limit ?? 10,
       });
     },
   }),
