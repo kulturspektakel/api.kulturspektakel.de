@@ -1,4 +1,5 @@
 import {builder} from '../pothos/builder';
+import {pixelImageField} from './Asset';
 
 export default builder.prismaNode('BandPlaying', {
   id: {field: 'id'},
@@ -11,5 +12,6 @@ export default builder.prismaNode('BandPlaying', {
     eventId: t.exposeID('eventId'),
     event: t.relation('event'),
     area: t.relation('area'),
+    photo: pixelImageField(t as any, 'photo'),
   }),
 });
