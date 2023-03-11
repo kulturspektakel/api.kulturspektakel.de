@@ -20,6 +20,9 @@ builder.queryField('findBandPlaying', (t) =>
             search: `${query.trim().split(' ').join('<->')}:*`,
           },
         },
+        orderBy: {
+          startTime: 'desc',
+        },
         take: limit ?? 10,
       });
     },
