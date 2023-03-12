@@ -27,6 +27,7 @@ import '../mutations/upsertProductList';
 import '../mutations/updateBandApplication';
 
 import '../queries/areas';
+import '../queries/bandPlaying';
 import '../queries/cardStatus';
 import '../queries/checkDuplicateApplication';
 import '../queries/config';
