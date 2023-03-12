@@ -2,7 +2,7 @@ import BandPlaying from '../models/BandPlaying';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 
-builder.queryField('findBandPlaying', (t) =>
+builder.queryField('bandPlaying', (t) =>
   t.field({
     type: BandPlaying,
     nullable: true,
