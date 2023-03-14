@@ -9,6 +9,7 @@ import './BandApplicationRating';
 import PreviouslyPlayed from './PreviouslyPlayed';
 import {isPast} from 'date-fns';
 import viewerIdFromToken from '../utils/viewerIdFromToken';
+import sanitizeTSQuery from '../utils/sanitizeTSQuery';
 
 export const HeardAboutBookingFrom = builder.enumType('HeardAboutBookingFrom', {
   values: Object.values(HeardAboutBookingFromValues),
@@ -137,7 +138,7 @@ export default builder.prismaNode('BandApplication', {
           where: {
             id: {not: parent.id},
             bandname: {
-              search: parent.bandname.split(' ').join('<->'),
+              search: sanitizeTSQuery(parent.bandname),
             },
           },
           orderBy: {
@@ -153,7 +154,7 @@ export default builder.prismaNode('BandApplication', {
           where: {
             id: {not: parent.id},
             name: {
-              search: parent.bandname.split(' ').join('<->'),
+              search: sanitizeTSQuery(parent.bandname),
             },
           },
           orderBy: {
