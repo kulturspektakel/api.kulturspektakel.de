@@ -16,12 +16,14 @@ builder.queryField('findBandPlaying', (t) =>
         return [];
       }
 
-      query = sanitizeTSQuery(query);
+      query = sanitizeTSQuery(query, {
+        prefixMatching: true,
+      });
 
       return prismaClient.bandPlaying.findMany({
         where: {
           name: {
-            search: `${query}:*`,
+            search: query,
           },
         },
         orderBy: {

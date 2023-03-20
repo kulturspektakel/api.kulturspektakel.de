@@ -138,7 +138,7 @@ export default builder.prismaNode('BandApplication', {
           where: {
             id: {not: parent.id},
             bandname: {
-              search: sanitizeTSQuery(parent.bandname),
+              search: sanitizeTSQuery(parent.bandname, {spacesOptional: true}),
             },
           },
           orderBy: {
@@ -154,7 +154,7 @@ export default builder.prismaNode('BandApplication', {
           where: {
             id: {not: parent.id},
             name: {
-              search: sanitizeTSQuery(parent.bandname),
+              search: sanitizeTSQuery(parent.bandname, {spacesOptional: true}),
             },
           },
           orderBy: {
