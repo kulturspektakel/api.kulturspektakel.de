@@ -11,6 +11,7 @@ export default builder.prismaNode('BandPlaying', {
     startTime: t.expose('startTime', {type: 'DateTime'}),
     endTime: t.expose('endTime', {type: 'DateTime'}),
     description: t.exposeString('description', {nullable: true}),
+    shortDescription: t.exposeString('shortDescription', {nullable: true}),
     eventId: t.field({
       type: 'ID',
       resolve: (t) => encodeGlobalID('Event', t.eventId),
