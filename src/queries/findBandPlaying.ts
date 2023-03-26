@@ -1,6 +1,7 @@
 import BandPlaying from '../models/BandPlaying';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
+import sanitizeTSQuery from '../utils/sanitizeTSQuery';
 
 builder.queryField('findBandPlaying', (t) =>
   t.field({
@@ -15,18 +16,14 @@ builder.queryField('findBandPlaying', (t) =>
         return [];
       }
 
-      query = query
-        // sanitize tsquery: Only Letters, spaces, dash
-        .replace(/[^\p{L}0-9- ]/g, ' ')
-        // remove spaces in front and beginning
-        .trim()
-        // sanitize tsquery: Only Letters, spaces, dash
-        .replace(/\s\s*/g, '<->');
+      query = sanitizeTSQuery(query, {
+        prefixMatching: true,
+      });
 
       return prismaClient.bandPlaying.findMany({
         where: {
           name: {
-            search: `${query}:*`,
+            search: query,
           },
         },
         orderBy: {
