@@ -64,10 +64,6 @@ router.postAsync(
             response_action: 'clear',
           });
         case 'two-factor-code':
-          res.status(200).json({
-            response_action: 'clear',
-          });
-
           const value = action.value.split('@');
           const service = value.pop();
           const account = value.join('@');
@@ -81,16 +77,13 @@ router.postAsync(
             payload.user.name,
             twoFactor,
           );
-          const response = await fetch(payload.response_url, {
-            body: JSON.stringify({...body, trigger_id: payload.trigger_id}),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            method: 'post',
-          })
-            .then((res) => res.json())
-            .catch(console.error);
-          console.log(response);
+
+          res.status(200).json({
+            response_action: 'clear',
+            trigger_id: payload.trigger_id,
+            ...body,
+          });
+
           return;
         default:
           throw new UnreachableCaseError(action.action_id);
