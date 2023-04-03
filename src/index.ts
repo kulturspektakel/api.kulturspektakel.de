@@ -8,6 +8,7 @@ import auth from './routes/auth';
 import slackInteraction from './routes/slack/interaction';
 import slackToken from './routes/slack/token';
 import slackEvents from './routes/slack/events';
+import slackTwoFactor from './routes/slack/twofactor';
 import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
@@ -69,6 +70,7 @@ const server = new ApolloServer({
   app.use('/slack', slackInteraction);
   app.use('/slack', slackToken);
   app.use('/slack', slackEvents);
+  app.use('/slack', slackTwoFactor);
   app.use('/saml', saml);
   app.use('/\\$\\$\\$', kultCash);
   app.use(

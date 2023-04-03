@@ -1,7 +1,9 @@
 import {Router} from '@awaitjs/express';
 import express, {Request} from 'express';
 import nuclinoTokenGeneration from '../../utils/nuclinoTokenGeneration';
+import prismaClient from '../../utils/prismaClient';
 import UnreachableCaseError from '../../utils/UnreachableCaseError';
+import {generateTwoFactorCodeResponse} from './twofactor';
 
 const router = Router({});
 
@@ -26,7 +28,10 @@ router.postAsync(
         type: 'button';
         value: string;
         block_id?: string;
-        action_id: 'nuclino-login-generation' | 'nuclino-login-open';
+        action_id:
+          | 'nuclino-login-generation'
+          | 'nuclino-login-open'
+          | 'two-factor-code';
       }>;
       callback_id: string;
       team: {id: string; domain: string};
@@ -42,12 +47,11 @@ router.postAsync(
       response_url: string;
       trigger_id: string;
     } = JSON.parse(req.body.payload);
-    console.log(payload);
     const [action] = payload.actions ?? [];
     if (action) {
       switch (action.action_id) {
         case 'nuclino-login-generation':
-          res.send();
+          res.status(200).send('ok');
           await nuclinoTokenGeneration(
             payload.user.id,
             payload.trigger_id,
@@ -55,7 +59,28 @@ router.postAsync(
           );
           return;
         case 'nuclino-login-open':
-          return res.send();
+          return res.status(200).json({
+            response_action: 'clear',
+          });
+        case 'two-factor-code':
+          const value = action.value.split('@');
+          const service = value.pop();
+          const account = value.join('@');
+          const twoFactor = await prismaClient.twoFactor.findFirstOrThrow({
+            where: {
+              service,
+              account,
+            },
+          });
+          const code = await generateTwoFactorCodeResponse(
+            payload.user.name,
+            twoFactor,
+          );
+          res.status(200).send({
+            response_action: 'clear',
+            ...code,
+          });
+          return;
         default:
           throw new UnreachableCaseError(action.action_id);
       }

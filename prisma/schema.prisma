@@ -232,6 +232,14 @@ model News {
   createdAt DateTime @default(now())
 }
 
+model TwoFactor {
+  account String
+  service String
+  secret  String
+
+  @@unique([account, service])
+}
+
 enum OrderPayment {
   CASH
   BON
