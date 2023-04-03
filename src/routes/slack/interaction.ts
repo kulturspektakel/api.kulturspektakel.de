@@ -1,10 +1,9 @@
 import {Router} from '@awaitjs/express';
 import express, {Request} from 'express';
-import fetch from 'node-fetch';
 import nuclinoTokenGeneration from '../../utils/nuclinoTokenGeneration';
 import prismaClient from '../../utils/prismaClient';
 import UnreachableCaseError from '../../utils/UnreachableCaseError';
-import {generateTwoFactorCodeResponse} from './twofactor';
+import {generateTwoFactorCodeResponse, twoFactorModal} from './twofactor';
 
 const router = Router({});
 
@@ -73,17 +72,11 @@ router.postAsync(
               account,
             },
           });
-          const body = await generateTwoFactorCodeResponse(
-            payload.user.name,
-            twoFactor,
+          await twoFactorModal(
+            payload.trigger_id,
+            action.value,
+            payload.user.id,
           );
-
-          res.status(200).json({
-            response_action: 'clear',
-            trigger_id: payload.trigger_id,
-            ...body,
-          });
-
           return;
         default:
           throw new UnreachableCaseError(action.action_id);

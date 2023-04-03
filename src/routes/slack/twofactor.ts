@@ -20,33 +20,76 @@ router.postAsync(
     );
 
     if (matchingAccounts.length === 1) {
-      const response = await generateTwoFactorCodeResponse(
+      const code = await generateTwoFactorCodeResponse(
         req.body.user_name,
         matchingAccounts[0],
       );
-      return res.status(200).json(response);
-    }
-
-    res.status(200).send();
-
-    const response = await slackApiRequest('views.open', {
-      trigger_id: req.body.trigger_id,
-      view: {
-        type: 'modal',
-        callback_id: 'two-factor',
-        title: {
-          type: 'plain_text',
-          text: '2-Faktor-Code',
-        },
+      const {account, service} = matchingAccounts[0];
+      return res.status(200).json({
+        text: `2-Faktor-Code für ${account} (${service}): ${code}`,
         blocks: [
           {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: 'Hier kannst du dir einen 2-Faktor-Code generieren um dich in einen geteilten Kult-Account einzuloggen.',
+              text: `2-Faktor-Code für *${account}* (${service}): \`${code}\``,
             },
           },
-          ...accounts.map((a) => ({
+          {
+            type: 'context',
+            elements: [
+              {
+                type: 'plain_text',
+                text: 'Der Code ist für 30 Sekunden gültig.',
+                emoji: true,
+              },
+            ],
+          },
+        ],
+      });
+    }
+
+    res.status(200).send();
+    await twoFactorModal(req.body.trigger_id);
+  },
+);
+
+export async function twoFactorModal(
+  trigger_id: string,
+  buttonValue?: string,
+  userId?: string,
+): Promise<void> {
+  const accounts = await prismaClient.twoFactor.findMany();
+
+  let code: string | null = null;
+  if (buttonValue != null && userId != null) {
+    const account = accounts.find((a) => getButtonValue(a) === buttonValue);
+    if (account != null) {
+      code = await generateTwoFactorCodeResponse(userId, account);
+    }
+  }
+
+  const response = await slackApiRequest(code ? 'views.update' : 'views.open', {
+    trigger_id,
+    view: {
+      type: 'modal',
+      callback_id: 'two-factor',
+      title: {
+        type: 'plain_text',
+        text: '2-Faktor-Code',
+      },
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: 'Hier kannst du dir einen 2-Faktor-Code generieren um dich in einen geteilten Kult-Account einzuloggen.',
+          },
+        },
+        ...accounts.map((a) => {
+          const isCodeDisplay = getButtonValue(a) === buttonValue;
+
+          return {
             type: 'section',
             text: {
               type: 'mrkdwn',
@@ -56,33 +99,34 @@ router.postAsync(
               type: 'button',
               text: {
                 type: 'plain_text',
-                text: 'Code generieren',
+                text: isCodeDisplay ? code : 'Code generieren',
               },
-              value: `${a.account}@${a.service}`,
+              value: getButtonValue(a),
+              style: isCodeDisplay ? 'danger' : undefined,
               action_id: 'two-factor-code',
             },
-          })),
-          {
-            type: 'context',
-            elements: [
-              {
-                type: 'plain_text',
-                text: 'Generierte Codes sind nur für dich sichtbar und 30 Sekunden lang gültig. Es ist für alle sichbar, dass du dir einen Code generiert hast.',
-              },
-            ],
-          },
-        ],
-      },
-    });
+          };
+        }),
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'plain_text',
+              text: 'Generierte Codes sind nur für dich sichtbar und 30 Sekunden lang gültig. Es ist für alle sichbar, dass du dir einen Code generiert hast.',
+            },
+          ],
+        },
+      ],
+    },
+  });
 
-    if (!response.ok) {
-      throw new Error(response.error);
-    }
-  },
-);
+  if (!response.ok) {
+    throw new Error(response.error);
+  }
+}
 
 export async function generateTwoFactorCodeResponse(
-  username: string,
+  userId: string,
   {
     secret,
     account,
@@ -97,31 +141,20 @@ export async function generateTwoFactorCodeResponse(
 
   await sendMessage({
     channel: SlackChannel.dev,
-    text: `${username} hat einen 2-Faktor-Code für ${account} (${service}) generiert.`,
+    text: `<@${userId}> hat einen 2-Faktor-Code für ${account} (${service}) generiert.`,
   });
 
-  return {
-    text: `2-Faktor-Code für ${account} (${service}): ${code}`,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `2-Faktor-Code für *${account}* (${service}): \`${code}\``,
-        },
-      },
-      {
-        type: 'context',
-        elements: [
-          {
-            type: 'plain_text',
-            text: 'Der Code ist für 30 Sekunden gültig.',
-            emoji: true,
-          },
-        ],
-      },
-    ],
-  };
+  return code;
+}
+
+function getButtonValue({
+  account,
+  service,
+}: {
+  account: string;
+  service: string;
+}) {
+  return `${account}@${service}`;
 }
 
 export default router;
