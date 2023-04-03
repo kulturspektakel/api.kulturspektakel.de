@@ -20,66 +20,15 @@ router.postAsync(
     );
 
     if (matchingAccounts.length === 1) {
-      const code = await generateTwoFactorCodeResponse(
+      const response = await generateTwoFactorCodeResponse(
         req.body.user_name,
         matchingAccounts[0],
       );
-      const {account, service} = matchingAccounts[0];
-      return res.status(200).json({
-        text: `2-Faktor-Code für ${account} (${service}): ${code}`,
-        blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `2-Faktor-Code für *${account}* (${service}): \`${code}\``,
-            },
-          },
-          {
-            type: 'context',
-            elements: [
-              {
-                type: 'plain_text',
-                text: 'Der Code ist für 30 Sekunden gültig.',
-                emoji: true,
-              },
-            ],
-          },
-        ],
-      });
+      return res.status(200).json(response);
     }
 
-    res.status(200).send();
-    await twoFactorModal(req.body.trigger_id);
-  },
-);
-
-export async function twoFactorModal(
-  trigger_id: string,
-  buttonValue?: string,
-  userId?: string,
-): Promise<void> {
-  const accounts = await prismaClient.twoFactor.findMany();
-
-  let code: string | null = null;
-  if (buttonValue != null && userId != null) {
-    const account = accounts.find((a) => getButtonValue(a) === buttonValue);
-    if (account != null) {
-      code = await generateTwoFactorCodeResponse(userId, account);
-    }
-  }
-
-  const response = await slackApiRequest(code ? 'views.update' : 'views.open', {
-    trigger_id,
-    view_id: code ? 'two-factor' : undefined,
-    view: {
-      id: code ? undefined : 'two-factor',
-      type: 'modal',
-      callback_id: 'two-factor',
-      title: {
-        type: 'plain_text',
-        text: '2-Faktor-Code',
-      },
+    res.status(200).json({
+      text: 'Für welchen Account möchtest du einen 2-Faktor-Code generieren?',
       blocks: [
         {
           type: 'section',
@@ -88,27 +37,22 @@ export async function twoFactorModal(
             text: 'Hier kannst du dir einen 2-Faktor-Code generieren um dich in einen geteilten Kult-Account einzuloggen.',
           },
         },
-        ...accounts.map((a) => {
-          const isCodeDisplay = getButtonValue(a) === buttonValue;
-
-          return {
-            type: 'section',
+        ...accounts.map((a) => ({
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `*${a.account}* (${a.service})`,
+          },
+          accessory: {
+            type: 'button',
             text: {
-              type: 'mrkdwn',
-              text: `*${a.account}* (${a.service})`,
+              type: 'plain_text',
+              text: 'Code generieren',
             },
-            accessory: {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: isCodeDisplay ? code : 'Code generieren',
-              },
-              value: getButtonValue(a),
-              style: isCodeDisplay ? 'danger' : undefined,
-              action_id: 'two-factor-code',
-            },
-          };
-        }),
+            value: `${a.account}@${a.service}`,
+            action_id: 'two-factor-code',
+          },
+        })),
         {
           type: 'context',
           elements: [
@@ -119,14 +63,9 @@ export async function twoFactorModal(
           ],
         },
       ],
-    },
-  });
-
-  if (!response.ok) {
-    console.error(response);
-    throw new Error(response.error);
-  }
-}
+    });
+  },
+);
 
 export async function generateTwoFactorCodeResponse(
   userId: string,
@@ -147,17 +86,28 @@ export async function generateTwoFactorCodeResponse(
     text: `<@${userId}> hat einen 2-Faktor-Code für ${account} (${service}) generiert.`,
   });
 
-  return code;
-}
-
-function getButtonValue({
-  account,
-  service,
-}: {
-  account: string;
-  service: string;
-}) {
-  return `${account}@${service}`;
+  return {
+    text: `2-Faktor-Code für ${account} (${service}): ${code}`,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `2-Faktor-Code für *${account}* (${service}): \`${code}\``,
+        },
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'plain_text',
+            text: 'Der Code ist für 30 Sekunden gültig.',
+            emoji: true,
+          },
+        ],
+      },
+    ],
+  };
 }
 
 export default router;
