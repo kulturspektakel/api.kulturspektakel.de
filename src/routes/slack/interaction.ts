@@ -81,13 +81,14 @@ router.postAsync(
             payload.user.name,
             twoFactor,
           );
-          await fetch(payload.response_url, {
+          const response = await fetch(payload.response_url, {
             body: JSON.stringify(body),
             headers: {
               'Content-Type': 'application/json',
             },
             method: 'post',
-          });
+          }).then((res) => res.json());
+          console.log(response);
           return;
         default:
           throw new UnreachableCaseError(action.action_id);

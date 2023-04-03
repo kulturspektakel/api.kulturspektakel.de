@@ -54,7 +54,7 @@ export default builder.prismaNode('Event', {
     // media: t.connection({
     //   type: Asset,
     //   resolve: async (root, {before, after, first, last}) => {
-    //     const assets = await prismaClient;
+    //     const assets = await prismaClient.$queryRaw<[{}]>`select * from "directus"."files"`;
     //     return {
     //       pageInfo: {
     //         hasNextPage: false,
@@ -62,16 +62,10 @@ export default builder.prismaNode('Event', {
     //         startCursor: 'abc',
     //         endCursor: 'def',
     //       },
-    //       edges: [
-    //         {
-    //           cursor: 'abc',
-    //           node: null,
-    //         },
-    //         {
-    //           cursor: 'def',
-    //           node: null,
-    //         },
-    //       ],
+    //       edges: assets.map((asset) => ({
+    //         cursor: 'abc',
+    //         node: null,
+    //       })),
     //     };
     //   },
     // }),
