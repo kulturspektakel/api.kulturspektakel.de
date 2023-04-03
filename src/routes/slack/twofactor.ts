@@ -71,9 +71,9 @@ export async function twoFactorModal(
 
   const response = await slackApiRequest(code ? 'views.update' : 'views.open', {
     trigger_id,
-    view_id: 'two-factor',
+    view_id: code ? 'two-factor' : undefined,
     view: {
-      id: 'two-factor',
+      id: code ? undefined : 'two-factor',
       type: 'modal',
       callback_id: 'two-factor',
       title: {
