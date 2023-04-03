@@ -73,6 +73,7 @@ export async function twoFactorModal(
     trigger_id,
     view_id: 'two-factor',
     view: {
+      id: 'two-factor',
       type: 'modal',
       callback_id: 'two-factor',
       title: {
