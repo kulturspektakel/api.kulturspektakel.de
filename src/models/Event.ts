@@ -1,4 +1,5 @@
 import {builder} from '../pothos/builder';
+import prismaClient from '../utils/prismaClient';
 import {Asset, pixelImageField} from './Asset';
 
 export default builder.prismaNode('Event', {
@@ -52,8 +53,26 @@ export default builder.prismaNode('Event', {
     poster: pixelImageField(t as any, 'poster'),
     // media: t.connection({
     //   type: Asset,
-    //   resolve: (root, {before, after, first, last}) => {
-    //     return [];
+    //   resolve: async (root, {before, after, first, last}) => {
+    //     const assets = await prismaClient;
+    //     return {
+    //       pageInfo: {
+    //         hasNextPage: false,
+    //         hasPreviousPage: false,
+    //         startCursor: 'abc',
+    //         endCursor: 'def',
+    //       },
+    //       edges: [
+    //         {
+    //           cursor: 'abc',
+    //           node: null,
+    //         },
+    //         {
+    //           cursor: 'def',
+    //           node: null,
+    //         },
+    //       ],
+    //     };
     //   },
     // }),
   }),

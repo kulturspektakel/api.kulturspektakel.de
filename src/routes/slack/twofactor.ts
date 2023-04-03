@@ -33,10 +33,10 @@ router.postAsync(
       trigger_id: req.body.trigger_id,
       view: {
         type: 'modal',
-        callback_id: 'nuclino-login',
+        callback_id: 'two-factor',
         title: {
           type: 'plain_text',
-          text: '2-Faktor-Authentifizierung',
+          text: '2-Faktor-Code',
         },
         blocks: [
           {
@@ -51,14 +51,12 @@ router.postAsync(
             text: {
               type: 'mrkdwn',
               text: `*${a.account}* ${a.service}`,
-              emoji: true,
             },
             accessory: {
               type: 'button',
               text: {
                 type: 'plain_text',
                 text: 'Code generieren',
-                emoji: true,
               },
               value: `${a.account}@${a.service}`,
               action_id: 'two-factor-code',
@@ -70,7 +68,6 @@ router.postAsync(
               {
                 type: 'plain_text',
                 text: 'Generierte Codes sind nur für dich sichtbar und 30 Sekunden lang gültig. Es ist für alle sichbar, dass du dir einen Code generiert hast.',
-                emoji: true,
               },
             ],
           },
