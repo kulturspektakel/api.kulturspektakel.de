@@ -50,7 +50,7 @@ router.postAsync(
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `*${a.account}* ${a.service}`,
+              text: `*${a.account}* (${a.service})`,
             },
             accessory: {
               type: 'button',
@@ -103,14 +103,13 @@ export async function generateTwoFactorCodeResponse(
   });
 
   return {
-    channel: SlackChannel.dev,
-    text: `2-Faktor-Code für ${account} (${service}): \`${code}\``,
+    text: `2-Faktor-Code für ${account} (${service}): ${code}`,
     blocks: [
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*2-Faktor-Code für ${account}* (${service}): \`${code}\``,
+          text: `2-Faktor-Code für *${account}* (${service}): \`${code}\``,
         },
       },
       {

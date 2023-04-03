@@ -1,5 +1,6 @@
 import {Router} from '@awaitjs/express';
 import express, {Request} from 'express';
+import fetch from 'node-fetch';
 import nuclinoTokenGeneration from '../../utils/nuclinoTokenGeneration';
 import prismaClient from '../../utils/prismaClient';
 import UnreachableCaseError from '../../utils/UnreachableCaseError';
@@ -63,6 +64,10 @@ router.postAsync(
             response_action: 'clear',
           });
         case 'two-factor-code':
+          res.status(200).send({
+            response_action: 'clear',
+          });
+
           const value = action.value.split('@');
           const service = value.pop();
           const account = value.join('@');
@@ -72,13 +77,16 @@ router.postAsync(
               account,
             },
           });
-          const code = await generateTwoFactorCodeResponse(
+          const body = await generateTwoFactorCodeResponse(
             payload.user.name,
             twoFactor,
           );
-          res.status(200).send({
-            response_action: 'clear',
-            ...code,
+          await fetch(payload.response_url, {
+            body: JSON.stringify(body),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method: 'post',
           });
           return;
         default:
