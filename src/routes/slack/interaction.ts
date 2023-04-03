@@ -48,7 +48,6 @@ router.postAsync(
       response_url: string;
       trigger_id: string;
     } = JSON.parse(req.body.payload);
-    console.log(payload);
     const [action] = payload.actions ?? [];
     if (action) {
       switch (action.action_id) {
@@ -82,9 +81,8 @@ router.postAsync(
             payload.user.name,
             twoFactor,
           );
-          console.log(body);
           const response = await fetch(payload.response_url, {
-            body: JSON.stringify(body),
+            body: JSON.stringify({...body, trigger_id: payload.trigger_id}),
             headers: {
               'Content-Type': 'application/json',
             },
