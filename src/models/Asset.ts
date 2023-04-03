@@ -18,7 +18,7 @@ type AssetT = {
   title?: string;
 };
 
-const Asset = builder.interfaceRef<AssetT>('Asset').implement({
+export const Asset = builder.interfaceRef<AssetT>('Asset').implement({
   fields: (t) => ({
     id: t.exposeString('id'),
     copyright: t.exposeString('copyright', {nullable: true}),

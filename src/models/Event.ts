@@ -1,5 +1,5 @@
 import {builder} from '../pothos/builder';
-import {pixelImageField} from './Asset';
+import {Asset, pixelImageField} from './Asset';
 
 export default builder.prismaNode('Event', {
   id: {field: 'id'},
@@ -50,5 +50,11 @@ export default builder.prismaNode('Event', {
       }),
     }),
     poster: pixelImageField(t as any, 'poster'),
+    // media: t.connection({
+    //   type: Asset,
+    //   resolve: (root, {before, after, first, last}) => {
+    //     return [];
+    //   },
+    // }),
   }),
 });

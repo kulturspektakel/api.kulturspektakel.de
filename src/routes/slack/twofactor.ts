@@ -12,11 +12,11 @@ router.postAsync(
   // @ts-ignore postAsync is not typed correctly
   express.urlencoded(),
   async (req: SlackSlashCommandRequest, res) => {
-    const text = req.body.text.trim().toLowerCase();
     const accounts = await prismaClient.twoFactor.findMany();
 
     const matchingAccounts = accounts.filter(
-      (a) => a.account.toLocaleLowerCase() === text,
+      (a) =>
+        a.account.toLocaleLowerCase() === req.body.text.trim().toLowerCase(),
     );
 
     if (matchingAccounts.length === 1) {
@@ -77,6 +77,8 @@ router.postAsync(
         ],
       },
     });
+
+    console.log(response);
 
     if (!response.ok) {
       throw new Error(response.error);
