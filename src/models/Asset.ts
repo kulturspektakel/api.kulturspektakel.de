@@ -11,11 +11,12 @@ const PixelImageFormat = builder.enumType(PixelImageFormatT, {
   name: 'PixelImageFormat',
 });
 
-type AssetT = {
+export type AssetT = {
   id: string;
   uri: string;
   copyright?: string;
   title?: string;
+  type: string;
 };
 
 export const Asset = builder.interfaceRef<AssetT>('Asset').implement({
@@ -24,7 +25,16 @@ export const Asset = builder.interfaceRef<AssetT>('Asset').implement({
     copyright: t.exposeString('copyright', {nullable: true}),
     uri: t.exposeString('uri'),
     title: t.exposeString('title', {nullable: true}),
+    type: t.exposeString('type'),
   }),
+  resolveType({type}) {
+    for (const value of Object.values(PixelImageFormatT)) {
+      if (value === type) {
+        return 'PixelImage';
+      }
+    }
+    return 'Asset';
+  },
 });
 
 export const PixelImage = builder
