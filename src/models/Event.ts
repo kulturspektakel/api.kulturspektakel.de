@@ -54,7 +54,9 @@ export default builder.prismaNode('Event', {
     // media: t.connection({
     //   type: Asset,
     //   resolve: async (root, {before, after, first, last}) => {
-    //     const assets = await prismaClient.$queryRaw<[{}]>`select * from "directus"."files"`;
+    //     const assets = await prismaClient.$queryRaw<
+    //       [{}]
+    //     >`select * from "directus"."Event_files" WHERE "Event_id"=${root.id}`;
     //     return {
     //       pageInfo: {
     //         hasNextPage: false,

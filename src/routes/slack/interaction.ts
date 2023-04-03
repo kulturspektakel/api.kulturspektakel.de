@@ -48,6 +48,7 @@ router.postAsync(
       response_url: string;
       trigger_id: string;
     } = JSON.parse(req.body.payload);
+    console.log(payload);
     const [action] = payload.actions ?? [];
     if (action) {
       switch (action.action_id) {
@@ -64,7 +65,7 @@ router.postAsync(
             response_action: 'clear',
           });
         case 'two-factor-code':
-          res.status(200).send({
+          res.status(200).json({
             response_action: 'clear',
           });
 
@@ -81,13 +82,16 @@ router.postAsync(
             payload.user.name,
             twoFactor,
           );
+          console.log(body);
           const response = await fetch(payload.response_url, {
             body: JSON.stringify(body),
             headers: {
               'Content-Type': 'application/json',
             },
             method: 'post',
-          }).then((res) => res.json());
+          })
+            .then((res) => res.json())
+            .catch(console.error);
           console.log(response);
           return;
         default:
