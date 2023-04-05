@@ -1,7 +1,12 @@
 import {GraphQLError} from 'graphql';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
-import {Asset, AssetT, pixelImageField} from './Asset';
+import {
+  Asset,
+  directusAssetToPixelImage,
+  DirectusFile,
+  pixelImageField,
+} from './Asset';
 
 export default builder.prismaNode('Event', {
   id: {field: 'id'},
@@ -54,12 +59,16 @@ export default builder.prismaNode('Event', {
     poster: pixelImageField(t as any, 'poster'),
     media: t.connection({
       type: Asset,
-      resolve: async (root, {before, after, first = 20, last}) => {
+      args: {
+        width: t.arg.int(),
+        height: t.arg.int(),
+      },
+      resolve: async (root, {before, after, first = 20, last, ...args}) => {
         if (last != null || before != null) {
           throw new GraphQLError('Not implemented');
         }
 
-        const assets = await prismaClient.$queryRaw<AssetT[]>`
+        const assets = await prismaClient.$queryRaw<[DirectusFile]>`
         SELECT
           *
         FROM
@@ -82,7 +91,7 @@ export default builder.prismaNode('Event', {
           },
           edges: assets.map((node) => ({
             cursor: node.id,
-            node,
+            node: directusAssetToPixelImage(node, args),
           })),
         };
       },
