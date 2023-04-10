@@ -113,7 +113,8 @@ export function assetConnection<Types extends SchemaTypes>(
 ) {
   return t.connection({
     type: Asset,
-    nodeNullable: true,
+    nodeNullable: false,
+    edgesNullable: false,
     args: {
       width: t.arg.int(),
       height: t.arg.int(),
