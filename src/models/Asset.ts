@@ -1,57 +1,83 @@
 import {SchemaTypes} from '@pothos/core';
-import {PrismaObjectFieldBuilder} from '@pothos/plugin-prisma';
+import {GraphQLError} from 'graphql';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 
-enum PixelImageFormatT {
-  JPEG = 'image/jpeg',
-  PNG = 'image/png',
-}
-
-const PixelImageFormat = builder.enumType(PixelImageFormatT, {
-  name: 'PixelImageFormat',
-});
-
-export type AssetT = {
+export type DirectusFile = {
   id: string;
-  uri: string;
-  copyright?: string;
   title?: string;
   type: string;
+  width?: number;
+  height?: number;
+  copyright?: string;
 };
 
-export const Asset = builder.interfaceRef<AssetT>('Asset').implement({
+type DirectusPixelImage = DirectusFile & {width: number; height: number};
+
+const PIXEL_IMAGE_TYPES = new Set(['image/jpeg', 'image/png']);
+
+export const Asset = builder.interfaceRef<DirectusFile>('Asset').implement({
   fields: (t) => ({
     id: t.exposeString('id'),
     copyright: t.exposeString('copyright', {nullable: true}),
-    uri: t.exposeString('uri'),
+    uri: t.field({
+      type: 'String',
+      resolve: (root) => assetUri(root.id),
+    }),
     title: t.exposeString('title', {nullable: true}),
     type: t.exposeString('type'),
   }),
   resolveType({type}) {
-    for (const value of Object.values(PixelImageFormatT)) {
-      if (value === type) {
-        return 'PixelImage';
-      }
-    }
-    return 'Asset';
+    return PIXEL_IMAGE_TYPES.has(type) ? 'PixelImage' : 'Asset';
   },
 });
 
 export const PixelImage = builder
-  .objectRef<
-    {
-      width: number;
-      height: number;
-      format: PixelImageFormatT;
-    } & AssetT
-  >('PixelImage')
+  .objectRef<DirectusPixelImage>('PixelImage')
   .implement({
     interfaces: [Asset],
     fields: (t) => ({
       width: t.exposeInt('width'),
       height: t.exposeInt('height'),
-      format: t.expose('format', {type: PixelImageFormat}),
+      scaledUri: t.field({
+        type: 'String',
+        args: {
+          width: t.arg.int(),
+          height: t.arg.int(),
+        },
+        resolve: (root, args) => {
+          const uri = new URL(assetUri(root.id));
+
+          if (args.height != null) {
+            uri.searchParams.append('height', String(args.height));
+          }
+          if (args.width != null) {
+            uri.searchParams.append('width', String(args.width));
+          }
+
+          let width = root.width!;
+          let height = root.height!;
+
+          if (
+            width != null &&
+            height != null &&
+            (args.width != null || args.height != null)
+          ) {
+            const aspectRatio = width / height;
+
+            width = args.width!;
+            height = args.height!;
+
+            if (args.width == null) {
+              width = Math.round(height! * aspectRatio);
+            } else if (args.height == null) {
+              height = Math.round(width! / aspectRatio);
+            }
+          }
+
+          return uri.toString();
+        },
+      }),
     }),
   });
 
@@ -62,82 +88,76 @@ export function pixelImageField<Types extends SchemaTypes, F extends string>(
   return t.field({
     type: PixelImage,
     nullable: true,
-    args: {
-      width: t.arg.int(),
-      height: t.arg.int(),
-    },
-    // @ts-ignore
-    resolve: async (root, args) => {
+    resolve: async (root) => {
       const id: string | undefined = (root as any)[field];
       if (id == null) {
         return null;
       }
 
       const [row] = await prismaClient.$queryRaw<
-        [DirectusFile]
+        [DirectusFile?]
       >`select * from "directus"."directus_files" where "id"=${id}::uuid`;
 
-      if (row == null) {
+      if (row == null || !row.height || !row.width) {
         return null;
       }
 
-      return directusAssetToPixelImage(row, args);
+      return row as DirectusPixelImage;
     },
   });
 }
 
-export type DirectusFile = {
-  id: string;
-  title?: string;
-  type: PixelImageFormatT;
-  width?: number;
-  height?: number;
-  copyright?: string;
-};
-
-export function directusAssetToPixelImage(
-  directusFile: DirectusFile,
-  args: {
-    width?: number | null;
-    height?: number | null;
-  },
+export function assetConnection<Types extends SchemaTypes>(
+  t: PothosSchemaTypes.FieldBuilder<Types, {id: string}, 'Object'>,
+  connectionName: string,
 ) {
-  const uri = new URL(
-    `https://cms.kulturspektakel.de/assets/${directusFile.id}`,
-  );
+  return t.connection({
+    type: Asset,
+    nodeNullable: true,
+    args: {
+      width: t.arg.int(),
+      height: t.arg.int(),
+    },
+    // @ts-ignore
+    resolve: async (root, {before, after, first = 20, last}) => {
+      if (last != null || before != null) {
+        throw new GraphQLError('Not implemented');
+      }
 
-  if (args.height != null) {
-    uri.searchParams.append('height', String(args.height));
-  }
-  if (args.width != null) {
-    uri.searchParams.append('width', String(args.width));
-  }
+      if (!/[A-Z]+/i.test(connectionName)) {
+        throw new GraphQLError('Invalid connection name');
+      }
 
-  let width = directusFile.width;
-  let height = directusFile.height;
+      // prettier-ignore
+      const assets = await prismaClient.$queryRawUnsafe<[DirectusFile]>(`
+        SELECT 
+          *
+        FROM
+          "directus"."${connectionName}_files"
+          JOIN "directus"."directus_files" ON "directus_files_id" = "directus"."directus_files"."id"
+        WHERE
+          "${connectionName}_id" = '${root.id}' AND "directus"."${connectionName}_files"."id" > ${parseInt(after ?? '-1')}
+        ORDER BY
+          "directus"."${connectionName}_files"."id"
+        LIMIT ${first};
+      `);
 
-  if (
-    width != null &&
-    height != null &&
-    (args.width != null || args.height != null)
-  ) {
-    const aspectRatio = width / height;
+      return {
+        pageInfo: {
+          hasNextPage: false, // TODO
+          hasPreviousPage: false, // TODO
+          startCursor: assets[0]?.id,
+          endCursor: assets[assets.length - 1]?.id,
+        },
+        edges: assets.map((node) => ({
+          cursor: node.id,
+          node,
+        })),
+      };
+    },
+  });
+}
 
-    width = args.width ?? undefined;
-    height = args.height ?? undefined;
-
-    if (args.width == null) {
-      width = Math.round(height! * aspectRatio);
-    } else if (args.height == null) {
-      height = Math.round(width! / aspectRatio);
-    }
-  }
-
-  return {
-    ...directusFile,
-    height,
-    width,
-    format: directusFile.type,
-    uri: uri.toString(),
-  };
+function assetUri(id: string): string {
+  return `https://cms.kulturspektakel.de/assets/${id}`;
 }
