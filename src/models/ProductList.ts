@@ -35,7 +35,7 @@ export default builder.prismaNode('ProductList', {
   interfaces: [Billable],
   fields: (t) => ({
     name: t.exposeString('name'),
-    description: t.exposeString('description'),
+    description: t.exposeString('description', {nullable: true}),
     emoji: t.exposeString('emoji', {nullable: true}),
     active: t.exposeBoolean('active'),
     product: t.relation('product', {
