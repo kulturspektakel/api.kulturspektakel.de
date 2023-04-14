@@ -49,14 +49,15 @@ model AreaOpeningHour {
 }
 
 model ProductList {
-  id        Int         @id @default(autoincrement())
-  name      String      @db.VarChar(20)
-  emoji     String?
-  active    Boolean     @default(true)
-  updatedAt DateTime?
-  Device    Device[]
-  OrderItem OrderItem[]
-  product   Product[]
+  id          Int         @id @default(autoincrement())
+  name        String      @db.VarChar(20)
+  emoji       String?
+  active      Boolean     @default(true)
+  updatedAt   DateTime?
+  Device      Device[]
+  OrderItem   OrderItem[]
+  product     Product[]
+  description String?
 }
 
 model Product {
