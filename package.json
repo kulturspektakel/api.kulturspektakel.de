@@ -67,6 +67,7 @@
     "nodemailer": "^6.8.0",
     "normalize-url": "6",
     "samlify": "^2.8.7",
+    "slugify": "^1.6.6",
     "totp-generator": "^0.0.14",
     "ts-node": "^10.8.1",
     "ts-proto": "^1.136.1",

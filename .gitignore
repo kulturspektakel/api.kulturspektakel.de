@@ -14,3 +14,4 @@ newrelic_agent.log
 !.env.project
 !.env.vault
 .flaskenv*
+scripts/output
