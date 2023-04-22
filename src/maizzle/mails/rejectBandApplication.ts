@@ -16,9 +16,6 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
   <![endif]-->    <title>Absage „undefined“ - Kulturspektakel undefined</title>    <style>.hover-underline:hover {
   text-decoration-line: underline !important;
 }
-.hover-no-underline:hover {
-  text-decoration-line: none !important;
-}
 @media (max-width: 600px) {
   .sm-h-0 {
     height: 0 !important;
@@ -57,20 +54,19 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
         Hey,
     </p>
     <p>
-        ganz herzlichen Dank für eure Bewerbung mit „${bandname}“ für einen Auftritt beim Kulturspektakel Gauting ${eventYear}.
+        vielen Dank für eure Bewerbung mit „${bandname}“ beim Kulturspektakel Gauting ${eventYear}.
     </p>
     <p>
-        Wir haben einige Hundert Anfragen bekommen, aus denen wir gerade mal etwas über 40 Bands auswählen mussten. Dabei ist es leider unumgänglich, Bewerbungen abzusagen, selbst wenn sie gut auf unser Festival gepasst hätten.
+        Wir haben hunderte Bewerbungen erhalten, von denen wir nur etwa 40 Bands auswählen konnten. Leider mussten wir uns entscheiden, einige Bewerbungen abzulehnen, auch wenn sie gut zum Kulturspektakel gepasst hätten. Es tut uns Leid, dass wir euch in diesem Jahr keinen Slot anbieten können.
     </p>
     <p>
-        Wir hoffen deshalb auf euer Verständnis, dass wir euch keinen Slot für das diesjährige Kulturspektakel anbieten können. Bei der Planung unseres Festivals achten wir sehr darauf, möglichst vielen verschiedenen Musiker*innen einen Auftritt zu ermöglichen. Deshalb versuchen wir auch in jedem Jahr anderen Bands und neuen Musikrichtungen eine Chance zu geben und natürlich Nachwuchsbands zu fördern.
+        Bei der Planung unseres Festivals legen wir großen Wert darauf, vielen verschiedenen Musikern die Möglichkeit zu geben, aufzutreten. Deshalb versuchen wir jedes Jahr, einer großen Bandbreite an Nachwuchsbands und etablierten Künstler:innen verschiedenster Musikrichtungen eine Chance zu geben.
     </p>
     <p>
-        Dementsprechend würden wir uns freuen, wenn ihr euch auch nächstes Jahr wieder bei uns bewerbt. Die Bewerbung für das nächstjährige Kulturspektakel Jahr wird ab August über das Bewerbungsformular auf unserer Webseite möglich sein.
+        Wir möchten dir jedoch versichern, dass wir deine Bewerbung sehr zu schätzen wissen und würden uns freuen, wenn ihr uns nächstes Jahr erneut eure Bewerbung zukommen lasst. Ab August wird es möglich sein, euch über das Bewerbungsformular auf unserer Webseite für nächstes Jahr zu bewerben.
     </p>
     <p>
-        Das Line-Up für unser diesjähriges Festival findet ihr unter: <a href="https://kulturspektakel.de/lineup/${eventYear}" class="hover-no-underline" style="color: #E12E2E; text-decoration-line: underline">https://kulturspektakel.de/lineup/${eventYear}</a>
-. Wir würden uns sehr freuen, wenn ihr trotzdem als Gäste beim Kulturspektakel vorbeischaut.
+        Das Line-Up für unser diesjähriges Festival wir in den nächsten Wochen auf unserer Webseite veröffentlicht. Natürlich würden wir uns sehr freuen, wenn ihr trotzdem beim Kulturspektakel vom 21. - 23. Juli 2023 vorbeischaut.
     </p>
     <p style="margin: 0">
         Viel Erfolg und hoffentlich bis zum nächsten Jahr!<br>
