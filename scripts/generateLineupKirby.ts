@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import slugify from 'slugify';
 
-const PHASES = new Set(['1']);
+const PHASES = new Set<string>(['1']);
 
 const DATA = `Fr. 21.07.2023	Große Bühne	17:30	18:30	TBA	Mundart-Rap	bestätigt	1
   Fr. 21.07.2023	Große Bühne	19:00	20:00	TBA	Funk	bestätigt	2`;
