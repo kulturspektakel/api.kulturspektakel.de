@@ -9,7 +9,6 @@ import {add} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
 import requestUrl from '../utils/requestUrl';
-import {Viewer} from '@prisma/client';
 import {createHash} from 'crypto';
 
 export type ParsedToken =
@@ -171,6 +170,23 @@ router.use(async (req, res, next) => {
 
   if (token == null && req.cookies.token != null) {
     token = req.cookies.token;
+  } else if (token == null && req.cookies.directus_refresh_token != null) {
+    const refresher = await fetch(
+      'https://cms.kulturspektakel.de/auth/refresh',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+        body: JSON.stringify({
+          refresh_token: req.cookies.directus_refresh_token,
+          mode: 'json',
+        }),
+      },
+    )
+      .then((res) => res.json())
+      .catch(() => null);
+    token = refresher?.data?.access_token;
   }
 
   if (token == null) {
