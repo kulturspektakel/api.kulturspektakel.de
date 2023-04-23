@@ -36,15 +36,6 @@ export type ParsedToken =
       iss: 'directus';
     };
 
-function parseToken(token?: string): ParsedToken | null {
-  try {
-    if (token && jwt.verify(token, env.JWT_SECRET)) {
-      return jwt.decode(token) as ParsedToken;
-    }
-  } catch (e) {}
-  return null;
-}
-
 function cookieDomain(req: Request): string {
   return requestUrl(req).hostname.split('.').slice(-2).join('.');
 }
