@@ -48,7 +48,7 @@ export default async function nuclinoTokenGeneration(
     `https://api.nuclino.com/api/sso/${env.NUCLINO_TEAM_ID}/login`,
   );
   nuclinoSsoUrl.searchParams.append('redirectUrl', redirectUrl);
-  const url = new URL('https://api.kulturspektakel.de/saml/login');
+  const url = new URL('https://api.kulturspektakel.de/slack/token');
   url.searchParams.append('nonce', nonce.nonce);
   url.searchParams.append('redirect', nuclinoSsoUrl.toString());
 

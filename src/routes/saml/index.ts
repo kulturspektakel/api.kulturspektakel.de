@@ -67,17 +67,13 @@ router.postAsync(
 router.getAsync(
   '/login',
   async (
-    req: Request<
-      any,
-      any,
-      any,
-      {SAMLRequest?: string; RelayState?: string; nonce?: string}
-    >,
+    req: Request<any, any, any, {SAMLRequest?: string; RelayState?: string}>,
     res,
   ) => {
     let viewer: Viewer | undefined | null;
-    if (req.query.nonce) {
-      viewer = await viewerFromNonce(req.query.nonce);
+    if (req.cookies.nonce) {
+      viewer = await viewerFromNonce(req.cookies.nonce);
+      res.cookie('nonce', null);
     } else if (req._parsedToken) {
       viewer = await viewerFromToken(req._parsedToken);
     }

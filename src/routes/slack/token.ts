@@ -25,6 +25,30 @@ export type SlackSlashCommandRequest = Request<
   }
 >;
 
+router.get(
+  '/token',
+  (
+    req: Request<
+      any,
+      any,
+      any,
+      {
+        nonce: string;
+        redirect: string;
+      }
+    >,
+    res,
+  ) => {
+    res.cookie('nonce', req.query.nonce, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      maxAge: 5 * 60 * 1000,
+    });
+    res.redirect(req.query.redirect);
+  },
+);
+
 router.postAsync(
   '/token',
   // @ts-ignore postAsync is not typed correctly
