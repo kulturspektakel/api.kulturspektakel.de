@@ -1,7 +1,7 @@
 import {Router} from '@awaitjs/express';
 import {IdentityProvider, ServiceProvider, setSchemaValidator} from 'samlify';
 import express, {Request, Response} from 'express';
-import {add} from 'date-fns';
+import {add, isPast} from 'date-fns';
 import prismaClient from '../../utils/prismaClient';
 import requestUrl from '../../utils/requestUrl';
 import env from '../../utils/env';
@@ -10,6 +10,7 @@ import {readFileSync} from 'fs';
 import {join} from 'path';
 import viewerIdFromToken from '../../utils/viewerIdFromToken';
 import {Viewer} from '@prisma/client';
+import viewerFromToken from '../../utils/viewerFromToken';
 
 const router = Router({});
 
@@ -72,12 +73,22 @@ router.postAsync(
 router.getAsync(
   '/login',
   async (
-    req: Request<any, any, any, {SAMLRequest?: string; RelayState?: string}>,
+    req: Request<
+      any,
+      any,
+      any,
+      {SAMLRequest?: string; RelayState?: string; nonce?: string}
+    >,
     res,
   ) => {
-    const userId = await viewerIdFromToken(req._parsedToken);
+    let viewer: Viewer | undefined | null;
+    if (req.query.nonce) {
+      viewer = await viewerFromNonce(req.query.nonce);
+    } else if (req._parsedToken) {
+      viewer = await viewerFromToken(req._parsedToken);
+    }
 
-    if (userId == null) {
+    if (viewer == null) {
       // no token, redirect to login flow
       res.send(`
       <!doctype html>
@@ -173,16 +184,6 @@ router.getAsync(
       return;
     }
 
-    const viewer = await prismaClient.viewer.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-
-    if (!viewer) {
-      throw new Error(`Could not find viewer ${userId}`);
-    }
-
     await sendSAMLResponse(req, res, viewer);
   },
 );
@@ -191,29 +192,21 @@ const signingCert = readFileSync(
   join(__dirname, '..', '..', '..', 'artifacts', 'saml.crt'),
 );
 
-export async function sendSAMLResponse(
-  req: Request,
-  res: Response,
-  viewer: Viewer,
-  url?: string,
-) {
-  if (!url) {
-    const tempUrl = requestUrl(req);
-    tempUrl.search = '';
-    url = tempUrl.toString();
-  }
+async function sendSAMLResponse(req: Request, res: Response, viewer: Viewer) {
+  let url = requestUrl(req);
+  url.search = '';
 
   const [firstName, ...lastNames] = viewer.displayName.split(' ');
 
   const idp = IdentityProvider({
-    entityID: url,
+    entityID: url.toString(),
     privateKey: env.SAML_PRIVATE_KEY,
     signingCert,
     isAssertionEncrypted: false,
     singleSignOnService: [
       {
         Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Post',
-        Location: url,
+        Location: url.toString(),
       },
     ],
     nameIDFormat: ['urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'],
@@ -282,6 +275,21 @@ export async function sendSAMLResponse(
       <script type="text/javascript">(function(){document.forms[0].submit();})();</script>
     </form>
   `);
+}
+
+async function viewerFromNonce(nonce: string) {
+  try {
+    const {createdFor, expiresAt} = await prismaClient.nonce.delete({
+      where: {nonce},
+      select: {
+        createdFor: true,
+        expiresAt: true,
+      },
+    });
+    if (!isPast(expiresAt)) {
+      return createdFor;
+    }
+  } catch (e) {}
 }
 
 export default router;

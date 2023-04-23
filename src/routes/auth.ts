@@ -3,6 +3,7 @@ import env from '../utils/env';
 import fetch from 'node-fetch';
 import {Router} from '@awaitjs/express';
 import {createHash} from 'crypto';
+import requestUrl from '../utils/requestUrl';
 
 export type ParsedToken =
   | {
@@ -46,7 +47,17 @@ router.use(async (req, res, next) => {
     )
       .then((res) => res.json())
       .catch(() => null);
-    token = refresher?.data?.access_token;
+    if (refresher?.data) {
+      token = refresher.data.access_token;
+      // update used directus_refresh_token in cookie
+      res.cookie('directus_refresh_token', refresher.data.refresh_token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        domain: requestUrl(req).hostname.split('.').slice(-2).join('.'),
+        secure: true,
+        httpOnly: true,
+        sameSite: 'none',
+      });
+    }
   }
 
   if (token == null) {

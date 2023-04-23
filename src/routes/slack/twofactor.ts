@@ -3,7 +3,7 @@ import express from 'express';
 import {Router} from '@awaitjs/express';
 import totp from 'totp-generator';
 import {SlackSlashCommandRequest} from './token';
-import {sendMessage, slackApiRequest, SlackChannel} from '../../utils/slack';
+import {sendMessage, SlackChannel} from '../../utils/slack';
 
 const router = Router({});
 
