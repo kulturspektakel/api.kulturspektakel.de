@@ -8,7 +8,6 @@ import env from '../../utils/env';
 import {ApiError} from '../../utils/errorReporting';
 import {readFileSync} from 'fs';
 import {join} from 'path';
-import viewerIdFromToken from '../../utils/viewerIdFromToken';
 import {Viewer} from '@prisma/client';
 import viewerFromToken from '../../utils/viewerFromToken';
 
@@ -59,13 +58,8 @@ router.postAsync(
     }
 
     await sendSAMLResponse(req, res, {
-      id: '',
       email: 'info@kulturspektakel.de',
       displayName: 'Anonymer User',
-      profilePicture: null,
-      slackToken: null,
-      slackScopes: [],
-      updatedAt: new Date(),
     });
   },
 );
@@ -192,8 +186,15 @@ const signingCert = readFileSync(
   join(__dirname, '..', '..', '..', 'artifacts', 'saml.crt'),
 );
 
-async function sendSAMLResponse(req: Request, res: Response, viewer: Viewer) {
-  let url = requestUrl(req);
+async function sendSAMLResponse(
+  req: Request,
+  res: Response,
+  viewer: {
+    displayName: string;
+    email: string;
+  },
+) {
+  const url = requestUrl(req);
   url.search = '';
 
   const [firstName, ...lastNames] = viewer.displayName.split(' ');
