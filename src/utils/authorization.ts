@@ -6,10 +6,7 @@ const authProp =
     for (const authType of authTypes) {
       switch (authType) {
         case 'user':
-          if (
-            parsedToken?.iss === 'directus' ||
-            (parsedToken?.iss === undefined && parsedToken?.type === 'user')
-          ) {
+          if (parsedToken?.iss === 'directus') {
             return true;
           }
         case 'device':

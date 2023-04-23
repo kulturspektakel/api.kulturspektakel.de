@@ -3,9 +3,9 @@ import express, {Request} from 'express';
 import {isPast} from 'date-fns';
 import {ApiError} from '../../utils/errorReporting';
 import {Prisma, Viewer} from '@prisma/client';
-import {setCookie} from '../auth';
 import {Router} from '@awaitjs/express';
 import nuclinoTokenGeneration from '../../utils/nuclinoTokenGeneration';
+import {sendSAMLResponse} from '../saml';
 
 const router = Router({});
 
@@ -79,9 +79,8 @@ router.getAsync(
       throw new ApiError(404, 'User not found');
     }
 
-    setCookie(req, res, viewer.id);
     if (redirect) {
-      res.redirect(redirect);
+      sendSAMLResponse(req, res, viewer, redirect);
     }
   },
 );

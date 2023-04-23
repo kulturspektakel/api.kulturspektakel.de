@@ -9,6 +9,7 @@ import {ApiError} from '../../utils/errorReporting';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 import viewerIdFromToken from '../../utils/viewerIdFromToken';
+import {Viewer} from '@prisma/client';
 
 const router = Router({});
 
@@ -57,9 +58,13 @@ router.postAsync(
     }
 
     await sendSAMLResponse(req, res, {
+      id: '',
       email: 'info@kulturspektakel.de',
-      firstName: 'Anonymer',
-      lastName: 'User',
+      displayName: 'Anonymer User',
+      profilePicture: null,
+      slackToken: null,
+      slackScopes: [],
+      updatedAt: new Date(),
     });
   },
 );
@@ -178,13 +183,7 @@ router.getAsync(
       throw new Error(`Could not find viewer ${userId}`);
     }
 
-    const [firstName, ...lastNames] = viewer.displayName.split(' ');
-
-    await sendSAMLResponse(req, res, {
-      firstName,
-      lastName: lastNames.join(' '),
-      email: viewer.email,
-    });
+    await sendSAMLResponse(req, res, viewer);
   },
 );
 
@@ -192,27 +191,29 @@ const signingCert = readFileSync(
   join(__dirname, '..', '..', '..', 'artifacts', 'saml.crt'),
 );
 
-async function sendSAMLResponse(
+export async function sendSAMLResponse(
   req: Request,
   res: Response,
-  user: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  },
+  viewer: Viewer,
+  url?: string,
 ) {
-  const url = requestUrl(req);
-  url.search = '';
+  if (!url) {
+    const tempUrl = requestUrl(req);
+    tempUrl.search = '';
+    url = tempUrl.toString();
+  }
+
+  const [firstName, ...lastNames] = viewer.displayName.split(' ');
 
   const idp = IdentityProvider({
-    entityID: url.toString(),
+    entityID: url,
     privateKey: env.SAML_PRIVATE_KEY,
     signingCert,
     isAssertionEncrypted: false,
     singleSignOnService: [
       {
         Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Post',
-        Location: url.toString(),
+        Location: url,
       },
     ],
     nameIDFormat: ['urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'],
@@ -266,9 +267,9 @@ async function sendSAMLResponse(
           EntityID: sp.entityMeta.getEntityID(),
           InResponseTo: id,
           StatusCode: 'urn:oasis:names:tc:SAML:2.0:status:Success',
-          NameID: user.email,
-          attrFirstName: user.firstName,
-          attrLastName: user.lastName,
+          NameID: viewer.email,
+          attrFirstName: firstName,
+          attrLastName: lastNames.join(' '),
         }),
       };
     },
