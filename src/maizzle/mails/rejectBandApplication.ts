@@ -30,9 +30,6 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
-  .sm-leading-6 {
-    line-height: 24px !important;
-  }
 }</style></head>
 <body style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f3f4f6">    <div style="display: none">Absage zu eurer Bewerbung mit „undefined“ für das Kulturspektakel Gauting undefined&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
       &#160;&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
@@ -49,8 +46,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
               <td align="center" class="sm-px-0">
                 <table style="width: 100%" cellpadding="0" cellspacing="0" role="presentation">
                   <tr>
-                    <td class="sm-p-6" style="border-radius: 4px; background-color: #fff; padding: 32px; text-align: left; font-size: 16px; line-height: 24px; color: #1f2937">    <h1 class="sm-leading-6" style="margin: 0; margin-bottom: 16px; font-size: 24px; font-weight: 600; color: #000">Absage „${bandname}“</h1>
-    <p>
+                    <td class="sm-p-6" style="border-radius: 4px; background-color: #fff; padding: 32px; text-align: left; font-size: 16px; line-height: 24px; color: #1f2937">    <p>
         Hey,
     </p>
     <p>
