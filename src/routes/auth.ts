@@ -33,7 +33,7 @@ router.use(async (req, res, next) => {
 
   if (token == null && req.cookies.directus_refresh_token != null) {
     const refresher = await fetch(
-      'https://cms.kulturspektakel.de/auth/refresh',
+      'https://crew.kulturspektakel.de/auth/refresh',
       {
         method: 'POST',
         headers: {

@@ -160,5 +160,5 @@ export function assetConnection<Types extends SchemaTypes>(
 }
 
 function assetUri(id: string): string {
-  return `https://cms.kulturspektakel.de/assets/${id}`;
+  return `https://crew.kulturspektakel.de/assets/${id}`;
 }

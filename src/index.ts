@@ -93,7 +93,6 @@ const server = new ApolloServer({
       origin: [
         'http://localhost:3000',
         'https://crew.kulturspektakel.de',
-        'https://cms.kulturspektakel.de',
         'https://kulturspektakel.de',
         'https://booking.kulturspektakel.de',
       ],

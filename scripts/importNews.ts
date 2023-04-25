@@ -23,7 +23,7 @@ import prismaClient from '../src/utils/prismaClient';
 
       news.content.text = news.content.text.replace(
         result[0],
-        `![](https://cms.kulturspektakel.de/assets/${image.filename})`,
+        `![](https://crew.kulturspektakel.de/assets/${image.filename})`,
       );
     }
 

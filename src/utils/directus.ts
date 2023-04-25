@@ -9,7 +9,7 @@ export async function uploadImage(
     id: string;
   };
 }> {
-  return fetch(`https://cms.kulturspektakel.de/files/import`, {
+  return fetch(`https://crew.kulturspektakel.de/files/import`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${env.DIRECTUS_ACCESS_TOKEN}`,
