@@ -19,6 +19,7 @@ import {
   errorReportingMiddleware,
 } from './utils/errorReporting';
 import saml from './routes/saml';
+import owntracks from './routes/owntracks';
 import * as Sentry from '@sentry/node';
 import {RewriteFrames as RewriteFramesIntegration} from '@sentry/integrations';
 
@@ -72,6 +73,7 @@ const server = new ApolloServer({
   app.use('/slack', slackEvents);
   app.use('/slack', slackTwoFactor);
   app.use('/saml', saml);
+  app.use('/owntracks', owntracks);
   app.use('/\\$\\$\\$', kultCash);
   app.use(
     '/public',
