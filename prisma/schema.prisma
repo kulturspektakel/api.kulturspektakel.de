@@ -27,6 +27,7 @@ model Viewer {
   BandApplicationComment BandApplicationComment[]
   BandApplicationRating  BandApplicationRating[]
   Nonce                  Nonce[]
+  ViewerLocation         ViewerLocation[]
 }
 
 model Area {
@@ -239,6 +240,16 @@ model TwoFactor {
   secret  String
 
   @@unique([account, service])
+}
+
+model ViewerLocation {
+  id        String   @id @default(cuid())
+  viewerId  String
+  viewer    Viewer   @relation(fields: [viewerId], references: [id])
+  createdAt DateTime
+  latitude  Float
+  longitude Float
+  payload   Json
 }
 
 enum OrderPayment {

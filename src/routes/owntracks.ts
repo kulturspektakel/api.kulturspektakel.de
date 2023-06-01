@@ -1,5 +1,10 @@
 import {Router} from '@awaitjs/express';
+import {Viewer} from '@prisma/client';
 import express, {Request} from 'express';
+import env from '../utils/env';
+import {createHash} from 'crypto';
+import prismaClient from '../utils/prismaClient';
+import {sub} from 'date-fns';
 
 const router = Router({});
 
@@ -263,77 +268,84 @@ router.postAsync(
     console.log(req.headers);
     console.log(req.body);
 
-    return res.json([
-      {
-        _type: 'location',
-        tid: 'jd',
-        lat: 51.1,
-        lon: 0.1,
-        tst: new Date().getTime() / 1000,
-        topic: 'owntracks/johndoe/phone',
-      },
-      {
-        _type: 'card',
-        name: 'JD DANIEL 2',
-        tid: 'jd',
-        face: '',
-      },
-      {
-        _type: 'card',
-        name: 'Daniel Büchele',
-        tid: 'DB',
-        face: '',
-      },
-      {
-        _type: 'cmd',
-        action: 'setConfiguration',
-        configuration: {
-          _type: 'configuration',
-          mode: Mode.HTTP,
-          url: 'https://faa7-2a01-4b00-8704-3d00-3198-70b-2cfd-5c90.ngrok-free.app/owntracks',
-          monitoring: Monitoring.Move,
-          auth: true,
-          username: 'U03EKSJKH',
-          password: 'test',
-          tid: 'DX',
-          cmd: true, // allow sending commands
+    // validate password
+    // udpate viewer location
+
+    const viewers = await prismaClient.viewerLocation.findMany({
+      where: {
+        createdAt: {
+          lt: sub(new Date(), {hours: 3}),
         },
       },
-    ]);
+      include: {
+        viewer: true,
+      },
+    });
+
+    // TODO filter unique
+
+    return res.json(
+      viewers.flatMap((v) => [
+        {
+          _type: 'location',
+          tid: tid(v.viewer),
+          lat: 51.1,
+          lon: 0.1,
+          tst: new Date().getTime() / 1000,
+          topic: `owntracks/${v.viewer.id}`,
+        },
+        {
+          _type: 'card',
+          name: v.viewer.displayName,
+          tid: tid(v.viewer),
+          face: '',
+        },
+      ]),
+      // {
+      //   _type: 'cmd',
+      //   action: 'setConfiguration',
+      //   configuration: {
+      //     _type: 'configuration',
+      //     mode: Mode.HTTP,
+      //     url: 'https://faa7-2a01-4b00-8704-3d00-3198-70b-2cfd-5c90.ngrok-free.app/owntracks',
+      //     monitoring: Monitoring.Move,
+      //     auth: true,
+      //     username: 'U03EKSJKH',
+      //     password: 'test',
+      //     tid: 'DX',
+      //     cmd: true, // allow sending commands
+      //   },
+      // },
+    );
   },
 );
 
-router.getAsync(
-  '/config',
-  // @ts-ignore postAsync is not typed correctly
-  express.json(),
-  async (
-    req: Request<
-      any,
-      any,
-      WaypointMessage | WaypointsMessage | LocationMessage
-    >,
-    res,
-  ) => {
-    console.log(req.body);
+export function configUrl(viewer: Viewer) {
+  const config: Partial<ConfigurationMessage> = {
+    _type: 'configuration',
+    mode: Mode.HTTP,
+    url: 'https://api.kulturspektakel.de/owntracks',
+    monitoring: Monitoring.Significant,
+    auth: true,
+    username: viewer.id,
+    password: password(viewer),
+    tid: tid(viewer),
+    cmd: true, // allow sending commands
+  };
 
-    const config: Partial<ConfigurationMessage> = {
-      _type: 'configuration',
-      mode: Mode.HTTP,
-      url: 'https://faa7-2a01-4b00-8704-3d00-3198-70b-2cfd-5c90.ngrok-free.app/owntracks',
-      monitoring: Monitoring.Move,
-      auth: true,
-      username: 'U03EKSJKH',
-      password: 'test',
-      tid: 'DB',
-      cmd: true, // allow sending commands
-    };
+  return `owntracks:///config?inline=${Buffer.from(
+    JSON.stringify(config),
+  ).toString('base64')}`;
+}
 
-    const configUrl = `owntracks:///config?inline=${Buffer.from(
-      JSON.stringify(config),
-    ).toString('base64')}`;
-    return res.json({configUrl});
-  },
-);
+function password(viewer: Viewer): string {
+  return createHash('sha1')
+    .update(`${viewer.id}${env.JWT_SECRET}`)
+    .digest('hex');
+}
+
+function tid(viewer: Viewer): string {
+  return 'DB';
+}
 
 export default router;
