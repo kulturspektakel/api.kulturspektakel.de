@@ -265,42 +265,69 @@ router.postAsync(
     >,
     res,
   ) => {
-    console.log(req.headers);
-    console.log(req.body);
+    if (req._parsedToken?.iss !== 'owntracks') {
+      return res.status(401);
+    }
 
-    // validate password
-    // udpate viewer location
+    if (req.body._type === 'location') {
+      await prismaClient.viewerLocation.create({
+        data: {
+          latitude: req.body.lat,
+          longitude: req.body.lon,
+          viewerId: req._parsedToken.viewerId,
+          createdAt: new Date(req.body.tst * 1000),
+          payload: req.body,
+        },
+      });
+    }
 
-    const viewers = await prismaClient.viewerLocation.findMany({
-      where: {
-        createdAt: {
-          lt: sub(new Date(), {hours: 3}),
+    const where = {
+      createdAt: {
+        gt: sub(new Date(), {hours: 5}),
+      },
+    };
+    const viewers = await prismaClient.viewer.findMany({
+      include: {
+        ViewerLocation: {
+          where,
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
         },
       },
-      include: {
-        viewer: true,
+      where: {
+        ViewerLocation: {
+          some: where,
+        },
       },
     });
 
-    // TODO filter unique
-
-    return res.json(
-      viewers.flatMap((v) => [
+    const data: Array<CardMessage | LocationMessage> = viewers.flatMap(
+      (viewer) => [
         {
           _type: 'location',
-          tid: tid(v.viewer),
-          lat: 51.1,
-          lon: 0.1,
-          tst: new Date().getTime() / 1000,
-          topic: `owntracks/${v.viewer.id}`,
+          tid: tid(viewer),
+          lat: viewer.ViewerLocation[0].latitude,
+          lon: viewer.ViewerLocation[0].longitude,
+          tst: Math.floor(viewer.ViewerLocation[0].createdAt.getTime() / 1000),
+          topic: `owntracks/${viewer.id}`,
+          created_at: Math.floor(
+            viewer.ViewerLocation[0].createdAt.getTime() / 1000,
+          ),
+          bs: BatteryStatus.Unknown,
         },
         {
           _type: 'card',
-          name: v.viewer.displayName,
-          tid: tid(v.viewer),
+          name: viewer.displayName,
+          tid: tid(viewer),
           face: '',
         },
-      ]),
+      ],
+    );
+
+    return res.json(
+      data,
       // {
       //   _type: 'cmd',
       //   action: 'setConfiguration',
@@ -328,7 +355,7 @@ export function configUrl(viewer: Viewer) {
     monitoring: Monitoring.Significant,
     auth: true,
     username: viewer.id,
-    password: password(viewer),
+    password: ownTracksPassword(viewer.id),
     tid: tid(viewer),
     cmd: true, // allow sending commands
   };
@@ -338,14 +365,14 @@ export function configUrl(viewer: Viewer) {
   ).toString('base64')}`;
 }
 
-function password(viewer: Viewer): string {
+export function ownTracksPassword(viewerId: string): string {
   return createHash('sha1')
-    .update(`${viewer.id}${env.JWT_SECRET}`)
+    .update(`${viewerId}${env.JWT_SECRET}`)
     .digest('hex');
 }
 
 function tid(viewer: Viewer): string {
-  return 'DB';
+  return viewer.displayName.toLocaleUpperCase().split(' ').slice(2).join('');
 }
 
 export default router;

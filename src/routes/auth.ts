@@ -4,6 +4,9 @@ import fetch from 'node-fetch';
 import {Router} from '@awaitjs/express';
 import {createHash} from 'crypto';
 import requestUrl from '../utils/requestUrl';
+import basicAuth from 'basic-auth';
+import prismaClient from '../utils/prismaClient';
+import {ownTracksPassword} from './owntracks';
 
 export type ParsedToken =
   | {
@@ -20,6 +23,10 @@ export type ParsedToken =
       iat: number;
       exp: number;
       iss: 'directus';
+    }
+  | {
+      viewerId: string;
+      iss: 'owntracks';
     };
 
 const router = Router({});
@@ -57,6 +64,21 @@ router.use(async (req, res, next) => {
         httpOnly: true,
         sameSite: 'none',
       });
+    }
+  }
+
+  const basicUser = basicAuth(req);
+  if (basicUser && ownTracksPassword(basicUser.name) === basicUser.pass) {
+    const viewer = await prismaClient.viewer.findUnique({
+      where: {
+        id: basicUser.name,
+      },
+    });
+    if (viewer != null) {
+      req._parsedToken = {
+        viewerId: viewer.id,
+        iss: 'owntracks',
+      };
     }
   }
 
