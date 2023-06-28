@@ -28,36 +28,41 @@ import {expressMiddleware} from '@apollo/server/express4';
 import {json} from 'body-parser';
 import cors from 'cors';
 import {ApolloServerErrorCode} from '@apollo/server/errors';
+import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
+import http from 'http';
 
 const GRAPHQL_PATH = '/graphql';
-
-const server = new ApolloServer<Context>({
-  schema,
-  formatError: (err) => {
-    if (!(err instanceof GraphQLError)) {
-      return new GraphQLError(err.message, {
-        extensions: {
-          code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
-        },
-        originalError: err as Error,
-      });
-    }
-    return err;
-  },
-  introspection: true,
-  plugins: [
-    ApolloServerPluginLandingPageGraphQLPlayground({
-      settings: {
-        'request.credentials': 'include',
-      },
-    }),
-    ApolloErrorLoggingPlugin,
-  ],
-});
 
 (async () => {
   await tasks();
   const app = express();
+
+  const httpServer = http.createServer(app);
+
+  const server = new ApolloServer<Context>({
+    schema,
+    formatError: (err) => {
+      if (!(err instanceof GraphQLError)) {
+        return new GraphQLError(err.message, {
+          extensions: {
+            code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
+          },
+          originalError: err as Error,
+        });
+      }
+      return err;
+    },
+    introspection: true,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({httpServer}),
+      ApolloServerPluginLandingPageGraphQLPlayground({
+        settings: {
+          'request.credentials': 'include',
+        },
+      }),
+      ApolloErrorLoggingPlugin,
+    ],
+  });
 
   // The request handler must be the first middleware on the app
   Sentry.init({
@@ -119,7 +124,7 @@ const server = new ApolloServer<Context>({
     }),
   );
 
-  app.listen({port: env.PORT}, () =>
+  httpServer.listen({port: env.PORT}, () =>
     console.log(
       `🚀 Server ready at http://localhost:${env.PORT}${GRAPHQL_PATH}`,
     ),
