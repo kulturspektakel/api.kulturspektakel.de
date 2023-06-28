@@ -1,7 +1,7 @@
 import express from 'express';
-import {ApolloServer, ApolloError} from 'apollo-server-express';
+import {ApolloServer} from '@apollo/server';
 import schema from './pothos/schema';
-import context from './context';
+import {Context} from './context';
 import env from './utils/env';
 import cookieParser from 'cookie-parser';
 import auth from './routes/auth';
@@ -13,7 +13,7 @@ import slackOwntracks from './routes/slack/owntracks';
 import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
-import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
+import {ApolloServerPluginLandingPageGraphQLPlayground} from '@apollo/server-plugin-landing-page-graphql-playground';
 import {
   ApiError,
   ApolloErrorLoggingPlugin,
@@ -23,16 +23,24 @@ import saml from './routes/saml';
 import owntracks from './routes/owntracks';
 import * as Sentry from '@sentry/node';
 import {RewriteFrames as RewriteFramesIntegration} from '@sentry/integrations';
+import {GraphQLError} from 'graphql';
+import {expressMiddleware} from '@apollo/server/express4';
+import {json} from 'body-parser';
+import cors from 'cors';
+import {ApolloServerErrorCode} from '@apollo/server/errors';
 
-const server = new ApolloServer({
-  context,
+const GRAPHQL_PATH = '/graphql';
+
+const server = new ApolloServer<Context>({
   schema,
   formatError: (err) => {
-    if (!(err instanceof ApolloError)) {
-      const e = new ApolloError(err.message);
-      // TODO: Check original error is not displayed but logged
-      e.originalError = err;
-      return e;
+    if (!(err instanceof GraphQLError)) {
+      return new GraphQLError(err.message, {
+        extensions: {
+          code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
+        },
+        originalError: err as Error,
+      });
     }
     return err;
   },
@@ -91,9 +99,10 @@ const server = new ApolloServer({
   app.use(errorReportingMiddleware);
 
   await server.start();
-  server.applyMiddleware({
-    app,
-    cors: {
+
+  app.use(
+    GRAPHQL_PATH,
+    cors<cors.CorsRequest>({
       origin: [
         'http://localhost:3000',
         'https://crew.kulturspektakel.de',
@@ -102,12 +111,17 @@ const server = new ApolloServer({
         'https://booking.kulturspektakel.de',
       ],
       credentials: true,
-    },
-  });
+    }),
+    json(),
+    // @ts-ignore
+    expressMiddleware(server, {
+      context: async ({req}) => ({parsedToken: req._parsedToken}),
+    }),
+  );
 
   app.listen({port: env.PORT}, () =>
     console.log(
-      `🚀 Server ready at http://localhost:${env.PORT}${server.graphqlPath}`,
+      `🚀 Server ready at http://localhost:${env.PORT}${GRAPHQL_PATH}`,
     ),
   );
 })();

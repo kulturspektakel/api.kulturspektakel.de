@@ -4,6 +4,7 @@ import prismaClient from '../utils/prismaClient';
 
 builder.mutationField('updateDeviceProductList', (t) =>
   t.field({
+    authScopes: {user: true},
     type: Device,
     args: {
       productListId: t.arg.globalID({required: true}),

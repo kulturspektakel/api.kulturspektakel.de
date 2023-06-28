@@ -1,14 +1,14 @@
-import UnreachableCaseError from '../utils/UnreachableCaseError';
+import {ApolloServerErrorCode} from '@apollo/server/errors';
 import {
   CardTransaction as CardTransactionT,
   Device,
   Prisma,
 } from '@prisma/client';
 import {isAfter} from 'date-fns';
-import {UserInputError} from 'apollo-server-express';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import CardTransaction, {CardTransactionType} from './CardTransaction';
+import {GraphQLError} from 'graphql';
 
 export class Transactionable {}
 
@@ -50,8 +50,13 @@ builder.interfaceType(Transactionable, {
       },
       resolve: async (root, {limit, after, before, type}, _, {parentType}) => {
         if (after && before && isAfter(after, before)) {
-          throw new UserInputError(
+          throw new GraphQLError(
             'Argument "after" needs to be earlier than argument "before"',
+            {
+              extensions: {
+                code: ApolloServerErrorCode.BAD_USER_INPUT,
+              },
+            },
           );
         }
 

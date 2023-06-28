@@ -16,11 +16,12 @@ import {
   startOfDay,
   startOfHour,
 } from 'date-fns';
-import {UserInputError} from 'apollo-server-express';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import OrderPaymentEnum from './OrderPayment';
 import TimeGrouping from './TimeGrouping';
+import {GraphQLError} from 'graphql';
+import {ApolloServerErrorCode} from '@apollo/server/errors';
 
 type OrderItems = Array<OrderItem & {order: Order}>;
 
@@ -80,7 +81,11 @@ builder.objectType(SalesNumber, {
         const stepHours = grouping === 'Hour' ? 1 : 24;
 
         if (differenceInHours(before, after) / stepHours > 100) {
-          throw new UserInputError('Time grouping has too many steps');
+          throw new GraphQLError('Time grouping has too many steps', {
+            extensions: {
+              code: ApolloServerErrorCode.BAD_USER_INPUT,
+            },
+          });
         }
 
         const result: TimeSeries[] = [];
@@ -123,8 +128,13 @@ builder.interfaceType(Billable, {
       resolve: async (root, {after, before}, _ctx, {parentType}) => {
         console.log(root);
         if (isAfter(after, before)) {
-          throw new UserInputError(
+          throw new GraphQLError(
             'Argument "after" needs to be earlier than argument "before"',
+            {
+              extensions: {
+                code: ApolloServerErrorCode.BAD_USER_INPUT,
+              },
+            },
           );
         }
 

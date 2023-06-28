@@ -18,7 +18,7 @@ const NuclinoUser = builder.objectRef<NuclinoUserT>('NuclinoUser').implement({
   }),
 });
 
-const NuclinoPageT = builder.node(builder.objectRef<APIObject>('NumberRef'), {
+const NuclinoPageT = builder.node(builder.objectRef<APIObject>('NuclinoPage'), {
   name: 'NuclinoPage',
   authScopes: {
     user: true,

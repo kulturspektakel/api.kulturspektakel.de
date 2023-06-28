@@ -2,7 +2,6 @@ import confirmBandApplication from '../maizzle/mails/confirmBandApplication';
 import {scheduleTask} from '../tasks';
 import sendMail from '../utils/sendMail';
 import {SlackChannel} from '../utils/slack';
-import {UserInputError} from 'apollo-server-express';
 import normalizeUrl from 'normalize-url';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
@@ -11,6 +10,8 @@ import BandApplication, {
   HeardAboutBookingFrom,
 } from '../models/BandApplication';
 import PreviouslyPlayed from '../models/PreviouslyPlayed';
+import {ApolloServerErrorCode} from '@apollo/server/errors';
+import {GraphQLError} from 'graphql';
 
 const CreateBandApplicationInput = builder.inputType(
   'CreateBandApplicationInput',
@@ -52,7 +53,11 @@ builder.mutationField('createBandApplication', (t) =>
     ) => {
       const isDJ = data.genreCategory === 'DJ';
       if (!demo && !isDJ) {
-        throw new UserInputError('Demo material required');
+        throw new GraphQLError('Demo material required', {
+          extensions: {
+            code: ApolloServerErrorCode.BAD_USER_INPUT,
+          },
+        });
       }
 
       if (demo?.indexOf(' ') === -1) {
@@ -88,7 +93,11 @@ builder.mutationField('createBandApplication', (t) =>
         },
       });
       if (!event) {
-        throw new UserInputError('No event found');
+        throw new GraphQLError('No event found', {
+          extensions: {
+            code: ApolloServerErrorCode.BAD_USER_INPUT,
+          },
+        });
       }
       const eventYear = event.start.getFullYear();
       const application = await prismaClient.bandApplication.create({

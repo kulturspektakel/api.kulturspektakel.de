@@ -62,13 +62,20 @@ model ProductList {
 }
 
 model Product {
-  id              Int         @id @default(autoincrement())
-  name            String      @db.VarChar(30)
+  id              Int                @id @default(autoincrement())
+  name            String             @db.VarChar(30)
   price           Int
   order           Int
   productListId   Int
-  requiresDeposit Boolean     @default(false)
-  productList     ProductList @relation(fields: [productListId], references: [id])
+  requiresDeposit Boolean            @default(false)
+  productList     ProductList        @relation(fields: [productListId], references: [id])
+  additives       ProductAdditives[]
+}
+
+model ProductAdditives {
+  id          String    @id
+  displayName String
+  Product     Product[]
 }
 
 model Device {

@@ -1,8 +1,9 @@
-import {PluginDefinition} from 'apollo-server-core';
 import {ErrorRequestHandler} from 'express';
 import * as Sentry from '@sentry/node';
+import {ApolloServerPlugin} from '@apollo/server';
+import {Context} from '../context';
 
-export const ApolloErrorLoggingPlugin: PluginDefinition = {
+export const ApolloErrorLoggingPlugin: ApolloServerPlugin<Context> = {
   async requestDidStart() {
     return {
       async didEncounterErrors(ctx) {

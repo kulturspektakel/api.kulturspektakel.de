@@ -13,6 +13,7 @@ import '../models/Order';
 import '../models/OrderItem';
 import '../models/PreviouslyPlayed';
 import '../models/Product';
+import '../models/ProductAdditives';
 import '../models/ProductList';
 import '../models/Viewer';
 
@@ -37,6 +38,7 @@ import '../queries/findBandPlaying';
 import '../queries/events';
 import '../queries/news';
 import '../queries/nuclino';
+import '../queries/productAdditives';
 import '../queries/productLists';
 import '../queries/transactions';
 import '../queries/viewer';
