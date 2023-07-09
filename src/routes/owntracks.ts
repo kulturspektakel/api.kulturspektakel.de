@@ -5,6 +5,7 @@ import env from '../utils/env';
 import {createHash} from 'crypto';
 import prismaClient from '../utils/prismaClient';
 import {sub} from 'date-fns';
+import fetch from 'node-fetch';
 
 const router = Router({});
 
@@ -303,31 +304,35 @@ router.postAsync(
       },
     });
 
-    const data: Array<CardMessage | LocationMessage> = viewers.flatMap(
-      (viewer) => [
-        {
-          _type: 'location',
-          tid: tid(viewer),
-          lat: viewer.ViewerLocation[0].latitude,
-          lon: viewer.ViewerLocation[0].longitude,
-          tst: Math.floor(viewer.ViewerLocation[0].createdAt.getTime() / 1000),
-          topic: `owntracks/${viewer.id}`,
-          created_at: Math.floor(
-            viewer.ViewerLocation[0].createdAt.getTime() / 1000,
-          ),
-          bs: BatteryStatus.Unknown,
-        },
-        {
-          _type: 'card',
-          name: viewer.displayName,
-          tid: tid(viewer),
-          face: '',
-        },
-      ],
-    );
+    const data = viewers.flatMap(async (viewer) => {
+      const face = await faceBase64(viewer);
+
+      const card: CardMessage = {
+        _type: 'card',
+        name: viewer.displayName,
+        tid: tid(viewer),
+        face,
+      };
+
+      const location: LocationMessage = {
+        _type: 'location',
+        tid: tid(viewer),
+        lat: viewer.ViewerLocation[0].latitude,
+        lon: viewer.ViewerLocation[0].longitude,
+        tst: Math.floor(viewer.ViewerLocation[0].createdAt.getTime() / 1000),
+        topic: `owntracks/${viewer.id}`,
+        created_at: Math.floor(
+          viewer.ViewerLocation[0].createdAt.getTime() / 1000,
+        ),
+        bs: BatteryStatus.Unknown,
+      };
+      return [card, location];
+    });
+
+    console.log(data);
 
     return res.json(
-      data,
+      await Promise.all(data),
       // {
       //   _type: 'cmd',
       //   action: 'setConfiguration',
@@ -372,7 +377,21 @@ export function ownTracksPassword(viewerId: string): string {
 }
 
 function tid(viewer: Viewer): string {
-  return viewer.displayName.toLocaleUpperCase().split(' ').slice(2).join('');
+  return viewer.displayName
+    .toLocaleUpperCase()
+    .split(' ')
+    .slice(0, 2)
+    .map((a) => a.charAt(0))
+    .join('');
+}
+
+async function faceBase64({profilePicture}: Viewer): Promise<string> {
+  if (!profilePicture) {
+    return '';
+  }
+  const response = await fetch(profilePicture);
+  const data = await response.buffer();
+  return data.toString('base64');
 }
 
 export default router;

@@ -24,15 +24,14 @@ router.postAsync(
 
     res.status(200).json({
       text: 'Für welchen Account möchtest du einen 2-Faktor-Code generieren?',
-
       blocks: [
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `\n1. *OwnTracks* herunterladen: <https://apps.apple.com/de/app/owntracks/id692424691|iPhone> oder <https://play.google.com/store/apps/details?id=org.owntracks.android&hl=en&gl=US&pli=1|Android>\n2. Diesen <${configUrl(
+            text: `\n1. *OwnTracks* herunterladen: <https://apps.apple.com/de/app/owntracks/id692424691|iPhone> oder <https://play.google.com/store/apps/details?id=org.owntracks.android&hl=en&gl=US&pli=1|Android>\n2. Diesen ${configUrl(
               viewer,
-            )}|Link> anklicken um die App zu konfigurieren`,
+            )} anklicken um die App zu konfigurieren`,
           },
         },
       ],
