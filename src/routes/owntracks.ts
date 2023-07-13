@@ -253,6 +253,8 @@ type CardMessage = {
   name: string;
   tid: string;
   face: string;
+  // maybe
+  topic?: string;
 };
 
 router.get('/config', (req: Request<any, any, any, {config: string}>, res) =>
@@ -321,8 +323,7 @@ router.postAsync(
         _type: 'card',
         name: viewer.displayName,
         tid: tid(viewer),
-        // @ts-ignore
-        topic: `owntracks/http/${tid(viewer.id)}`,
+        topic: `owntracks/http/${tid(viewer)}`,
         face,
       };
       if (viewer.id == viewerId) {
