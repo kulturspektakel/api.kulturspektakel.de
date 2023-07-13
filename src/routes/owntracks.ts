@@ -321,6 +321,8 @@ router.postAsync(
         _type: 'card',
         name: viewer.displayName,
         tid: tid(viewer),
+        // @ts-ignore
+        topic: `owntracks/http/${tid(viewer.id)}`,
         face,
       };
       if (viewer.id == viewerId) {
@@ -351,7 +353,7 @@ router.postAsync(
       //   configuration: {
       //     _type: 'configuration',
       //     mode: Mode.HTTP,
-      //     url: 'https://faa7-2a01-4b00-8704-3d00-3198-70b-2cfd-5c90.ngrok-free.app/owntracks',
+      //     url: 'https://api.kulturspektakel.de/owntracks',
       //     monitoring: Monitoring.Move,
       //     auth: true,
       //     username: 'U03EKSJKH',
@@ -375,6 +377,7 @@ export function configString(viewer: Viewer) {
     password: ownTracksPassword(viewer.id),
     tid: tid(viewer),
     cmd: true, // allow sending commands
+    pubTopicBase: `owntracks/${viewer.id}`,
   };
 
   return Buffer.from(JSON.stringify(config)).toString('base64');
