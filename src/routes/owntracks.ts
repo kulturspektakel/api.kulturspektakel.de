@@ -6,6 +6,7 @@ import {createHash} from 'crypto';
 import prismaClient from '../utils/prismaClient';
 import {sub} from 'date-fns';
 import jimp from 'jimp';
+import viewerIdFromToken from '../utils/viewerIdFromToken';
 
 const router = Router({});
 
@@ -274,12 +275,17 @@ router.postAsync(
       return res.status(401);
     }
 
+    const viewerId = await viewerIdFromToken(req._parsedToken);
+    if (!viewerId) {
+      return res.status(401);
+    }
+
     if (req.body._type === 'location') {
       await prismaClient.viewerLocation.create({
         data: {
           latitude: req.body.lat,
           longitude: req.body.lon,
-          viewerId: req._parsedToken.viewerId,
+          viewerId,
           createdAt: new Date(req.body.tst * 1000),
           payload: req.body,
         },
@@ -317,6 +323,10 @@ router.postAsync(
         tid: tid(viewer),
         face,
       };
+      if (viewer.id == viewerId) {
+        // don't send own location
+        return [card];
+      }
 
       const location: LocationMessage = {
         _type: 'location',

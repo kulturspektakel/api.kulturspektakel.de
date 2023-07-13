@@ -13,5 +13,7 @@ export default async function viewerIdFromToken(
       }>
     >`select "external_identifier" from "directus"."directus_users" where "id"=${parsedToken.id}::uuid`;
     return user.pop()?.external_identifier;
+  } else if (parsedToken.iss === 'owntracks') {
+    return parsedToken.viewerId;
   }
 }
