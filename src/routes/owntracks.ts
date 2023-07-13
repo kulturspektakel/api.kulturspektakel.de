@@ -323,7 +323,7 @@ router.postAsync(
         _type: 'card',
         name: viewer.displayName,
         tid: tid(viewer),
-        topic: `owntracks/http/${tid(viewer)}`,
+        topic: `owntracks/${viewer.id}/card`,
         face,
       };
       if (viewer.id == viewerId) {
