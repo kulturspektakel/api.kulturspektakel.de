@@ -253,8 +253,6 @@ type CardMessage = {
   name: string;
   tid: string;
   face: string;
-  // maybe
-  topic?: string;
 };
 
 router.get('/config', (req: Request<any, any, any, {config: string}>, res) =>
@@ -323,13 +321,8 @@ router.postAsync(
         _type: 'card',
         name: viewer.displayName,
         tid: tid(viewer),
-        topic: `owntracks/${viewer.id}`,
         face,
       };
-      if (viewer.id == viewerId) {
-        // don't send own location
-        return [card];
-      }
 
       const location: LocationMessage = {
         _type: 'location',
@@ -378,7 +371,6 @@ export function configString(viewer: Viewer) {
     password: ownTracksPassword(viewer.id),
     tid: tid(viewer),
     cmd: true, // allow sending commands
-    pubTopicBase: `owntracks/${viewer.id}`,
   };
 
   return Buffer.from(JSON.stringify(config)).toString('base64');
