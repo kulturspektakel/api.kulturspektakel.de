@@ -72,7 +72,8 @@ router.postAsync(
     );
 
     const data = await apiRequest.json();
-    const address = data.results.at(0)?.formatted_address;
+    const address =
+      data.results.at(0)?.formatted_address ?? 'Unbekannte Position';
     const minutes = differenceInMinutes(new Date(), timeStamp);
 
     res.status(200).json({
