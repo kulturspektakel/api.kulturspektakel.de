@@ -69,10 +69,10 @@ router.postAsync(
         },
       });
     const mapLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-    const image_url = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7C${latitude},${longitude}&key=${env.GOOGLE_MAPS_KEY}&language=de`;
+    const image_url = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7C${latitude},${longitude}&key=${env.GOOGLE_MAPS_KEY}`;
 
     const apiRequest = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${env.GOOGLE_MAPS_KEY}`,
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&language=de&key=${env.GOOGLE_MAPS_KEY}`,
     );
 
     const data = await apiRequest.json();
@@ -88,7 +88,7 @@ router.postAsync(
             type: 'mrkdwn',
             text: `Der Lagerschlüssel wurde zuletzt vor ${ago(
               timeStamp,
-            )} Minuten in <${mapLink}|${address}> gesehen.`,
+            )} in <${mapLink}|${address}> gesehen.`,
           },
         },
         {
