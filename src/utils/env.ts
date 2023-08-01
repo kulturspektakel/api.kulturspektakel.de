@@ -49,4 +49,5 @@ export default {
     .replace(/\\n/g, '\n'),
   YOUTUBE_API_KEY: env.get('YOUTUBE_API_KEY').required().asString(),
   DIRECTUS_ACCESS_TOKEN: env.get('DIRECTUS_ACCESS_TOKEN').required().asString(),
+  GOOGLE_MAPS_KEY: env.get('GOOGLE_MAPS_KEY').required().asString(),
 };

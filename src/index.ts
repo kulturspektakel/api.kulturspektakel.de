@@ -30,6 +30,7 @@ import cors from 'cors';
 import {ApolloServerErrorCode} from '@apollo/server/errors';
 import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
 import http from 'http';
+import slackLagerschluessel from './routes/slack/lagerschluessel';
 
 const GRAPHQL_PATH = '/graphql';
 
@@ -87,6 +88,7 @@ const GRAPHQL_PATH = '/graphql';
   app.use('/slack', slackEvents);
   app.use('/slack', slackOwntracks);
   app.use('/slack', slackTwoFactor);
+  app.use('/slack', slackLagerschluessel);
   app.use('/saml', saml);
   app.use('/owntracks', owntracks);
   app.use('/\\$\\$\\$', kultCash);
