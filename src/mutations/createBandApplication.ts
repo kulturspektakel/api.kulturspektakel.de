@@ -42,6 +42,7 @@ builder.mutationField('createBandApplication', (t) =>
   t.field({
     type: BandApplication,
     args: {
+      eventId: t.arg.globalID({required: true}),
       data: t.arg({
         type: CreateBandApplicationInput,
         required: true,
@@ -49,7 +50,7 @@ builder.mutationField('createBandApplication', (t) =>
     },
     resolve: async (
       _,
-      {data: {demo, website, facebook, instagram, ...data}},
+      {eventId, data: {demo, website, facebook, instagram, ...data}},
     ) => {
       const isDJ = data.genreCategory === 'DJ';
       if (!demo && !isDJ) {
@@ -73,44 +74,21 @@ builder.mutationField('createBandApplication', (t) =>
       // remove whitespaces, @ and trailing /
       instagram = instagram?.replace(/\s|@|\//g, '');
 
-      const now = new Date();
-
-      const event = await prismaClient.event.findFirst({
-        where: {
-          bandApplicationStart: {
-            lte: now,
-          },
-          bandApplicationEnd: !isDJ
-            ? {
-                gte: now,
-              }
-            : undefined,
-          djApplicationEnd: isDJ
-            ? {
-                gte: now,
-              }
-            : undefined,
-        },
-      });
-      if (!event) {
-        throw new GraphQLError('No event found', {
-          extensions: {
-            code: ApolloServerErrorCode.BAD_USER_INPUT,
-          },
-        });
-      }
-      const eventYear = event.start.getFullYear();
       const application = await prismaClient.bandApplication.create({
         data: {
           ...data,
-          eventId: event.id,
+          eventId: eventId.id,
           website,
           demo,
           facebook,
           instagram,
         },
+        include: {
+          event: true,
+        },
       });
 
+      const eventYear = application.event.start.getFullYear();
       await sendMail({
         from: isDJ
           ? 'Kulturspektakel Gauting info@kulturspektakel.de'
