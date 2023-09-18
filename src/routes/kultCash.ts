@@ -6,7 +6,12 @@ import {
   LogMessage_Order_PaymentMethod,
 } from '../proto/logmessage';
 import {DeviceConfig} from '../proto/config';
-import {OrderPayment, CardTransactionType, Prisma} from '@prisma/client';
+import {
+  OrderPayment,
+  CardTransactionType,
+  Prisma,
+  ProductList,
+} from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {join} from 'path';
 import fsNode, {existsSync} from 'fs';
@@ -17,6 +22,8 @@ import {ApiError} from '../utils/errorReporting';
 import {Router} from '@awaitjs/express';
 import crc32 from 'crc-32';
 import {ParsedToken} from './auth';
+import {AllLists} from '../proto/configs';
+import {Product} from '../proto/product';
 
 const fs = fsNode.promises;
 const router = Router({});
@@ -52,6 +59,38 @@ router.useAsync('/', async function (req, res, next: NextFunction) {
 
 type ParsedDeviceToken = Extract<ParsedToken, {iss: 'device'}>;
 
+function getDeviceConfig(
+  list: ProductList & {
+    product: Array<{
+      name: string;
+      price: number;
+    }>;
+  },
+) {
+  const deviceConfig: DeviceConfig = {
+    listId: list.id,
+    name: list.name,
+    products: list.product,
+    checksum: 0,
+  };
+
+  deviceConfig.checksum = crc32.buf(DeviceConfig.encode(deviceConfig).finish());
+  return deviceConfig;
+}
+
+const productListQuery = {
+  product: {
+    select: {
+      name: true,
+      price: true,
+    },
+    orderBy: {
+      order: 'asc' as const,
+    },
+    take: 30,
+  },
+};
+
 router.getAsync('/config', async (req, res) => {
   const {deviceId: id} = req._parsedToken as ParsedDeviceToken;
   const device = await prismaClient.device.findUnique({
@@ -60,18 +99,7 @@ router.getAsync('/config', async (req, res) => {
     },
     include: {
       productList: {
-        include: {
-          product: {
-            select: {
-              name: true,
-              price: true,
-            },
-            orderBy: {
-              order: 'asc',
-            },
-            take: 30,
-          },
-        },
+        include: productListQuery,
       },
     },
   });
@@ -82,15 +110,29 @@ router.getAsync('/config', async (req, res) => {
     return;
   }
 
-  const deviceConfig: DeviceConfig = {
-    listId: list.id,
-    name: list.name,
-    products: list.product,
+  const deviceConfig = getDeviceConfig(list);
+  const message = DeviceConfig.encode(deviceConfig).finish();
+  res.setHeader('Content-Type', 'application/x-protobuf');
+  res.send(message);
+});
+
+router.getAsync('/lists', async (req, res) => {
+  const lists = await prismaClient.productList.findMany({
+    where: {
+      active: true,
+    },
+    include: productListQuery,
+    orderBy: {
+      id: 'asc',
+    },
+  });
+
+  const allLists = {
+    productList: lists.map(getDeviceConfig),
     checksum: 0,
   };
-
-  deviceConfig.checksum = crc32.buf(DeviceConfig.encode(deviceConfig).finish());
-  const message = DeviceConfig.encode(deviceConfig).finish();
+  allLists.checksum = crc32.buf(AllLists.encode(allLists).finish());
+  const message = AllLists.encode(allLists).finish();
   res.setHeader('Content-Type', 'application/x-protobuf');
   res.send(message);
 });

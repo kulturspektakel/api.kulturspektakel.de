@@ -175,34 +175,59 @@ export const LogMessage = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LogMessage {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLogMessage();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.deviceId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.clientId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.deviceTime = reader.int32();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.deviceTimeIsUtc = reader.bool();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.order = LogMessage_Order.decode(reader, reader.uint32());
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.cardTransaction = LogMessage_CardTransaction.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -231,6 +256,10 @@ export const LogMessage = {
       ? LogMessage_CardTransaction.toJSON(message.cardTransaction)
       : undefined);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<LogMessage>, I>>(base?: I): LogMessage {
+    return LogMessage.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<LogMessage>, I>>(object: I): LogMessage {
@@ -288,37 +317,66 @@ export const LogMessage_CardTransaction = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LogMessage_CardTransaction {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLogMessage_CardTransaction();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.transactionType = reader.int32() as any;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.balanceBefore = reader.int32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.balanceAfter = reader.int32();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.depositBefore = reader.int32();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.depositAfter = reader.int32();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.cardId = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.counter = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -348,6 +406,10 @@ export const LogMessage_CardTransaction = {
     message.cardId !== undefined && (obj.cardId = message.cardId);
     message.counter !== undefined && (obj.counter = Math.round(message.counter));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<LogMessage_CardTransaction>, I>>(base?: I): LogMessage_CardTransaction {
+    return LogMessage_CardTransaction.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<LogMessage_CardTransaction>, I>>(object: I): LogMessage_CardTransaction {
@@ -382,25 +444,38 @@ export const LogMessage_Order = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LogMessage_Order {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLogMessage_Order();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.paymentMethod = reader.int32() as any;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.cartItems.push(LogMessage_Order_CartItem.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.listId = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -428,6 +503,10 @@ export const LogMessage_Order = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<LogMessage_Order>, I>>(base?: I): LogMessage_Order {
+    return LogMessage_Order.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<LogMessage_Order>, I>>(object: I): LogMessage_Order {
     const message = createBaseLogMessage_Order();
     message.paymentMethod = object.paymentMethod ?? 0;
@@ -453,22 +532,31 @@ export const LogMessage_Order_CartItem = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LogMessage_Order_CartItem {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLogMessage_Order_CartItem();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.amount = reader.int32();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.product = Product.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -485,6 +573,10 @@ export const LogMessage_Order_CartItem = {
     message.amount !== undefined && (obj.amount = Math.round(message.amount));
     message.product !== undefined && (obj.product = message.product ? Product.toJSON(message.product) : undefined);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<LogMessage_Order_CartItem>, I>>(base?: I): LogMessage_Order_CartItem {
+    return LogMessage_Order_CartItem.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<LogMessage_Order_CartItem>, I>>(object: I): LogMessage_Order_CartItem {
