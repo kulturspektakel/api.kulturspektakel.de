@@ -164,6 +164,8 @@ model BandApplication {
   event                  Event                    @relation(fields: [eventId], references: [id])
   bandApplicationComment BandApplicationComment[]
   bandApplicationRating  BandApplicationRating[]
+  spotifyArtist          String?
+  repertoire             BandRepertoire?
 }
 
 model BandApplicationRating {
@@ -194,6 +196,7 @@ model Event {
   end                  DateTime
   eventType            EventType
   bandApplicationStart DateTime?
+  djApplicationStart   DateTime?
   bandApplicationEnd   DateTime?
   djApplicationEnd     DateTime?
   poster               String?           @db.Uuid
@@ -331,4 +334,11 @@ enum EventType {
   Kulturspektakel
   Other
   Locker
+}
+
+enum BandRepertoire {
+  ExclusivelyOwnSongs
+  MostlyOwnSongs
+  MostlyCoverSongs
+  ExclusivelyCoverSongs
 }

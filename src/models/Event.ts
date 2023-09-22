@@ -31,6 +31,10 @@ export default builder.prismaNode('Event', {
       type: 'DateTime',
       nullable: true,
     }),
+    djApplicationStart: t.expose('djApplicationStart', {
+      type: 'DateTime',
+      nullable: true,
+    }),
     bandApplicationEnd: t.expose('bandApplicationEnd', {
       type: 'DateTime',
       nullable: true,

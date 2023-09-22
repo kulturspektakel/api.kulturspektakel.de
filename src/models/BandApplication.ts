@@ -2,6 +2,7 @@ import {
   HeardAboutBookingFrom as HeardAboutBookingFromValues,
   GenreCategory as GenreCategoryValues,
   DemoEmbedType as DemoEmbedTypeValues,
+  BandRepertoire as BandRepertoireValues,
 } from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
@@ -21,6 +22,10 @@ export const GenreCategory = builder.enumType('GenreCategory', {
 
 export const DemoEmbedType = builder.enumType('DemoEmbedType', {
   values: Object.values(DemoEmbedTypeValues),
+});
+
+export const BandRepertoireType = builder.enumType('BandRepertoireType', {
+  values: Object.values(BandRepertoireValues),
 });
 
 export default builder.prismaNode('BandApplication', {

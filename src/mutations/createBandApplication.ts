@@ -6,6 +6,7 @@ import normalizeUrl from 'normalize-url';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import BandApplication, {
+  BandRepertoireType,
   GenreCategory,
   HeardAboutBookingFrom,
 } from '../models/BandApplication';
@@ -34,6 +35,8 @@ const CreateBandApplicationInput = builder.inputType(
       knowsKultFrom: t.field({type: 'String'}),
       heardAboutBookingFrom: t.field({type: HeardAboutBookingFrom}),
       hasPreviouslyPlayed: t.field({type: PreviouslyPlayed}),
+      repertoire: t.field({type: BandRepertoireType}),
+      spotifyArtist: t.field({type: 'String'}),
     }),
   },
 );

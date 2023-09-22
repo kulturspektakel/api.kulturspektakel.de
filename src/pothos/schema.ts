@@ -15,6 +15,7 @@ import '../models/PreviouslyPlayed';
 import '../models/Product';
 import '../models/ProductAdditives';
 import '../models/ProductList';
+import '../models/SpotifyArtist';
 import '../models/Viewer';
 
 import '../mutations/createBandApplication';
@@ -40,6 +41,7 @@ import '../queries/news';
 import '../queries/nuclino';
 import '../queries/productAdditives';
 import '../queries/productLists';
+import '../queries/spotifyArtist';
 import '../queries/transactions';
 import '../queries/viewer';
 

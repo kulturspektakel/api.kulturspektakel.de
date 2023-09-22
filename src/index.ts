@@ -113,6 +113,7 @@ const GRAPHQL_PATH = '/graphql';
       origin: [
         'http://localhost:3000',
         'https://crew.kulturspektakel.de',
+        'https://www2.kulturspektakel.de',
         'https://app.kulturspektakel.de',
         'https://kulturspektakel.de',
         'https://booking.kulturspektakel.de',
