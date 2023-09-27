@@ -35,22 +35,32 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   } else {
     fbid = path[1];
   }
-  const res: {
-    followers_count?: number;
-  } = await fetch(
-    `https://graph.facebook.com/v16.0/${fbid}?fields=followers_count&access_token=${env.FACEBOOK_ACCESS_TOKEN}`,
-  ).then((r) => r.json());
 
-  if (res.followers_count != null) {
+  const res = await fetch(
+    `https://graph.facebook.com/v16.0/${fbid}?fields=followers_count&access_token=${env.FACEBOOK_ACCESS_TOKEN}`,
+  );
+
+  if (!res.ok) {
+    const text = await res.text();
+    logger.error(text);
+    throw new Error(`Facebook API error: ${text}`);
+  }
+
+  const data: {
+    followers_count?: number;
+  } = await res.json();
+
+  if (data.followers_count != null) {
     await prismaClient.bandApplication.update({
       data: {
-        facebookLikes: res.followers_count!,
+        facebookLikes: data.followers_count,
       },
       where: {
         id,
       },
     });
   } else {
-    logger.debug(JSON.stringify(res));
+    logger.error(JSON.stringify(res));
+    throw new Error(`Facebook API error: ${res}`);
   }
 }
