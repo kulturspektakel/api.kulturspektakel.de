@@ -19,5 +19,12 @@ export default builder.prismaNode('BandPlaying', {
     event: t.relation('event'),
     area: t.relation('area'),
     photo: pixelImageField(t as any, 'photo'),
+    website: t.exposeString('website', {nullable: true}),
+    facebook: t.exposeString('facebook', {nullable: true}),
+    twitter: t.exposeString('twitter', {nullable: true}),
+    instagram: t.exposeString('instagram', {nullable: true}),
+    youtube: t.exposeString('youtube', {nullable: true}),
+    soundcloud: t.exposeString('soundcloud', {nullable: true}),
+    spotify: t.exposeString('spotify', {nullable: true}),
   }),
 });
