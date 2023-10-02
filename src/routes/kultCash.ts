@@ -132,8 +132,15 @@ router.getAsync('/lists', async (req, res) => {
     checksum: 0,
   };
   allLists.checksum = crc32.buf(AllLists.encode(allLists).finish());
+
+  if (req.headers['if-none-match'] === `"${allLists.checksum}"`) {
+    res.status(304).send('Not Modified');
+    return;
+  }
+
   const message = AllLists.encode(allLists).finish();
   res.setHeader('Content-Type', 'application/x-protobuf');
+  res.setHeader('ETag', `"${allLists.checksum}"`);
   res.send(message);
 });
 
