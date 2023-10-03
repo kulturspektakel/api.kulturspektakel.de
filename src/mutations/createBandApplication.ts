@@ -41,6 +41,17 @@ const CreateBandApplicationInput = builder.inputType(
   },
 );
 
+function tryNormalizing(url: string | null | undefined): string | null {
+  if (url == null) {
+    return null;
+  }
+  try {
+    return normalizeUrl(url);
+  } catch (e) {
+    return null;
+  }
+}
+
 builder.mutationField('createBandApplication', (t) =>
   t.field({
     type: BandApplication,
@@ -64,11 +75,9 @@ builder.mutationField('createBandApplication', (t) =>
         });
       }
 
-      if (demo?.indexOf(' ') === -1) {
-        demo = normalizeUrl(demo);
-      }
-      website = website ? normalizeUrl(website) : null;
-      facebook = facebook ? normalizeUrl(facebook) : null;
+      demo = tryNormalizing(demo);
+      website = tryNormalizing(website);
+      facebook = tryNormalizing(facebook);
 
       const igUrl = instagram?.match(/instagram\.com\/([^\/?]+)/);
       if (igUrl && igUrl.length > 1) {
