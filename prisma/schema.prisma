@@ -49,6 +49,15 @@ model AreaOpeningHour {
   area      Area     @relation(fields: [areaId], references: [id])
 }
 
+model Page {
+  slug    String  @id
+  title   String
+  content String?
+  left    String?
+  right   String?
+  bottom  String?
+}
+
 model ProductList {
   id          Int         @id @default(autoincrement())
   name        String      @db.VarChar(20)

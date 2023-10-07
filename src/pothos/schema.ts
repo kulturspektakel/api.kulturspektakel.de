@@ -11,6 +11,7 @@ import '../models/DeviceType';
 import '../models/Event';
 import '../models/Order';
 import '../models/OrderItem';
+import '../models/Page';
 import '../models/PreviouslyPlayed';
 import '../models/Product';
 import '../models/ProductAdditives';
