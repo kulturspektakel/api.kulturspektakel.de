@@ -32,6 +32,8 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
     fbid = match[1];
   } else if (path[1] === 'pages' && path[2] === 'category') {
     fbid = path[3];
+  } else if (path.startsWith('profile.php?id=')) {
+    fbid = path.match(/profile.php\?id=(\d+)/)?.at(1);
   } else {
     fbid = path[1];
   }
