@@ -10,6 +10,7 @@ import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
 import nuclinoUpdateMessage from './nuclinoUpdateMessage';
 import nonceInvalidate from './nonceInvalidate';
+import spotifyListeners from './spotifyListeners';
 import gmailReminder, {booking, info} from './gmailReminder';
 import events from './taskEvents';
 import unfurlLink from './unfurlLink';
@@ -28,6 +29,7 @@ const taskList = {
   bandApplicationDemo,
   facebookLikes,
   instagramFollower,
+  spotifyListeners,
 };
 
 export const logger = new Logger((scope) => async (level, message) => {
@@ -86,7 +88,7 @@ export default async function () {
 }
 
 type Payload<T extends keyof typeof taskList> = Parameters<
-  typeof taskList[T]
+  (typeof taskList)[T]
 >[0];
 
 let _workerUtils: WorkerUtils | null = null;

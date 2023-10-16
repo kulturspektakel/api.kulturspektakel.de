@@ -139,42 +139,43 @@ model CardTransaction {
 }
 
 model BandApplication {
-  id                     String                   @id @default(uuid())
-  createdAt              DateTime                 @default(now())
-  email                  String
-  bandname               String
-  genre                  String?
-  city                   String
-  facebook               String?
-  demo                   String?
-  description            String?
-  numberOfArtists        Int?
-  numberOfNonMaleArtists Int?
-  contactName            String
-  contactPhone           String
-  knowsKultFrom          String?
-  distance               Float?
-  facebookLikes          Int?
-  website                String?
-  genreCategory          GenreCategory
-  heardAboutBookingFrom  HeardAboutBookingFrom?
-  contactedByViewerId    String?
-  instagram              String?
-  instagramFollower      Int?
-  eventId                String
-  hasPreviouslyPlayed    PreviouslyPlayed?
-  lastContactedAt        DateTime?
-  latitude               Float?
-  longitude              Float?
-  demoEmbedUrl           String?
-  demoEmbed              String?
-  demoEmbedType          DemoEmbedType?
-  contactedByViewer      Viewer?                  @relation(fields: [contactedByViewerId], references: [id])
-  event                  Event                    @relation(fields: [eventId], references: [id])
-  bandApplicationComment BandApplicationComment[]
-  bandApplicationRating  BandApplicationRating[]
-  spotifyArtist          String?
-  repertoire             BandRepertoire?
+  id                      String                   @id @default(uuid())
+  createdAt               DateTime                 @default(now())
+  email                   String
+  bandname                String
+  genre                   String?
+  city                    String
+  facebook                String?
+  demo                    String?
+  description             String?
+  numberOfArtists         Int?
+  numberOfNonMaleArtists  Int?
+  contactName             String
+  contactPhone            String
+  knowsKultFrom           String?
+  distance                Float?
+  facebookLikes           Int?
+  website                 String?
+  genreCategory           GenreCategory
+  heardAboutBookingFrom   HeardAboutBookingFrom?
+  contactedByViewerId     String?
+  instagram               String?
+  instagramFollower       Int?
+  eventId                 String
+  hasPreviouslyPlayed     PreviouslyPlayed?
+  lastContactedAt         DateTime?
+  latitude                Float?
+  longitude               Float?
+  demoEmbedUrl            String?
+  demoEmbed               String?
+  demoEmbedType           DemoEmbedType?
+  contactedByViewer       Viewer?                  @relation(fields: [contactedByViewerId], references: [id])
+  event                   Event                    @relation(fields: [eventId], references: [id])
+  bandApplicationComment  BandApplicationComment[]
+  bandApplicationRating   BandApplicationRating[]
+  spotifyArtist           String?
+  spotifyMonthlyListeners Int?
+  repertoire              BandRepertoire?
 }
 
 model BandApplicationRating {

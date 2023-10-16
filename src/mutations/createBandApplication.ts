@@ -169,6 +169,9 @@ builder.mutationField('createBandApplication', (t) =>
       if (instagram) {
         jobs.push(scheduleTask('instagramFollower', {id: application.id}));
       }
+      if (data.spotifyArtist) {
+        jobs.push(scheduleTask('spotifyListeners', {id: application.id}));
+      }
 
       await Promise.allSettled(jobs).then((res) =>
         res.forEach((r) =>
