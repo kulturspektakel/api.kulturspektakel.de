@@ -28,7 +28,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const path = url.pathname.split('/');
   let fbid: string | null = null;
   const match = path[1].match(/[a-z-]+-(\d{7}\d+)$/i);
-  if (url.pathname.startsWith('profile.php?id=')) {
+  if (url.pathname.startsWith('/profile.php?id=')) {
     fbid = url.pathname.match(/profile.php\?id=(\d+)/)?.at(1) ?? null;
   } else if (match != null && match.length > 1) {
     fbid = match[1];

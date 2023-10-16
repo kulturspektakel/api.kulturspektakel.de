@@ -17,7 +17,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   ).then((res) => res.text());
 
   const match = res.match(
-    /data-testid=\"monthly-listeners-label\".+>([0-9,]+) monthly/gm,
+    /data-testid=\"monthly-listeners-label\".+>([0-9,]+) monthly/,
   );
 
   if (match && match.length > 0) {
