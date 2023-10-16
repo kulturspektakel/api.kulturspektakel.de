@@ -81,6 +81,9 @@ export default builder.prismaNode('BandApplication', {
       type: BandRepertoireType,
     }),
     spotifyArtist: t.exposeString('spotifyArtist', {nullable: true}),
+    spotifyMonthlyListeners: t.exposeInt('spotifyMonthlyListeners', {
+      nullable: true,
+    }),
     bandApplicationRating: t.relation('bandApplicationRating', {
       authScopes: {
         user: true,
