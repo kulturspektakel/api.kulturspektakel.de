@@ -111,52 +111,87 @@ export function assetConnection<Types extends SchemaTypes>(
   t: PothosSchemaTypes.FieldBuilder<Types, {id: string}, 'Object'>,
   connectionName: string,
 ) {
-  return t.connection({
-    type: Asset,
-    nodeNullable: false,
-    edgesNullable: false,
-    args: {
-      width: t.arg.int(),
-      height: t.arg.int(),
+  return t.connection(
+    {
+      type: Asset,
+      nodeNullable: false,
+      edgesNullable: false,
+      args: {
+        width: t.arg.int(),
+        height: t.arg.int(),
+      },
+      // @ts-ignore
+      resolve: async (root, {before, after, first = 20, last}) => {
+        if (last != null || before != null) {
+          throw new GraphQLError('Not implemented');
+        }
+
+        if (!/[A-Z]+/i.test(connectionName)) {
+          throw new GraphQLError('Invalid connection name');
+        }
+
+        const assets = await prismaClient.$queryRawUnsafe<[DirectusFile]>(
+          `SELECT * ${from({
+            connectionName,
+            id: root.id,
+            after: parseInt(after ?? '-1', 10),
+          })} ORDER BY "directus"."${connectionName}_files"."id" LIMIT ${first};`,
+        );
+
+        return {
+          pageInfo: {
+            hasNextPage: false, // TODO
+            hasPreviousPage: false, // TODO
+            startCursor: assets[0]?.id,
+            endCursor: assets[assets.length - 1]?.id,
+          },
+          id: root.id,
+          edges: assets.map((node) => ({
+            cursor: node.id,
+            node,
+          })),
+        };
+      },
     },
-    // @ts-ignore
-    resolve: async (root, {before, after, first = 20, last}) => {
-      if (last != null || before != null) {
-        throw new GraphQLError('Not implemented');
-      }
-
-      if (!/[A-Z]+/i.test(connectionName)) {
-        throw new GraphQLError('Invalid connection name');
-      }
-
-      // prettier-ignore
-      const assets = await prismaClient.$queryRawUnsafe<[DirectusFile]>(`
-        SELECT 
-          *
-        FROM
-          "directus"."${connectionName}_files"
-          JOIN "directus"."directus_files" ON "directus_files_id" = "directus"."directus_files"."id"
-        WHERE
-          "${connectionName}_id" = '${root.id}' AND "directus"."${connectionName}_files"."id" > ${parseInt(after ?? '-1')}
-        ORDER BY
-          "directus"."${connectionName}_files"."id"
-        LIMIT ${first};
-      `);
-
-      return {
-        pageInfo: {
-          hasNextPage: false, // TODO
-          hasPreviousPage: false, // TODO
-          startCursor: assets[0]?.id,
-          endCursor: assets[assets.length - 1]?.id,
-        },
-        edges: assets.map((node) => ({
-          cursor: node.id,
-          node,
-        })),
-      };
+    {
+      fields: (t) => ({
+        totalCount: t.field({
+          type: 'Int',
+          nullable: false,
+          // @ts-ignore whatever
+          resolve: async (root) => {
+            const [{count}] = await prismaClient.$queryRawUnsafe<
+              [{count: number}]
+            >(
+              `SELECT COUNT(*) ${from({
+                connectionName,
+                id: root.id,
+              })};`,
+            );
+            return Number(count);
+          },
+        }),
+      }),
     },
-  });
+  );
+}
+
+function from({
+  connectionName,
+  id,
+  after = -1,
+}: {
+  connectionName: string;
+  id: string;
+  after?: number;
+  first?: number;
+}) {
+  return ` FROM
+    "directus"."${connectionName}_files"
+    JOIN "directus"."directus_files" ON "directus_files_id" = "directus"."directus_files"."id"
+  WHERE
+    "${connectionName}_id" = '${id}' AND "directus"."${connectionName}_files"."id" > ${after}
+  `;
 }
 
 function assetUri(id: string): string {

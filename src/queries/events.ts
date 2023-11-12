@@ -11,8 +11,9 @@ builder.queryField('events', (t) =>
         type: EventType,
       }),
       limit: t.arg.int(),
+      hasBandsPlaying: t.arg.boolean(),
     },
-    resolve: (query, _root, {type, limit}) =>
+    resolve: (query, _root, {type, limit, hasBandsPlaying}) =>
       prismaClient.event.findMany({
         ...query,
         orderBy: {
@@ -21,6 +22,12 @@ builder.queryField('events', (t) =>
         take: limit ?? undefined,
         where: {
           eventType: type ?? undefined,
+          BandPlaying:
+            hasBandsPlaying != null
+              ? hasBandsPlaying
+                ? {some: {}}
+                : {none: {}}
+              : undefined,
         },
       }),
   }),
