@@ -43,6 +43,8 @@ builder.queryField('eventsConnection', (t) =>
       }),
       hasBandsPlaying: t.arg.boolean(),
     },
+    nodeNullable: false,
+    edgesNullable: false,
     cursor: 'id',
     resolve: (query, parent, {type, hasBandsPlaying}) =>
       prismaClient.event.findMany({
