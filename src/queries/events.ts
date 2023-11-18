@@ -6,6 +6,7 @@ import prismaClient from '../utils/prismaClient';
 builder.queryField('events', (t) =>
   t.prismaField({
     type: [Event],
+    deprecationReason: 'Use `eventsConnection` instead.',
     args: {
       type: t.arg({
         type: EventType,
@@ -20,6 +21,35 @@ builder.queryField('events', (t) =>
           start: 'desc',
         },
         take: limit ?? undefined,
+        where: {
+          eventType: type ?? undefined,
+          BandPlaying:
+            hasBandsPlaying != null
+              ? hasBandsPlaying
+                ? {some: {}}
+                : {none: {}}
+              : undefined,
+        },
+      }),
+  }),
+);
+
+builder.queryField('eventsConnection', (t) =>
+  t.prismaConnection({
+    type: Event,
+    args: {
+      type: t.arg({
+        type: EventType,
+      }),
+      hasBandsPlaying: t.arg.boolean(),
+    },
+    cursor: 'id',
+    resolve: (query, parent, {type, hasBandsPlaying}) =>
+      prismaClient.event.findMany({
+        ...query,
+        orderBy: {
+          start: 'desc',
+        },
         where: {
           eventType: type ?? undefined,
           BandPlaying:
