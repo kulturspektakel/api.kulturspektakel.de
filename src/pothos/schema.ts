@@ -17,6 +17,7 @@ import '../models/Product';
 import '../models/ProductAdditives';
 import '../models/ProductList';
 import '../models/SpotifyArtist';
+import '../models/VEvent';
 import '../models/Viewer';
 
 import '../mutations/createBandApplication';
@@ -34,6 +35,7 @@ import '../queries/bandPlaying';
 import '../queries/cardStatus';
 import '../queries/checkDuplicateApplication';
 import '../queries/config';
+import '../queries/crewCalendar';
 import '../queries/devices';
 import '../queries/distanceToKult';
 import '../queries/findBandPlaying';
