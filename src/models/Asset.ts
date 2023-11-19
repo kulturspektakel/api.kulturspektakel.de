@@ -10,6 +10,7 @@ export type DirectusFile = {
   width?: number;
   height?: number;
   copyright?: string;
+  filename_download: string;
 };
 
 type DirectusPixelImage = DirectusFile & {width: number; height: number};
@@ -121,33 +122,36 @@ export function assetConnection<Types extends SchemaTypes>(
         height: t.arg.int(),
       },
       // @ts-ignore
-      resolve: async (root, {before, after, first = 20, last}) => {
+      resolve: async (root, {before, after, first, last}) => {
         if (last != null || before != null) {
           throw new GraphQLError('Not implemented');
         }
 
-        if (!/[A-Z]+/i.test(connectionName)) {
-          throw new GraphQLError('Invalid connection name');
-        }
+        const limit = first ?? 20;
 
         const assets = await prismaClient.$queryRawUnsafe<[DirectusFile]>(
           `SELECT * ${from({
             connectionName,
             id: root.id,
-            after: parseInt(after ?? '-1', 10),
-          })} ORDER BY "directus"."${connectionName}_files"."id" LIMIT ${first};`,
+            after,
+          })} ORDER BY "filename_download" LIMIT ${limit + 1};`,
         );
+
+        let hasNextPage = assets.length > limit;
+        if (hasNextPage) {
+          assets.pop();
+        }
 
         return {
           pageInfo: {
-            hasNextPage: false, // TODO
+            hasNextPage,
             hasPreviousPage: false, // TODO
-            startCursor: assets[0]?.id,
-            endCursor: assets[assets.length - 1]?.id,
+            startCursor: assets[0]?.filename_download,
+            endCursor: assets[assets.length - 1]?.filename_download,
           },
           id: root.id,
           edges: assets.map((node) => ({
-            cursor: node.id,
+            cursor: node.filename_download,
             node,
           })),
         };
@@ -179,21 +183,30 @@ export function assetConnection<Types extends SchemaTypes>(
 function from({
   connectionName,
   id,
-  after = -1,
+  after,
 }: {
   connectionName: string;
   id: string;
-  after?: number;
+  after?: string | null;
   first?: number;
 }) {
   return ` FROM
-    "directus"."${connectionName}_files"
+    "directus"."${s(connectionName)}_files"
     JOIN "directus"."directus_files" ON "directus_files_id" = "directus"."directus_files"."id"
   WHERE
-    "${connectionName}_id" = '${id}' AND "directus"."${connectionName}_files"."id" > ${after}
+    "${s(connectionName)}_id" = '${s(id)}' AND "filename_download" > '${s(
+      after,
+    )}'
   `;
 }
 
 function assetUri(id: string): string {
   return `https://crew.kulturspektakel.de/assets/${id}`;
+}
+
+function s(s?: string | null) {
+  if (s && !/^[\w\s\-.]+$/iu.test(s)) {
+    throw new GraphQLError('Invalid input to SQL query');
+  }
+  return s ?? '';
 }
