@@ -4,7 +4,6 @@
     "strict": true,
     "rootDir": "src",
     "outDir": "dist",
-    "typeRoots": ["node_modules/@types", "../types"],
     "strictNullChecks": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -18,5 +17,5 @@
     "files": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "./jest.config.ts", "scripts"]
+  "exclude": ["node_modules", "scripts"]
 }
