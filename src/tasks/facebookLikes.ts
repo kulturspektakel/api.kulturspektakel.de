@@ -1,6 +1,5 @@
 import prismaClient from '../utils/prismaClient';
 import {JobHelpers} from 'graphile-worker';
-import fetch from 'node-fetch';
 import {URL} from 'url';
 import env from '../utils/env';
 

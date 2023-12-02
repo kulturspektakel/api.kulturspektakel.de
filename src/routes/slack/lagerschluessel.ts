@@ -1,7 +1,6 @@
 import express, {Request} from 'express';
 import {Router} from '@awaitjs/express';
 import {SlackSlashCommandRequest} from './token';
-import fetch from 'node-fetch';
 import env from '../../utils/env';
 import prismaClient from '../../utils/prismaClient';
 import {

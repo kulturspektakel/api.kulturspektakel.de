@@ -1,6 +1,5 @@
 import prismaClient from '../utils/prismaClient';
 import {JobHelpers} from 'graphile-worker';
-import fetch from 'node-fetch';
 
 export default async function (
   {id, cookie = ''}: {id: string; cookie?: string},

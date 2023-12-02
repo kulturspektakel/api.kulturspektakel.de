@@ -1,6 +1,5 @@
 import prismaClient from '../utils/prismaClient';
 import {JobHelpers} from 'graphile-worker';
-import fetch from 'node-fetch';
 
 export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const application = await prismaClient.bandApplication.findUnique({

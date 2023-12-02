@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import env from './env';
 
 export async function uploadImage(

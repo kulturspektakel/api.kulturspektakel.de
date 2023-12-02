@@ -1,21 +1,22 @@
 {
   "compilerOptions": {
-    "skipLibCheck": true,
+    "lib": ["ESNext"],
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "composite": true,
     "strict": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "strictNullChecks": true,
-    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2019"],
-    "sourceMap": true,
-    "inlineSources": true,
-    "sourceRoot": "/",
-    "downlevelIteration": true
-  },
-  "ts-node": {
-    "files": true
-  },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules", "scripts"]
+    "allowJs": true,
+    "types": [
+      "bun-types" // add Bun global
+    ]
+  }
 }

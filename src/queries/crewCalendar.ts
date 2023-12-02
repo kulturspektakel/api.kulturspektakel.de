@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import {builder} from '../pothos/builder';
 import {icsCalendarToObject} from 'ts-ics';
 import VEvent from '../models/VEvent';

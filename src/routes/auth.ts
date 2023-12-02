@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import env from '../utils/env';
-import fetch from 'node-fetch';
 import {Router} from '@awaitjs/express';
 import {createHash} from 'crypto';
 import requestUrl from '../utils/requestUrl';

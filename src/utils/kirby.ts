@@ -1,6 +1,5 @@
 import {zonedTimeToUtc} from 'date-fns-tz';
 import {add} from 'date-fns';
-import fetch from 'node-fetch';
 import env from './env';
 
 type ApiError = {

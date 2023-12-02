@@ -1,7 +1,6 @@
 import {JobHelpers} from 'graphile-worker';
 import prismaClient from '../utils/prismaClient';
 import bandcamp from 'bandcamp-scraper';
-import fetch from 'node-fetch';
 import env from '../utils/env';
 import {promisify} from 'util';
 import {DemoEmbedType} from '@prisma/client';
@@ -105,7 +104,6 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
       if (url.host === 'on.soundcloud.com') {
         const res = await fetch(url, {
           redirect: 'follow',
-          follow: 10,
         });
         pathname = new URL(res.url).pathname;
       }
@@ -116,7 +114,6 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
     case 'spoti.fi':
       const res = await fetch(url, {
         redirect: 'follow',
-        follow: 10,
       });
       console.log(res.url);
       path = new URL(res.url).pathname.split('/');

@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import {builder} from '../pothos/builder';
 import env from '../utils/env';
 import SpotifyArtist from '../models/SpotifyArtist';
