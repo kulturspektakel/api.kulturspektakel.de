@@ -32,4 +32,4 @@ jobs:
         run: gcloud builds submit --config cloudbuild.yaml .
 
       - name: 'run'
-        run: gcloud run deploy crew --image europe-west1-docker.pkg.dev/gmail-reminder-api/cloud-run-source-deploy/api:latest --env-vars-file ./.env.json --region europe-west1 --allow-unauthenticated
+        run: gcloud run deploy api --image europe-west1-docker.pkg.dev/gmail-reminder-api/cloud-run-source-deploy/api:latest --env-vars-file ./.env.json --region europe-west1 --allow-unauthenticated
