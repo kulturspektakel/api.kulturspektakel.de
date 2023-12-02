@@ -23,7 +23,6 @@ import {Router} from '@awaitjs/express';
 import crc32 from 'crc-32';
 import {ParsedToken} from './auth';
 import {AllLists} from '../proto/configs';
-import {Product} from '../proto/product';
 
 const fs = fsNode.promises;
 const router = Router({});

@@ -21,7 +21,6 @@ import prismaClient from '../utils/prismaClient';
 import OrderPaymentEnum from './OrderPayment';
 import TimeGrouping from './TimeGrouping';
 import {GraphQLError} from 'graphql';
-import {ApolloServerErrorCode} from '@apollo/server/errors';
 
 type OrderItems = Array<OrderItem & {order: Order}>;
 
@@ -81,26 +80,25 @@ builder.objectType(SalesNumber, {
         const stepHours = grouping === 'Hour' ? 1 : 24;
 
         if (differenceInHours(before, after) / stepHours > 100) {
-          throw new GraphQLError('Time grouping has too many steps', {
-            extensions: {
-              code: ApolloServerErrorCode.BAD_USER_INPUT,
-            },
-          });
+          throw new GraphQLError('Time grouping has too many steps');
         }
 
         const result: TimeSeries[] = [];
         let time = grouping == 'Hour' ? startOfHour(after) : startOfDay(after);
         while (!isAfter(time, before)) {
           result.push(
-            orderItems.reduce((acc, cv) => {
-              if (
-                !isBefore(cv.order.createdAt, time) &&
-                isBefore(cv.order.createdAt, add(time, {hours: stepHours}))
-              ) {
-                acc.value += cv.amount;
-              }
-              return acc;
-            }, new TimeSeries(time, 0)),
+            orderItems.reduce(
+              (acc, cv) => {
+                if (
+                  !isBefore(cv.order.createdAt, time) &&
+                  isBefore(cv.order.createdAt, add(time, {hours: stepHours}))
+                ) {
+                  acc.value += cv.amount;
+                }
+                return acc;
+              },
+              new TimeSeries(time, 0),
+            ),
           );
           time = add(time, {hours: stepHours});
         }
@@ -117,9 +115,9 @@ builder.interfaceType(Billable, {
   name: 'Billable',
   fields: (t) => ({
     salesNumbers: t.field({
-      // authScopes: {
-      //   user: true,
-      // },
+      authScopes: {
+        user: true,
+      },
       type: [SalesNumber],
       args: {
         after: t.arg({type: 'DateTime', required: true}),
@@ -130,11 +128,6 @@ builder.interfaceType(Billable, {
         if (isAfter(after, before)) {
           throw new GraphQLError(
             'Argument "after" needs to be earlier than argument "before"',
-            {
-              extensions: {
-                code: ApolloServerErrorCode.BAD_USER_INPUT,
-              },
-            },
           );
         }
 

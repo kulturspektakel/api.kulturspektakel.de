@@ -11,7 +11,6 @@ import BandApplication, {
   HeardAboutBookingFrom,
 } from '../models/BandApplication';
 import PreviouslyPlayed from '../models/PreviouslyPlayed';
-import {ApolloServerErrorCode} from '@apollo/server/errors';
 import {GraphQLError} from 'graphql';
 
 const CreateBandApplicationInput = builder.inputType(
@@ -68,11 +67,7 @@ builder.mutationField('createBandApplication', (t) =>
     ) => {
       const isDJ = data.genreCategory === 'DJ';
       if (!demo && !isDJ) {
-        throw new GraphQLError('Demo material required', {
-          extensions: {
-            code: ApolloServerErrorCode.BAD_USER_INPUT,
-          },
-        });
+        throw new GraphQLError('Demo material required');
       }
 
       demo = tryNormalizing(demo);

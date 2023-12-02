@@ -1,4 +1,3 @@
-import {ApolloServerErrorCode} from '@apollo/server/errors';
 import {
   CardTransaction as CardTransactionT,
   Device,
@@ -52,11 +51,6 @@ builder.interfaceType(Transactionable, {
         if (after && before && isAfter(after, before)) {
           throw new GraphQLError(
             'Argument "after" needs to be earlier than argument "before"',
-            {
-              extensions: {
-                code: ApolloServerErrorCode.BAD_USER_INPUT,
-              },
-            },
           );
         }
 

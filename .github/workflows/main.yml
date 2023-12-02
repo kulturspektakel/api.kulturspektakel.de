@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - master
+      - gcp
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -12,41 +12,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-          if_key_exists: replace
-      - name: Install dependencies
-        run: yarn
-      - name: Typecheck and build
-        run: |
-          yarn generate:prisma
-          yarn build
-      - name: Create ENV
+      - uses: 'actions/checkout@v4'
+
+      - name: Prepare environment
         env:
           Dotenv: ${{ secrets.DOTENV_ME }}
         run: |
           echo "DOTENV_ME=$Dotenv" > .env.me
+          yarn
           yarn dotenv-vault pull
           yarn dotenv-vault pull production
           yarn ts-node scripts/merge-envs.ts
-          rm -rf .env.me
-      - name: Create Sentry release
-        env:
-          Release: api@${{ github.run_number }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        run: |
-          printf "\nRELEASE=$Release" >> .env
-          yarn sentry-cli releases new $Release
-          yarn sentry-cli releases files $Release upload-sourcemaps upload-sourcemaps dist
-          yarn sentry-cli releases finalize $Release
-      - name: Deploy
-        env:
-          Host: kultursp@kulturspektakel.de
-          Dir: /var/www/virtual/kultursp/api.kulturspektakel.de
-        run: |
-          rsync -avz --delete --exclude node_modules --exclude src . $Host:$Dir
-          ssh $Host "cd $Dir && ./scripts/deploy.sh"
+
+      - uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS_JSON }}'
+
+      - name: 'build'
+        run: gcloud builds submit --config cloudbuild.yaml .
+
+      - name: 'run'
+        run: gcloud run deploy crew --image europe-west1-docker.pkg.dev/gmail-reminder-api/cloud-run-source-deploy/api:latest --env-vars-file ./.env.json --region europe-west1 --allow-unauthenticated

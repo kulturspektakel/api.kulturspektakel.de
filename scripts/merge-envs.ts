@@ -4,26 +4,25 @@ import {parse} from 'dotenv';
 
 const ENV_PROD_PATH = path.join(__dirname, '..', '.env.production');
 const ENV_PATH = path.join(__dirname, '..', '.env');
+const ENV_YML = path.join(__dirname, '..', '.env.json');
 
 (async () => {
-  const prod = await (
-    await fs.readFile(ENV_PROD_PATH)
+  const dev = await readEnv(ENV_PATH);
+  const prod = await readEnv(ENV_PROD_PATH);
+  const config = {...dev, ...prod};
+  delete config.PORT;
+  await fs.writeFile(ENV_YML, JSON.stringify(config));
+  console.log('Merged configs into .env');
+})();
+
+async function readEnv(path: string) {
+  const config = await (
+    await fs.readFile(path)
   )
     .toString()
     .split('\n')
     // filter empty vars
-    .filter((l) => !l.endsWith('=""'));
-
-  // adding new line
-  prod.unshift('');
-  await fs.appendFile(ENV_PATH, prod.join('\n'));
-
-  const conf = await fs.readFile(ENV_PATH);
-  process.env = {
-    ...process.env,
-    ...parse(conf),
-  };
-  require('../src/utils/env'); // validate env is correct
-  await fs.unlink(ENV_PROD_PATH);
-  console.log('Merged configs into .env');
-})();
+    .filter((l) => !l.endsWith('=""'))
+    .join('\n');
+  return parse(config);
+}

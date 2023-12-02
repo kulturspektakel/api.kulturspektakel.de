@@ -1,7 +1,5 @@
 import express from 'express';
-import {ApolloServer} from '@apollo/server';
 import schema from './pothos/schema';
-import {Context} from './context';
 import env from './utils/env';
 import cookieParser from 'cookie-parser';
 import auth from './routes/auth';
@@ -13,57 +11,20 @@ import slackOwntracks from './routes/slack/owntracks';
 import {join} from 'path';
 import tasks from './tasks';
 import kultCash from './routes/kultCash';
-import {ApolloServerPluginLandingPageGraphQLPlayground} from '@apollo/server-plugin-landing-page-graphql-playground';
-import {
-  ApiError,
-  ApolloErrorLoggingPlugin,
-  errorReportingMiddleware,
-} from './utils/errorReporting';
+import {ApiError, errorReportingMiddleware} from './utils/errorReporting';
 import saml from './routes/saml';
 import owntracks from './routes/owntracks';
 import * as Sentry from '@sentry/node';
 import {RewriteFrames as RewriteFramesIntegration} from '@sentry/integrations';
-import {GraphQLError} from 'graphql';
-import {expressMiddleware} from '@apollo/server/express4';
-import {json} from 'body-parser';
-import cors from 'cors';
-import {ApolloServerErrorCode} from '@apollo/server/errors';
-import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
-import http from 'http';
 import slackLagerschluessel from './routes/slack/lagerschluessel';
-
-const GRAPHQL_PATH = '/graphql';
+import {createYoga} from 'graphql-yoga';
+import {useSentry} from '@envelop/sentry';
+import {Context} from './context';
+import '@sentry/tracing';
 
 (async () => {
   await tasks();
   const app = express();
-
-  const httpServer = http.createServer(app);
-
-  const server = new ApolloServer<Context>({
-    schema,
-    formatError: (err) => {
-      if (!(err instanceof GraphQLError)) {
-        return new GraphQLError(err.message, {
-          extensions: {
-            code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
-          },
-          originalError: err as Error,
-        });
-      }
-      return err;
-    },
-    introspection: true,
-    plugins: [
-      ApolloServerPluginDrainHttpServer({httpServer}),
-      ApolloServerPluginLandingPageGraphQLPlayground({
-        settings: {
-          'request.credentials': 'include',
-        },
-      }),
-      ApolloErrorLoggingPlugin,
-    ],
-  });
 
   // The request handler must be the first middleware on the app
   Sentry.init({
@@ -75,10 +36,12 @@ const GRAPHQL_PATH = '/graphql';
       new RewriteFramesIntegration({
         root: __dirname,
       }),
+      new Sentry.Integrations.Http({tracing: true}),
     ],
+    tracesSampleRate: 1.0,
   });
   app.use(Sentry.Handlers.requestHandler());
-
+  app.use(Sentry.Handlers.tracingHandler());
   app.use(cookieParser());
 
   // Routes
@@ -97,6 +60,22 @@ const GRAPHQL_PATH = '/graphql';
     express.static(join(__dirname, '..', 'artifacts', 'public')),
   );
 
+  const yoga = createYoga<{}, Context>({
+    schema,
+    graphiql: {
+      title: 'Kulturspektakel API',
+    },
+    context: (initialContext) => {
+      return {parsedToken: (initialContext as any).req._parsedToken};
+    },
+    plugins: [
+      useSentry({
+        skipError: () => false,
+      }),
+    ],
+  });
+  app.use(yoga.graphqlEndpoint, yoga);
+
   app.use(
     Sentry.Handlers.errorHandler({
       // ApiErrors are handled in errorReportingMiddleware
@@ -104,32 +83,7 @@ const GRAPHQL_PATH = '/graphql';
     }),
   );
   app.use(errorReportingMiddleware);
-
-  await server.start();
-
-  app.use(
-    GRAPHQL_PATH,
-    cors<cors.CorsRequest>({
-      origin: [
-        'http://localhost:3000',
-        'https://crew.kulturspektakel.de',
-        'https://www2.kulturspektakel.de',
-        'https://app.kulturspektakel.de',
-        'https://kulturspektakel.de',
-        'https://booking.kulturspektakel.de',
-      ],
-      credentials: true,
-    }),
-    json(),
-    // @ts-ignore
-    expressMiddleware(server, {
-      context: async ({req}) => ({parsedToken: req._parsedToken}),
-    }),
-  );
-
-  httpServer.listen({port: env.PORT}, () =>
-    console.log(
-      `🚀 Server ready at http://localhost:${env.PORT}${GRAPHQL_PATH}`,
-    ),
+  app.listen({port: env.PORT}, () =>
+    console.log(`🚀 Server ready at http://localhost:${env.PORT}`),
   );
 })();

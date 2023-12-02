@@ -2,13 +2,12 @@ import BandApplication from '../models/BandApplication';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import viewerIdFromToken from '../utils/viewerIdFromToken';
-import {ApolloServerErrorCode} from '@apollo/server/errors';
 import {GraphQLError} from 'graphql';
 
 builder.mutationField('rateBandApplication', (t) =>
   t.field({
     type: BandApplication,
-    authScopes: {user: true},
+    // authScopes: {user: true},
     args: {
       bandApplicationId: t.arg.globalID({required: true}),
       rating: t.arg.int(),
@@ -20,11 +19,7 @@ builder.mutationField('rateBandApplication', (t) =>
     ) => {
       const viewerId = await viewerIdFromToken(parsedToken);
       if (viewerId == null) {
-        throw new GraphQLError('Wrong token', {
-          extensions: {
-            code: ApolloServerErrorCode.BAD_USER_INPUT,
-          },
-        });
+        throw new GraphQLError('Wrong token');
       }
 
       const where = {
@@ -46,11 +41,7 @@ builder.mutationField('rateBandApplication', (t) =>
           });
         return bandApplication;
       } else if (rating < 1 || rating > 4) {
-        throw new GraphQLError('Rating must be between 1 and 4', {
-          extensions: {
-            code: ApolloServerErrorCode.BAD_USER_INPUT,
-          },
-        });
+        throw new GraphQLError('Rating must be between 1 and 4');
       } else {
         const {bandApplication} =
           await prismaClient.bandApplicationRating.upsert({
