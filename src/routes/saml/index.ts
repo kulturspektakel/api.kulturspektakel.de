@@ -303,8 +303,6 @@ async function sendSAMLResponse(
     },
   );
 
-  console.log('sending SAML response', response, id, parseResult);
-
   return c.html(html`
     <form method="post" action="${assertionConsumerServiceUrl}">
       <input type="hidden" name="SAMLResponse" value="${response.context}" />
