@@ -8,12 +8,11 @@ import {readFileSync} from 'fs';
 import {join} from 'path';
 import {Viewer} from '@prisma/client';
 import viewerFromToken from '../../utils/viewerFromToken';
-import {Hono, Context as HonoContext} from 'hono';
-import {Context} from '../../context';
+import {Hono, Context} from 'hono';
 import {deleteCookie, getCookie} from 'hono/cookie';
 import {html} from 'hono/html';
 
-const app = new Hono<{Variables: Context}>();
+const app = new Hono();
 
 const replaceTagsByValue = (rawXML: string, tagValues: any): string => {
   Object.keys(tagValues).forEach((t) => {
@@ -212,7 +211,7 @@ const signingCert = readFileSync(
 );
 
 async function sendSAMLResponse(
-  c: HonoContext<{Variables: Context}, any>,
+  c: Context,
   viewer: {
     displayName: string;
     email: string;
@@ -261,8 +260,14 @@ async function sendSAMLResponse(
     },
   });
 
-  console.log('1');
-  const parseResult = await idp.parseLoginRequest(sp, 'redirect', c.req.raw);
+  console.log('1', {
+    body: await c.req.parseBody(),
+    query: c.req.query(),
+  });
+  const parseResult = await idp.parseLoginRequest(sp, 'redirect', {
+    body: await c.req.parseBody(),
+    query: c.req.query(),
+  });
   console.log('2');
   const {id, assertionConsumerServiceUrl, issueInstant, destination} =
     parseResult.extract.request;
