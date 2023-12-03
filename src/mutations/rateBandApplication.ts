@@ -7,7 +7,7 @@ import {GraphQLError} from 'graphql';
 builder.mutationField('rateBandApplication', (t) =>
   t.field({
     type: BandApplication,
-    // authScopes: {user: true},
+    authScopes: {user: true},
     args: {
       bandApplicationId: t.arg.globalID({required: true}),
       rating: t.arg.int(),

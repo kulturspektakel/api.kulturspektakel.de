@@ -1,10 +1,8 @@
-FROM node:20-alpine
+FROM oven/bun:1.0.15
 
 WORKDIR /usr/src/app
-COPY package.json yarn.lock prisma/schema.prisma ./
-RUN yarn install --frozen-lockfile --production=false
+COPY package.json bun.lockb prisma/schema.prisma ./
+RUN bun install --frozen-lockfile
 RUN yarn generate:prisma
 COPY . .
-ENV NODE_OPTIONS --max_old_space_size=4096
-RUN yarn build
-CMD ["yarn", "start"]
+CMD ["bun", "run", "index.ts"]

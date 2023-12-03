@@ -1,6 +1,3 @@
-import express, {Request} from 'express';
-import {Router} from '@awaitjs/express';
-import {SlackSlashCommandRequest} from './token';
 import env from '../../utils/env';
 import prismaClient from '../../utils/prismaClient';
 import {
@@ -8,77 +5,64 @@ import {
   differenceInHours,
   differenceInMinutes,
 } from 'date-fns';
+import {Hono} from 'hono';
 
-const router = Router({});
+const app = new Hono();
 
-router.postAsync(
-  '/lagerschluessel/update',
-  // @ts-ignore postAsync is not typed correctly
-  express.json(),
-  async (
-    req: Request<
-      any,
-      any,
-      {
-        positionType: string;
-        verticalAccuracy: number;
-        longitude: number;
-        floorLevel: number;
-        isInaccurate: boolean;
-        isOld: boolean;
-        horizontalAccuracy: number;
-        latitude: number;
-        timeStamp: number;
-        altitude: number;
-        locationFinished: boolean;
-      }
-    >,
-    res,
-  ) => {
-    console.log(req.body);
-    const timeStamp = new Date(req.body.timeStamp);
-    await prismaClient.itemLocation.upsert({
-      where: {
-        timeStamp,
-      },
-      create: {
-        timeStamp,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        payload: req.body,
-      },
-      update: {
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
+app.post('/update', async (c) => {
+  const body = await c.req.json<{
+    positionType: string;
+    verticalAccuracy: number;
+    longitude: number;
+    floorLevel: number;
+    isInaccurate: boolean;
+    isOld: boolean;
+    horizontalAccuracy: number;
+    latitude: number;
+    timeStamp: number;
+    altitude: number;
+    locationFinished: boolean;
+  }>();
+
+  const timeStamp = new Date(body.timeStamp);
+  await prismaClient.itemLocation.upsert({
+    where: {
+      timeStamp,
+    },
+    create: {
+      timeStamp,
+      latitude: body.latitude,
+      longitude: body.longitude,
+      payload: body,
+    },
+    update: {
+      latitude: body.latitude,
+      longitude: body.longitude,
+    },
+  });
+  return c.status(200);
+});
+
+app.post('/', async (c) => {
+  const {latitude, longitude, timeStamp} =
+    await prismaClient.itemLocation.findFirstOrThrow({
+      orderBy: {
+        timeStamp: 'desc',
       },
     });
-    res.sendStatus(200);
-  },
-);
+  const mapLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+  const image_url = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7C${latitude},${longitude}&key=${env.GOOGLE_MAPS_KEY}`;
 
-router.postAsync(
-  '/lagerschluessel',
-  // @ts-ignore postAsync is not typed correctly
-  express.urlencoded(),
-  async (req: SlackSlashCommandRequest, res) => {
-    const {latitude, longitude, timeStamp} =
-      await prismaClient.itemLocation.findFirstOrThrow({
-        orderBy: {
-          timeStamp: 'desc',
-        },
-      });
-    const mapLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-    const image_url = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7C${latitude},${longitude}&key=${env.GOOGLE_MAPS_KEY}`;
+  const apiRequest = await fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&language=de&key=${env.GOOGLE_MAPS_KEY}`,
+  );
 
-    const apiRequest = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&language=de&key=${env.GOOGLE_MAPS_KEY}`,
-    );
+  const data = await apiRequest.json();
+  const address =
+    data.results.at(0)?.formatted_address ?? 'Unbekannte Position';
 
-    const data = await apiRequest.json();
-    const address =
-      data.results.at(0)?.formatted_address ?? 'Unbekannte Position';
-
-    res.status(200).json({
+  return c.json(
+    {
       text: 'Lagerschlüssel Position',
       blocks: [
         {
@@ -101,9 +85,10 @@ router.postAsync(
           alt_text: 'Karte mit Position des Lagerschlüssels',
         },
       ],
-    });
-  },
-);
+    },
+    200,
+  );
+});
 
 function ago(d: Date) {
   const minutes = differenceInMinutes(new Date(), d);
@@ -118,4 +103,4 @@ function ago(d: Date) {
   return `${days} Tage`;
 }
 
-export default router;
+export default app;

@@ -19,10 +19,10 @@ jobs:
           Dotenv: ${{ secrets.DOTENV_ME }}
         run: |
           echo "DOTENV_ME=$Dotenv" > .env.me
-          yarn
-          yarn dotenv-vault pull
-          yarn dotenv-vault pull production
-          yarn ts-node scripts/merge-envs.ts
+          bun install
+          bun dotenv-vault pull
+          bun dotenv-vault pull production
+          bun scripts/merge-envs.ts
 
       - uses: 'google-github-actions/auth@v1'
         with:

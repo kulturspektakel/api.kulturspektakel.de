@@ -1,62 +1,40 @@
-import express, {Request} from 'express';
-import {Router} from '@awaitjs/express';
 import nuclinoTokenGeneration from '../../utils/nuclinoTokenGeneration';
+import {Hono} from 'hono';
+import {setCookie} from 'hono/cookie';
 
-const router = Router({});
+const app = new Hono();
 
-export type SlackSlashCommandRequest = Request<
-  any,
-  any,
-  {
-    token: string;
-    team_id: string;
-    team_domain: string;
-    enterprise_id?: string;
-    enterprise_name?: string;
-    channel_id: string;
-    channel_name: string;
-    user_id: string;
-    user_name: string;
-    command: string;
-    text: string;
-    response_url: string;
-    trigger_id: string;
-    api_app_id: string;
-  }
->;
+export type SlackSlashCommandRequest = {
+  token: string;
+  team_id: string;
+  team_domain: string;
+  enterprise_id?: string;
+  enterprise_name?: string;
+  channel_id: string;
+  channel_name: string;
+  user_id: string;
+  user_name: string;
+  command: string;
+  text: string;
+  response_url: string;
+  trigger_id: string;
+  api_app_id: string;
+};
 
-router.get(
-  '/token',
-  (
-    req: Request<
-      any,
-      any,
-      any,
-      {
-        nonce: string;
-        redirect: string;
-      }
-    >,
-    res,
-  ) => {
-    res.cookie('nonce', req.query.nonce, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      maxAge: 5 * 60 * 1000,
-    });
-    res.redirect(req.query.redirect);
-  },
-);
+app.get('/', async (c) => {
+  setCookie(c, 'nonce', c.req.query('nonce')!, {
+    httpOnly: true,
+    sameSite: 'None',
+    secure: true,
+    maxAge: 5 * 60 * 1000,
+  });
+  c.redirect(c.req.query('redirect')!);
+});
 
-router.postAsync(
-  '/token',
-  // @ts-ignore postAsync is not typed correctly
-  express.urlencoded(),
-  async (req: SlackSlashCommandRequest, res) => {
-    res.status(200).send();
-    await nuclinoTokenGeneration(req.body.user_id, req.body.trigger_id);
-  },
-);
+app.post('/', async (c) => {
+  const body = await c.req.parseBody<SlackSlashCommandRequest>();
+  c.status(200);
+  await nuclinoTokenGeneration(body.user_id, body.trigger_id);
+});
 
-export default router;
+export default app;

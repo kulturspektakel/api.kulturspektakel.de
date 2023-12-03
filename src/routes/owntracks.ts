@@ -6,10 +6,9 @@ import {sub} from 'date-fns';
 import jimp from 'jimp';
 import viewerIdFromToken from '../utils/viewerIdFromToken';
 import {Hono} from 'hono';
-import {Context} from '../context';
 import {ApiError} from '../utils/errorReporting';
 
-const app = new Hono<{Variables: Context}>();
+const app = new Hono();
 
 enum LocatorPriority {
   NoPower = 0, // best accuracy possible with zero additional power consumption (Android)

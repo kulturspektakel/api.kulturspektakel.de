@@ -6,7 +6,6 @@ import prismaClient from '../utils/prismaClient';
 import {ownTracksPassword} from './owntracks';
 import {MiddlewareHandler} from 'hono';
 import {getCookie, setCookie} from 'hono/cookie';
-import {Context} from '../context';
 import {parse as parseBasicAuth} from 'basic-auth';
 
 export type ParsedToken =
@@ -32,7 +31,7 @@ export type ParsedToken =
 
 const sha1 = (data: string) => createHash('sha1').update(data).digest('hex');
 
-const middleware: MiddlewareHandler<{Variables: Context}> = async (c, next) => {
+const middleware: MiddlewareHandler = async (c, next) => {
   const {req} = c;
   let [_, token] =
     // ESPhttpUpdate.setAuthorization prefixes auth header with "Basic " :-/
@@ -83,7 +82,7 @@ const middleware: MiddlewareHandler<{Variables: Context}> = async (c, next) => {
   }
 
   if (token == null) {
-    return next();
+    return await next();
   }
 
   if (req.header('x-esp8266-sta-mac') != null) {
@@ -98,14 +97,14 @@ const middleware: MiddlewareHandler<{Variables: Context}> = async (c, next) => {
       });
     }
 
-    return next();
+    return await next();
   }
 
   try {
     c.set('parsedToken', jwt.verify(token, env.JWT_SECRET) as ParsedToken);
   } catch (e) {}
 
-  next();
+  return await next();
 };
 
 export default middleware;

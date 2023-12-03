@@ -1,28 +1,25 @@
 import prismaClient from '../../utils/prismaClient';
-import express from 'express';
-import {Router} from '@awaitjs/express';
 import {SlackSlashCommandRequest} from './token';
 import {configString} from '../owntracks';
+import {Hono} from 'hono';
 
-const router = Router({});
+const app = new Hono();
 
-router.postAsync(
-  '/owntracks',
-  // @ts-ignore postAsync is not typed correctly
-  express.urlencoded(),
-  async (req: SlackSlashCommandRequest, res) => {
-    const viewer = await prismaClient.viewer.upsert({
-      create: {
-        displayName: req.body.user_name,
-        email: '',
-      },
-      update: {},
-      where: {
-        id: req.body.user_id,
-      },
-    });
+app.post('/', async (c) => {
+  const body = await c.req.parseBody<SlackSlashCommandRequest>();
+  const viewer = await prismaClient.viewer.upsert({
+    create: {
+      displayName: body.user_name,
+      email: '',
+    },
+    update: {},
+    where: {
+      id: body.user_id,
+    },
+  });
 
-    res.status(200).json({
+  return c.json(
+    {
       text: 'Für welchen Account möchtest du einen 2-Faktor-Code generieren?',
       blocks: [
         {
@@ -35,8 +32,9 @@ router.postAsync(
           },
         },
       ],
-    });
-  },
-);
+    },
+    200,
+  );
+});
 
-export default router;
+export default app;

@@ -1,33 +1,29 @@
 import prismaClient from '../../utils/prismaClient';
-import express from 'express';
-import {Router} from '@awaitjs/express';
 import totp from 'totp-generator';
 import {SlackSlashCommandRequest} from './token';
 import {sendMessage, SlackChannel} from '../../utils/slack';
+import {Hono} from 'hono';
 
-const router = Router({});
+const app = new Hono();
 
-router.postAsync(
-  '/twofactor',
-  // @ts-ignore postAsync is not typed correctly
-  express.urlencoded(),
-  async (req: SlackSlashCommandRequest, res) => {
-    const accounts = await prismaClient.twoFactor.findMany();
+app.post('/', async (c) => {
+  const body = await c.req.parseBody<SlackSlashCommandRequest>();
+  const accounts = await prismaClient.twoFactor.findMany();
 
-    const matchingAccounts = accounts.filter(
-      (a) =>
-        a.account.toLocaleLowerCase() === req.body.text.trim().toLowerCase(),
+  const matchingAccounts = accounts.filter(
+    (a) => a.account.toLocaleLowerCase() === body.text.trim().toLowerCase(),
+  );
+
+  if (matchingAccounts.length === 1) {
+    const response = await generateTwoFactorCodeResponse(
+      body.user_name,
+      matchingAccounts[0],
     );
+    return c.json(response, 200);
+  }
 
-    if (matchingAccounts.length === 1) {
-      const response = await generateTwoFactorCodeResponse(
-        req.body.user_name,
-        matchingAccounts[0],
-      );
-      return res.status(200).json(response);
-    }
-
-    res.status(200).json({
+  c.json(
+    {
       text: 'Für welchen Account möchtest du einen 2-Faktor-Code generieren?',
       blocks: [
         {
@@ -63,9 +59,10 @@ router.postAsync(
           ],
         },
       ],
-    });
-  },
-);
+    },
+    200,
+  );
+});
 
 export async function generateTwoFactorCodeResponse(
   userId: string,
@@ -110,4 +107,4 @@ export async function generateTwoFactorCodeResponse(
   };
 }
 
-export default router;
+export default app;

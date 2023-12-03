@@ -1,5 +1,4 @@
 import prismaClient from '../utils/prismaClient';
-import express, {NextFunction, Request} from 'express';
 import {
   LogMessage,
   LogMessage_CardTransaction_TransactionType,
@@ -13,30 +12,28 @@ import {
   ProductList,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {join} from 'path';
-import fsNode, {existsSync} from 'fs';
-import {homedir} from 'os';
 import {getTimezoneOffset} from 'date-fns-tz';
 import {subMilliseconds} from 'date-fns';
 import {ApiError} from '../utils/errorReporting';
-import {Router} from '@awaitjs/express';
 import crc32 from 'crc-32';
 import {ParsedToken} from './auth';
 import {AllLists} from '../proto/configs';
+import {Hono, Context} from 'hono';
 
-const fs = fsNode.promises;
-const router = Router({});
+const app = new Hono();
 
-function getSoftwareVersion(req: Request) {
-  return req.header('x-esp8266-version')?.toString() ?? undefined;
+function getSoftwareVersion(c: Context) {
+  return c.req.header('x-esp8266-version')?.toString() ?? undefined;
 }
 
-router.useAsync('/', async function (req, res, next: NextFunction) {
-  if (req._parsedToken?.iss != 'device') {
+app.use('/', async function (c) {
+  const token = c.get('parsedToken');
+
+  if (token?.iss != 'device') {
     throw new ApiError(401, 'Unauthorized');
   }
-  const id = req._parsedToken.deviceId;
-  const softwareVersion = getSoftwareVersion(req);
+  const id = token.deviceId;
+  const softwareVersion = getSoftwareVersion(c);
   const lastSeen = new Date();
   await prismaClient.device.upsert({
     where: {
@@ -53,7 +50,6 @@ router.useAsync('/', async function (req, res, next: NextFunction) {
       softwareVersion,
     },
   });
-  next();
 });
 
 type ParsedDeviceToken = Extract<ParsedToken, {iss: 'device'}>;
@@ -90,8 +86,8 @@ const productListQuery = {
   },
 };
 
-router.getAsync('/config', async (req, res) => {
-  const {deviceId: id} = req._parsedToken as ParsedDeviceToken;
+app.get('/config', async (c) => {
+  const {deviceId: id} = c.get('parsedToken') as ParsedDeviceToken;
   const device = await prismaClient.device.findUnique({
     where: {
       id,
@@ -105,17 +101,16 @@ router.getAsync('/config', async (req, res) => {
 
   const list = device?.productList;
   if (!list) {
-    res.status(204).send('No Content');
-    return;
+    return c.text('No Content', 204);
   }
 
   const deviceConfig = getDeviceConfig(list);
   const message = DeviceConfig.encode(deviceConfig).finish();
-  res.setHeader('Content-Type', 'application/x-protobuf');
-  res.send(message);
+  c.header('Content-Type', 'application/x-protobuf');
+  return c.body(message.buffer as ArrayBuffer);
 });
 
-router.getAsync('/lists', async (req, res) => {
+app.get('/lists', async (c) => {
   const lists = await prismaClient.productList.findMany({
     where: {
       active: true,
@@ -132,157 +127,113 @@ router.getAsync('/lists', async (req, res) => {
   };
   allLists.checksum = crc32.buf(AllLists.encode(allLists).finish());
 
-  if (req.headers['if-none-match'] === `"${allLists.checksum}"`) {
-    res.status(304).send('Not Modified');
-    return;
+  if (c.req.header('if-none-match') === `"${allLists.checksum}"`) {
+    return c.text('Not Modified', 304);
   }
 
   const message = AllLists.encode(allLists).finish();
-  res.setHeader('Content-Type', 'application/x-protobuf');
-  res.setHeader('ETag', `"${allLists.checksum}"`);
-  res.send(message);
+  c.header('Content-Type', 'application/x-protobuf');
+  c.header('ETag', `"${allLists.checksum}"`);
+  return c.body(message.buffer as ArrayBuffer);
 });
 
-router.postAsync(
-  '/log',
-  // @ts-ignore postAsync is not typed correctly
-  express.raw({
-    type: () => true, // parse body without Content-Type header
-  }),
-  async (req: Request<{}, any, Buffer>, res) => {
-    const {deviceId: id} = req._parsedToken as ParsedDeviceToken;
+app.post('/log', async (c) => {
+  const {deviceId: id} = c.get('parsedToken') as ParsedDeviceToken;
 
-    let message: LogMessage;
+  let message: LogMessage;
+  try {
+    const body = await c.req.arrayBuffer();
+    message = LogMessage.decode(new Uint8Array(body));
+  } catch (e) {
+    throw new ApiError(400, 'Bad Request', e as Error);
+  }
+
+  if (!message.deviceId || !message.clientId) {
+    throw new ApiError(
+      400,
+      'Bad Request',
+      new Error('Missing device/cliendID'),
+    );
+  }
+
+  let deviceTime = new Date(message.deviceTime * 1000);
+  if (!message.deviceTimeIsUtc) {
+    deviceTime = subMilliseconds(
+      deviceTime,
+      getTimezoneOffset('Europe/Berlin', deviceTime),
+    );
+  }
+
+  const {cardTransaction, order} = message;
+  let cardTransactionClientId: string | null = null;
+  if (cardTransaction) {
     try {
-      message = LogMessage.decode(req.body);
-    } catch (e) {
-      throw new ApiError(400, 'Bad Request', e as Error);
-    }
-
-    if (!message.deviceId || !message.clientId) {
-      throw new ApiError(
-        400,
-        'Bad Request',
-        new Error('Missing device/cliendID'),
-      );
-    }
-
-    let deviceTime = new Date(message.deviceTime * 1000);
-    if (!message.deviceTimeIsUtc) {
-      deviceTime = subMilliseconds(
-        deviceTime,
-        getTimezoneOffset('Europe/Berlin', deviceTime),
-      );
-    }
-
-    const {cardTransaction, order} = message;
-    let cardTransactionClientId: string | null = null;
-    if (cardTransaction) {
-      try {
-        const cardT = await prismaClient.cardTransaction.create({
-          data: {
-            clientId: message.clientId,
-            deviceTime,
-            device: {
-              connectOrCreate: {
-                create: {
-                  id,
-                  lastSeen: new Date(),
-                  type: 'CONTACTLESS_TERMINAL',
-                },
-                where: {
-                  id,
-                },
+      const cardT = await prismaClient.cardTransaction.create({
+        data: {
+          clientId: message.clientId,
+          deviceTime,
+          device: {
+            connectOrCreate: {
+              create: {
+                id,
+                lastSeen: new Date(),
+                type: 'CONTACTLESS_TERMINAL',
+              },
+              where: {
+                id,
               },
             },
-            cardId: cardTransaction.cardId,
-            depositBefore: cardTransaction.depositBefore,
-            depositAfter: cardTransaction.depositAfter,
-            balanceBefore: cardTransaction.balanceBefore,
-            balanceAfter: cardTransaction.balanceAfter,
-            transactionType: mapTransactionType(
-              cardTransaction.transactionType,
-            ),
-            counter: cardTransaction.counter,
           },
-        });
-        cardTransactionClientId = cardT.clientId;
-      } catch (e) {
-        if (
-          e instanceof Prisma.PrismaClientKnownRequestError &&
-          e.code === 'P2002'
-        ) {
-          // client ID already exists
-          throw new ApiError(409, 'Conflict');
-        }
-        throw e;
-      }
-    }
-
-    if (order) {
-      await prismaClient.order.create({
-        data: {
-          createdAt: deviceTime,
-          deposit: cardTransaction
-            ? cardTransaction.depositBefore - cardTransaction.depositAfter
-            : 0,
-          payment: mapPayment(order.paymentMethod),
-          items: {
-            createMany: {
-              data:
-                order.cartItems
-                  .filter(({product}) => product != undefined)
-                  .map(({amount, product}) => ({
-                    productListId: order.listId,
-                    amount,
-                    name: product!.name, // not sure why product is nullable
-                    perUnitPrice: product!.price,
-                  })) ?? [],
-            },
-          },
-          deviceId: message.deviceId, // made sure device exists earlier
-          cardTransactionClientId,
+          cardId: cardTransaction.cardId,
+          depositBefore: cardTransaction.depositBefore,
+          depositAfter: cardTransaction.depositAfter,
+          balanceBefore: cardTransaction.balanceBefore,
+          balanceAfter: cardTransaction.balanceAfter,
+          transactionType: mapTransactionType(cardTransaction.transactionType),
+          counter: cardTransaction.counter,
         },
       });
-    }
-
-    return res.status(201).send('Created');
-  },
-);
-
-router.getAsync('/update', async (req, res) => {
-  const version = getSoftwareVersion(req);
-
-  if (version != null) {
-    const versionNumber = parseInt(version, 10);
-    if (Number.isSafeInteger(versionNumber) && versionNumber > 0) {
-      const dir = join(homedir(), 'contactless-firmware');
-      if (!existsSync(dir)) {
-        await fs.mkdir(dir);
+      cardTransactionClientId = cardT.clientId;
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        // client ID already exists
+        throw new ApiError(409, 'Conflict');
       }
-
-      const latestVersion = (await fs.readdir(dir))
-        .map((i) => i.match(/^(\d+)\.bin$/)?.pop())
-        .map((i) => (i ? parseInt(i, 10) : undefined))
-        .filter((i): i is number => Number.isSafeInteger(i))
-        .sort((a, b) => a - b)
-        .pop();
-
-      if (latestVersion && latestVersion > versionNumber) {
-        await new Promise((resolve, reject) =>
-          res.download(join(dir, `${latestVersion}.bin`), (err) => {
-            if (err) {
-              return reject(err);
-            }
-            return resolve(undefined);
-          }),
-        );
-        return;
-      }
+      throw e;
     }
   }
 
-  res.status(304).send('Not Modified');
+  if (order) {
+    await prismaClient.order.create({
+      data: {
+        createdAt: deviceTime,
+        deposit: cardTransaction
+          ? cardTransaction.depositBefore - cardTransaction.depositAfter
+          : 0,
+        payment: mapPayment(order.paymentMethod),
+        items: {
+          createMany: {
+            data:
+              order.cartItems
+                .filter(({product}) => product != undefined)
+                .map(({amount, product}) => ({
+                  productListId: order.listId,
+                  amount,
+                  name: product!.name, // not sure why product is nullable
+                  perUnitPrice: product!.price,
+                })) ?? [],
+          },
+        },
+        deviceId: message.deviceId, // made sure device exists earlier
+        cardTransactionClientId,
+      },
+    });
+  }
+
+  return c.text('Created', 201);
 });
 
 function mapTransactionType(
@@ -325,4 +276,4 @@ function mapPayment(payment: LogMessage_Order_PaymentMethod): OrderPayment {
   }
 }
 
-export default router;
+export default app;
