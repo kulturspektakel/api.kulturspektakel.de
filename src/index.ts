@@ -16,7 +16,7 @@ import {sentry} from '@hono/sentry';
 import {serveStatic} from 'hono/bun';
 import '@sentry/tracing';
 
-// await tasks();
+await tasks();
 const app = new Hono<{Variables: Context}>();
 
 // The request handler must be the first middleware on the app
