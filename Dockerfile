@@ -9,4 +9,4 @@ COPY --from=node:18 /usr/local/bin/node /usr/local/bin/node
 COPY . .
 RUN bunx prisma generate
 
-CMD ["bun", "run", "index.ts"]
+CMD ["bun", "run", "src/index.ts"]
