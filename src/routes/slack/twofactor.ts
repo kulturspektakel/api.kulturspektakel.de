@@ -3,11 +3,13 @@ import totp from 'totp-generator';
 import {SlackSlashCommandRequest} from './token';
 import {sendMessage, SlackChannel} from '../../utils/slack';
 import {Hono} from 'hono';
+import requestUrl from '../../utils/requestUrl';
 
 const app = new Hono();
 
 app.post('/', async (c) => {
   const body = await c.req.parseBody<SlackSlashCommandRequest>();
+  console.log(requestUrl(c.req).toString());
   const accounts = await prismaClient.twoFactor.findMany();
 
   const matchingAccounts = accounts.filter(
