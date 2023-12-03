@@ -1,14 +1,15 @@
-import {Router} from '@awaitjs/express';
 import {Viewer} from '@prisma/client';
-import express, {Request} from 'express';
 import env from '../utils/env';
 import {createHash} from 'crypto';
 import prismaClient from '../utils/prismaClient';
 import {sub} from 'date-fns';
 import jimp from 'jimp';
 import viewerIdFromToken from '../utils/viewerIdFromToken';
+import {Hono} from 'hono';
+import {Context} from '../context';
+import {ApiError} from '../utils/errorReporting';
 
-const router = Router({});
+const app = new Hono<{Variables: Context}>();
 
 enum LocatorPriority {
   NoPower = 0, // best accuracy possible with zero additional power consumption (Android)
@@ -255,110 +256,102 @@ type CardMessage = {
   face: string;
 };
 
-router.get('/config', (req: Request<any, any, any, {config: string}>, res) =>
-  res.redirect(`owntracks:///config?inline=${req.query.config}`),
+app.get('/config', (c) =>
+  c.redirect(`owntracks:///config?inline=${c.req.query().config}`),
 );
 
-router.postAsync(
-  '/',
-  // @ts-ignore postAsync is not typed correctly
-  express.json(),
-  async (
-    req: Request<
-      any,
-      any,
-      WaypointMessage | WaypointsMessage | LocationMessage
-    >,
-    res,
-  ) => {
-    if (req._parsedToken?.iss !== 'owntracks') {
-      return res.status(401);
-    }
+app.post('/', async (c) => {
+  const body = await c.req.json<
+    WaypointMessage | WaypointsMessage | LocationMessage
+  >();
 
-    const viewerId = await viewerIdFromToken(req._parsedToken);
-    if (!viewerId) {
-      return res.status(401);
-    }
+  if (c.get('parsedToken')?.iss !== 'owntracks') {
+    throw new ApiError(401, 'Invalid token');
+  }
 
-    if (req.body._type === 'location') {
-      await prismaClient.viewerLocation.create({
-        data: {
-          latitude: req.body.lat,
-          longitude: req.body.lon,
-          viewerId,
-          createdAt: new Date(req.body.tst * 1000),
-          payload: req.body,
-        },
-      });
-    }
+  const viewerId = await viewerIdFromToken(c.get('parsedToken'));
+  if (!viewerId) {
+    throw new ApiError(401, 'Invalid token');
+  }
 
-    const where = {
-      createdAt: {
-        gt: sub(new Date(), {hours: 5}),
+  if (body._type === 'location') {
+    await prismaClient.viewerLocation.create({
+      data: {
+        latitude: body.lat,
+        longitude: body.lon,
+        viewerId,
+        createdAt: new Date(body.tst * 1000),
+        payload: body,
       },
+    });
+  }
+
+  const where = {
+    createdAt: {
+      gt: sub(new Date(), {hours: 5}),
+    },
+  };
+  const viewers = await prismaClient.viewer.findMany({
+    include: {
+      ViewerLocation: {
+        where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 1,
+      },
+    },
+    where: {
+      ViewerLocation: {
+        some: where,
+      },
+    },
+  });
+
+  const data = viewers.flatMap(async (viewer) => {
+    const face = await faceBase64(viewer);
+
+    const card: CardMessage = {
+      _type: 'card',
+      name: viewer.displayName,
+      tid: tid(viewer),
+      face,
     };
-    const viewers = await prismaClient.viewer.findMany({
-      include: {
-        ViewerLocation: {
-          where,
-          orderBy: {
-            createdAt: 'desc',
-          },
-          take: 1,
-        },
-      },
-      where: {
-        ViewerLocation: {
-          some: where,
-        },
-      },
-    });
 
-    const data = viewers.flatMap(async (viewer) => {
-      const face = await faceBase64(viewer);
+    const location: LocationMessage = {
+      _type: 'location',
+      tid: tid(viewer),
+      lat: viewer.ViewerLocation[0].latitude,
+      lon: viewer.ViewerLocation[0].longitude,
+      tst: Math.floor(viewer.ViewerLocation[0].createdAt.getTime() / 1000),
+      topic: `owntracks/${viewer.id}`,
+      created_at: Math.floor(
+        viewer.ViewerLocation[0].createdAt.getTime() / 1000,
+      ),
+      bs: BatteryStatus.Unknown,
+    };
+    return [card, location];
+  });
 
-      const card: CardMessage = {
-        _type: 'card',
-        name: viewer.displayName,
-        tid: tid(viewer),
-        face,
-      };
-
-      const location: LocationMessage = {
-        _type: 'location',
-        tid: tid(viewer),
-        lat: viewer.ViewerLocation[0].latitude,
-        lon: viewer.ViewerLocation[0].longitude,
-        tst: Math.floor(viewer.ViewerLocation[0].createdAt.getTime() / 1000),
-        topic: `owntracks/${viewer.id}`,
-        created_at: Math.floor(
-          viewer.ViewerLocation[0].createdAt.getTime() / 1000,
-        ),
-        bs: BatteryStatus.Unknown,
-      };
-      return [card, location];
-    });
-
-    return res.json(
-      (await Promise.all(data)).flat(),
-      // {
-      //   _type: 'cmd',
-      //   action: 'setConfiguration',
-      //   configuration: {
-      //     _type: 'configuration',
-      //     mode: Mode.HTTP,
-      //     url: 'https://api.kulturspektakel.de/owntracks',
-      //     monitoring: Monitoring.Move,
-      //     auth: true,
-      //     username: 'U03EKSJKH',
-      //     password: 'test',
-      //     tid: 'DX',
-      //     cmd: true, // allow sending commands
-      //   },
-      // },
-    );
-  },
-);
+  return c.json(
+    (await Promise.all(data)).flat(),
+    // {
+    //   _type: 'cmd',
+    //   action: 'setConfiguration',
+    //   configuration: {
+    //     _type: 'configuration',
+    //     mode: Mode.HTTP,
+    //     url: 'https://api.kulturspektakel.de/owntracks',
+    //     monitoring: Monitoring.Move,
+    //     auth: true,
+    //     username: 'U03EKSJKH',
+    //     password: 'test',
+    //     tid: 'DX',
+    //     cmd: true, // allow sending commands
+    //   },
+    // },
+  );
+});
 
 export function configString(viewer: Viewer) {
   const config: Partial<ConfigurationMessage> = {
@@ -400,4 +393,4 @@ async function faceBase64({profilePicture}: Viewer): Promise<string> {
   return png.toString('base64');
 }
 
-export default router;
+export default app;

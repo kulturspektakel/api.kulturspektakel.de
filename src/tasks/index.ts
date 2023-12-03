@@ -1,10 +1,4 @@
-import {
-  run,
-  makeWorkerUtils,
-  WorkerUtils,
-  TaskSpec,
-  Logger,
-} from 'graphile-worker';
+import {run, makeWorkerUtils, WorkerUtils, TaskSpec} from 'graphile-worker';
 import env from '../utils/env';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
@@ -33,7 +27,7 @@ const taskList = {
 
 export default async function () {
   return run({
-    connectionString: env.DATABASE_URL,
+    connectionString: env.DIRECT_URL,
     concurrency: 1,
     taskList: taskList as any,
     events,
@@ -58,7 +52,7 @@ export const scheduleTask = async <T extends keyof typeof taskList>(
   const workerUtils =
     _workerUtils ??
     (await makeWorkerUtils({
-      connectionString: env.DATABASE_URL,
+      connectionString: env.DIRECT_URL,
     }));
 
   return workerUtils.addJob(identifier, payload, {

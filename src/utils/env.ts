@@ -7,6 +7,7 @@ export default {
     .asEnum(['development', 'production', 'test']),
   PORT: env.get('PORT').required().asPortNumber(),
   DATABASE_URL: env.get('DATABASE_URL').required().asString(),
+  DIRECT_URL: env.get('DIRECT_URL').required().asString(),
   JWT_SECRET: env.get('JWT_SECRET').required().asString(),
   SLACK_CLIENT_ID: env.get('SLACK_CLIENT_ID').required().asString(),
   SLACK_CLIENT_SECRET: env.get('SLACK_CLIENT_SECRET').required().asString(),
