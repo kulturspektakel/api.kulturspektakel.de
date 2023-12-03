@@ -41,13 +41,12 @@ app.post('/', async (c) => {
   if (action) {
     switch (action.action_id) {
       case 'nuclino-login-generation':
-        c.text('ok', 200);
         await nuclinoTokenGeneration(
           payload.user.id,
           payload.trigger_id,
           action.value,
         );
-        return;
+        return c.text('ok', 200);
       case 'nuclino-login-open':
         return c.json(
           {

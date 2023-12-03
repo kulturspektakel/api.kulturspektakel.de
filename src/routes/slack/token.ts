@@ -28,13 +28,13 @@ app.get('/', async (c) => {
     secure: true,
     maxAge: 5 * 60 * 1000,
   });
-  c.redirect(c.req.query('redirect')!);
+  return c.redirect(c.req.query('redirect')!);
 });
 
 app.post('/', async (c) => {
   const body = await c.req.parseBody<SlackSlashCommandRequest>();
-  c.status(200);
   await nuclinoTokenGeneration(body.user_id, body.trigger_id);
+  return c.status(200);
 });
 
 export default app;

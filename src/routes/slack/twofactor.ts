@@ -22,7 +22,7 @@ app.post('/', async (c) => {
     return c.json(response, 200);
   }
 
-  c.json(
+  return c.json(
     {
       text: 'Für welchen Account möchtest du einen 2-Faktor-Code generieren?',
       blocks: [
