@@ -64,7 +64,7 @@ app.get('/login', async (c) => {
 
   if (viewer == null) {
     // no token, redirect to login flow
-    c.html(html`
+    return c.html(html`
       <!doctype html>
       <html>
         <head>
@@ -202,7 +202,6 @@ app.get('/login', async (c) => {
         </body>
       </html>
     `);
-    return;
   }
 
   await sendSAMLResponse(c, viewer);
