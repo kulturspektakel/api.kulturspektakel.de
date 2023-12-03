@@ -222,7 +222,6 @@ async function sendSAMLResponse(
   url.search = '';
 
   const [firstName, ...lastNames] = viewer.displayName.split(' ');
-  console.log('asd', url.toString(), env.SAML_PRIVATE_KEY);
 
   const idp = IdentityProvider({
     entityID: url.toString(),
@@ -261,9 +260,9 @@ async function sendSAMLResponse(
       ],
     },
   });
-  console.log('1');
 
-  const parseResult = await idp.parseLoginRequest(sp, 'redirect', c.req);
+  console.log('1');
+  const parseResult = await idp.parseLoginRequest(sp, 'redirect', c.req.raw);
   console.log('2');
   const {id, assertionConsumerServiceUrl, issueInstant, destination} =
     parseResult.extract.request;
