@@ -44,7 +44,7 @@ app.post('/login', async (c) => {
     throw new ApiError(401, 'Unauthorized');
   }
 
-  await sendSAMLResponse(c, {
+  return await sendSAMLResponse(c, {
     email: 'info@kulturspektakel.de',
     displayName: 'Anonymer User',
   });
@@ -203,7 +203,7 @@ app.get('/login', async (c) => {
     `);
   }
 
-  await sendSAMLResponse(c, viewer);
+  return await sendSAMLResponse(c, viewer);
 });
 
 const signingCert = readFileSync(
@@ -260,19 +260,13 @@ async function sendSAMLResponse(
     },
   });
 
-  console.log('1', {
-    body: await c.req.parseBody(),
-    query: c.req.query(),
-  });
   const parseResult = await idp.parseLoginRequest(sp, 'redirect', {
     body: await c.req.parseBody(),
     query: c.req.query(),
   });
-  console.log('2');
+
   const {id, assertionConsumerServiceUrl, issueInstant, destination} =
     parseResult.extract.request;
-
-  console.log('3', parseResult);
 
   const response = await idp.createLoginResponse(
     sp,
