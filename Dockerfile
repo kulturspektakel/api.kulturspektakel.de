@@ -5,4 +5,4 @@ COPY package.json bun.lockb prisma/schema.prisma ./
 RUN bun install --frozen-lockfile
 RUN bun generate:prisma
 COPY . .
-CMD ["bun", "run", "index.ts"]
+CMD ["bun", "run", "src/index.ts"]
