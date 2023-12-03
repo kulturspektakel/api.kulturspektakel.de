@@ -40,8 +40,7 @@ setSchemaValidator({
 
 app.post('/login', async (c) => {
   const body = await c.req.parseBody<{password: string}>();
-  console.log(c.req);
-  console.log(body);
+
   if (!body.password || body.password !== env.NUCLINO_ANONYMOUS_PASSWORD) {
     throw new ApiError(401, 'Unauthorized');
   }
@@ -303,6 +302,8 @@ async function sendSAMLResponse(
       };
     },
   );
+
+  console.log('sending SAML response', response, id, parseResult);
 
   return c.html(html`
     <form method="post" action="${assertionConsumerServiceUrl}">
