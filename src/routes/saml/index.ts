@@ -222,6 +222,7 @@ async function sendSAMLResponse(
   url.search = '';
 
   const [firstName, ...lastNames] = viewer.displayName.split(' ');
+  console.log('asd', c.req);
 
   const idp = IdentityProvider({
     entityID: url.toString(),
@@ -232,6 +233,12 @@ async function sendSAMLResponse(
       {
         Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Post',
         Location: url.toString(),
+      },
+    ],
+    singleLogoutService: [
+      {
+        Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+        Location: `https://api.kulturspektakel.de/logout`,
       },
     ],
     nameIDFormat: ['urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'],
@@ -258,6 +265,8 @@ async function sendSAMLResponse(
   const parseResult = await idp.parseLoginRequest(sp, 'redirect', c.req);
   const {id, assertionConsumerServiceUrl, issueInstant, destination} =
     parseResult.extract.request;
+
+  console.log('das', parseResult);
 
   const response = await idp.createLoginResponse(
     sp,
