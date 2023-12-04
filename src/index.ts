@@ -36,7 +36,7 @@ app.use('*', auth);
 app.route('/slack', slack);
 app.route('/saml', saml);
 app.route('/owntracks', owntracks);
-app.route('/\\$\\$\\$', kultCash);
+app.route('/$$$', kultCash);
 app.use('/public/*', serveStatic({root: 'artifacts'}));
 app.on(['GET', 'POST'], '/graphql', async (c) =>
   createYoga({

@@ -68,7 +68,6 @@ app.post('/', async (c) => {
           payload.user.id,
           twoFactor,
         );
-        console.log(payload);
         const apiResponse = await fetch(payload.response_url, {
           method: 'post',
           headers: {
@@ -81,7 +80,6 @@ app.post('/', async (c) => {
         })
           .then((res) => res.json())
           .catch(console.error);
-        console.log(apiResponse);
         return;
       default:
         throw new UnreachableCaseError(action.action_id);
