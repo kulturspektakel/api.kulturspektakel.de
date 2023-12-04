@@ -14,6 +14,7 @@ import {useSentry} from '@envelop/sentry';
 import {Context} from './context';
 import {sentry} from '@hono/sentry';
 import {serveStatic} from 'hono/bun';
+import {cors} from 'hono/cors';
 import '@sentry/tracing';
 
 await tasks();
@@ -31,6 +32,13 @@ app.use(
 );
 
 app.use('*', auth);
+app.use(
+  '*',
+  cors({
+    origin: '*',
+    credentials: true,
+  }),
+);
 
 // Routes
 app.route('/slack', slack);
