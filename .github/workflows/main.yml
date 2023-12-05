@@ -24,12 +24,15 @@ jobs:
           bun dotenv-vault pull production
           bun scripts/merge-envs.ts
 
+      - name: 'Typecheck'
+        run: bun tsc --noEmit
+
       - uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS_JSON }}'
 
-      - name: 'build'
+      - name: 'Build Docker image'
         run: gcloud builds submit --config cloudbuild.yaml .
 
-      - name: 'run'
+      - name: 'Deploy container'
         run: gcloud run deploy api --image europe-west1-docker.pkg.dev/gmail-reminder-api/cloud-run-source-deploy/api:latest --env-vars-file ./.env.json --region europe-west1 --allow-unauthenticated

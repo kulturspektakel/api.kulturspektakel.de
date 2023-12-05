@@ -16,3 +16,4 @@ newrelic_agent.log
 .flaskenv*
 scripts/output
 /.env.vault
+/tsconfig.tsbuildinfo
