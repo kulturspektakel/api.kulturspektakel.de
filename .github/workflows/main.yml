@@ -25,7 +25,9 @@ jobs:
           bun scripts/merge-envs.ts
 
       - name: 'Typecheck'
-        run: bun tsc --noEmit
+        run: |
+          bunx prisma generate
+          bun tsc --noEmit
 
       - uses: 'google-github-actions/auth@v1'
         with:
