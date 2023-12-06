@@ -30,6 +30,10 @@ export const BandRepertoireType = builder.enumType('BandRepertoireType', {
 
 export default builder.prismaNode('BandApplication', {
   id: {field: 'id'},
+  include: {
+    bandApplicationRating: true,
+    event: true,
+  },
   fields: (t) => ({
     createdAt: t.expose('createdAt', {type: 'DateTime'}),
     bandname: t.exposeString('bandname'),
@@ -114,20 +118,11 @@ export default builder.prismaNode('BandApplication', {
       },
       nullable: true,
       type: 'Float',
-      resolve: async (root, _, {parsedToken}) => {
-        const [ratings, event] = await Promise.all([
-          prismaClient.bandApplicationRating.findMany({
-            where: {
-              bandApplicationId: root.id,
-            },
-          }),
-          prismaClient.event.findUniqueOrThrow({
-            where: {
-              id: root.eventId,
-            },
-          }),
-        ]);
-
+      resolve: async (
+        {bandApplicationRating: ratings, event},
+        _,
+        {parsedToken},
+      ) => {
         const viewerId = await viewerIdFromToken(parsedToken);
         if (ratings.length === 0) {
           return null;
