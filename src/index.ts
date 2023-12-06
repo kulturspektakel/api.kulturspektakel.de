@@ -35,7 +35,15 @@ app.use('*', auth);
 app.use(
   '*',
   cors({
-    origin: '*',
+    origin: [
+      'https://kulturspektakel.de',
+      'https://www.kulturspektakel.de',
+      'https://www2.kulturspektakel.de',
+      'https://crew.kulturspektakel.de',
+      'https://booking.kulturspektakel.de',
+      'https://app.kulturspektakel.de',
+      'http://localhost:3000',
+    ],
     credentials: true,
   }),
 );
