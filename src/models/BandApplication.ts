@@ -30,10 +30,6 @@ export const BandRepertoireType = builder.enumType('BandRepertoireType', {
 
 export default builder.prismaNode('BandApplication', {
   id: {field: 'id'},
-  include: {
-    bandApplicationRating: true,
-    event: true,
-  },
   fields: (t) => ({
     createdAt: t.expose('createdAt', {type: 'DateTime'}),
     bandname: t.exposeString('bandname'),
@@ -115,6 +111,19 @@ export default builder.prismaNode('BandApplication', {
     rating: t.field({
       authScopes: {
         user: true,
+      },
+      select: {
+        bandApplicationRating: {
+          select: {
+            rating: true,
+            viewerId: true,
+          },
+        },
+        event: {
+          select: {
+            end: true,
+          },
+        },
       },
       nullable: true,
       type: 'Float',
