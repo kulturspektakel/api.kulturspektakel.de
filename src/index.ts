@@ -74,12 +74,13 @@ app.on(['GET', 'POST'], '/graphql', async (c) =>
 app.onError((error, c) => {
   console.error(error);
   if (error instanceof ApiError) {
-    Sentry.withScope((scope) => {
-      scope.addEventProcessor(async (event) =>
-        Sentry.addRequestDataToEvent(event, c.req.raw as any),
-      );
-      Sentry.captureException(error.originalError ?? error);
+    const sentry = c.get('sentry');
+    sentry.setContext('request', {
+      method: c.req.raw.method,
+      headers: c.req.raw.headers,
+      body: c.req.raw.body,
     });
+    sentry.captureException(error.originalError ?? error);
     return c.text(error.message, error.code);
   }
 
