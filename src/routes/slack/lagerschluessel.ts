@@ -23,7 +23,6 @@ app.post('/update', async (c) => {
     altitude: number;
     locationFinished: boolean;
   }>();
-
   const timeStamp = new Date(body.timeStamp);
   await prismaClient.itemLocation.upsert({
     where: {
@@ -40,7 +39,7 @@ app.post('/update', async (c) => {
       longitude: body.longitude,
     },
   });
-  return c.status(200);
+  return c.text('ok', 200);
 });
 
 app.post('/', async (c) => {

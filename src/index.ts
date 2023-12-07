@@ -7,7 +7,6 @@ import kultCash from './routes/kultCash';
 import {ApiError} from './utils/errorReporting';
 import saml from './routes/saml';
 import owntracks from './routes/owntracks';
-import * as Sentry from '@sentry/node';
 import slack from './routes/slack';
 import {createYoga} from 'graphql-yoga';
 import {useSentry} from '@envelop/sentry';
@@ -15,9 +14,7 @@ import {Context} from './context';
 import {sentry} from '@hono/sentry';
 import {serveStatic} from 'hono/bun';
 import {cors} from 'hono/cors';
-import '@sentry/tracing';
 
-await tasks();
 const app = new Hono<{Variables: Context}>();
 
 // The request handler must be the first middleware on the app
@@ -27,7 +24,6 @@ app.use(
     environment: env.NODE_ENV,
     enabled: env.NODE_ENV === 'production',
     dsn: env.SENTRY_DNS,
-    tracesSampleRate: 1.0,
   }),
 );
 
@@ -90,3 +86,5 @@ app.onError((error, c) => {
 
 Bun.serve({port: env.PORT, fetch: app.fetch});
 console.log(`🚀 Server ready at http://localhost:${env.PORT}`);
+
+await tasks();
