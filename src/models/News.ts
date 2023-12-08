@@ -1,4 +1,5 @@
 import {builder} from '../pothos/builder';
+import {ImageSize, getImageSizes} from './ImageSize';
 
 export default builder.prismaNode('News', {
   id: {field: 'slug'},
@@ -7,5 +8,9 @@ export default builder.prismaNode('News', {
     slug: t.exposeString('slug'),
     content: t.exposeString('content'),
     createdAt: t.expose('createdAt', {type: 'Date'}),
+    imageSizes: t.field({
+      type: [ImageSize],
+      resolve: ({content}) => getImageSizes(content),
+    }),
   }),
 });

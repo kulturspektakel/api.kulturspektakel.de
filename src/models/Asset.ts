@@ -200,7 +200,7 @@ function from({
   `;
 }
 
-function assetUri(id: string): string {
+export function assetUri(id: string): string {
   return `https://crew.kulturspektakel.de/assets/${id}`;
 }
 
