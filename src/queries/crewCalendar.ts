@@ -15,11 +15,15 @@ builder.queryField('crewCalendar', (t) =>
         .then((res) => res.text())
         .then(
           (text) =>
-            icsCalendarToObject(text).events?.filter(
-              (e) =>
-                includePastEvents ||
-                e.start.date.getTime() > new Date().getTime(),
-            ) ?? [],
+            icsCalendarToObject(text)
+              .events?.filter(
+                (e) =>
+                  includePastEvents ||
+                  e.start.date.getTime() > new Date().getTime(),
+              )
+              .sort(
+                (a, b) => a.start.date.getTime() - b.start.date.getTime(),
+              ) ?? [],
         ),
   }),
 );

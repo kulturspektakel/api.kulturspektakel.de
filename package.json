@@ -63,6 +63,7 @@
     "json-stable-stringify": "^1.1.0",
     "jsonwebtoken": "^9.0.2",
     "lodash.merge": "^4.6.2",
+    "markdown-to-txt": "^2.0.1",
     "nodemailer": "^6.9.7",
     "normalize-url": "6",
     "object-inspect": "^1.13.1",

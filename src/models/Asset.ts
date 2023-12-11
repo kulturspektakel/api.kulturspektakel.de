@@ -13,7 +13,7 @@ export type DirectusFile = {
   filename_download: string;
 };
 
-type DirectusPixelImage = DirectusFile & {width: number; height: number};
+export type DirectusPixelImage = DirectusFile & {width: number; height: number};
 
 const PIXEL_IMAGE_TYPES = new Set(['image/jpeg', 'image/png']);
 

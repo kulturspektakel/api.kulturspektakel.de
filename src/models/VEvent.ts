@@ -18,5 +18,9 @@ export default builder.objectRef<VEvent>('VEvent').implement({
     location: t.exposeString('location', {nullable: true}),
     url: t.exposeString('url', {nullable: true}),
     comment: t.exposeString('comment', {nullable: true}),
+    allDay: t.field({
+      type: 'Boolean',
+      resolve: (root) => root.start.type === 'DATE',
+    }),
   }),
 });
