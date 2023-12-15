@@ -214,6 +214,9 @@ model Event {
   description          String?
   bandApplication      BandApplication[]
   BandPlaying          BandPlaying[]
+  location             String?
+  latitude             Float?
+  longitude            Float?
 }
 
 model BandPlaying {

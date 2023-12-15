@@ -55,5 +55,8 @@ export default builder.prismaNode('Event', {
     }),
     poster: pixelImageField(t as any, 'poster'),
     media: assetConnection(t as any, 'Event'),
+    location: t.exposeString('location', {nullable: true}),
+    latitude: t.exposeFloat('latitude', {nullable: true}),
+    longitude: t.exposeFloat('longitude', {nullable: true}),
   }),
 });
