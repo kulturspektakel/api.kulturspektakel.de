@@ -10,7 +10,9 @@ import {Hono} from 'hono';
 const app = new Hono();
 
 app.post('/update', async (c) => {
-  const body = await c.req.json<{
+  const text = await c.req.text();
+  console.log(text);
+  const body: {
     positionType: string;
     verticalAccuracy: number;
     longitude: number;
@@ -22,7 +24,7 @@ app.post('/update', async (c) => {
     timeStamp: number;
     altitude: number;
     locationFinished: boolean;
-  }>();
+  } = JSON.parse(text);
   const timeStamp = new Date(body.timeStamp);
   await prismaClient.itemLocation.upsert({
     where: {

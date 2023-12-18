@@ -24,6 +24,11 @@ app.use(
     environment: env.NODE_ENV,
     enabled: env.NODE_ENV === 'production',
     dsn: env.SENTRY_DNS,
+    requestDataOptions: {
+      allowedHeaders: true,
+      allowedSearchParams: true,
+      allowedCookies: true,
+    },
   }),
 );
 
@@ -69,19 +74,11 @@ app.on(['GET', 'POST'], '/graphql', async (c) =>
 
 app.onError((error, c) => {
   console.error(error);
-  if (error instanceof ApiError) {
-    const sentry = c.get('sentry');
-    sentry.setContext('request', {
-      method: c.req.raw.method,
-      headers: c.req.raw.headers,
-      body: c.req.raw.body,
-    });
-    sentry.captureException(error.originalError ?? error);
-    return c.text(error.message, error.code);
+  if (!(error instanceof ApiError)) {
+    // mask internal server errors
+    return c.text('Internal Server Error', 500);
   }
-
-  // mask internal server errors
-  return c.text('Internal Server Error', 500);
+  return c.text(error.message, error.code);
 });
 
 Bun.serve({port: env.PORT, fetch: app.fetch});
