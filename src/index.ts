@@ -72,8 +72,13 @@ app.on(['GET', 'POST'], '/graphql', async (c) =>
   }).fetch(c.req.raw),
 );
 
-app.onError((error, c) => {
+app.onError(async (error, c) => {
   console.error(error);
+  try {
+    const rawBody = await c.req.raw.body?.getReader().read();
+    c.get('sentry').setRequestBody(new TextDecoder().decode(rawBody?.value));
+  } catch (e) {}
+
   if (!(error instanceof ApiError)) {
     // mask internal server errors
     return c.text('Internal Server Error', 500);
