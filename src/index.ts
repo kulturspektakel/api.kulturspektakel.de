@@ -76,7 +76,9 @@ app.onError(async (error, c) => {
   console.error(error);
   try {
     const rawBody = await c.req.raw.body?.getReader().read();
-    c.get('sentry').setRequestBody(new TextDecoder().decode(rawBody?.value));
+    const body = new TextDecoder().decode(rawBody?.value);
+    c.get('sentry').setRequestBody(body);
+    c.get('sentry').setContext('body', {body});
   } catch (e) {}
 
   if (!(error instanceof ApiError)) {
