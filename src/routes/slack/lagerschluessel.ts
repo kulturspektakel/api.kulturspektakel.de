@@ -11,37 +11,41 @@ const app = new Hono();
 
 app.post('/update', async (c) => {
   const text = await c.req.text();
-  console.log(text);
-  const body: {
-    positionType: string;
-    verticalAccuracy: number;
-    longitude: number;
-    floorLevel: number;
-    isInaccurate: boolean;
-    isOld: boolean;
-    horizontalAccuracy: number;
-    latitude: number;
-    timeStamp: number;
-    altitude: number;
-    locationFinished: boolean;
-  } = JSON.parse(text);
-  const timeStamp = new Date(body.timeStamp);
-  await prismaClient.itemLocation.upsert({
-    where: {
-      timeStamp,
-    },
-    create: {
-      timeStamp,
-      latitude: body.latitude,
-      longitude: body.longitude,
-      payload: body,
-    },
-    update: {
-      latitude: body.latitude,
-      longitude: body.longitude,
-    },
-  });
-  return c.text('ok', 200);
+  try {
+    const body: {
+      positionType: string;
+      verticalAccuracy: number;
+      longitude: number;
+      floorLevel: number;
+      isInaccurate: boolean;
+      isOld: boolean;
+      horizontalAccuracy: number;
+      latitude: number;
+      timeStamp: number;
+      altitude: number;
+      locationFinished: boolean;
+    } = JSON.parse(text);
+    const timeStamp = new Date(body.timeStamp);
+    await prismaClient.itemLocation.upsert({
+      where: {
+        timeStamp,
+      },
+      create: {
+        timeStamp,
+        latitude: body.latitude,
+        longitude: body.longitude,
+        payload: body,
+      },
+      update: {
+        latitude: body.latitude,
+        longitude: body.longitude,
+      },
+    });
+    return c.text('ok', 200);
+  } catch (e) {
+    console.error('uniii', e, text);
+    return;
+  }
 });
 
 app.post('/', async (c) => {
