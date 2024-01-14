@@ -56,28 +56,27 @@ export const AllLists = {
 
   fromJSON(object: any): AllLists {
     return {
-      productList: Array.isArray(object?.productList)
+      productList: globalThis.Array.isArray(object?.productList)
         ? object.productList.map((e: any) => DeviceConfig.fromJSON(e))
         : [],
-      checksum: isSet(object.checksum) ? Number(object.checksum) : 0,
+      checksum: isSet(object.checksum) ? globalThis.Number(object.checksum) : 0,
     };
   },
 
   toJSON(message: AllLists): unknown {
     const obj: any = {};
-    if (message.productList) {
-      obj.productList = message.productList.map((e) => e ? DeviceConfig.toJSON(e) : undefined);
-    } else {
-      obj.productList = [];
+    if (message.productList?.length) {
+      obj.productList = message.productList.map((e) => DeviceConfig.toJSON(e));
     }
-    message.checksum !== undefined && (obj.checksum = Math.round(message.checksum));
+    if (message.checksum !== 0) {
+      obj.checksum = Math.round(message.checksum);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<AllLists>, I>>(base?: I): AllLists {
-    return AllLists.fromPartial(base ?? {});
+    return AllLists.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<AllLists>, I>>(object: I): AllLists {
     const message = createBaseAllLists();
     message.productList = object.productList?.map((e) => DeviceConfig.fromPartial(e)) || [];
@@ -89,7 +88,8 @@ export const AllLists = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

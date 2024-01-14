@@ -57,7 +57,9 @@ builder.interfaceType(Transactionable, {
         let where: Prisma.CardTransactionWhereInput = {};
         if (parentType.name === 'Device') {
           where = {
-            deviceId: (root as Device).id,
+            deviceLog: {
+              deviceId: (root as Device).id,
+            },
           };
         } else if (parentType.name === 'Card') {
           where = {
@@ -68,14 +70,18 @@ builder.interfaceType(Transactionable, {
         const data = await prismaClient.cardTransaction.findMany({
           where: {
             ...where,
-            deviceTime: {
-              gt: after ?? undefined,
-              lt: before ?? undefined,
+            deviceLog: {
+              deviceTime: {
+                gt: after ?? undefined,
+                lt: before ?? undefined,
+              },
             },
             transactionType: type ?? undefined,
           },
           orderBy: {
-            deviceTime: 'desc',
+            deviceLog: {
+              deviceTime: 'desc',
+            },
           },
           take: limit ?? undefined,
         });

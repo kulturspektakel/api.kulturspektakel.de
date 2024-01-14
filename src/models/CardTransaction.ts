@@ -37,8 +37,6 @@ export default builder.prismaObject('CardTransaction', {
   fields: (t) => ({
     clientId: t.exposeString('clientId'),
     cardId: t.exposeString('cardId'),
-    createdAt: t.expose('createdAt', {type: 'DateTime'}),
-    deviceTime: t.expose('deviceTime', {type: 'DateTime'}),
     transactionType: t.expose('transactionType', {type: CardTransactionType}),
     Order: t.relation('Order'),
   }),

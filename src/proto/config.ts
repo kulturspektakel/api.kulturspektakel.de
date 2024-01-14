@@ -78,30 +78,33 @@ export const DeviceConfig = {
 
   fromJSON(object: any): DeviceConfig {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      listId: isSet(object.listId) ? Number(object.listId) : 0,
-      products: Array.isArray(object?.products) ? object.products.map((e: any) => Product.fromJSON(e)) : [],
-      checksum: isSet(object.checksum) ? Number(object.checksum) : 0,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      listId: isSet(object.listId) ? globalThis.Number(object.listId) : 0,
+      products: globalThis.Array.isArray(object?.products) ? object.products.map((e: any) => Product.fromJSON(e)) : [],
+      checksum: isSet(object.checksum) ? globalThis.Number(object.checksum) : 0,
     };
   },
 
   toJSON(message: DeviceConfig): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.listId !== undefined && (obj.listId = Math.round(message.listId));
-    if (message.products) {
-      obj.products = message.products.map((e) => e ? Product.toJSON(e) : undefined);
-    } else {
-      obj.products = [];
+    if (message.name !== "") {
+      obj.name = message.name;
     }
-    message.checksum !== undefined && (obj.checksum = Math.round(message.checksum));
+    if (message.listId !== 0) {
+      obj.listId = Math.round(message.listId);
+    }
+    if (message.products?.length) {
+      obj.products = message.products.map((e) => Product.toJSON(e));
+    }
+    if (message.checksum !== 0) {
+      obj.checksum = Math.round(message.checksum);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<DeviceConfig>, I>>(base?: I): DeviceConfig {
-    return DeviceConfig.fromPartial(base ?? {});
+    return DeviceConfig.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<DeviceConfig>, I>>(object: I): DeviceConfig {
     const message = createBaseDeviceConfig();
     message.name = object.name ?? "";
@@ -115,7 +118,8 @@ export const DeviceConfig = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

@@ -55,22 +55,25 @@ export const Product = {
 
   fromJSON(object: any): Product {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      price: isSet(object.price) ? Number(object.price) : 0,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      price: isSet(object.price) ? globalThis.Number(object.price) : 0,
     };
   },
 
   toJSON(message: Product): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.price !== undefined && (obj.price = Math.round(message.price));
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.price !== 0) {
+      obj.price = Math.round(message.price);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<Product>, I>>(base?: I): Product {
-    return Product.fromPartial(base ?? {});
+    return Product.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<Product>, I>>(object: I): Product {
     const message = createBaseProduct();
     message.name = object.name ?? "";
@@ -82,7 +85,8 @@ export const Product = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

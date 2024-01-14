@@ -11,6 +11,8 @@ export interface LogMessage {
   deviceTimeIsUtc: boolean;
   order?: LogMessage_Order | undefined;
   cardTransaction?: LogMessage_CardTransaction | undefined;
+  batteryVoltage?: number | undefined;
+  usbVoltage?: number | undefined;
 }
 
 export interface LogMessage_CardTransaction {
@@ -148,6 +150,8 @@ function createBaseLogMessage(): LogMessage {
     deviceTimeIsUtc: false,
     order: undefined,
     cardTransaction: undefined,
+    batteryVoltage: undefined,
+    usbVoltage: undefined,
   };
 }
 
@@ -170,6 +174,12 @@ export const LogMessage = {
     }
     if (message.cardTransaction !== undefined) {
       LogMessage_CardTransaction.encode(message.cardTransaction, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.batteryVoltage !== undefined) {
+      writer.uint32(56).int32(message.batteryVoltage);
+    }
+    if (message.usbVoltage !== undefined) {
+      writer.uint32(64).int32(message.usbVoltage);
     }
     return writer;
   },
@@ -223,6 +233,20 @@ export const LogMessage = {
 
           message.cardTransaction = LogMessage_CardTransaction.decode(reader, reader.uint32());
           continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.batteryVoltage = reader.int32();
+          continue;
+        case 8:
+          if (tag !== 64) {
+            break;
+          }
+
+          message.usbVoltage = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -234,34 +258,51 @@ export const LogMessage = {
 
   fromJSON(object: any): LogMessage {
     return {
-      deviceId: isSet(object.deviceId) ? String(object.deviceId) : "",
-      clientId: isSet(object.clientId) ? String(object.clientId) : "",
-      deviceTime: isSet(object.deviceTime) ? Number(object.deviceTime) : 0,
-      deviceTimeIsUtc: isSet(object.deviceTimeIsUtc) ? Boolean(object.deviceTimeIsUtc) : false,
+      deviceId: isSet(object.deviceId) ? globalThis.String(object.deviceId) : "",
+      clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
+      deviceTime: isSet(object.deviceTime) ? globalThis.Number(object.deviceTime) : 0,
+      deviceTimeIsUtc: isSet(object.deviceTimeIsUtc) ? globalThis.Boolean(object.deviceTimeIsUtc) : false,
       order: isSet(object.order) ? LogMessage_Order.fromJSON(object.order) : undefined,
       cardTransaction: isSet(object.cardTransaction)
         ? LogMessage_CardTransaction.fromJSON(object.cardTransaction)
         : undefined,
+      batteryVoltage: isSet(object.batteryVoltage) ? globalThis.Number(object.batteryVoltage) : undefined,
+      usbVoltage: isSet(object.usbVoltage) ? globalThis.Number(object.usbVoltage) : undefined,
     };
   },
 
   toJSON(message: LogMessage): unknown {
     const obj: any = {};
-    message.deviceId !== undefined && (obj.deviceId = message.deviceId);
-    message.clientId !== undefined && (obj.clientId = message.clientId);
-    message.deviceTime !== undefined && (obj.deviceTime = Math.round(message.deviceTime));
-    message.deviceTimeIsUtc !== undefined && (obj.deviceTimeIsUtc = message.deviceTimeIsUtc);
-    message.order !== undefined && (obj.order = message.order ? LogMessage_Order.toJSON(message.order) : undefined);
-    message.cardTransaction !== undefined && (obj.cardTransaction = message.cardTransaction
-      ? LogMessage_CardTransaction.toJSON(message.cardTransaction)
-      : undefined);
+    if (message.deviceId !== "") {
+      obj.deviceId = message.deviceId;
+    }
+    if (message.clientId !== "") {
+      obj.clientId = message.clientId;
+    }
+    if (message.deviceTime !== 0) {
+      obj.deviceTime = Math.round(message.deviceTime);
+    }
+    if (message.deviceTimeIsUtc === true) {
+      obj.deviceTimeIsUtc = message.deviceTimeIsUtc;
+    }
+    if (message.order !== undefined) {
+      obj.order = LogMessage_Order.toJSON(message.order);
+    }
+    if (message.cardTransaction !== undefined) {
+      obj.cardTransaction = LogMessage_CardTransaction.toJSON(message.cardTransaction);
+    }
+    if (message.batteryVoltage !== undefined) {
+      obj.batteryVoltage = Math.round(message.batteryVoltage);
+    }
+    if (message.usbVoltage !== undefined) {
+      obj.usbVoltage = Math.round(message.usbVoltage);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<LogMessage>, I>>(base?: I): LogMessage {
-    return LogMessage.fromPartial(base ?? {});
+    return LogMessage.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<LogMessage>, I>>(object: I): LogMessage {
     const message = createBaseLogMessage();
     message.deviceId = object.deviceId ?? "";
@@ -274,6 +315,8 @@ export const LogMessage = {
     message.cardTransaction = (object.cardTransaction !== undefined && object.cardTransaction !== null)
       ? LogMessage_CardTransaction.fromPartial(object.cardTransaction)
       : undefined;
+    message.batteryVoltage = object.batteryVoltage ?? undefined;
+    message.usbVoltage = object.usbVoltage ?? undefined;
     return message;
   },
 };
@@ -386,32 +429,44 @@ export const LogMessage_CardTransaction = {
       transactionType: isSet(object.transactionType)
         ? logMessage_CardTransaction_TransactionTypeFromJSON(object.transactionType)
         : 0,
-      balanceBefore: isSet(object.balanceBefore) ? Number(object.balanceBefore) : 0,
-      balanceAfter: isSet(object.balanceAfter) ? Number(object.balanceAfter) : 0,
-      depositBefore: isSet(object.depositBefore) ? Number(object.depositBefore) : 0,
-      depositAfter: isSet(object.depositAfter) ? Number(object.depositAfter) : 0,
-      cardId: isSet(object.cardId) ? String(object.cardId) : "",
-      counter: isSet(object.counter) ? Number(object.counter) : undefined,
+      balanceBefore: isSet(object.balanceBefore) ? globalThis.Number(object.balanceBefore) : 0,
+      balanceAfter: isSet(object.balanceAfter) ? globalThis.Number(object.balanceAfter) : 0,
+      depositBefore: isSet(object.depositBefore) ? globalThis.Number(object.depositBefore) : 0,
+      depositAfter: isSet(object.depositAfter) ? globalThis.Number(object.depositAfter) : 0,
+      cardId: isSet(object.cardId) ? globalThis.String(object.cardId) : "",
+      counter: isSet(object.counter) ? globalThis.Number(object.counter) : undefined,
     };
   },
 
   toJSON(message: LogMessage_CardTransaction): unknown {
     const obj: any = {};
-    message.transactionType !== undefined &&
-      (obj.transactionType = logMessage_CardTransaction_TransactionTypeToJSON(message.transactionType));
-    message.balanceBefore !== undefined && (obj.balanceBefore = Math.round(message.balanceBefore));
-    message.balanceAfter !== undefined && (obj.balanceAfter = Math.round(message.balanceAfter));
-    message.depositBefore !== undefined && (obj.depositBefore = Math.round(message.depositBefore));
-    message.depositAfter !== undefined && (obj.depositAfter = Math.round(message.depositAfter));
-    message.cardId !== undefined && (obj.cardId = message.cardId);
-    message.counter !== undefined && (obj.counter = Math.round(message.counter));
+    if (message.transactionType !== 0) {
+      obj.transactionType = logMessage_CardTransaction_TransactionTypeToJSON(message.transactionType);
+    }
+    if (message.balanceBefore !== 0) {
+      obj.balanceBefore = Math.round(message.balanceBefore);
+    }
+    if (message.balanceAfter !== 0) {
+      obj.balanceAfter = Math.round(message.balanceAfter);
+    }
+    if (message.depositBefore !== 0) {
+      obj.depositBefore = Math.round(message.depositBefore);
+    }
+    if (message.depositAfter !== 0) {
+      obj.depositAfter = Math.round(message.depositAfter);
+    }
+    if (message.cardId !== "") {
+      obj.cardId = message.cardId;
+    }
+    if (message.counter !== undefined) {
+      obj.counter = Math.round(message.counter);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<LogMessage_CardTransaction>, I>>(base?: I): LogMessage_CardTransaction {
-    return LogMessage_CardTransaction.fromPartial(base ?? {});
+    return LogMessage_CardTransaction.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<LogMessage_CardTransaction>, I>>(object: I): LogMessage_CardTransaction {
     const message = createBaseLogMessage_CardTransaction();
     message.transactionType = object.transactionType ?? 0;
@@ -483,30 +538,30 @@ export const LogMessage_Order = {
   fromJSON(object: any): LogMessage_Order {
     return {
       paymentMethod: isSet(object.paymentMethod) ? logMessage_Order_PaymentMethodFromJSON(object.paymentMethod) : 0,
-      cartItems: Array.isArray(object?.cartItems)
+      cartItems: globalThis.Array.isArray(object?.cartItems)
         ? object.cartItems.map((e: any) => LogMessage_Order_CartItem.fromJSON(e))
         : [],
-      listId: isSet(object.listId) ? Number(object.listId) : undefined,
+      listId: isSet(object.listId) ? globalThis.Number(object.listId) : undefined,
     };
   },
 
   toJSON(message: LogMessage_Order): unknown {
     const obj: any = {};
-    message.paymentMethod !== undefined &&
-      (obj.paymentMethod = logMessage_Order_PaymentMethodToJSON(message.paymentMethod));
-    if (message.cartItems) {
-      obj.cartItems = message.cartItems.map((e) => e ? LogMessage_Order_CartItem.toJSON(e) : undefined);
-    } else {
-      obj.cartItems = [];
+    if (message.paymentMethod !== 0) {
+      obj.paymentMethod = logMessage_Order_PaymentMethodToJSON(message.paymentMethod);
     }
-    message.listId !== undefined && (obj.listId = Math.round(message.listId));
+    if (message.cartItems?.length) {
+      obj.cartItems = message.cartItems.map((e) => LogMessage_Order_CartItem.toJSON(e));
+    }
+    if (message.listId !== undefined) {
+      obj.listId = Math.round(message.listId);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<LogMessage_Order>, I>>(base?: I): LogMessage_Order {
-    return LogMessage_Order.fromPartial(base ?? {});
+    return LogMessage_Order.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<LogMessage_Order>, I>>(object: I): LogMessage_Order {
     const message = createBaseLogMessage_Order();
     message.paymentMethod = object.paymentMethod ?? 0;
@@ -563,22 +618,25 @@ export const LogMessage_Order_CartItem = {
 
   fromJSON(object: any): LogMessage_Order_CartItem {
     return {
-      amount: isSet(object.amount) ? Number(object.amount) : 0,
+      amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
       product: isSet(object.product) ? Product.fromJSON(object.product) : undefined,
     };
   },
 
   toJSON(message: LogMessage_Order_CartItem): unknown {
     const obj: any = {};
-    message.amount !== undefined && (obj.amount = Math.round(message.amount));
-    message.product !== undefined && (obj.product = message.product ? Product.toJSON(message.product) : undefined);
+    if (message.amount !== 0) {
+      obj.amount = Math.round(message.amount);
+    }
+    if (message.product !== undefined) {
+      obj.product = Product.toJSON(message.product);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<LogMessage_Order_CartItem>, I>>(base?: I): LogMessage_Order_CartItem {
-    return LogMessage_Order_CartItem.fromPartial(base ?? {});
+    return LogMessage_Order_CartItem.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<LogMessage_Order_CartItem>, I>>(object: I): LogMessage_Order_CartItem {
     const message = createBaseLogMessage_Order_CartItem();
     message.amount = object.amount ?? 0;
@@ -592,7 +650,8 @@ export const LogMessage_Order_CartItem = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

@@ -168,7 +168,7 @@ app.post('/log', async (c) => {
   let cardTransactionClientId: string | null = null;
   if (cardTransaction) {
     try {
-      const cardT = await prismaClient.cardTransaction.create({
+      const deviceLog = await prismaClient.deviceLog.create({
         data: {
           clientId: message.clientId,
           deviceTime,
@@ -177,23 +177,29 @@ app.post('/log', async (c) => {
               create: {
                 id,
                 lastSeen: new Date(),
-                type: 'CONTACTLESS_TERMINAL',
+                type: 'CONTACTLESS_TERMINAL' as const,
               },
               where: {
                 id,
               },
             },
           },
-          cardId: cardTransaction.cardId,
-          depositBefore: cardTransaction.depositBefore,
-          depositAfter: cardTransaction.depositAfter,
-          balanceBefore: cardTransaction.balanceBefore,
-          balanceAfter: cardTransaction.balanceAfter,
-          transactionType: mapTransactionType(cardTransaction.transactionType),
-          counter: cardTransaction.counter,
+          CardTransaction: {
+            create: {
+              cardId: cardTransaction.cardId,
+              depositBefore: cardTransaction.depositBefore,
+              depositAfter: cardTransaction.depositAfter,
+              balanceBefore: cardTransaction.balanceBefore,
+              balanceAfter: cardTransaction.balanceAfter,
+              transactionType: mapTransactionType(
+                cardTransaction.transactionType,
+              ),
+              counter: cardTransaction.counter,
+            },
+          },
         },
       });
-      cardTransactionClientId = cardT.clientId;
+      cardTransactionClientId = deviceLog.clientId;
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&

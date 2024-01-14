@@ -89,14 +89,14 @@ model ProductAdditives {
 }
 
 model Device {
-  id              String            @id
+  id              String       @id
   lastSeen        DateTime?
   productListId   Int?
   softwareVersion String?
   type            DeviceType
-  CardTransaction CardTransaction[]
-  productList     ProductList?      @relation(fields: [productListId], references: [id])
+  productList     ProductList? @relation(fields: [productListId], references: [id])
   Order           Order[]
+  DeviceLog       DeviceLog[]
 }
 
 model Order {
@@ -131,12 +131,26 @@ model CardTransaction {
   balanceBefore   Int
   balanceAfter    Int
   transactionType CardTransactionType
+
+  // TODO: can be removed once migration is done
+  deviceId   String?   @ignore
+  createdAt  DateTime? @ignore
+  deviceTime DateTime? @ignore
+
+  counter   Int?
+  Order     Order[]
+  deviceLog DeviceLog @relation(fields: [clientId], references: [clientId])
+}
+
+model DeviceLog {
+  clientId        String            @id
+  batteryVoltage  Int?
+  usbVoltage      Int?
   deviceId        String
-  createdAt       DateTime            @default(now())
+  createdAt       DateTime          @default(now())
   deviceTime      DateTime
-  counter         Int?
-  device          Device              @relation(fields: [deviceId], references: [id])
-  Order           Order[]
+  device          Device            @relation(fields: [deviceId], references: [id])
+  CardTransaction CardTransaction[]
 }
 
 model BandApplication {
