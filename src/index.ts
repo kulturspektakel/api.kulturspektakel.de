@@ -14,6 +14,7 @@ import {Context} from './context';
 import {sentry} from '@hono/sentry';
 import {serveStatic} from 'hono/bun';
 import {cors} from 'hono/cors';
+import kultWiki from './kult.wiki';
 
 const app = new Hono<{Variables: Context}>();
 
@@ -32,6 +33,7 @@ app.use(
   }),
 );
 
+app.use('*', kultWiki);
 app.use('*', auth);
 app.use(
   '*',

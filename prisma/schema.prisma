@@ -297,6 +297,11 @@ model ViewerLocation {
   payload   Json
 }
 
+model ShortDomainRedirect {
+  slug      String @id
+  targetUrl String
+}
+
 enum OrderPayment {
   CASH
   BON
