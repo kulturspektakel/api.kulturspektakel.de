@@ -1,6 +1,7 @@
 import {builder} from '../pothos/builder';
 import {icsCalendarToObject} from 'ts-ics';
 import VEvent from '../models/VEvent';
+import {startOfDay, isAfter} from 'date-fns';
 
 builder.queryField('crewCalendar', (t) =>
   t.field({
@@ -19,8 +20,10 @@ builder.queryField('crewCalendar', (t) =>
               .events?.filter(
                 (e) =>
                   includePastEvents ||
-                  e.start.date.getTime() > new Date().getTime(),
+                  isAfter(startOfDay(e.start.date), startOfDay(new Date())),
               )
+              // Google Calendar escapes commas in the location field with a backslash
+              .map((e) => ({...e, location: e.location?.replace(/\\,/g, ',')}))
               .sort(
                 (a, b) => a.start.date.getTime() - b.start.date.getTime(),
               ) ?? [],
