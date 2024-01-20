@@ -48,9 +48,56 @@ app.post('/login', async (c) => {
   });
 });
 
+const idp = IdentityProvider({
+  entityID: 'https://api.kulturspektakel.de/saml/login',
+  privateKey: env.SAML_PRIVATE_KEY,
+  signingCert: readFileSync(
+    join(import.meta.dir, '..', '..', '..', 'artifacts', 'saml.crt'),
+  ),
+  isAssertionEncrypted: false,
+  singleSignOnService: [
+    {
+      Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Post',
+      Location: 'https://api.kulturspektakel.de/saml/login',
+    },
+  ],
+  singleLogoutService: [
+    {
+      Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+      Location: `https://api.kulturspektakel.de/saml/logout`,
+    },
+  ],
+  nameIDFormat: ['urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'],
+  loginResponseTemplate: {
+    context:
+      '<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="{ID}" Version="2.0" IssueInstant="{IssueInstant}" Destination="{Destination}" InResponseTo="{InResponseTo}"><saml:Issuer>{Issuer}</saml:Issuer><samlp:Status><samlp:StatusCode Value="{StatusCode}"/></samlp:Status><saml:Assertion ID="{AssertionID}" Version="2.0" IssueInstant="{IssueInstant}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"><saml:Issuer>{Issuer}</saml:Issuer><saml:Subject><saml:NameID Format="{NameIDFormat}">{NameID}</saml:NameID><saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer"><saml:SubjectConfirmationData NotOnOrAfter="{SubjectConfirmationDataNotOnOrAfter}" Recipient="{SubjectRecipient}" InResponseTo="{InResponseTo}"/></saml:SubjectConfirmation></saml:Subject><saml:Conditions NotBefore="{ConditionsNotBefore}" NotOnOrAfter="{ConditionsNotOnOrAfter}"><saml:AudienceRestriction><saml:Audience>{Audience}</saml:Audience></saml:AudienceRestriction></saml:Conditions>{AttributeStatement}</saml:Assertion></samlp:Response>',
+    attributes: [
+      {
+        name: 'FirstName',
+        valueTag: 'firstName',
+        nameFormat: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+        valueXsiType: 'xs:string',
+      },
+      {
+        name: 'LastName',
+        valueTag: 'lastName',
+        nameFormat: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+        valueXsiType: 'xs:string',
+      },
+    ],
+  },
+});
+
 app.get('/logout', async (c) => {
   console.log('logout', c.req.query());
-  return c.text('ok');
+
+  const parseResult = await idp.parseLogoutRequest(sp, 'redirect', {
+    body: await c.req.parseBody(),
+    query: c.req.query(),
+  });
+
+  const response = idp.createLogoutResponse(sp, parseResult, 'redirect', '');
+  return c.text(response.context);
 });
 
 app.get('/login', async (c) => {
@@ -64,10 +111,6 @@ app.get('/login', async (c) => {
   return await sendSAMLResponse(c, viewer);
 });
 
-const signingCert = readFileSync(
-  join(import.meta.dir, '..', '..', '..', 'artifacts', 'saml.crt'),
-);
-
 async function sendSAMLResponse(
   c: Context,
   viewer: {
@@ -75,48 +118,7 @@ async function sendSAMLResponse(
     email: string;
   },
 ) {
-  const url = requestUrl(c.req);
-  url.search = '';
-
   const [firstName, ...lastNames] = viewer.displayName.split(' ');
-
-  const idp = IdentityProvider({
-    entityID: url.toString(),
-    privateKey: env.SAML_PRIVATE_KEY,
-    signingCert,
-    isAssertionEncrypted: false,
-    singleSignOnService: [
-      {
-        Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Post',
-        Location: url.toString(),
-      },
-    ],
-    singleLogoutService: [
-      {
-        Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-        Location: `https://api.kulturspektakel.de/saml/logout`,
-      },
-    ],
-    nameIDFormat: ['urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'],
-    loginResponseTemplate: {
-      context:
-        '<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="{ID}" Version="2.0" IssueInstant="{IssueInstant}" Destination="{Destination}" InResponseTo="{InResponseTo}"><saml:Issuer>{Issuer}</saml:Issuer><samlp:Status><samlp:StatusCode Value="{StatusCode}"/></samlp:Status><saml:Assertion ID="{AssertionID}" Version="2.0" IssueInstant="{IssueInstant}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"><saml:Issuer>{Issuer}</saml:Issuer><saml:Subject><saml:NameID Format="{NameIDFormat}">{NameID}</saml:NameID><saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer"><saml:SubjectConfirmationData NotOnOrAfter="{SubjectConfirmationDataNotOnOrAfter}" Recipient="{SubjectRecipient}" InResponseTo="{InResponseTo}"/></saml:SubjectConfirmation></saml:Subject><saml:Conditions NotBefore="{ConditionsNotBefore}" NotOnOrAfter="{ConditionsNotOnOrAfter}"><saml:AudienceRestriction><saml:Audience>{Audience}</saml:Audience></saml:AudienceRestriction></saml:Conditions>{AttributeStatement}</saml:Assertion></samlp:Response>',
-      attributes: [
-        {
-          name: 'FirstName',
-          valueTag: 'firstName',
-          nameFormat: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
-          valueXsiType: 'xs:string',
-        },
-        {
-          name: 'LastName',
-          valueTag: 'lastName',
-          nameFormat: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
-          valueXsiType: 'xs:string',
-        },
-      ],
-    },
-  });
 
   const parseResult = await idp.parseLoginRequest(sp, 'redirect', {
     body: await c.req.parseBody(),
