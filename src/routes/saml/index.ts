@@ -53,7 +53,7 @@ app.post('/login', async (c) => {
 
 app.get('/login', async (c) => {
   let viewer: Viewer | undefined | null;
-  const nonce = getCookie(c, 'nonce');
+  const nonce = getCookie(c, 'nonce') ?? c.req.query('nonce');
   const parsedToken = c.get('parsedToken');
   if (nonce) {
     viewer = await viewerFromNonce(nonce);
