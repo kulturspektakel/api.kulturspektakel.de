@@ -9,7 +9,7 @@ export enum SlackChannel {
   dj = 'C0491HCU5G9',
 }
 
-type SlackApiUser = {
+export type SlackApiUser = {
   id: string;
   team_id: string;
   name: string;

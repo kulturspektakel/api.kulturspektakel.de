@@ -22,9 +22,11 @@ import '../models/Viewer';
 
 import '../mutations/createBandApplication';
 import '../mutations/createBandApplicationComment';
-import '../mutations/deleteBandApplicationComment';
+import '../mutations/createNonceRequest';
 import '../mutations/createOrder';
+import '../mutations/deleteBandApplicationComment';
 import '../mutations/markBandApplicationContacted';
+import '../mutations/nonceFromRequest';
 import '../mutations/rateBandApplication';
 import '../mutations/updateDeviceProductList';
 import '../mutations/upsertProductList';

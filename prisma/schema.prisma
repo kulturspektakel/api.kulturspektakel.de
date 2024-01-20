@@ -29,6 +29,7 @@ model Viewer {
   BandApplicationRating  BandApplicationRating[]
   Nonce                  Nonce[]
   ViewerLocation         ViewerLocation[]
+  NonceRequest           NonceRequest[]
 }
 
 model Area {
@@ -263,6 +264,20 @@ model Nonce {
   expiresAt    DateTime
   createdForId String?
   createdFor   Viewer?  @relation(fields: [createdForId], references: [id])
+}
+
+model NonceRequest {
+  id           String             @id @default(uuid())
+  expiresAt    DateTime
+  createdForId String?
+  createdFor   Viewer?            @relation(fields: [createdForId], references: [id])
+  status       NonceRequestStatus @default(Pending)
+}
+
+enum NonceRequestStatus {
+  Pending
+  Approved
+  Rejected
 }
 
 model News {

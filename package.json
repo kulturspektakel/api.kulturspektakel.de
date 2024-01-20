@@ -32,6 +32,7 @@
   "dependencies": {
     "@aws-sdk/client-ses": "^3.465.0",
     "@aws-sdk/util-utf8-browser": "^3.259.0",
+    "@braintree/uuid": "^1.0.0",
     "@envelop/sentry": "^7.0.0",
     "@hono/sentry": "^1.0.0",
     "@pothos/core": "^3.39.0",

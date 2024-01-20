@@ -1,3 +1,4 @@
+import {NonceRequestStatus} from '@prisma/client';
 import nuclinoTokenGeneration from '../../utils/nuclinoTokenGeneration';
 import prismaClient from '../../utils/prismaClient';
 import UnreachableCaseError from '../../utils/UnreachableCaseError';
@@ -20,7 +21,9 @@ app.post('/', async (c) => {
       action_id:
         | 'nuclino-login-generation'
         | 'nuclino-login-open'
-        | 'two-factor-code';
+        | 'two-factor-code'
+        | 'approve-nonce-request'
+        | 'reject-nonce-request';
     }>;
     callback_id: string;
     team: {id: string; domain: string};
@@ -40,6 +43,37 @@ app.post('/', async (c) => {
   const [action] = payload.actions ?? [];
   if (action) {
     switch (action.action_id) {
+      case 'approve-nonce-request':
+      case 'reject-nonce-request':
+        await prismaClient.nonceRequest.update({
+          where: {
+            id: action.value,
+            expiresAt: {
+              gt: new Date(),
+            },
+          },
+          data: {
+            status:
+              action.action_id === 'approve-nonce-request'
+                ? NonceRequestStatus.Approved
+                : NonceRequestStatus.Rejected,
+          },
+        });
+
+        await fetch(payload.response_url, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            delete_original: 'true',
+          }),
+        })
+          .then((res) => res.json())
+          .catch(console.error);
+
+        return c.text('ok', 200);
+
       case 'nuclino-login-generation':
         await nuclinoTokenGeneration(
           payload.user.id,
@@ -68,7 +102,7 @@ app.post('/', async (c) => {
           payload.user.id,
           twoFactor,
         );
-        const apiResponse = await fetch(payload.response_url, {
+        await fetch(payload.response_url, {
           method: 'post',
           headers: {
             'Content-Type': 'application/json',
@@ -80,7 +114,8 @@ app.post('/', async (c) => {
         })
           .then((res) => res.json())
           .catch(console.error);
-        return;
+
+        return c.text('ok', 200);
       default:
         throw new UnreachableCaseError(action.action_id);
     }
