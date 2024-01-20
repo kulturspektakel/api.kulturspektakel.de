@@ -49,7 +49,8 @@ app.post('/login', async (c) => {
 });
 
 app.get('/logout', async (c) => {
-  return c.status(200);
+  console.log('logout', c.req.query());
+  return c.text('ok');
 });
 
 app.get('/login', async (c) => {
