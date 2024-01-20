@@ -27,6 +27,7 @@ app.get('/', async (c) => {
     sameSite: 'None',
     secure: true,
     maxAge: 5 * 60 * 1000,
+    domain: '.kulturspektakel.de',
   });
   return c.redirect(c.req.query('redirect')!);
 });
