@@ -21,9 +21,13 @@ export default async function (_: undefined, {logger}: JobHelpers) {
   await Promise.all(
     updatedItems.map(async (item) => {
       const lastUpdatedUser = await user(item.lastUpdatedUserId);
+      const url = item.url.replace(
+        'https://app.nuclino.com/t/',
+        'https://app.nuclino.com/Kulturspektakel/',
+      );
       return sendMessage({
         channel: SlackChannel.wiki,
-        text: `<${item.url}|${item.title}> von ${lastUpdatedUser.firstName} ${lastUpdatedUser.lastName} aktualisiert`,
+        text: `<${url}|${item.title}> von ${lastUpdatedUser.firstName} ${lastUpdatedUser.lastName} aktualisiert`,
         unfurl_links: false,
       });
     }),
