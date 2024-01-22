@@ -3,6 +3,7 @@ import {markdownField} from './MarkdownString';
 
 builder.prismaNode('Page', {
   id: {field: 'slug'},
+  nullable: true,
   fields: (t) => ({
     content: markdownField(t as any, 'content', {nullable: true}),
     left: markdownField(t as any, 'left', {nullable: true}),

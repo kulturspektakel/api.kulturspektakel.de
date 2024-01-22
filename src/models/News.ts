@@ -3,6 +3,7 @@ import {markdownField} from './MarkdownString';
 
 export default builder.prismaNode('News', {
   id: {field: 'slug'},
+  nullable: true,
   fields: (t) => ({
     title: t.exposeString('title'),
     slug: t.exposeString('slug'),
