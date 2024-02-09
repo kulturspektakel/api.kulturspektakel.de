@@ -274,6 +274,12 @@ model NonceRequest {
   status       NonceRequestStatus @default(Pending)
 }
 
+model GmailHistory {
+  historyId  Int
+  account    String   @id
+  lastUpdate DateTime @default(now())
+}
+
 enum NonceRequestStatus {
   Pending
   Approved

@@ -5,12 +5,13 @@ import instagramFollower from './instagramFollower';
 import nuclinoUpdateMessage from './nuclinoUpdateMessage';
 import nonceInvalidate from './nonceInvalidate';
 import spotifyListeners from './spotifyListeners';
-import gmailReminder, {booking, info} from './gmailReminder';
+import gmailReminder from './gmailReminder';
 import events from './taskEvents';
 import unfurlLink from './unfurlLink';
 import bandApplicationDistance from './bandApplicationDistance';
 import slackMessage from './slackMessage';
 import bandApplicationDemo from './bandApplicationDemo';
+import gmailSubscription from './gmailSubscription';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -23,6 +24,7 @@ const taskList = {
   facebookLikes,
   instagramFollower,
   spotifyListeners,
+  gmailSubscription,
 };
 
 export default async function () {
@@ -33,8 +35,8 @@ export default async function () {
     events,
     crontab: [
       '*/5 * * * * nuclinoUpdateMessage ?max=1',
-      `30 9 * * * gmailReminder ?max=1&id=booking ${JSON.stringify(booking)}`,
-      `0 8 * * * gmailReminder ?max=1&id=info ${JSON.stringify(info)}`,
+      `0 0 * * * gmailSubscription ?id=booking&max=3 {"account":"booking@kulturspektakel.de"}`,
+      `0 0 * * * gmailSubscription ?id=info&max=3 {"account":"info@kulturspektakel.de"}`,
     ].join('\n'),
   });
 }

@@ -1,7 +1,6 @@
 import {IdentityProvider, ServiceProvider, setSchemaValidator} from 'samlify';
 import {add, isPast} from 'date-fns';
 import prismaClient from '../../utils/prismaClient';
-import requestUrl from '../../utils/requestUrl';
 import env from '../../utils/env';
 import {readFileSync} from 'fs';
 import {join} from 'path';
@@ -89,8 +88,6 @@ const idp = IdentityProvider({
 });
 
 app.get('/logout', async (c) => {
-  console.log('logout', c.req.query());
-
   const parseResult = await idp.parseLogoutRequest(sp, 'redirect', {
     body: await c.req.parseBody(),
     query: c.req.query(),
