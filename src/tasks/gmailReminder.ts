@@ -24,10 +24,10 @@ export const GMAIL_REMINDERS: Record<
 export default async function (
   {
     account,
-    threadId,
+    messageId,
   }: {
     account: string;
-    threadId: string;
+    messageId: string;
   },
   {}: JobHelpers,
 ) {
@@ -45,22 +45,41 @@ export default async function (
     version: 'v1',
   });
 
-  const notification = await mailNotification(
-    gmail,
-    threadId,
-    account,
-    'warning',
-  );
-  if (!notification) {
+  const message = await gmail.users.messages.get({
+    id: messageId,
+    userId: account,
+  });
+
+  const threadId = message.data.threadId;
+
+  if (
+    !threadId ||
+    !message ||
+    !message.data.labelIds?.includes('INBOX') ||
+    message.data.labelIds?.includes('SENT')
+  ) {
     return;
   }
 
+  const thread = await gmail.users.threads.get({
+    id: threadId,
+    userId: account,
+    format: 'full',
+  });
+
+  if (thread.data.messages?.at(-1)?.id !== messageId) {
+    // new message in thread since
+    return;
+  }
+
+  const age = ageInDays(message.data);
+
   await sendMessage({
     channel: GMAIL_REMINDERS[account].channel,
-    text: `Folgende E-Mail ist seit ${ageInDays(
-      notification.message,
-    )} Tage unbeantwortet im Posteingang von ${account}. Kann sie bitte jemand beantworten oder sie archivieren, wenn keine Antwort notwendig ist.`,
-    attachments: notification.attachments,
+    text: `Folgende E-Mail ist seit ${age} Tag${
+      age == 1 ? '' : 'en'
+    } unbeantwortet im Posteingang von ${account}. Kann sie bitte jemand beantworten oder sie archivieren, wenn keine Antwort notwendig ist.`,
+    attachments: [slackAttachment(message.data, account, 'warning')],
   });
 }
 
@@ -79,50 +98,26 @@ function getHeaderField(message: gmail_v1.Schema$Message, field: string) {
   return header?.value ?? null;
 }
 
-export async function mailNotification(
-  gmail: gmail_v1.Gmail,
-  threadId: string,
+export function slackAttachment(
+  message: gmail_v1.Schema$Message,
   account: string,
-  color?: 'warning' | 'error' | 'success',
+  color?: string,
 ) {
-  const res = await gmail.users.threads.get({
-    id: threadId,
-    userId: account,
-    format: 'full',
-  });
-  const message = res.data.messages?.pop();
-
-  if (!message) {
-    return;
-  }
-
-  if (
-    !message.labelIds?.includes('INBOX') ||
-    message.labelIds?.includes('SENT')
-  ) {
-    return;
-  }
-
   const url = `https://mail.google.com/mail/u/${account}/#inbox/${message.threadId}`;
 
   return {
-    message,
-    attachments: [
+    author_name: getHeaderField(message, 'from'),
+    callback_id: message.threadId,
+    fallback: url,
+    title: getHeaderField(message, 'subject'),
+    text: message.snippet,
+    color,
+    ts: Math.round(parseInternalDate(message).getTime() / 1000),
+    actions: [
       {
-        author_name: getHeaderField(message, 'from'),
-        callback_id: message.threadId,
-        fallback: url,
-        title: getHeaderField(message, 'subject'),
-        text: message.snippet,
-        color,
-        ts: Math.round(parseInternalDate(message).getTime() / 1000),
-        actions: [
-          {
-            type: 'button',
-            text: 'Öffnen',
-            url,
-          },
-        ],
+        type: 'button',
+        text: 'Öffnen',
+        url,
       },
     ],
   };

@@ -274,10 +274,9 @@ model NonceRequest {
   status       NonceRequestStatus @default(Pending)
 }
 
-model GmailHistory {
-  historyId  Int
-  account    String   @id
-  lastUpdate DateTime @default(now())
+model GmailReminders {
+  messageId String @id
+  account   String
 }
 
 enum NonceRequestStatus {
