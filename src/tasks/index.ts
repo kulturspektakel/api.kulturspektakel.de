@@ -37,6 +37,7 @@ export default async function () {
       '*/5 * * * * nuclinoUpdateMessage ?max=1',
       `0 0 * * * gmailSubscription ?id=booking&max=3 {"account":"booking@kulturspektakel.de"}`,
       `0 0 * * * gmailSubscription ?id=info&max=3 {"account":"info@kulturspektakel.de"}`,
+      `0 0 * * * gmailSubscription ?id=lager&max=3 {"account":"lager@kulturspektakel.de"}`,
     ].join('\n'),
   });
 }

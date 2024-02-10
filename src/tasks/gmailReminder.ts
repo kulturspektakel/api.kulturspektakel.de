@@ -19,6 +19,10 @@ export const GMAIL_REMINDERS: Record<
     channel: SlackChannel.vorstand,
     reminderInDays: [3],
   },
+  'lager@kulturspektakel.de': {
+    channel: SlackChannel.lager,
+    reminderInDays: [3],
+  },
 };
 
 export default async function (
