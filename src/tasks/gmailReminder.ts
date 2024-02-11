@@ -3,6 +3,7 @@ import {JobHelpers} from 'graphile-worker';
 import {differenceInDays} from 'date-fns';
 import {gmail_v1, google} from 'googleapis';
 import env from '../utils/env';
+import prismaClient from '../utils/prismaClient';
 
 export const GMAIL_REMINDERS: Record<
   string,
@@ -35,6 +36,14 @@ export default async function (
   },
   {}: JobHelpers,
 ) {
+  await prismaClient.gmailReminders
+    .delete({
+      where: {
+        messageId,
+      },
+    })
+    .catch(() => {});
+
   const client = new google.auth.JWT({
     email: env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
     key: env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,

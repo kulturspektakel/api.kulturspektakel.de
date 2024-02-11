@@ -1,9 +1,7 @@
 import {builder} from '../pothos/builder';
+import {createNonceRequest} from '../utils/createNonce';
 import prismaClient from '../utils/prismaClient';
-import {add} from 'date-fns';
 import {SlackApiUser, slackApiRequest} from '../utils/slack';
-import uuid from '@braintree/uuid';
-import {NonceRequestStatus} from '@prisma/client';
 
 builder.mutationField('createNonceRequest', (t) =>
   t.field({
@@ -21,7 +19,22 @@ builder.mutationField('createNonceRequest', (t) =>
         return null;
       }
 
-      const nonceRequestId = uuid();
+      const data = {
+        email: slackUser.user.profile.email,
+        displayName:
+          slackUser.user.profile.real_name ??
+          slackUser.user.profile.display_name,
+        profilePicture: slackUser.user.profile.image_192,
+      };
+      const user = await prismaClient.viewer.upsert({
+        where: {
+          id: slackUser.user.id,
+        },
+        create: data,
+        update: data,
+      });
+
+      const nonceRequest = await createNonceRequest(user.id);
 
       await slackApiRequest('chat.postMessage', {
         channel: slackUser.user.id,
@@ -45,7 +58,7 @@ builder.mutationField('createNonceRequest', (t) =>
                   text: 'Bestätigen',
                 },
                 action_id: 'approve-nonce-request',
-                value: nonceRequestId,
+                value: nonceRequest,
               },
               {
                 type: 'button',
@@ -55,42 +68,14 @@ builder.mutationField('createNonceRequest', (t) =>
                   text: 'Ablehnen',
                 },
                 action_id: 'reject-nonce-request',
-                value: nonceRequestId,
+                value: nonceRequest,
               },
             ],
           },
         ],
       });
 
-      const data = {
-        email: slackUser.user.profile.email,
-        displayName:
-          slackUser.user.profile.real_name ??
-          slackUser.user.profile.display_name,
-        profilePicture: slackUser.user.profile.image_192,
-      };
-      const user = await prismaClient.viewer.upsert({
-        where: {
-          id: slackUser.user.id,
-        },
-        create: data,
-        update: data,
-      });
-
-      const nonceRequest = await prismaClient.nonceRequest.create({
-        data: {
-          id: nonceRequestId,
-          expiresAt: add(new Date(), {minutes: 5}),
-          status: NonceRequestStatus.Pending,
-          createdFor: {
-            connect: {
-              id: user.id,
-            },
-          },
-        },
-      });
-
-      return nonceRequest.id;
+      return nonceRequest;
     },
   }),
 );

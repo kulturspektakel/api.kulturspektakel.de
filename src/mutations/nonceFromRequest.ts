@@ -1,7 +1,7 @@
 import {NonceRequestStatus} from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
-import {add} from 'date-fns';
+import createNonce from '../utils/createNonce';
 
 builder.mutationField('nonceFromRequest', (t) =>
   t.field({
@@ -27,15 +27,7 @@ builder.mutationField('nonceFromRequest', (t) =>
         return null;
       }
 
-      // create nonce
-      const data = await prismaClient.nonce.create({
-        data: {
-          expiresAt: add(new Date(), {minutes: 5}),
-          createdForId: request.createdForId,
-        },
-      });
-
-      return data.nonce;
+      return createNonce(request.createdForId);
     },
   }),
 );

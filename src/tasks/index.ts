@@ -12,6 +12,7 @@ import bandApplicationDistance from './bandApplicationDistance';
 import slackMessage from './slackMessage';
 import bandApplicationDemo from './bandApplicationDemo';
 import gmailSubscription from './gmailSubscription';
+import nonceRequestInvalidate from './nonceRequestInvalidate';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -25,6 +26,7 @@ const taskList = {
   instagramFollower,
   spotifyListeners,
   gmailSubscription,
+  nonceRequestInvalidate,
 };
 
 export default async function () {

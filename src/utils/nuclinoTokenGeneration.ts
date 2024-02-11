@@ -1,10 +1,9 @@
 import {URL} from 'url';
-import {add} from 'date-fns';
 import {fetchUser, slackApiRequest} from './slack';
 import {ApiError} from './errorReporting';
 import prismaClient from './prismaClient';
-import {scheduleTask} from '../tasks';
 import env from './env';
+import createNonce from './createNonce';
 
 export default async function nuclinoTokenGeneration(
   userId: string,
@@ -29,27 +28,14 @@ export default async function nuclinoTokenGeneration(
     },
   });
 
-  const expiresAt = add(new Date(), {minutes: 5});
-  const nonce = await prismaClient.nonce.create({
-    data: {
-      createdForId: user.id,
-      expiresAt,
-    },
-  });
-  await scheduleTask(
-    'nonceInvalidate',
-    {nonce: nonce.nonce},
-    {
-      runAt: expiresAt,
-    },
-  );
+  const nonce = await createNonce(user.id);
 
   const nuclinoSsoUrl = new URL(
     `https://api.nuclino.com/api/sso/${env.NUCLINO_TEAM_ID}/login`,
   );
   nuclinoSsoUrl.searchParams.append('redirectUrl', redirectUrl);
   const url = new URL('https://api.kulturspektakel.de/slack/token');
-  url.searchParams.append('nonce', nonce.nonce);
+  url.searchParams.append('nonce', nonce);
   url.searchParams.append('redirect', nuclinoSsoUrl.toString());
 
   const response = await slackApiRequest('views.open', {
