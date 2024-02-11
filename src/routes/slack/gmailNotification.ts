@@ -4,7 +4,11 @@ import env from '../../utils/env';
 import {scheduleTask} from '../../tasks';
 import {add, isBefore, sub} from 'date-fns';
 import prismaClient from '../../utils/prismaClient';
-import {GMAIL_REMINDERS, slackAttachment} from '../../tasks/gmailReminder';
+import {
+  GMAIL_REMINDERS,
+  getHeaderField,
+  slackAttachment,
+} from '../../tasks/gmailReminder';
 import {sendMessage} from '../../utils/slack';
 
 const app = new Hono();
@@ -49,7 +53,12 @@ app.post('/', async (c) => {
 
   const message = thread.data.messages?.at(-1);
 
-  if (!message || message.labelIds?.includes('SENT')) {
+  if (
+    !message ||
+    message.labelIds?.includes('SENT') ||
+    message.labelIds?.includes('DRAFT') ||
+    getHeaderField(message, 'from') === account
+  ) {
     return c.text('ok', 200);
   }
 

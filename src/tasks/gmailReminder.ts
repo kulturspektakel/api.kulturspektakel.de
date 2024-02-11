@@ -95,7 +95,10 @@ function ageInDays(message: gmail_v1.Schema$Message): number {
   return differenceInDays(new Date(), parseInternalDate(message));
 }
 
-function getHeaderField(message: gmail_v1.Schema$Message, field: string) {
+export function getHeaderField(
+  message: gmail_v1.Schema$Message,
+  field: string,
+) {
   const header = message.payload?.headers?.find(
     ({name}) => name?.toLowerCase() === field.toLowerCase(),
   );
