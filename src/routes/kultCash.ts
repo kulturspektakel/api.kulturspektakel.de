@@ -121,11 +121,27 @@ app.get('/lists', async (c) => {
     },
   });
 
-  const allLists = {
+  const privilegeTokens = await prismaClient.devicePrivilegeToken.findMany({});
+
+  const allLists: AllLists = {
     productList: lists.map(getDeviceConfig),
+    privilegeTokens: privilegeTokens.map((t) => t.id),
+    versionNumber: 0,
+    timestamp: 0,
     checksum: 0,
   };
   allLists.checksum = crc32.buf(AllLists.encode(allLists).finish());
+  const configVersion = await prismaClient.deviceConfigVersion.upsert({
+    where: {
+      crc32: allLists.checksum,
+    },
+    create: {
+      crc32: allLists.checksum,
+    },
+    update: {},
+  });
+  allLists.versionNumber = configVersion.version;
+  allLists.timestamp = Math.floor(configVersion.createdAt.getTime() / 1000);
 
   if (c.req.header('if-none-match') === `"${allLists.checksum}"`) {
     return c.text('Not Modified', 304);

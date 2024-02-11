@@ -279,6 +279,16 @@ model GmailReminders {
   account   String
 }
 
+model DevicePrivilegeToken {
+  id Bytes @id
+}
+
+model DeviceConfigVersion {
+  crc32     Int      @unique
+  version   Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+}
+
 enum NonceRequestStatus {
   Pending
   Approved

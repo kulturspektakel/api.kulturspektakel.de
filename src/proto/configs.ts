@@ -7,10 +7,13 @@ export const protobufPackage = "";
 export interface AllLists {
   productList: DeviceConfig[];
   checksum: number;
+  versionNumber: number;
+  timestamp: number;
+  privilegeTokens: Uint8Array[];
 }
 
 function createBaseAllLists(): AllLists {
-  return { productList: [], checksum: 0 };
+  return { productList: [], checksum: 0, versionNumber: 0, timestamp: 0, privilegeTokens: [] };
 }
 
 export const AllLists = {
@@ -20,6 +23,15 @@ export const AllLists = {
     }
     if (message.checksum !== 0) {
       writer.uint32(16).int32(message.checksum);
+    }
+    if (message.versionNumber !== 0) {
+      writer.uint32(24).int32(message.versionNumber);
+    }
+    if (message.timestamp !== 0) {
+      writer.uint32(32).int32(message.timestamp);
+    }
+    for (const v of message.privilegeTokens) {
+      writer.uint32(42).bytes(v!);
     }
     return writer;
   },
@@ -45,6 +57,27 @@ export const AllLists = {
 
           message.checksum = reader.int32();
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.versionNumber = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.timestamp = reader.int32();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.privilegeTokens.push(reader.bytes());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -60,6 +93,11 @@ export const AllLists = {
         ? object.productList.map((e: any) => DeviceConfig.fromJSON(e))
         : [],
       checksum: isSet(object.checksum) ? globalThis.Number(object.checksum) : 0,
+      versionNumber: isSet(object.versionNumber) ? globalThis.Number(object.versionNumber) : 0,
+      timestamp: isSet(object.timestamp) ? globalThis.Number(object.timestamp) : 0,
+      privilegeTokens: globalThis.Array.isArray(object?.privilegeTokens)
+        ? object.privilegeTokens.map((e: any) => bytesFromBase64(e))
+        : [],
     };
   },
 
@@ -71,6 +109,15 @@ export const AllLists = {
     if (message.checksum !== 0) {
       obj.checksum = Math.round(message.checksum);
     }
+    if (message.versionNumber !== 0) {
+      obj.versionNumber = Math.round(message.versionNumber);
+    }
+    if (message.timestamp !== 0) {
+      obj.timestamp = Math.round(message.timestamp);
+    }
+    if (message.privilegeTokens?.length) {
+      obj.privilegeTokens = message.privilegeTokens.map((e) => base64FromBytes(e));
+    }
     return obj;
   },
 
@@ -81,9 +128,37 @@ export const AllLists = {
     const message = createBaseAllLists();
     message.productList = object.productList?.map((e) => DeviceConfig.fromPartial(e)) || [];
     message.checksum = object.checksum ?? 0;
+    message.versionNumber = object.versionNumber ?? 0;
+    message.timestamp = object.timestamp ?? 0;
+    message.privilegeTokens = object.privilegeTokens?.map((e) => e) || [];
     return message;
   },
 };
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if (globalThis.Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if (globalThis.Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
