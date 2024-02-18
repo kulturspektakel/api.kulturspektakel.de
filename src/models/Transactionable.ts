@@ -18,7 +18,7 @@ const CardTransactionConnection = builder
     depositOut: number;
     uniqueCards: number;
     totalCount: number;
-    data: CardTransactionT[];
+    data: Array<CardTransactionT & {deviceLog: {deviceTime: Date}}>;
   }>('CardTransactionConnection')
   .implement({
     fields: (t) => ({
@@ -77,6 +77,13 @@ builder.interfaceType(Transactionable, {
               },
             },
             transactionType: type ?? undefined,
+          },
+          include: {
+            deviceLog: {
+              select: {
+                deviceTime: true,
+              },
+            },
           },
           orderBy: {
             deviceLog: {

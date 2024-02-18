@@ -35,7 +35,11 @@ export const CardTransactionType = builder.enumType('CardTransactionType', {
 export default builder.prismaObject('CardTransaction', {
   interfaces: [Transaction],
   include: {
-    deviceLog: true,
+    deviceLog: {
+      select: {
+        deviceTime: true,
+      },
+    },
   },
   fields: (t) => ({
     clientId: t.exposeString('clientId'),
