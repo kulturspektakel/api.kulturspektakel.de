@@ -13,7 +13,7 @@ export const GMAIL_REMINDERS: Record<
   }
 > = {
   'booking@kulturspektakel.de': {
-    channel: SlackChannel.booking,
+    channel: SlackChannel.bookingmails,
     reminderInDays: [3],
   },
   'info@kulturspektakel.de': {
