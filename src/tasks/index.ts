@@ -37,9 +37,9 @@ export default async function () {
     events,
     crontab: [
       '*/5 * * * * nuclinoUpdateMessage ?max=1',
-      `0 0 * * * gmailSubscription ?id=booking&max=3 {"account":"booking@kulturspektakel.de"}`,
-      `0 0 * * * gmailSubscription ?id=info&max=3 {"account":"info@kulturspektakel.de"}`,
-      `0 0 * * * gmailSubscription ?id=lager&max=3 {"account":"lager@kulturspektakel.de"}`,
+      `0 0 * * * gmailSubscription ?id=booking&fill=1d&max=3 {"account":"booking@kulturspektakel.de"}`,
+      `0 0 * * * gmailSubscription ?id=info&fill=1d&max=3 {"account":"info@kulturspektakel.de"}`,
+      `0 0 * * * gmailSubscription ?id=lager&fill=1d&max=3 {"account":"lager@kulturspektakel.de"}`,
     ].join('\n'),
   });
 }
@@ -65,3 +65,7 @@ export const scheduleTask = async <T extends keyof typeof taskList>(
     ...spec,
   });
 };
+
+await scheduleTask('gmailSubscription', {
+  account: 'booking@kulturspektakel.de',
+});
