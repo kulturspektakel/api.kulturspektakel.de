@@ -23,10 +23,15 @@ import {Hono, Context} from 'hono';
 const app = new Hono();
 
 function getSoftwareVersion(c: Context) {
+  const userAgent = c.req.header('user-agent')?.split('/').pop();
+  if (userAgent) {
+    return userAgent;
+  }
   return c.req.header('x-esp8266-version')?.toString() ?? undefined;
 }
 
-app.use('/', async function (c) {
+// https://github.com/honojs/hono/issues/2345
+app.use('/:this_is_a_hono_bug', async function (c, next) {
   const token = c.get('parsedToken');
 
   if (token?.iss != 'device') {
@@ -50,6 +55,8 @@ app.use('/', async function (c) {
       softwareVersion,
     },
   });
+
+  return next();
 });
 
 type ParsedDeviceToken = Extract<ParsedToken, {iss: 'device'}>;

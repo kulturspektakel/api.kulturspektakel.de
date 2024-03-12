@@ -79,6 +79,18 @@ const middleware: MiddlewareHandler = async (c, next) => {
         iss: 'owntracks',
       });
     }
+  } else if (
+    basicUser &&
+    req.header('user-agent')?.startsWith('Contactless/') &&
+    basicUser.pass === sha1(basicUser.name + env.CONTACTLESS_SALT)
+  ) {
+    c.set('parsedToken', {
+      iat: -1,
+      exp: -1,
+      iss: 'device',
+      deviceId: basicUser.name,
+    });
+    return await next();
   }
 
   if (token == null) {
