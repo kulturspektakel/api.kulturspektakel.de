@@ -15,10 +15,12 @@ import {sentry} from '@hono/sentry';
 import {serveStatic} from 'hono/bun';
 import {cors} from 'hono/cors';
 import kultWiki from './kult.wiki';
+import {Toucan} from 'toucan-js';
 
-const app = new Hono<{Variables: Context}>();
+const app = new Hono<{Variables: Context & {sentry: Toucan}}>();
 
 // The request handler must be the first middleware on the app
+// @ts-ignore
 app.use(
   '*',
   sentry({
@@ -77,10 +79,11 @@ app.on(['GET', 'POST'], '/graphql', async (c) =>
 app.onError(async (error, c) => {
   console.error(error);
   try {
-    const rawBody = await c.req.raw.body?.getReader().read();
+    // this currently doesn't work because clone doesn't work in bun
+    // https://github.com/oven-sh/bun/pull/6468
+    const rawBody = await c.req.raw.clone().body?.getReader().read();
     const body = new TextDecoder().decode(rawBody?.value);
     c.get('sentry').setRequestBody(body);
-    c.get('sentry').setContext('body', {body});
   } catch (e) {}
 
   if (!(error instanceof ApiError)) {
