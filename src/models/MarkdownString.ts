@@ -32,11 +32,11 @@ export function markdownField<Types extends SchemaTypes, F extends string>(
     nullable: options?.nullable,
     // @ts-ignore
     resolve: async (root) => {
-      const markdown = root[field];
+      let markdown = root[field];
       if (!markdown) {
         return null;
       }
-      markdown.replaceAll(
+      markdown = markdown.replaceAll(
         'https://crew.kulturspektakel.de/assets/',
         'https://files.kulturspektakel.de/assets/',
       );
