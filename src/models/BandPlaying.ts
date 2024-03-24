@@ -4,6 +4,7 @@ import {pixelImageField} from './Asset';
 
 export default builder.prismaNode('BandPlaying', {
   id: {field: 'id'},
+  nullable: true,
   fields: (t) => ({
     name: t.exposeString('name'),
     slug: t.exposeString('slug'),

@@ -201,7 +201,7 @@ function from({
 }
 
 export function assetUri(id: string): string {
-  return `https://crew.kulturspektakel.de/assets/${id}`;
+  return `https://files.kulturspektakel.de/assets/${id}`;
 }
 
 function s(s?: string | null) {
