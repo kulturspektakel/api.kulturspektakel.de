@@ -36,6 +36,10 @@ export function markdownField<Types extends SchemaTypes, F extends string>(
       if (!markdown) {
         return null;
       }
+      markdown.replaceAll(
+        'https://crew.kulturspektakel.de/assets/',
+        'https://files.kulturspektakel.de/assets/',
+      );
       const images = await directusImages(markdown);
 
       return {
