@@ -161,8 +161,6 @@ app.get('/lists', async (c) => {
 });
 
 app.post('/log', async (c) => {
-  const {deviceId: id} = c.get('parsedToken') as ParsedDeviceToken;
-
   let message: LogMessage;
   try {
     const body = await c.req.arrayBuffer();
@@ -179,45 +177,48 @@ app.post('/log', async (c) => {
     );
   }
 
-  let deviceTime = new Date(message.deviceTime * 1000);
-  if (!message.deviceTimeIsUtc) {
+  const {
+    deviceTime: dt,
+    deviceTimeIsUtc,
+    deviceId,
+    order,
+    cardTransaction,
+    ...data
+  } = message;
+
+  let deviceTime = new Date(dt * 1000);
+  if (!deviceTimeIsUtc) {
     deviceTime = subMilliseconds(
       deviceTime,
       getTimezoneOffset('Europe/Berlin', deviceTime),
     );
   }
 
-  const {cardTransaction, order} = message;
   let cardTransactionClientId: string | null = null;
   if (cardTransaction) {
     try {
       const deviceLog = await prismaClient.deviceLog.create({
         data: {
-          clientId: message.clientId,
+          ...data,
           deviceTime,
           device: {
             connectOrCreate: {
               create: {
-                id,
+                id: deviceId,
                 lastSeen: new Date(),
                 type: 'CONTACTLESS_TERMINAL' as const,
               },
               where: {
-                id,
+                id: deviceId,
               },
             },
           },
           CardTransaction: {
             create: {
-              cardId: cardTransaction.cardId,
-              depositBefore: cardTransaction.depositBefore,
-              depositAfter: cardTransaction.depositAfter,
-              balanceBefore: cardTransaction.balanceBefore,
-              balanceAfter: cardTransaction.balanceAfter,
+              ...cardTransaction,
               transactionType: mapTransactionType(
                 cardTransaction.transactionType,
               ),
-              counter: cardTransaction.counter,
             },
           },
         },

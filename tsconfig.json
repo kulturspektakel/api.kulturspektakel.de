@@ -7,7 +7,6 @@
     "moduleDetection": "force",
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "composite": true,
     "strict": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
@@ -15,6 +14,10 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
+    // https://github.com/microsoft/TypeScript/issues/42873#issuecomment-1951356156
+    "declaration": false,
+    "declarationMap": false,
+    // "composite": true,
     "types": [
       "bun-types" // add Bun global
     ]

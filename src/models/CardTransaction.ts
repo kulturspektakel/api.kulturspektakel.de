@@ -48,7 +48,7 @@ export default builder.prismaObject('CardTransaction', {
     Order: t.relation('Order'),
     deviceTime: t.field({
       type: 'DateTime',
-      resolve: (parent) => parent.deviceLog?.deviceTime,
+      resolve: (parent) => parent.deviceLog.deviceTime,
     }),
   }),
 });

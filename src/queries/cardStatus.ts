@@ -17,6 +17,13 @@ builder.queryField('cardStatus', (t) =>
       let hasNewerTransactions = null;
       if (data.counter) {
         const transactions = await prismaClient.cardTransaction.findMany({
+          include: {
+            deviceLog: {
+              select: {
+                deviceTime: true,
+              },
+            },
+          },
           where: {
             cardId: data.cardId,
             deviceLog: {
@@ -51,8 +58,7 @@ builder.queryField('cardStatus', (t) =>
           (t) => t.transactionType === 'Cashout',
         );
         if (cashout > -1) {
-          transactions.length = cashout + 1;
-          transactions.pop();
+          transactions.length = cashout;
         }
         if (transactions.length > 0) {
           let ti = 0;
