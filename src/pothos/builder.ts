@@ -6,6 +6,7 @@ import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import {GraphQLDate, GraphQLDateTime} from 'graphql-scalars';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import {Context} from '../context';
+import {GraphQLError} from 'graphql';
 
 export const builder = new SchemaBuilder<{
   AuthScopes: {
@@ -43,6 +44,15 @@ export const builder = new SchemaBuilder<{
     user: parsedToken?.iss === 'directus',
     device: parsedToken?.iss === 'device',
   }),
+  scopeAuthOptions: {
+    treatErrorsAsUnauthorized: true,
+    unauthorizedError: (parent, context, info, result) =>
+      new GraphQLError(`Not authorized`, {
+        extensions: {
+          code: 'UNAUTHORIZED',
+        },
+      }),
+  },
 });
 
 builder.addScalarType('Date', GraphQLDate, {});

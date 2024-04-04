@@ -68,6 +68,7 @@ app.on(['GET', 'POST'], '/graphql', async (c) =>
     },
     graphqlEndpoint: '',
     context: () => c.var,
+    maskedErrors: false,
     plugins: [
       useSentry({
         skipError: () => false,
