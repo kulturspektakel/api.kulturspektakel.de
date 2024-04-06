@@ -33,6 +33,11 @@ export const Asset = builder.interfaceRef<DirectusFile>('Asset').implement({
   },
 });
 
+const DirectusPixelImageFormat = builder.enumType('DirectusPixelImageFormat', {
+  // https://docs.directus.io/reference/files.html#custom-transformations
+  values: ['auto', 'jpg', 'png', 'webp', 'tiff', 'original'] as const,
+});
+
 export const PixelImage = builder
   .objectRef<DirectusPixelImage>('PixelImage')
   .implement({
@@ -45,6 +50,10 @@ export const PixelImage = builder
         args: {
           width: t.arg.int(),
           height: t.arg.int(),
+          format: t.arg({
+            type: DirectusPixelImageFormat,
+            defaultValue: 'auto',
+          }),
         },
         resolve: (root, args) => {
           const uri = new URL(assetUri(root.id));
@@ -54,6 +63,9 @@ export const PixelImage = builder
           }
           if (args.width != null) {
             uri.searchParams.append('width', String(args.width));
+          }
+          if (args.format && args.format !== 'original') {
+            uri.searchParams.append('format', args.format);
           }
 
           let width = root.width!;
@@ -201,7 +213,7 @@ function from({
 }
 
 export function assetUri(id: string): string {
-  return `https://files.kulturspektakel.de/assets/${id}`;
+  return `https://files.kulturspektakel.de/${id}`;
 }
 
 function s(s?: string | null) {
