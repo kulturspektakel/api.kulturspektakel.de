@@ -55,7 +55,7 @@ async function directusImages(
   markdownString: string,
 ): Promise<DirectusPixelImage[]> {
   const imgRegex =
-    /!\[.*?\]\((.*?\/assets\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}))\)/g;
+    /!\[.*?\]\((https:\/\/files\.kulturspektakel\.de\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}))\)/g;
   const matches = markdownString.match(imgRegex) || [];
   const imageIDs = matches.map((match) => match.replace(imgRegex, '$2'));
   if (imageIDs.length === 0) {
