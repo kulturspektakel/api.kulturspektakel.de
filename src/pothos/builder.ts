@@ -29,6 +29,7 @@ export const builder = new SchemaBuilder<{
   plugins: [ScopeAuthPlugin, PrismaPlugin, RelayPlugin],
   prisma: {
     client: prismaClient,
+    filterConnectionTotalCount: true,
   },
   relayOptions: {
     // These will become the defaults in the next major version
