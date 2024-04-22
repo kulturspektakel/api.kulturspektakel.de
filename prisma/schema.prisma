@@ -235,7 +235,7 @@ model Event {
 }
 
 model BandPlaying {
-  id               String   @id @default(uuid())
+  id               String    @id @default(uuid())
   name             String
   startTime        DateTime
   endTime          DateTime
@@ -251,9 +251,10 @@ model BandPlaying {
   areaId           String
   eventId          String
   slug             String
-  photo            String?  @db.Uuid
-  area             Area     @relation(fields: [areaId], references: [id])
-  event            Event    @relation(fields: [eventId], references: [id])
+  photo            String?   @db.Uuid
+  area             Area      @relation(fields: [areaId], references: [id])
+  event            Event     @relation(fields: [eventId], references: [id])
+  announcementTime DateTime?
 
   @@unique([areaId, startTime])
   @@unique([eventId, slug])

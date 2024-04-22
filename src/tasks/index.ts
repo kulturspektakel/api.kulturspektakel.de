@@ -36,7 +36,7 @@ export default async function () {
     taskList: taskList as any,
     events,
     crontab: [
-      '*/5 * * * * nuclinoUpdateMessage ?max=1',
+      '*/5 * * * * nuclinoUpdateMessage ?max=1&jobKey=nuclinoUpdateMessage&jobKeyMode=replace',
       `0 0 * * * gmailSubscription ?id=booking&fill=1d&max=3 {"account":"booking@kulturspektakel.de"}`,
       `0 0 * * * gmailSubscription ?id=info&fill=1d&max=3 {"account":"info@kulturspektakel.de"}`,
       `0 0 * * * gmailSubscription ?id=lager&fill=1d&max=3 {"account":"lager@kulturspektakel.de"}`,

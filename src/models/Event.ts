@@ -23,6 +23,18 @@ export default builder.prismaNode('Event', {
             },
           },
         ],
+        where: {
+          OR: [
+            {
+              announcementTime: {
+                lte: new Date(),
+              },
+            },
+            {
+              announcementTime: null,
+            },
+          ],
+        },
       }),
       totalCount: true,
     }),
