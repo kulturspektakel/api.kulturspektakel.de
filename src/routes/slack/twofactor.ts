@@ -1,5 +1,5 @@
 import prismaClient from '../../utils/prismaClient';
-import totp from 'totp-generator';
+import {TOTP} from 'totp-generator';
 import {SlackSlashCommandRequest} from './token';
 import {sendMessage, SlackChannel} from '../../utils/slack';
 import {Hono} from 'hono';
@@ -76,7 +76,7 @@ export async function generateTwoFactorCodeResponse(
     service: string;
   },
 ) {
-  const code = totp(secret);
+  const code = TOTP.generate(secret);
 
   await sendMessage({
     channel: SlackChannel.dev,

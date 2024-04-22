@@ -1,5 +1,4 @@
-import {endOfDay} from 'date-fns';
-import startOfDay from 'date-fns/startOfDay';
+import {endOfDay, startOfDay} from 'date-fns';
 import {builder} from '../pothos/builder';
 import OpeningHour from './OpeningHour';
 
