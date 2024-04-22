@@ -1,6 +1,6 @@
 // auto-generated file using yarn generate:mail
 // prettier-ignore
-export default ({bandname, eventYear}: {bandname: string, eventYear: string}) => `<!DOCTYPE html>
+export default ({bandname, eventYear, eventDate}: {bandname: string, eventYear: string, eventDate: string}) => `<!DOCTYPE html>
 <html lang="de" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="utf-8">
@@ -35,16 +35,16 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
       &#160;&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
       &#160;&#847; &#847; &#847; &#847; &#847; </div>
   <div role="article" aria-roledescription="email" aria-label="Absage „undefined“ - Kulturspektakel undefined" lang="de">
-    <table style="width: 100%; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" cellpadding="0" cellspacing="0" role="presentation">
+    <table style="width: 100%; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" cellpadding="0" cellspacing="0" role="none">
       <tr>
-        <td align="center" style="background-color: #f3f4f6">
-          <table class="sm-w-full" style="width: 600px" cellpadding="0" cellspacing="0" role="presentation">
+        <td align="center" style="background-color: #f3f4f6;">
+          <table class="sm-w-full" style="width: 600px" cellpadding="0" cellspacing="0" role="none">
             <tr>
               <td class="sm-h-0" style="height: 24px"></td>
             </tr>
             <tr>
               <td align="center" class="sm-px-0">
-                <table style="width: 100%" cellpadding="0" cellspacing="0" role="presentation">
+                <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
                   <tr>
                     <td class="sm-p-6" style="border-radius: 4px; background-color: #fff; padding: 32px; text-align: left; font-size: 16px; line-height: 24px; color: #1f2937">    <p>
         Hey,
@@ -62,7 +62,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
         Wir möchten dir jedoch versichern, dass wir deine Bewerbung sehr zu schätzen wissen und würden uns freuen, wenn ihr uns nächstes Jahr erneut eure Bewerbung zukommen lasst. Ab August wird es möglich sein, euch über das Bewerbungsformular auf unserer Webseite für nächstes Jahr zu bewerben.
     </p>
     <p>
-        Das Line-Up für unser diesjähriges Festival wird in den nächsten Wochen auf unserer Webseite veröffentlicht. Natürlich würden wir uns sehr freuen, wenn ihr trotzdem beim Kulturspektakel vom 21. - 23. Juli 2023 vorbeischaut.
+        Das Line-Up für unser diesjähriges Festival wird in den nächsten Wochen auf unserer Webseite veröffentlicht. Natürlich würden wir uns sehr freuen, wenn ihr trotzdem beim Kulturspektakel vom ${eventDate} vorbeischaut.
     </p>
     <p style="margin: 0">
         Viel Erfolg und hoffentlich bis zum nächsten Jahr!<br>
@@ -70,18 +70,18 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
     </p>                    </td>
                   </tr>
                   <tr>
-                    <td style="height: 24px"></td>
+                    <td style="height: 24px;"></td>
                   </tr>
                   <tr>
                     <td style="padding-left: 24px; padding-right: 24px; text-align: center; font-size: 12px; color: #4b5563">
                       <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" alt="Kulturspektakel Gauting" style="border: 0; max-width: 100%; vertical-align: middle; line-height: 100%">
                       <p style="margin: 0; margin-top: 16px; font-weight: 600">Kulturspektakel Gauting e.V.</p>
                       <p style="margin: 0; font-style: italic">Anschrift: Bahnhofstr. 6, 82131 Gauting</p>
-                      <p style="margin: 0; font-style: italic">Festivalgelände: Germeringer Str. 41, Gauting</p>
+                      <p style="margin: 0; font-style: italic;">Festivalgelände: Germeringer Str. 41, Gauting</p>
                       <p style="cursor: default">
                         <a href="https://kulturspektakel.de" class="hover-underline" style="color: #E12E2E; text-decoration-line: none">Webseite</a> &bull;
-                        <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: #E12E2E; text-decoration-line: none">Facebook</a> &bull;
-                        <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: #E12E2E; text-decoration-line: none">Instagram</a>
+                        <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: #E12E2E; text-decoration-line: none;">Facebook</a> &bull;
+                        <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: #E12E2E; text-decoration-line: none;">Instagram</a>
                       </p>
                     </td>
                   </tr>

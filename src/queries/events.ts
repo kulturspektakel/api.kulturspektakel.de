@@ -57,7 +57,20 @@ builder.queryField('eventsConnection', (t) =>
           BandPlaying:
             hasBandsPlaying != null
               ? hasBandsPlaying
-                ? {some: {}}
+                ? {
+                    some: {
+                      OR: [
+                        {
+                          announcementTime: {
+                            lte: new Date(),
+                          },
+                        },
+                        {
+                          announcementTime: null,
+                        },
+                      ],
+                    },
+                  }
                 : {none: {}}
               : undefined,
         },

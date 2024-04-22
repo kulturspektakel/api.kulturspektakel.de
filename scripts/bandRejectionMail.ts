@@ -5,17 +5,12 @@ import {google} from 'googleapis';
 import env from '../src/utils/env';
 
 const account = 'booking@kulturspektakel.de';
+const EVENT_ID = 'kult2024';
 
-(async () => {
-  const event = await prismaClient.event.findFirstOrThrow({
+async function main() {
+  const event = await prismaClient.event.findUniqueOrThrow({
     where: {
-      eventType: 'Kulturspektakel',
-      bandApplicationEnd: {
-        lt: new Date(),
-      },
-      start: {
-        gt: new Date(),
-      },
+      id: EVENT_ID,
     },
   });
 
@@ -23,7 +18,7 @@ const account = 'booking@kulturspektakel.de';
     where: {
       contactedByViewerId: null,
       lastContactedAt: null,
-      eventId: event.id,
+      eventId: EVENT_ID,
       genreCategory: {
         not: 'DJ',
       },
@@ -86,6 +81,14 @@ const account = 'booking@kulturspektakel.de';
       html: rejectBandApplication({
         bandname: band.bandname,
         eventYear,
+        eventDate: `${event.start.getDate()}. - ${event.end.toLocaleDateString(
+          'de-DE',
+          {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          },
+        )}`,
       }),
     });
 
@@ -100,4 +103,5 @@ const account = 'booking@kulturspektakel.de';
       },
     });
   }
-})();
+}
+await main();
