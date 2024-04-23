@@ -13,7 +13,7 @@ datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
   directUrl  = env("DIRECT_URL")
-  extensions = [pg_trgm, unaccent, uuid_ossp(map: "uuid-ossp", schema: "public")]
+  extensions = [pg_trgm, unaccent, pgcrypto, uuid_ossp(map: "uuid-ossp", schema: "public")]
 }
 
 model Viewer {
@@ -155,7 +155,7 @@ model DeviceLog {
 }
 
 model BandApplication {
-  id                      String                   @id @default(uuid())
+  id                      String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt               DateTime                 @default(now())
   email                   String
   bandname                String
@@ -197,7 +197,7 @@ model BandApplication {
 model BandApplicationRating {
   viewerId          String
   rating            Int
-  bandApplicationId String
+  bandApplicationId String          @db.Uuid
   bandApplication   BandApplication @relation(fields: [bandApplicationId], references: [id])
   viewer            Viewer          @relation(fields: [viewerId], references: [id])
 
@@ -206,11 +206,11 @@ model BandApplicationRating {
 }
 
 model BandApplicationComment {
-  id                String          @id @default(uuid())
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt         DateTime        @default(now())
   viewerId          String
   comment           String
-  bandApplicationId String
+  bandApplicationId String          @db.Uuid
   bandApplication   BandApplication @relation(fields: [bandApplicationId], references: [id])
   viewer            Viewer          @relation(fields: [viewerId], references: [id])
 }
@@ -235,7 +235,7 @@ model Event {
 }
 
 model BandPlaying {
-  id               String    @id @default(uuid())
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name             String
   startTime        DateTime
   endTime          DateTime
@@ -261,14 +261,14 @@ model BandPlaying {
 }
 
 model Nonce {
-  nonce        String   @id @default(uuid())
+  nonce        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   expiresAt    DateTime
   createdForId String?
   createdFor   Viewer?  @relation(fields: [createdForId], references: [id])
 }
 
 model NonceRequest {
-  id           String             @id @default(uuid())
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   expiresAt    DateTime
   createdForId String?
   createdFor   Viewer?            @relation(fields: [createdForId], references: [id])
