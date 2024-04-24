@@ -76,7 +76,7 @@ export async function generateTwoFactorCodeResponse(
     service: string;
   },
 ) {
-  const code = TOTP.generate(secret);
+  const {otp} = TOTP.generate(secret);
 
   await sendMessage({
     channel: SlackChannel.dev,
@@ -84,13 +84,13 @@ export async function generateTwoFactorCodeResponse(
   });
 
   return {
-    text: `2-Faktor-Code für ${account} (${service}): ${code}`,
+    text: `2-Faktor-Code für ${account} (${service}): ${otp}`,
     blocks: [
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `2-Faktor-Code für *${account}* (${service}): \`${code}\``,
+          text: `2-Faktor-Code für *${account}* (${service}): \`${otp}\``,
         },
       },
       {
