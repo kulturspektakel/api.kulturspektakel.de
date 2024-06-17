@@ -63,11 +63,8 @@ async function directusImages(
   }
   const files = await prismaClient.$queryRaw<
     Array<DirectusPixelImage>
-  >`SELECT * FROM "directus"."directus_files" WHERE id IN (${Prisma.join(
+  >`SELECT * FROM "directus"."directus_files" WHERE id::text IN (${Prisma.join(
     imageIDs,
-    ',',
-    undefined,
-    '::uuid',
   )}) AND width IS NOT NULL AND height IS NOT NULL`;
 
   return files;
