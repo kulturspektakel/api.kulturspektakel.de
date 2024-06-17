@@ -4,24 +4,16 @@ import prismaClient from '../src/utils/prismaClient';
 import {Prisma} from '@prisma/client';
 import {addDays} from 'date-fns';
 import {fromZonedTime} from 'date-fns-tz';
+import readGoogleSheet from '../src/utils/readGoogleSheet';
 
 const EVENT_ID = 'kult2024';
-const SHEET_ID = '11Gpr5UYJQv0bqVaCilqPSbcVlzz-GCGmP1jOdtQrwds';
+const SHEET_ID = '------';
 const SHEET_NAME = 'Lineup';
 const ANNOUNCEMENT_TIME = new Date('2024-07-21');
 const CLEAR_LINEUP = false;
 
 async function main() {
-  const data = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${env.GOOGLE_MAPS_KEY}`,
-  );
-
-  const json: {
-    range: string;
-    majorDimension: string;
-    values: string[][];
-  } = await data.json();
-
+  const json = await readGoogleSheet(SHEET_ID, SHEET_NAME);
   const stages = await prismaClient.area.findMany();
   const event = await prismaClient.event.findUniqueOrThrow({
     where: {id: EVENT_ID},

@@ -81,19 +81,10 @@ async function main() {
       html: rejectBandApplication({
         bandname: band.bandname,
         eventYear,
-        eventDate: `${event.start.getDate()}. - ${event.end.toLocaleDateString(
-          'de-DE',
-          {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-          },
-        )}`,
       }),
     });
 
     console.log(`Sent: ${band.bandname}`);
-
     await prismaClient.bandApplication.update({
       data: {
         lastContactedAt: new Date(),
