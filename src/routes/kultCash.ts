@@ -10,6 +10,7 @@ import {
   CardTransactionType,
   Prisma,
   ProductList,
+  DeviceLog,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {getTimezoneOffset} from 'date-fns-tz';
@@ -194,46 +195,49 @@ app.post('/log', async (c) => {
     );
   }
 
-  let cardTransactionClientId: string | null = null;
-  if (cardTransaction) {
-    try {
-      const deviceLog = await prismaClient.deviceLog.create({
-        data: {
-          ...data,
-          deviceTime,
-          device: {
-            connectOrCreate: {
-              create: {
-                id: deviceId,
-                lastSeen: new Date(),
-                type: 'CONTACTLESS_TERMINAL' as const,
-              },
-              where: {
-                id: deviceId,
-              },
-            },
-          },
-          CardTransaction: {
+  let deviceLog: DeviceLog | null = null;
+  try {
+    deviceLog = await prismaClient.deviceLog.create({
+      data: {
+        ...data,
+        deviceTime,
+        device: {
+          connectOrCreate: {
             create: {
-              ...cardTransaction,
-              transactionType: mapTransactionType(
-                cardTransaction.transactionType,
-              ),
+              id: deviceId,
+              lastSeen: new Date(),
+              type: 'CONTACTLESS_TERMINAL' as const,
+            },
+            where: {
+              id: deviceId,
             },
           },
         },
-      });
-      cardTransactionClientId = deviceLog.clientId;
-    } catch (e) {
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === 'P2002'
-      ) {
-        // client ID already exists
-        throw new ApiError(409, 'Conflict');
-      }
-      throw e;
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === 'P2002'
+    ) {
+      // client ID already exists
+      throw new ApiError(409, 'Conflict');
     }
+    throw e;
+  }
+
+  if (cardTransaction) {
+    await prismaClient.cardTransaction.create({
+      data: {
+        ...cardTransaction,
+        transactionType: mapTransactionType(cardTransaction.transactionType),
+        deviceLog: {
+          connect: {
+            clientId: deviceLog.clientId,
+          },
+        },
+      },
+    });
   }
 
   if (order) {
@@ -258,7 +262,7 @@ app.post('/log', async (c) => {
           },
         },
         deviceId: message.deviceId, // made sure device exists earlier
-        cardTransactionClientId,
+        cardTransactionClientId: deviceLog.clientId,
       },
     });
   }
