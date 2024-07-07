@@ -197,7 +197,6 @@ app.post('/log', async (c) => {
   const orderCreate =
     order != null
       ? {
-          ...order,
           payment: mapPayment(order.paymentMethod),
           items: {
             createMany: {
@@ -207,6 +206,7 @@ app.post('/log', async (c) => {
                   amount,
                   name: product!.name, // not sure why product is nullable
                   perUnitPrice: product!.price,
+                  listId: order.listId,
                 })),
             },
           },
@@ -260,7 +260,7 @@ app.post('/log', async (c) => {
     await prismaClient.order.create({
       data: {
         ...orderCreate,
-        deviceId: deviceId,
+        deviceId,
       },
     });
   }
