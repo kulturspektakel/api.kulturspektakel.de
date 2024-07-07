@@ -194,6 +194,25 @@ app.post('/log', async (c) => {
     );
   }
 
+  const orderCreate =
+    order != null
+      ? {
+          ...order,
+          payment: mapPayment(order.paymentMethod),
+          items: {
+            createMany: {
+              data: order.cartItems
+                .filter(({product}) => product != undefined)
+                .map(({amount, product}) => ({
+                  amount,
+                  name: product!.name, // not sure why product is nullable
+                  perUnitPrice: product!.price,
+                })),
+            },
+          },
+        }
+      : undefined;
+
   await prismaClient.deviceLog
     .create({
       data: {
@@ -219,26 +238,7 @@ app.post('/log', async (c) => {
                   transactionType: mapTransactionType(
                     cardTransaction.transactionType,
                   ),
-                  Order:
-                    order != null
-                      ? {
-                          create: {
-                            ...order,
-                            payment: mapPayment(order.paymentMethod),
-                            items: {
-                              createMany: {
-                                data: order.cartItems
-                                  .filter(({product}) => product != undefined)
-                                  .map(({amount, product}) => ({
-                                    amount,
-                                    name: product!.name, // not sure why product is nullable
-                                    perUnitPrice: product!.price,
-                                  })),
-                              },
-                            },
-                          },
-                        }
-                      : undefined,
+                  Order: order != null ? {create: orderCreate} : undefined,
                 },
               }
             : undefined,
@@ -254,6 +254,16 @@ app.post('/log', async (c) => {
       }
       throw e;
     });
+
+  if (!cardTransaction && orderCreate) {
+    // manually create order, because it's not part of a card transaction
+    await prismaClient.order.create({
+      data: {
+        ...orderCreate,
+        deviceId: deviceId,
+      },
+    });
+  }
 
   return c.text('Created', 201);
 });

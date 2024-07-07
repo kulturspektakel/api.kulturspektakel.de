@@ -101,15 +101,14 @@ model Device {
 }
 
 model Order {
-  id                      Int              @id @default(autoincrement())
-  createdAt               DateTime         @default(now())
-  payment                 OrderPayment
-  deposit                 Int              @default(0)
-  deviceId                String?
-  cardTransactionClientId String?
-  CardTransaction         CardTransaction? @relation(fields: [cardTransactionClientId], references: [clientId])
-  device                  Device?          @relation(fields: [deviceId], references: [id])
-  items                   OrderItem[]
+  id              Int               @id @default(autoincrement())
+  createdAt       DateTime          @default(now())
+  payment         OrderPayment
+  deposit         Int               @default(0)
+  deviceId        String?
+  device          Device?           @relation(fields: [deviceId], references: [id])
+  items           OrderItem[]
+  CardTransaction CardTransaction[]
 }
 
 model OrderItem {
@@ -133,14 +132,10 @@ model CardTransaction {
   balanceAfter    Int
   transactionType CardTransactionType
 
-  // TODO: can be removed once migration is done
-  deviceId   String?   @ignore
-  createdAt  DateTime? @ignore
-  deviceTime DateTime? @ignore
-
   counter   Int?
-  Order     Order[]
   deviceLog DeviceLog @relation(fields: [clientId], references: [clientId])
+  Order     Order?    @relation(fields: [orderId], references: [id])
+  orderId   Int?
 }
 
 model DeviceLog {
