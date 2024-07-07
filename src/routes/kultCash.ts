@@ -206,7 +206,7 @@ app.post('/log', async (c) => {
                   amount,
                   name: product!.name, // not sure why product is nullable
                   perUnitPrice: product!.price,
-                  listId: order.listId,
+                  productListId: order.listId,
                 })),
             },
           },
