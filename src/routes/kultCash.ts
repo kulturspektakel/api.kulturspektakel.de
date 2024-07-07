@@ -227,14 +227,13 @@ app.post('/log', async (c) => {
                             payment: mapPayment(order.paymentMethod),
                             items: {
                               createMany: {
-                                data:
-                                  order!.cartItems
-                                    .filter(({product}) => product != undefined)
-                                    .map(({amount, product}) => ({
-                                      amount,
-                                      name: product!.name, // not sure why product is nullable
-                                      perUnitPrice: product!.price,
-                                    })) ?? [],
+                                data: order.cartItems
+                                  .filter(({product}) => product != undefined)
+                                  .map(({amount, product}) => ({
+                                    amount,
+                                    name: product!.name, // not sure why product is nullable
+                                    perUnitPrice: product!.price,
+                                  })),
                               },
                             },
                           },
