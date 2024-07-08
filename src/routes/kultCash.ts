@@ -194,6 +194,9 @@ app.post('/log', async (c) => {
     );
   }
 
+  console.log('listID', order?.listId);
+  console.log('items', order?.cartItems);
+
   const orderCreate =
     order != null
       ? {
@@ -204,7 +207,7 @@ app.post('/log', async (c) => {
                 .filter(({product}) => product != undefined)
                 .map(({amount, product}) => ({
                   amount,
-                  name: product!.name, // not sure why product is nullable
+                  name: product!.name,
                   perUnitPrice: product!.price,
                   productListId: order.listId,
                 })),
