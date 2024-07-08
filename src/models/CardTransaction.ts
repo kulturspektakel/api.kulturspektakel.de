@@ -45,7 +45,7 @@ export default builder.prismaObject('CardTransaction', {
     clientId: t.exposeString('clientId'),
     cardId: t.exposeString('cardId'),
     transactionType: t.expose('transactionType', {type: CardTransactionType}),
-    Order: t.relation('Order'),
+    Order: t.relation('Order', {nullable: true}),
     deviceTime: t.field({
       type: 'DateTime',
       resolve: (parent) => parent.deviceLog.deviceTime,
