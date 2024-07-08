@@ -194,9 +194,6 @@ app.post('/log', async (c) => {
     );
   }
 
-  console.log('listID', order?.listId);
-  console.log('items', order?.cartItems);
-
   const orderCreate =
     order != null
       ? {
