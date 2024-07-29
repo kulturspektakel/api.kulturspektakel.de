@@ -194,10 +194,16 @@ app.post('/log', async (c) => {
     );
   }
 
-  const orderCreate =
+  const orderCreate: Prisma.OrderCreateInput | undefined =
     order != null
       ? {
           payment: mapPayment(order.paymentMethod),
+          createdAt: deviceTime,
+          device: {
+            connect: {
+              id: deviceId,
+            },
+          },
           items: {
             createMany: {
               data: order.cartItems
@@ -258,10 +264,7 @@ app.post('/log', async (c) => {
   if (!cardTransaction && orderCreate) {
     // manually create order, because it's not part of a card transaction
     await prismaClient.order.create({
-      data: {
-        ...orderCreate,
-        deviceId,
-      },
+      data: orderCreate,
     });
   }
 
