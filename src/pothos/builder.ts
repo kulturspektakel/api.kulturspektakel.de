@@ -9,6 +9,7 @@ import {Context} from '../context';
 import {GraphQLError} from 'graphql';
 
 export const builder = new SchemaBuilder<{
+  DefaultFieldNullability: false;
   AuthScopes: {
     user: boolean;
     device: boolean;
@@ -26,12 +27,13 @@ export const builder = new SchemaBuilder<{
     };
   };
 }>({
+  defaultFieldNullability: false,
   plugins: [ScopeAuthPlugin, PrismaPlugin, RelayPlugin],
   prisma: {
     client: prismaClient,
     filterConnectionTotalCount: true,
   },
-  relayOptions: {
+  relay: {
     // These will become the defaults in the next major version
     clientMutationId: 'omit',
     cursorType: 'String',
@@ -41,18 +43,18 @@ export const builder = new SchemaBuilder<{
     },
     encodeGlobalID: (typename, id) => `${typename}:${id}`,
   },
-  authScopes: async ({parsedToken}) => ({
-    user: parsedToken?.iss === 'directus',
-    device: parsedToken?.iss === 'device',
-  }),
-  scopeAuthOptions: {
+  scopeAuth: {
     treatErrorsAsUnauthorized: true,
-    unauthorizedError: (parent, context, info, result) =>
+    unauthorizedError: () =>
       new GraphQLError(`Not authorized`, {
         extensions: {
           code: 'UNAUTHORIZED',
         },
       }),
+    authScopes: async ({parsedToken}) => ({
+      user: parsedToken?.iss === 'directus',
+      device: parsedToken?.iss === 'device',
+    }),
   },
 });
 

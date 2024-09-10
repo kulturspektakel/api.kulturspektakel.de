@@ -46,13 +46,14 @@ export function parseUltralightPayload(payload: string): CardPaylaod {
   if (payload.length !== 23) {
     throw new Error('Wrong payload length');
   }
+
   const payloadBuffer = Buffer.from(payload, 'base64url');
 
-  const counter = payloadBuffer.slice(7, 9);
-  const deposit = payloadBuffer.slice(9, 10);
-  const balance = payloadBuffer.slice(10, 12);
-  const cardID = payloadBuffer.slice(0, 7);
-  const signature = payloadBuffer.slice(12);
+  const counter = payloadBuffer.subarray(7, 9);
+  const deposit = payloadBuffer.subarray(9, 10);
+  const balance = payloadBuffer.subarray(10, 12);
+  const cardID = payloadBuffer.subarray(0, 7);
+  const signature = payloadBuffer.subarray(12);
 
   const buffer = new Uint8Array([
     ...cardID,
@@ -61,9 +62,11 @@ export function parseUltralightPayload(payload: string): CardPaylaod {
     ...balance,
     ...new TextEncoder().encode(env.CONTACTLESS_SALT),
   ]);
-  const hash = createHash('sha1').update(buffer).digest().subarray(0, 5);
+  const hash = new Uint8Array(
+    createHash('sha1').update(buffer).digest().subarray(0, 5),
+  );
 
-  if (Buffer.compare(signature, hash) === 0) {
+  if (signature.equals(hash)) {
     return {
       cardId: Array.from(cardID)
         .map((x) => x.toString(16).padStart(2, '0').toUpperCase())

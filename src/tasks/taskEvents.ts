@@ -12,4 +12,5 @@ emitter.addListener('job:error', ({error, job, worker}) => {
     tags: {kind: job.task_identifier},
   });
 });
+
 export default emitter;

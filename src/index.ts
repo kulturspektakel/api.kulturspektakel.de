@@ -9,14 +9,12 @@ import saml from './routes/saml';
 import owntracks from './routes/owntracks';
 import slack from './routes/slack';
 import {createYoga} from 'graphql-yoga';
-import {useSentry} from '@envelop/sentry';
 import {Context} from './context';
 import {sentry} from '@hono/sentry';
 import {serveStatic} from 'hono/bun';
 import {cors} from 'hono/cors';
 import kultWiki from './kult.wiki';
 import {Toucan} from 'toucan-js';
-import prismaClient from './utils/prismaClient';
 
 const app = new Hono<{Variables: Context & {sentry: Toucan}}>();
 
@@ -70,11 +68,6 @@ app.on(['GET', 'POST'], '/graphql', async (c) =>
     graphqlEndpoint: '',
     context: () => c.var,
     maskedErrors: false,
-    plugins: [
-      useSentry({
-        skipError: () => false,
-      }),
-    ],
   }).fetch(c.req.raw),
 );
 

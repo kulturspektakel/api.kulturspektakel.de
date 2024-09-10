@@ -4,6 +4,10 @@ import prismaClient from '../utils/prismaClient';
 import {DirectusPixelImage, PixelImage} from './Asset';
 import {SchemaTypes} from '@pothos/core';
 import markdownToTxt from 'markdown-to-txt';
+import {
+  PrismaModelTypes,
+  PrismaObjectFieldBuilder,
+} from '@pothos/plugin-prisma';
 
 const MarkdownString = builder
   .objectRef<{
@@ -22,21 +26,24 @@ const MarkdownString = builder
     }),
   });
 
-export function markdownField<Types extends SchemaTypes, F extends string>(
-  t: PothosSchemaTypes.FieldBuilder<Types, {[K in F]: string | null}, 'Object'>,
+export function markdownField<F extends string>(
+  t: PrismaObjectFieldBuilder<
+    SchemaTypes,
+    PrismaModelTypes & {[K in F]: string | null}
+  >,
   field: F,
   options?: {nullable?: boolean},
 ) {
   return t.field({
     type: MarkdownString,
     nullable: options?.nullable,
-    // @ts-ignore
     resolve: async (root) => {
-      let markdown = root[field];
-      if (!markdown) {
-        return null;
+      let text = root[field];
+      if (!text) {
+        // We are okay with returning null when nullable is true
+        return null as any;
       }
-      markdown = markdown.replaceAll(
+      const markdown = text.replaceAll(
         'https://crew.kulturspektakel.de/assets/',
         'https://files.kulturspektakel.de/',
       );
@@ -45,7 +52,7 @@ export function markdownField<Types extends SchemaTypes, F extends string>(
       return {
         images,
         plainText: markdownToTxt(markdown),
-        markdown,
+        markdown: markdown,
       };
     },
   });

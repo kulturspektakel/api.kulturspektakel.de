@@ -219,9 +219,13 @@ async function youTubeVideoForUsername(forUsername: string) {
   url.searchParams.append('part', 'statistics,brandingSettings,contentDetails');
   url.searchParams.append('forUsername', forUsername);
 
-  const res: YouTubeChannelListResponse = await fetch(url).then((res) =>
-    res.json(),
+  const res: YouTubeChannelListResponse | YouTubeError = await fetch(url).then(
+    (res) => res.json(),
   );
+
+  if (isError(res)) {
+    throw new Error(res.error.message);
+  }
 
   if (res.pageInfo.totalResults === 0) {
     return;
@@ -255,6 +259,17 @@ type YouTubeChannelSearchResponse = {
   }>;
 };
 
+type YouTubeError = {
+  error: {
+    code: number;
+    message: string;
+  };
+};
+
+function isError(res: Object | YouTubeError): res is YouTubeError {
+  return 'error' in res;
+}
+
 async function youTubeVideoForChannelId(channelId: string | undefined) {
   if (!channelId) {
     return;
@@ -267,9 +282,13 @@ async function youTubeVideoForChannelId(channelId: string | undefined) {
   url.searchParams.append('type', 'video');
   url.searchParams.append('channelId', channelId);
 
-  const res: YouTubeChannelSearchResponse = await fetch(url).then((res) =>
-    res.json(),
-  );
+  const res: YouTubeChannelSearchResponse | YouTubeError = await fetch(
+    url,
+  ).then((res) => res.json());
+
+  if (isError(res)) {
+    throw new Error(res.error.message);
+  }
 
   if (res.items.length > 0) {
     return res.items[0].id.videoId;

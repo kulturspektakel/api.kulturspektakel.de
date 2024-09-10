@@ -132,7 +132,7 @@ app.get('/lists', async (c) => {
 
   const allLists: AllLists = {
     productList: lists.map(getDeviceConfig),
-    privilegeTokens: privilegeTokens.map((t) => t.id),
+    privilegeTokens: privilegeTokens.map((t) => new Uint8Array(t.id)),
     versionNumber: 0,
     timestamp: 0,
     checksum: 0,

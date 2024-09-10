@@ -2,6 +2,11 @@ import {SchemaTypes} from '@pothos/core';
 import {GraphQLError} from 'graphql';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
+import {resolveOffsetConnection} from '@pothos/plugin-relay';
+import {
+  PrismaModelTypes,
+  PrismaObjectFieldBuilder,
+} from '@pothos/plugin-prisma';
 
 export type DirectusFile = {
   id: string;
@@ -120,8 +125,8 @@ export function pixelImageField<Types extends SchemaTypes, F extends string>(
   });
 }
 
-export function assetConnection<Types extends SchemaTypes>(
-  t: PothosSchemaTypes.FieldBuilder<Types, {id: string}, 'Object'>,
+export function assetConnection(
+  t: PrismaObjectFieldBuilder<SchemaTypes, PrismaModelTypes & {id: string}>,
   connectionName: string,
 ) {
   return t.connection(
@@ -133,40 +138,18 @@ export function assetConnection<Types extends SchemaTypes>(
         width: t.arg.int(),
         height: t.arg.int(),
       },
-      // @ts-ignore
-      resolve: async (root, {before, after, first, last}) => {
-        if (last != null || before != null) {
-          throw new GraphQLError('Not implemented');
-        }
-
-        const limit = first ?? 20;
-
-        const assets = await prismaClient.$queryRawUnsafe<[DirectusFile]>(
-          `SELECT * ${from({
-            connectionName,
-            id: root.id,
-            after,
-          })} ORDER BY "filename_download" LIMIT ${limit + 1};`,
+      resolve: async (root, args) => {
+        const [{count}] = await prismaClient.$queryRawUnsafe<[{count: number}]>(
+          `SELECT COUNT(*) ${from(connectionName, root.id)};`,
         );
 
-        let hasNextPage = assets.length > limit;
-        if (hasNextPage) {
-          assets.pop();
-        }
-
-        return {
-          pageInfo: {
-            hasNextPage,
-            hasPreviousPage: false, // TODO
-            startCursor: assets[0]?.filename_download,
-            endCursor: assets[assets.length - 1]?.filename_download,
-          },
-          id: root.id,
-          edges: assets.map((node) => ({
-            cursor: node.filename_download,
-            node,
-          })),
-        };
+        return resolveOffsetConnection(
+          {args, defaultSize: 20, totalCount: Number(count)},
+          async ({limit, offset}) =>
+            prismaClient.$queryRawUnsafe<[DirectusFile]>(
+              `SELECT * ${from(connectionName, root.id)} ORDER BY "filename_download" LIMIT ${limit} OFFSET ${offset};`,
+            ),
+        );
       },
     },
     {
@@ -174,41 +157,18 @@ export function assetConnection<Types extends SchemaTypes>(
         totalCount: t.field({
           type: 'Int',
           nullable: false,
-          // @ts-ignore whatever
-          resolve: async (root) => {
-            const [{count}] = await prismaClient.$queryRawUnsafe<
-              [{count: number}]
-            >(
-              `SELECT COUNT(*) ${from({
-                connectionName,
-                id: root.id,
-              })};`,
-            );
-            return Number(count);
-          },
+          resolve: (root) => root.totalCount,
         }),
       }),
     },
   );
 }
 
-function from({
-  connectionName,
-  id,
-  after,
-}: {
-  connectionName: string;
-  id: string;
-  after?: string | null;
-  first?: number;
-}) {
+function from(connectionName: string, id: string) {
   return ` FROM
     "directus"."${s(connectionName)}_files"
     JOIN "directus"."directus_files" ON "directus_files_id" = "directus"."directus_files"."id"
-  WHERE
-    "${s(connectionName)}_id" = '${s(id)}' AND "filename_download" > '${s(
-      after,
-    )}'
+    WHERE "${s(connectionName)}_id" = '${s(id)}'
   `;
 }
 
