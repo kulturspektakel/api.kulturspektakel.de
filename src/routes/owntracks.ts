@@ -3,7 +3,7 @@ import env from '../utils/env';
 import {createHash} from 'crypto';
 import prismaClient from '../utils/prismaClient';
 import {sub} from 'date-fns';
-import jimp from 'jimp';
+import {Jimp} from 'jimp';
 import viewerIdFromToken from '../utils/viewerIdFromToken';
 import {Hono} from 'hono';
 import {ApiError} from '../utils/errorReporting';
@@ -387,8 +387,8 @@ async function faceBase64({profilePicture}: Viewer): Promise<string> {
   if (!profilePicture) {
     return '';
   }
-  const jpg = await jimp.read(profilePicture);
-  const png = await jpg.resize(100, 100).getBufferAsync(jimp.MIME_PNG);
+  const jpg = await Jimp.read(profilePicture);
+  const png = await jpg.resize({w: 100, h: 100}).getBuffer('image/png');
   return png.toString('base64');
 }
 
