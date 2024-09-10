@@ -2,7 +2,6 @@ import {SchemaTypes} from '@pothos/core';
 import {GraphQLError} from 'graphql';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
-import {getDirectusFileById} from '@prisma/client/sql';
 import {resolveOffsetConnection} from '@pothos/plugin-relay';
 import {
   PrismaModelTypes,
@@ -113,7 +112,9 @@ export function pixelImageField<Types extends SchemaTypes, F extends string>(
         return null;
       }
 
-      const [row] = await prismaClient.$queryRawTyped(getDirectusFileById(id));
+      const [row] = await prismaClient.$queryRaw<
+        [DirectusFile?]
+      >`select * from "directus"."directus_files" where "id"=${id}::uuid`;
 
       if (row == null || !row.height || !row.width) {
         return null;
