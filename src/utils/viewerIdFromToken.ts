@@ -1,5 +1,6 @@
 import {ParsedToken} from '../routes/auth';
 import prismaClient from './prismaClient';
+import {getViewerFromDirectusId} from '@prisma/client/sql';
 
 export default async function viewerIdFromToken(
   parsedToken: ParsedToken | undefined,
@@ -7,12 +8,10 @@ export default async function viewerIdFromToken(
   if (parsedToken == null) {
     return;
   } else if (parsedToken.iss === 'directus') {
-    const user = await prismaClient.$queryRaw<
-      Array<{
-        external_identifier: string;
-      }>
-    >`select "external_identifier" from "directus"."directus_users" where "id"=${parsedToken.id}::uuid`;
-    return user.pop()?.external_identifier;
+    const [user] = await prismaClient.$queryRawTyped(
+      getViewerFromDirectusId(parsedToken.id),
+    );
+    return user?.external_identifier ?? undefined;
   } else if (parsedToken.iss === 'owntracks') {
     return parsedToken.viewerId;
   }
