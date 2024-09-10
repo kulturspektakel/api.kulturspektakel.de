@@ -13,4 +13,15 @@ emitter.addListener('job:error', ({error, job, worker}) => {
   });
 });
 
+[
+  'pool:listen:error' as const,
+  'pool:listen:release' as const,
+  'pool:release' as const,
+  'pool:gracefulShutdown' as const,
+  'pool:forcefulShutdown' as const,
+  'worker:fatalError' as const,
+  'gracefulShutdown' as const,
+  'forcefulShutdown' as const,
+].map((e) => emitter.addListener(e, () => console.error('worker_log', e)));
+
 export default emitter;

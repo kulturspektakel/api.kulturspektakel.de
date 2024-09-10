@@ -19,7 +19,6 @@ import {Toucan} from 'toucan-js';
 const app = new Hono<{Variables: Context & {sentry: Toucan}}>();
 
 // The request handler must be the first middleware on the app
-// @ts-ignore
 app.use(
   '*',
   sentry({
