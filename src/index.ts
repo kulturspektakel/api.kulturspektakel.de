@@ -15,6 +15,7 @@ import {serveStatic} from 'hono/bun';
 import {cors} from 'hono/cors';
 import kultWiki from './kult.wiki';
 import {Toucan} from 'toucan-js';
+import {sleep} from 'graphile-worker/dist/lib';
 
 const app = new Hono<{Variables: Context & {sentry: Toucan}}>();
 

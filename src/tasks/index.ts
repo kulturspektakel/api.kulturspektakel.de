@@ -1,4 +1,11 @@
-import {run, makeWorkerUtils, WorkerUtils, TaskSpec} from 'graphile-worker';
+import {
+  run,
+  makeWorkerUtils,
+  WorkerUtils,
+  TaskSpec,
+  Runner,
+  RunnerOptions,
+} from 'graphile-worker';
 import env from '../utils/env';
 import facebookLikes from './facebookLikes';
 import instagramFollower from './instagramFollower';
@@ -13,6 +20,7 @@ import slackMessage from './slackMessage';
 import bandApplicationDemo from './bandApplicationDemo';
 import gmailSubscription from './gmailSubscription';
 import nonceRequestInvalidate from './nonceRequestInvalidate';
+import {sleep} from 'graphile-worker/dist/lib';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -30,7 +38,7 @@ const taskList = {
 };
 
 export default async function () {
-  return run({
+  const runnerOptions: RunnerOptions = {
     connectionString: env.DIRECT_URL,
     concurrency: 1,
     taskList: taskList as any,
@@ -41,6 +49,14 @@ export default async function () {
       `0 0 * * * gmailSubscription ?id=info&fill=1d&max=3 {"account":"info@kulturspektakel.de"}`,
       `0 0 * * * gmailSubscription ?id=lager&fill=1d&max=3 {"account":"lager@kulturspektakel.de"}`,
     ].join('\n'),
+  };
+
+  const runner = await run(runnerOptions);
+  runner.promise.finally(async () => {
+    console.log('runner_error: restarting');
+    await runner.stop();
+    await sleep(5000);
+    await run(runnerOptions);
   });
 }
 
