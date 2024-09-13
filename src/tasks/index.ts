@@ -54,7 +54,9 @@ export default async function () {
   const runner = await run(runnerOptions);
   runner.promise.finally(async () => {
     console.log('runner_error: restarting');
-    await runner.stop();
+    try {
+      await runner.stop();
+    } catch (e) {}
     await sleep(5000);
     await run(runnerOptions);
   });
