@@ -37,29 +37,33 @@ const taskList = {
   nonceRequestInvalidate,
 };
 
-export default async function () {
-  const runnerOptions: RunnerOptions = {
-    connectionString: env.DIRECT_URL,
-    concurrency: 1,
-    taskList: taskList as any,
-    events,
-    crontab: [
-      '*/5 * * * * nuclinoUpdateMessage ?max=1&jobKey=nuclinoUpdateMessage&jobKeyMode=replace',
-      `0 0 * * * gmailSubscription ?id=booking&fill=1d&max=3 {"account":"booking@kulturspektakel.de"}`,
-      `0 0 * * * gmailSubscription ?id=info&fill=1d&max=3 {"account":"info@kulturspektakel.de"}`,
-      `0 0 * * * gmailSubscription ?id=lager&fill=1d&max=3 {"account":"lager@kulturspektakel.de"}`,
-    ].join('\n'),
-  };
+const runnerOptions: RunnerOptions = {
+  connectionString: env.DIRECT_URL,
+  concurrency: 1,
+  taskList: taskList as any,
+  events,
+  crontab: [
+    '*/5 * * * * nuclinoUpdateMessage ?max=1&jobKey=nuclinoUpdateMessage&jobKeyMode=replace',
+    `0 0 * * * gmailSubscription ?id=booking&fill=1d&max=3 {"account":"booking@kulturspektakel.de"}`,
+    `0 0 * * * gmailSubscription ?id=info&fill=1d&max=3 {"account":"info@kulturspektakel.de"}`,
+    `0 0 * * * gmailSubscription ?id=lager&fill=1d&max=3 {"account":"lager@kulturspektakel.de"}`,
+  ].join('\n'),
+};
 
-  const runner = await run(runnerOptions);
-  runner.promise.finally(async () => {
-    console.log('runner_error: restarting');
-    try {
-      await runner.stop();
-    } catch (e) {}
-    await sleep(5000);
-    await run(runnerOptions);
-  });
+let runner: Runner | null = null;
+
+export async function restart() {
+  console.log('runner_error: restarting');
+  try {
+    await runner?.stop();
+  } catch (e) {}
+  await sleep(5000);
+  await run(runnerOptions);
+}
+
+export default async function () {
+  runner = await run(runnerOptions);
+  runner.promise.finally(restart);
 }
 
 type Payload<T extends keyof typeof taskList> = Parameters<
