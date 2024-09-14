@@ -276,7 +276,8 @@ model GmailReminders {
 }
 
 model DevicePrivilegeToken {
-  id Bytes @id
+  id    Bytes   @id
+  label String?
 }
 
 model DeviceConfigVersion {
@@ -347,6 +348,7 @@ enum CardTransactionType {
   TopUp
   Charge
   Cashout
+  Repair
 }
 
 enum DemoEmbedType {

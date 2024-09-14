@@ -281,6 +281,8 @@ function mapTransactionType(
       return CardTransactionType.Charge;
     case LogMessage_CardTransaction_TransactionType.TOP_UP:
       return CardTransactionType.TopUp;
+    case LogMessage_CardTransaction_TransactionType.REPAIR:
+      return CardTransactionType.Repair;
     case LogMessage_CardTransaction_TransactionType.UNRECOGNIZED:
       throw new Error('Unrecognized TransactionType');
     default:
