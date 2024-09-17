@@ -89,6 +89,20 @@ export default builder.prismaNode('BandApplication', {
         user: true,
       },
     }),
+    tags: t.field({
+      authScopes: {
+        user: true,
+      },
+      type: ['String'],
+      select: {
+        BandApplicationTag: {
+          select: {
+            tag: true,
+          },
+        },
+      },
+      resolve: async (data) => data.BandApplicationTag.map((tag) => tag.tag),
+    }),
     comments: t.relatedConnection(
       'bandApplicationComment',
       {

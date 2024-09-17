@@ -13,7 +13,7 @@ datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
   directUrl  = env("DIRECT_URL")
-  extensions = [pg_trgm, unaccent, pgcrypto, uuid_ossp(map: "uuid-ossp", schema: "public")]
+  extensions = [pg_trgm, unaccent, pgcrypto, uuid_ossp(map: "uuid-ossp", schema: "public"), citext]
 }
 
 model Viewer {
@@ -30,6 +30,7 @@ model Viewer {
   Nonce                  Nonce[]
   ViewerLocation         ViewerLocation[]
   NonceRequest           NonceRequest[]
+  BandApplicationTag     BandApplicationTag[]
 }
 
 model Area {
@@ -187,6 +188,19 @@ model BandApplication {
   spotifyArtist           String?
   spotifyMonthlyListeners Int?
   repertoire              BandRepertoire?
+  BandApplicationTag      BandApplicationTag[]
+}
+
+model BandApplicationTag {
+  bandApplicationId String   @db.Uuid
+  tag               String   @db.Citext
+  createdAt         DateTime @default(now())
+  createdByViewerId String
+
+  bandApplication BandApplication @relation(fields: [bandApplicationId], references: [id])
+  createdByViewer Viewer          @relation(fields: [createdByViewerId], references: [id])
+
+  @@unique([bandApplicationId, tag])
 }
 
 model BandApplicationRating {

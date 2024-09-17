@@ -20,6 +20,7 @@ import '../models/SpotifyArtist';
 import '../models/VEvent';
 import '../models/Viewer';
 
+import '../mutations/addBandApplicationTag';
 import '../mutations/createBandApplication';
 import '../mutations/createBandApplicationComment';
 import '../mutations/createNonceRequest';
@@ -28,11 +29,13 @@ import '../mutations/deleteBandApplicationComment';
 import '../mutations/markBandApplicationContacted';
 import '../mutations/nonceFromRequest';
 import '../mutations/rateBandApplication';
+import '../mutations/removeBandApplicationTag';
 import '../mutations/updateDeviceProductList';
 import '../mutations/upsertProductList';
 import '../mutations/updateBandApplication';
 
 import '../queries/areas';
+import '../queries/bandApplicationTags';
 import '../queries/bandPlaying';
 import '../queries/cardStatus';
 import '../queries/checkDuplicateApplication';
