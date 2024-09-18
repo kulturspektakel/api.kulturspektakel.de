@@ -8,7 +8,7 @@ builder.mutationField('removeBandApplicationTag', (t) =>
   t.field({
     type: BandApplication,
     args: {
-      bandApplicationId: t.arg.id({required: true}),
+      bandApplicationId: t.arg.globalID({required: true}),
       tag: t.arg.string({required: true}),
     },
     authScopes: {user: true},
@@ -21,7 +21,7 @@ builder.mutationField('removeBandApplicationTag', (t) =>
       const data = await prismaClient.bandApplicationTag.delete({
         where: {
           bandApplicationId_tag: {
-            bandApplicationId,
+            bandApplicationId: bandApplicationId.id,
             tag,
           },
         },

@@ -8,7 +8,7 @@ builder.mutationField('addBandApplicationTag', (t) =>
   t.field({
     type: BandApplication,
     args: {
-      bandApplicationId: t.arg.id({required: true}),
+      bandApplicationId: t.arg.globalID({required: true}),
       tag: t.arg.string({required: true}),
     },
     authScopes: {user: true},
@@ -20,7 +20,7 @@ builder.mutationField('addBandApplicationTag', (t) =>
 
       const data = await prismaClient.bandApplicationTag.create({
         data: {
-          bandApplicationId,
+          bandApplicationId: bandApplicationId.id,
           tag,
           createdByViewerId: viewerId,
         },
