@@ -24,6 +24,7 @@ import '../mutations/addBandApplicationTag';
 import '../mutations/createBandApplication';
 import '../mutations/createBandApplicationComment';
 import '../mutations/createNonceRequest';
+import '../mutations/createMembershipApplication';
 import '../mutations/createOrder';
 import '../mutations/deleteBandApplicationComment';
 import '../mutations/markBandApplicationContacted';

@@ -15,6 +15,8 @@
     "update-interactive": "npx npm-check-updates --interactive --format group"
   },
   "devDependencies": {
+    "@jridgewell/resolve-uri": "^3.1.2",
+    "@jridgewell/sourcemap-codec": "^1.5.0",
     "@maizzle/framework": "4.8.9",
     "@sentry/cli": "^2.36.1",
     "@types/date-fns": "^2.6.0",
@@ -23,14 +25,12 @@
     "@types/nodemailer": "^6.4.15",
     "@types/totp-generator": "^0.0.8",
     "bun-types": "latest",
+    "fastq": "^1.17.1",
     "prettier": "^3.3.3",
     "prisma": "^5.19.1",
     "tailwindcss-box-shadow": "^2.0.3",
     "tailwindcss-email-variants": "^2.0.3",
     "tailwindcss-mso": "^1.4.3",
-    "@jridgewell/resolve-uri": "^3.1.2",
-    "@jridgewell/sourcemap-codec": "^1.5.0",
-    "fastq": "^1.17.1",
     "typescript": "^5.6.2"
   },
   "dependencies": {
@@ -61,6 +61,7 @@
     "graphql-scalars": "^1.23.0",
     "graphql-yoga": "^5.7.0",
     "hono": "^4.5.11",
+    "iban-ts": "^0.4.0",
     "is-empty-obj": "^1.0.13",
     "jimp": "^1.6.0",
     "json-stable-stringify": "^1.1.1",
@@ -78,5 +79,6 @@
     "ts-ics": "^1.4.2",
     "ts-proto": "^2.2.0",
     "zod": "^3.23.8"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

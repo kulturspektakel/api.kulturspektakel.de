@@ -1,6 +1,6 @@
 // auto-generated file using yarn generate:mail
 // prettier-ignore
-export default ({bandname, eventYear}: {bandname: string, eventYear: string}) => `<!DOCTYPE html>
+export default ({membership, membershipFee, iban, senderEmail}: {membership: string, membershipFee: string, iban: string, senderEmail: string}) => `<!DOCTYPE html>
 <html lang="de" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
   <head>
     <meta charset="utf-8">
@@ -28,7 +28,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
           mso-line-height-rule: exactly;
         }
       </style>
-    <![endif]-->      <title>Absage „undefined“ - Kulturspektakel undefined</title>      <style>.hover-underline:hover {
+    <![endif]-->      <title>Mitgliedsantrag undefined</title>      <style>.hover-underline:hover {
   text-decoration-line: underline !important;
 }
 @media (max-width: 600px) {
@@ -47,7 +47,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
   }
 }</style>  </head>
   <body style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f3f4f6">      <div style="display: none">
-        Absage zu eurer Bewerbung mit „undefined“ für das Kulturspektakel Gauting undefined&#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        Bestätigung deiner Mitgliedschaft&#847; &#847; &#847; &#847; &#847; &#847; &#847;
         &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
         &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
         &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
@@ -61,7 +61,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
         &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
         &#160;&#847; &#847; &#847; &#847; &#847;
       </div>
-    <div role="article" aria-roledescription="email" aria-label="Absage „undefined“ - Kulturspektakel undefined" lang="de">
+    <div role="article" aria-roledescription="email" aria-label="Mitgliedsantrag undefined" lang="de">
       <table style="width: 100%; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" cellpadding="0" cellspacing="0" role="none">
         <tr>
           <td align="center" style="background-color: #f3f4f6;">
@@ -73,28 +73,27 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
                 <td align="center" class="sm-px-0">
                   <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
                     <tr>
-                      <td class="sm-p-6" style="border-radius: 4px; background-color: #fff; padding: 32px; text-align: left; font-size: 16px; line-height: 1.625; color: #1f2937">    <p>
-        Hey,
+                      <td class="sm-p-6" style="border-radius: 4px; background-color: #fff; padding: 32px; text-align: left; font-size: 16px; line-height: 1.625; color: #1f2937">    <h1 style="margin: 0; font-weight: 600; line-height: 1.375">
+  Bestätigung der Mitgliedshaft
+</h1>
+    <p>
+      Herzlich Willkommen als neuestes Mitglied im
+      <strong>${membership}</strong>! Mit deiner Mitgliedschaft bist
+      du nun selbst ein Teil vom Kulturspektakel und trägst zum fortbestehen
+      unseres Festivals bei.
     </p>
     <p>
-        vielen Dank für eure Bewerbung mit „${bandname}“ beim Kulturspektakel Gauting ${eventYear}.
+      Der Mitgliedsbeitrag in Höhe von ${membershipFee} wird jährlich
+      von deinem Konto ${iban} per Lastschrift abgebucht. Als
+      Mitglied erhältst auch du eine Einladung zu unserer jährlichen
+      Mitgliederversammlung.
     </p>
     <p>
-        Wir sind überwältigt von der großen Resonanz und den zahlreichen Bewerbungen, die wir erhalten haben. Es ist uns eine große Freude zu sehen, wie viele talentierte Künstler:innen in bei uns spielen möchten. Dabei mussten wir die schwierige Entscheidung treffen, einige Bewerbungen abzulehnen, obwohl sie gut zu unserem vielseitigen Programm gepasst hätten. Wir bedauern, dass wir euch in diesem Jahr keinen Auftritt anbieten können.
+      Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
+      E-Mail an ${senderEmail} möglich. Der Mitgliedsbeitrag des
+      laufenden Jahres verbleibt in der Vereinskasse.
     </p>
-    <p>
-        Bei der Planung unseres Festivals ist es unser Anliegen, eine möglichst große Bandbreite an musikalischen Stilrichtungen und Newcomer:innen wie auch etablierten Künstler:innen eine Plattform zu bieten. Daher versuchen wir Jahr für Jahr, vielen verschiedenen Musiker:innen die Möglichkeit zu geben, auf unseren Bühnen zu stehen.
-    </p>
-    <p>
-        Wir möchten dir jedoch versichern, dass wir eure Bewerbung sehr zu schätzen wissen und würden uns freuen, wenn ihr uns nächstes Jahr erneut eure Bewerbung zukommen lasst. Ab August wird es möglich sein, euch über das Formular auf unserer Webseite für das Kulturspektakel 2025 zu bewerben.
-    </p>
-    <p>
-        Das Line-Up für unser Festival veröffentlichen wir in den nächsten Wochen auf unserer Webseite. Natürlich würden wir uns auch sehr freuen euch trotzdem als Gäste auf dem Kult begrüßen zu dürfen.
-    </p>
-    <p style="margin: 0">
-        Viel Erfolg und hoffentlich bis zum nächsten Jahr!<br>
-        Das Bookingteam des Kulturspektakel Gauting
-    </p>                      </td>
+    <p style="margin: 0;">Viele Grüße,<br>Das Team vom Kulturspektakel Gauting</p>                      </td>
                     </tr>
                     <tr>
                       <td style="height: 24px;"></td>
@@ -117,7 +116,7 @@ export default ({bandname, eventYear}: {bandname: string, eventYear: string}) =>
                           <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: #E12E2E; text-decoration-line: none;">Facebook</a>
                           &bull;
                           <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: #E12E2E; text-decoration-line: none;">Instagram</a>
-                        </p> <p style="line-height: 1.375"></p>
+                        </p> <p style="line-height: 1.375;"></p>
                       </td>
                     </tr>
                   </table>

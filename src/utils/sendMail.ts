@@ -13,7 +13,7 @@ const transport = nodemailer.createTransport({
 
 export default function (data: Mail.Options) {
   return transport.sendMail({
-    from: 'info@kulturspektakel.de',
+    from: 'Kulturspektakel Gauting <info@kulturspektakel.de>',
     ...data,
   });
 }

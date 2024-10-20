@@ -1,73 +1,148 @@
 <!DOCTYPE {{{ page.doctype || 'html' }}}>
-<html lang="{{ page.language || 'de' }}" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-<head>
-  <meta charset="{{ page.charset || 'utf-8' }}">
-  <meta name="x-apple-disable-message-reformatting">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-  <!--[if mso]>
-    <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
-    <style>
-      td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule: exactly;}
-    </style>
-  <![endif]-->
-  <if condition="page.title">
-    <title>{{{ page.title }}}</title>
-  </if>
-  <if condition="page.googleFonts">
-    <link href="https://fonts.googleapis.com/css?family={{ page.googleFonts }}" rel="stylesheet" media="screen">
-  </if>
-  <if condition="page.css">
-    <style>{{{ page.css }}}</style>
-  </if>
-  <block name="head"></block>
-</head>
-<body class="{{ page.bodyClass || 'bg-gray-100' }}">
-  <if condition="page.preheader">
-    <div class="hidden">{{{ page.preheader }}}&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
-      &#160;&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
-      &#160;&#847; &#847; &#847; &#847; &#847; </div>
-  </if>
-  <div role="article" aria-roledescription="email" aria-label="{{{ page.title || '' }}}" lang="{{ page.language || 'de' }}">
-    <table class="w-full font-sans">
-      <tr>
-        <td align="center" class="bg-gray-100">
-          <table class="w-150 sm:w-full">
-            <tr>
-              <td class="h-6 sm:h-0"></td>
-            </tr>
-            <tr>
-              <td align="center" class="sm:px-0">
-                <table class="w-full">
-                  <tr>
-                    <td class="bg-white text-gray-800 text-base text-left p-8 sm:p-6 leading-6 rounded">
-                      <block name="content"></block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="h-6"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-center text-gray-600 text-xs px-6">
-                      <img src="logo.png" width="40" alt="Kulturspektakel Gauting">
-                      <p class="m-0 mt-4 font-semibold">Kulturspektakel Gauting e.V.</p>
-                      <p class="m-0 italic">Anschrift: Bahnhofstr. 6, 82131 Gauting</p>
-                      <p class="m-0 italic">Festivalgelände: Germeringer Str. 41, Gauting</p>
-                      <p class="cursor-default">
-                        <a href="https://kulturspektakel.de" class="text-brand no-underline hover:underline">Webseite</a> &bull;
-                        <a href="https://facebook.com/kulturspektakel" class="text-brand no-underline hover:underline">Facebook</a> &bull;
-                        <a href="https://instagram.com/kulturspektakel" class="text-brand no-underline hover:underline">Instagram</a>
-                      </p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </div>
-</body>
+<html
+  lang="{{ page.language || 'de' }}"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+>
+  <head>
+    <meta charset="{{ page.charset || 'utf-8' }}" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="format-detection"
+      content="telephone=no, date=no, address=no, email=no"
+    />
+    <!--[if mso]>
+      <xml
+        ><o:OfficeDocumentSettings
+          ><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings
+        ></xml
+      >
+      <style>
+        td,
+        th,
+        div,
+        p,
+        a,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          font-family: 'Segoe UI', sans-serif;
+          mso-line-height-rule: exactly;
+        }
+      </style>
+    <![endif]-->
+    <if condition="page.title">
+      <title>{{{ page.title }}}</title>
+    </if>
+    <if condition="page.googleFonts">
+      <link
+        href="https://fonts.googleapis.com/css?family={{ page.googleFonts }}"
+        rel="stylesheet"
+        media="screen"
+      />
+    </if>
+    <if condition="page.css">
+      <style>
+        {{{ page.css }}}
+      </style>
+    </if>
+    <block name="head"></block>
+  </head>
+  <body class="{{ page.bodyClass || 'bg-gray-100' }}">
+    <if condition="page.preheader">
+      <div class="hidden">
+        {{{ page.preheader }}}&#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
+        &#160;&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &zwnj;
+        &#160;&#847; &#847; &#847; &#847; &#847;
+      </div>
+    </if>
+    <div
+      role="article"
+      aria-roledescription="email"
+      aria-label="{{{ page.title || '' }}}"
+      lang="{{ page.language || 'de' }}"
+    >
+      <table class="w-full font-sans">
+        <tr>
+          <td align="center" class="bg-gray-100">
+            <table class="w-150 sm:w-full">
+              <tr>
+                <td class="h-6 sm:h-0"></td>
+              </tr>
+              <tr>
+                <td align="center" class="sm:px-0">
+                  <table class="w-full">
+                    <tr>
+                      <td
+                        class="bg-white text-gray-800 text-base text-left p-8 sm:p-6 leading-relaxed rounded"
+                      >
+                        <block name="content"></block>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="h-6"></td>
+                    </tr>
+                    <tr>
+                      <td class="text-center text-gray-600 text-xs px-6">
+                        <img
+                          src="logo.png"
+                          width="40"
+                          alt="Kulturspektakel Gauting"
+                        />
+                        <p class="m-0 mt-4 font-semibold">
+                          Kulturspektakel Gauting e.V.
+                        </p>
+                        <p class="m-0 italic">
+                          Anschrift: Bahnhofstr. 6, 82131 Gauting
+                        </p>
+                        <p class="m-0 italic">
+                          Festivalgelände: Germeringer Str. 41, Gauting
+                        </p>
+                        <p class="cursor-default">
+                          <a
+                            href="https://kulturspektakel.de"
+                            class="text-brand no-underline hover:underline"
+                            >Webseite</a
+                          >
+                          &bull;
+                          <a
+                            href="https://facebook.com/kulturspektakel"
+                            class="text-brand no-underline hover:underline"
+                            >Facebook</a
+                          >
+                          &bull;
+                          <a
+                            href="https://instagram.com/kulturspektakel"
+                            class="text-brand no-underline hover:underline"
+                            >Instagram</a
+                          >
+                        </p>
+                        <!-- prevent classes from being stripped -->
+                        <p class="leading-snug"></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
 </html>

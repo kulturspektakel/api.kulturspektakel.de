@@ -11,9 +11,19 @@ export const config = Object.freeze({
     observer: 'Adrian Luck',
     observer2: 'Laila Dörmer',
   },
+  membershipFees: {
+    kult: {
+      reduced: 1500,
+      regular: 3000,
+    },
+    foerderverein: {
+      reduced: 1500,
+      regular: 3000,
+    },
+  },
 });
 
-const Board = builder.objectRef<typeof config['board']>('Board').implement({
+const Board = builder.objectRef<(typeof config)['board']>('Board').implement({
   fields: (t) => ({
     chair: t.exposeString('chair'),
     deputy: t.exposeString('deputy'),
@@ -25,11 +35,45 @@ const Board = builder.objectRef<typeof config['board']>('Board').implement({
   }),
 });
 
+export enum MembershipT {
+  kult = 'Kulturspektakel Gauting e.V.',
+  foerderverein = 'Förderverein Kulturspektakel Gauting e.V.',
+}
+
+export enum MembershipTypeT {
+  reduced = 'reduced',
+  regular = 'regular',
+  supporter = 'supporter',
+}
+
+const MembershipFee = builder
+  .objectRef<
+    (typeof config)['membershipFees'][keyof (typeof config)['membershipFees']]
+  >('MembershipFee')
+  .implement({
+    fields: (t) => ({
+      reduced: t.exposeInt('reduced'),
+      regular: t.exposeInt('regular'),
+    }),
+  });
+
+const MembershipFees = builder
+  .objectRef<(typeof config)['membershipFees']>('MembershipFees')
+  .implement({
+    fields: (t) => ({
+      kult: t.expose('kult', {type: MembershipFee}),
+      foerderverein: t.expose('foerderverein', {type: MembershipFee}),
+    }),
+  });
+
 const Config = builder.objectRef<typeof config>('Config').implement({
   fields: (t) => ({
     depositValue: t.exposeInt('depositValue'),
     board: t.expose('board', {
       type: Board,
+    }),
+    membershipFees: t.expose('membershipFees', {
+      type: MembershipFees,
     }),
   }),
 });

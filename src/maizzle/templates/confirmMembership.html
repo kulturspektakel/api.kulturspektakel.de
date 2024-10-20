@@ -1,0 +1,28 @@
+---
+title: 'Mitgliedsantrag {{ dynamic.membership }}'
+preheader: 'Bestätigung deiner Mitgliedschaft'
+---
+
+<extends src="master.html">
+  <block name="content">
+    <component src="heading.html">Bestätigung der Mitgliedshaft</component>
+    <p>
+      Herzlich Willkommen als neuestes Mitglied im
+      <strong>{{ dynamic.membership }}</strong>! Mit deiner Mitgliedschaft bist
+      du nun selbst ein Teil vom Kulturspektakel und trägst zum fortbestehen
+      unseres Festivals bei.
+    </p>
+    <p>
+      Der Mitgliedsbeitrag in Höhe von {{ dynamic.membershipFee }} wird jährlich
+      von deinem Konto {{ dynamic.iban }} per Lastschrift abgebucht. Als
+      Mitglied erhältst auch du eine Einladung zu unserer jährlichen
+      Mitgliederversammlung.
+    </p>
+    <p>
+      Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
+      E-Mail an {{ dynamic.senderEmail }} möglich. Der Mitgliedsbeitrag des
+      laufenden Jahres verbleibt in der Vereinskasse.
+    </p>
+    <p class="m-0">Viele Grüße,<br />Das Team vom Kulturspektakel Gauting</p>
+  </block>
+</extends>
