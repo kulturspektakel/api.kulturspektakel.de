@@ -308,7 +308,7 @@ app.post('/', async (c) => {
   });
 
   const data = viewers.flatMap(async (viewer) => {
-    const face = await faceBase64(viewer);
+    const face = await faceBase64(viewer).catch(() => '');
 
     const card: CardMessage = {
       _type: 'card',
