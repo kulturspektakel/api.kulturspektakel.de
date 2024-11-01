@@ -64,6 +64,13 @@ builder.mutationField('createMembershipApplication', (t) =>
           : '';
 
       const sender = 'kasse@kulturspektakel.de';
+      const accountHolder = [
+        data.accountHolderName,
+        data.accountHolderAddress,
+        data.accountHolderCity,
+      ]
+        .filter(Boolean)
+        .join(', ');
 
       return Promise.all([
         scheduleTask('slackMessage', {
@@ -74,15 +81,15 @@ builder.mutationField('createMembershipApplication', (t) =>
           to: sender,
           subject: `Mitgliedsantrag ${data.name}`,
           text: `Verein: ${MembershipT[data.membership]}
+Datum des Antrags: ${new Date().toLocaleDateString('de-DE')}
 Mitgliedsbeitrag: ${membershipFee}
 Name: ${data.name}
 Adresse: ${data.address}
 Ort: ${data.city}
 E-Mail: ${data.email}
 IBAN: ${data.iban}
-Abweichender Kontoinhaber: ${data.accountHolderName ?? ''}
-Abweichender Kontoinhaber: ${data.accountHolderAddress ?? ''}
-Abweichender Kontoinhaber: ${data.accountHolderCity ?? ''}`,
+${accountHolder ? `Kontoinhaber: ${accountHolder}` : ''}
+`,
         }),
         sendMail({
           to: data.email,
