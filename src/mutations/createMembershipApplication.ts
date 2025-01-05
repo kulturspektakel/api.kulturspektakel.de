@@ -63,7 +63,7 @@ builder.mutationField('createMembershipApplication', (t) =>
           ? ` mit einem Förderbeitrag von ${membershipFee}`
           : '';
 
-      const sender = 'kasse@kulturspektakel.de';
+      const sender = `${data.membership === 'foerderverein' ? 'foerderverein' : 'kasse'}@kulturspektakel.de`;
       const accountHolder = [
         data.accountHolderName,
         data.accountHolderAddress,

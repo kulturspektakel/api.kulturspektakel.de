@@ -3,13 +3,13 @@ import {builder} from '../pothos/builder';
 export const config = Object.freeze({
   depositValue: 200,
   board: {
-    chair: 'Gabriel Knoll',
+    chair: 'Max Schrake',
     deputy: 'Tristan Häuser',
-    deputy2: 'Tristan Häuser',
+    deputy2: 'Gabriel Knoll',
     treasurer: 'Valentin Langer',
-    secretary: 'Lara Bühler',
+    secretary: 'Anton Sanktjohnaser',
     observer: 'Adrian Luck',
-    observer2: 'Laila Dörmer',
+    observer2: 'Kristian Aumayer',
   },
   membershipFees: {
     kult: {

@@ -93,7 +93,7 @@ export default ({membership, membershipFee, iban, senderEmail}: {membership: str
       E-Mail an ${senderEmail} möglich. Der Mitgliedsbeitrag des
       laufenden Jahres verbleibt in der Vereinskasse.
     </p>
-    <p style="margin: 0;">Viele Grüße,<br>Das Team vom Kulturspektakel Gauting</p>                      </td>
+    <p style="margin: 0;">Viele Grüße,<br>Das Team vom ${membership}</p>                      </td>
                     </tr>
                     <tr>
                       <td style="height: 24px;"></td>
