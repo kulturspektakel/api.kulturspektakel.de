@@ -12,8 +12,8 @@ import {
   ProductList,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {getTimezoneOffset} from 'date-fns-tz';
-import {subMilliseconds} from 'date-fns';
+import {subMilliseconds, subMinutes} from 'date-fns';
+import {tzOffset} from '@date-fns/tz';
 import {ApiError} from '../utils/errorReporting';
 import crc32 from 'crc-32';
 import {ParsedToken} from './auth';
@@ -108,7 +108,7 @@ app.get('/config', async (c) => {
 
   const list = device?.productList;
   if (!list) {
-    return c.text('No Content', 204);
+    return c.status(204);
   }
 
   const deviceConfig = getDeviceConfig(list);
@@ -151,7 +151,7 @@ app.get('/lists', async (c) => {
   allLists.timestamp = Math.floor(configVersion.createdAt.getTime() / 1000);
 
   if (c.req.header('if-none-match') === `"${allLists.checksum}"`) {
-    return c.text('Not Modified', 304);
+    return c.status(304);
   }
 
   const message = AllLists.encode(allLists).finish();
@@ -188,10 +188,7 @@ app.post('/log', async (c) => {
 
   let deviceTime = new Date(dt * 1000);
   if (!deviceTimeIsUtc) {
-    deviceTime = subMilliseconds(
-      deviceTime,
-      getTimezoneOffset('Europe/Berlin', deviceTime),
-    );
+    deviceTime = subMinutes(deviceTime, tzOffset('Europe/Berlin', deviceTime));
   }
 
   const orderCreate: Prisma.OrderCreateInput | undefined =

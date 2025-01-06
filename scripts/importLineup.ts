@@ -1,10 +1,9 @@
 import slugify from 'slugify';
-import env from '../src/utils/env';
 import prismaClient from '../src/utils/prismaClient';
 import {Prisma} from '@prisma/client';
 import {addDays} from 'date-fns';
-import {fromZonedTime} from 'date-fns-tz';
 import readGoogleSheet from '../src/utils/readGoogleSheet';
+import {TZDateMini} from '@date-fns/tz';
 
 const EVENT_ID = 'kult2024';
 const SHEET_ID = '------';
@@ -20,7 +19,7 @@ async function main() {
   });
 
   function datetime(day: string, time: string): Date {
-    let d = new Date(event.start);
+    let d = new TZDateMini(event.start, 'Europe/Berlin');
     if (day.startsWith('Fr')) {
       // nothing
     } else if (day.startsWith('Sa')) {
@@ -33,7 +32,7 @@ async function main() {
 
     const [hours, minutes] = time.split(':').map(Number);
     d.setHours(hours, minutes);
-    return fromZonedTime(d, 'Europe/Berlin');
+    return d;
   }
 
   if (CLEAR_LINEUP) {
