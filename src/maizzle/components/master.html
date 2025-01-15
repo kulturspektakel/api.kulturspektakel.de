@@ -5,6 +5,10 @@
   xmlns:o="urn:schemas-microsoft-com:office:office"
 >
   <head>
+    <style>
+      @tailwind components;
+      @tailwind utilities;
+    </style>
     <meta charset="{{ page.charset || 'utf-8' }}" />
     <meta name="x-apple-disable-message-reformatting" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -91,7 +95,7 @@
                       <td
                         class="bg-white text-gray-800 text-base text-left p-8 sm:p-6 leading-relaxed rounded"
                       >
-                        <block name="content"></block>
+                        <yield />
                       </td>
                     </tr>
                     <tr>

@@ -1,4 +1,4 @@
-import confirmBandApplication from '../maizzle/mails/confirmBandApplication';
+import confirmBandApplication from '../maizzle/generated/confirmBandApplication';
 import {scheduleTask} from '../tasks';
 import sendMail from '../utils/sendMail';
 import {SlackChannel} from '../utils/slack';
