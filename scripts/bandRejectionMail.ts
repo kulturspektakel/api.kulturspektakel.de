@@ -1,6 +1,5 @@
 import prismaClient from '../src/utils/prismaClient';
 import sendMail from '../src/utils/sendMail';
-import rejectBandApplication from '../src/maizzle/mails/rejectBandApplication';
 import {google} from 'googleapis';
 import env from '../src/utils/env';
 
@@ -74,15 +73,17 @@ async function main() {
     }
 
     const eventYear = String(event.start.getFullYear());
-    await sendMail({
-      to: band.email,
-      from: 'Kulturspektakel Gauting Booking <booking@kulturspektakel.de>',
-      subject: `Absage „${band.bandname}“ - Kulturspektakel ${eventYear}`,
-      html: rejectBandApplication({
+    await sendMail(
+      'rejectBandApplication',
+      'Kulturspektakel Gauting Booking <booking@kulturspektakel.de>',
+      {
         bandname: band.bandname,
         eventYear,
-      }),
-    });
+      },
+      {
+        to: band.email,
+      },
+    );
 
     console.log(`Sent: ${band.bandname}`);
     await prismaClient.bandApplication.update({

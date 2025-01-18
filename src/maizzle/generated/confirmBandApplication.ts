@@ -1,5 +1,6 @@
 // auto-generated file using yarn generate:mail
 // prettier-ignore
+
 export default ({eventYear, bandname}: {eventYear: string, bandname: string}) => ({
   subject: `Bewerbung „${bandname}“ beim Kulturspektakel ${eventYear}`,
   html: `<!DOCTYPE html>
@@ -300,15 +301,15 @@ export default ({eventYear, bandname}: {eventYear: string, bandname: string}) =>
         &#8199;&#65279;&#847;
         &#8199;&#65279;&#847;      </div>
     <div role="article" aria-roledescription="email" aria-label="Bewerbung „${bandname}“ beim Kulturspektakel ${eventYear}" lang="de">
-      <div class="mx-auto shadow-xs bg-white text-brand-900 sm-max-w-prose p-6 sm-rounded-lg sm-mt-6">  <h1>Bewerbung für das Kulturspektakel ${eventYear}</h1>
-  <p>
-    Vielen Dank für eure Bewerbung mit „${bandname}“ für das
-    Kulturspektakel Gauting ${eventYear}. Jede Bewerbung bekommt von
-    uns eine Zu- oder Absage. Es kann allerdings bis wenige Monate vor dem
-    Kulturspektakel dauern, bis ihr eine Antwort bekommt. Daher bitten wir euch
-    gedulig zu sein.
-  </p>
-  <p>Viele Grüße,<br>Das Kulturspektakel-Booking-Team</p>
+      <div class="mx-auto shadow-xs bg-white text-brand-900 sm-max-w-prose p-6 sm-rounded-lg sm-mt-6">
+        <h1>Bewerbung für das Kulturspektakel ${eventYear}</h1>
+<p>Vielen Dank für eure Bewerbung mit „${bandname}“ für das
+Kulturspektakel Gauting ${eventYear}. Jede Bewerbung bekommt von
+uns eine Zu- oder Absage. Es kann allerdings bis wenige Monate vor dem
+Kulturspektakel dauern, bis ihr eine Antwort bekommt. Daher bitten wir euch
+gedulig zu sein.</p>
+<p>Viele Grüße,&lt;br&gt;
+Das Kulturspektakel-Booking-Team</p>
       </div>
       <div class="text-center text-xs p-6">
         <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" height="40" alt="Kulturspektakel Gauting">
@@ -328,5 +329,6 @@ export default ({eventYear, bandname}: {eventYear: string, bandname: string}) =>
     </div>
   </body>
 </html>
-`
+`,
+  text: `Bewerbung für das Kulturspektakel ${eventYear}`
 });

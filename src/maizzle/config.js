@@ -1,9 +1,39 @@
 import emailVariants from 'tailwindcss-email-variants';
+import {marked} from 'marked';
+
+function markdownToText(markdown) {
+  const renderer = new marked.Renderer();
+
+  (renderer.list = (list) =>
+    list.items
+      .map(
+        (item, i) =>
+          `${list.ordered ? `${i + 1 + (list.start || 0)}.` : '-'} ${item.text.split('\n').join('\n  ')}`,
+      )
+      .join('\n') + '\n\n'),
+    (renderer.listitem = () => '');
+  renderer.paragraph = function ({text, tokens, parser}) {
+    `${this.parser.parseInline(tokens)}\n\n`;
+  };
+  renderer.text = ({text}) => text;
+  renderer.link = ({href, text}) => `${text} (${href})`;
+  renderer.heading = ({text}) => `${text}\n\n`;
+  renderer.strong = ({text, raw}) => text + raw;
+  renderer.text = ({text}) => {
+    console.log('👋 test', text);
+  };
+  renderer.em = ({text, raw}) => text + raw;
+  renderer.br = () => {};
+
+  return marked.use({
+    renderer,
+  })(markdown.replace(/<br \/>/gm, '<br>'));
+}
 
 /** @type {import('@maizzle/framework').Config} */
 export default {
   build: {
-    content: ['src/maizzle/templates/**\/*.html'],
+    content: ['src/maizzle/templates/**\/*.md'],
     static: {
       source: ['src/maizzle/assets/**/*'],
       destination: '../../../artifacts/public/maizzle',
@@ -24,7 +54,7 @@ export default {
     tailwind: {
       plugins: [emailVariants],
       content: [
-        'src/maizzle/templates/**/*.html',
+        'src/maizzle/templates/**/*.md',
         'src/maizzle/components/**/*.html',
       ],
       theme: {
@@ -49,5 +79,9 @@ export default {
         },
       },
     },
+  },
+  beforeRender: async ({html, config}) => {
+    config._text = markdownToText(html).trim();
+    return `<x-main><md>${html}</md></x-main>`;
   },
 };

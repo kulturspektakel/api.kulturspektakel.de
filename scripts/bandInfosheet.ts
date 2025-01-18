@@ -1,4 +1,3 @@
-import infosheet from '../src/maizzle/mails/infosheet';
 import readGoogleSheet from '../src/utils/readGoogleSheet';
 import sendMail from '../src/utils/sendMail';
 
@@ -28,12 +27,10 @@ async function main() {
 
     const eventYear = String(new Date().getFullYear());
 
-    console.log(bandname, email);
-    await sendMail({
-      to: email,
-      from: 'Kulturspektakel Gauting Booking <booking@kulturspektakel.de>',
-      subject: `Informationen zum Auftritt „${bandname}“ - Kulturspektakel ${eventYear}`,
-      html: infosheet({
+    await sendMail(
+      'infosheet',
+      'Kulturspektakel Gauting Booking <booking@kulturspektakel.de>',
+      {
         day,
         stage,
         getin,
@@ -46,8 +43,11 @@ async function main() {
         backupContact,
         name,
         eventYear,
-      }),
-    });
+      },
+      {
+        to: email,
+      },
+    );
   }
 }
 

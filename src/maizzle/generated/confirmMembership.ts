@@ -1,5 +1,6 @@
 // auto-generated file using yarn generate:mail
 // prettier-ignore
+
 export default ({membership, membershipFee, iban, senderEmail}: {membership: string, membershipFee: string, iban: string, senderEmail: string}) => ({
   subject: `Mitgliedsantrag ${membership}`,
   html: `<!DOCTYPE html>
@@ -300,24 +301,20 @@ export default ({membership, membershipFee, iban, senderEmail}: {membership: str
         &#8199;&#65279;&#847;
         &#8199;&#65279;&#847;      </div>
     <div role="article" aria-roledescription="email" aria-label="Mitgliedsantrag ${membership}" lang="de">
-      <div class="mx-auto shadow-xs bg-white text-brand-900 sm-max-w-prose p-6 sm-rounded-lg sm-mt-6">  <h1>Bestätigung der Mitgliedshaft</h1>
-  <p>
-    Herzlich Willkommen als neuestes Mitglied im
-    <strong>${membership}</strong>! Mit deiner Mitgliedschaft bist du
-    nun selbst ein Teil vom Kulturspektakel und trägst zum Fortbestehen unseres
-    Festivals bei.
-  </p>
-  <p>
-    Der Mitgliedsbeitrag in Höhe von ${membershipFee} wird jährlich
-    von deinem Konto ${iban} per Lastschrift abgebucht. Als Mitglied
-    erhältst auch du eine Einladung zu unserer jährlichen Mitgliederversammlung.
-  </p>
-  <p>
-    Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
-    E-Mail an ${senderEmail} möglich. Der Mitgliedsbeitrag des
-    laufenden Jahres verbleibt in der Vereinskasse.
-  </p>
-  <p>Viele Grüße,<br>Das Team vom ${membership}</p>
+      <div class="mx-auto shadow-xs bg-white text-brand-900 sm-max-w-prose p-6 sm-rounded-lg sm-mt-6">
+        <h1>Bestätigung der Mitgliedshaft</h1>
+<p>Herzlich Willkommen als neuestes Mitglied im
+<strong>${membership}</strong>! Mit deiner Mitgliedschaft bist du
+nun selbst ein Teil vom Kulturspektakel und trägst zum Fortbestehen unseres
+Festivals bei.</p>
+<p>Der Mitgliedsbeitrag in Höhe von ${membershipFee} wird jährlich
+von deinem Konto ${iban} per Lastschrift abgebucht. Als Mitglied
+erhältst auch du eine Einladung zu unserer jährlichen Mitgliederversammlung.</p>
+<p>Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
+E-Mail an ${senderEmail} möglich. Der Mitgliedsbeitrag des
+laufenden Jahres verbleibt in der Vereinskasse.</p>
+<p>Viele Grüße,&lt;br&gt;
+Das Team vom ${membership}</p>
       </div>
       <div class="text-center text-xs p-6">
         <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" height="40" alt="Kulturspektakel Gauting">
@@ -337,5 +334,6 @@ export default ({membership, membershipFee, iban, senderEmail}: {membership: str
     </div>
   </body>
 </html>
-`
+`,
+  text: `Bestätigung der Mitgliedshaft`
 });

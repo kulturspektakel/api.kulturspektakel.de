@@ -1,4 +1,3 @@
-import confirmBandApplication from '../maizzle/generated/confirmBandApplication';
 import {scheduleTask} from '../tasks';
 import sendMail from '../utils/sendMail';
 import {SlackChannel} from '../utils/slack';
@@ -96,17 +95,17 @@ builder.mutationField('createBandApplication', (t) =>
       });
 
       const eventYear = application.event.start.getFullYear();
-      await sendMail({
-        from: isDJ
-          ? 'Kulturspektakel Gauting info@kulturspektakel.de'
-          : 'Kulturspektakel Gauting Booking booking@kulturspektakel.de',
-        to: data.email,
-        subject: `Bewerbung „${data.bandname}“ beim Kulturspektakel ${eventYear}`,
-        html: confirmBandApplication({
+      await sendMail(
+        'confirmBandApplication',
+        isDJ
+          ? 'Kulturspektakel Gauting <info@kulturspektakel.de>'
+          : 'Kulturspektakel Gauting Booking <booking@kulturspektakel.de>',
+        {
           bandname: data.bandname,
           eventYear: String(eventYear),
-        }),
-      });
+        },
+        {to: data.email},
+      );
 
       const jobs = [
         scheduleTask('bandApplicationDistance', {id: application.id}),

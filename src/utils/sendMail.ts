@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import * as aws from '@aws-sdk/client-ses';
 import Mail from 'nodemailer/lib/mailer';
+import mails from '../maizzle/generated';
 
 const ses = new aws.SES({
   apiVersion: '2010-12-01',
@@ -11,9 +12,32 @@ const transport = nodemailer.createTransport({
   SES: {ses, aws},
 });
 
-export default function (data: Mail.Options) {
+type From =
+  | 'Kulturspektakel Gauting Booking <booking@kulturspektakel.de>'
+  | 'Kulturspektakel Gauting <info@kulturspektakel.de>'
+  | 'Förderverein Kulturspektakel Gauting <foerderverein@kulturspektakel.de>'
+  | 'Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>';
+
+export function sendRawMail(
+  data: Mail.Options & {
+    from: From;
+    to: string;
+    subject: string;
+    text: string;
+  },
+) {
+  return transport.sendMail(data);
+}
+
+export default function <T extends keyof typeof mails>(
+  mail: T,
+  from: From,
+  variables: Parameters<(typeof mails)[T]>[0],
+  data: Omit<Mail.Options, T | 'from'>,
+) {
   return transport.sendMail({
-    from: 'Kulturspektakel Gauting <info@kulturspektakel.de>',
+    from,
+    ...mails[mail](variables as any),
     ...data,
   });
 }

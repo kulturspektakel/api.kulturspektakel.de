@@ -1,5 +1,6 @@
 // auto-generated file using yarn generate:mail
 // prettier-ignore
+
 export default ({name, day, stage, getin, soundcheck, start, end, contact, backupContact, fee, bandname, eventYear}: {name: string, day: string, stage: string, getin: string, soundcheck: string, start: string, end: string, contact: string, backupContact: string, fee: string, bandname: string, eventYear: string}) => ({
   subject: `Informationen zum Auftritt von „${bandname}“ - Kulturspektakel ${eventYear}`,
   html: `<!DOCTYPE html>
@@ -146,112 +147,84 @@ export default ({name, day, stage, getin, soundcheck, start, end, contact, backu
 }</style>  </head>
   <body class="text-offwhite-600 bg-offwhite-100 m-0 p-0 w-full font-sans leading-6 word-break-break-word -webkit-font-smoothing-antialiased">
     <div role="article" aria-roledescription="email" aria-label="Informationen zum Auftritt von „${bandname}“ - Kulturspektakel ${eventYear}" lang="de">
-      <div class="mx-auto shadow-xs bg-white text-brand-900 sm-max-w-prose p-6 sm-rounded-lg sm-mt-6">  <p>
-    Hey ${name},<br>
-    wir freuen uns, dass ihr beim Kulturspektakel Gauting dabei seid! Hier sind
-    alle wichtigen Infos für euren Auftritt. Bitte lest euch alles sorgfältig
-    durch und meldet euch bei Fragen oder Unklarheiten bei uns. Wir freuen auf
-    ein großartiges Festival mit euch!
-  </p>
-  <p>
-    <strong>Auftrittsdatum:</strong> ${day}<br>
-    <strong>Bühne:</strong> ${stage}<br>
-    <strong>Ankunft:</strong> ${getin} Uhr<br>
-    <strong>Umbau und Linecheck:</strong> ${soundcheck} Uhr<br>
-    <strong>Auftrittsbeginn:</strong> ${start} Uhr<br>
-    <strong>Auftrittsende:</strong> ${end} Uhr<br>
-    <strong>Veranstaltungsort:</strong> Schulcampus, Germeringer Str. 41, 82131
-    Gauting<br>
-    <strong>Bühnenbetreuung:</strong> ${contact}<br>
-    <strong>Alternativer Kontakt:</strong> ${backupContact}<br>
-    <strong>Allgemeine Fragen:</strong> booking@kulturspektakel.de
-  </p>
-  <p>
-    Die Ankunftszeit ist aus organisatorischen Gründen unbedingt einzuhalten,
-    natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
-    eurer Bühnenbetreuung, sobald ihr da seid. Bei den genannten Linecheck- und
-    Auftrittszeiten handelt es sich um den geplanten Ablauf der Veranstaltung.
-    Es besteht kein Anspruch auf exakte Einhaltung. Etwaige Verzögerungen und
-    Beschränkungen (z.B. auf Grund von Wetter, Organisation, Lärmschutzauflagen)
-    gehen nicht zu Lasten des Kulturspektakels. Den Anweisungen der jeweiligen
-    Bühnenbetreuung ist Folge zu leisten. Der Abbau findet zügig und direkt nach
-    dem Auftritt statt.
-  </p>
-  <h3>Verhinderung</h3>
-  <p>
-    Eine Verhinderung ist uns umgehend mitzuteilen. Im Vorfeld der Veranstaltung
-    bitte per E-Mail an booking@kulturspektakel.de. Bei kurzfristigen
-    Verhinderungen unbedingt zusätzlich telefonisch Bescheid geben. Jegliche
-    Zahlung von Aufwandsentschädigung entfällt, sofern der Auftritt nicht
-    stattfinden kann und nichts anderweitiges vereinbart wurde.
-  </p>
-  <h3>Kosten</h3>
-  <p>
-    ${fee} Das Kulturspektakel übernimmt die anfallenden Gebühren bei
-    GEMA und KSK (Künstlersozialkasse). Die Künster:innen können eigenständig
-    die Musikfolge im Onlinesystem der GEMA einreichen. (GEMA-Nummer:
-    0943659900; KSK-Nummer: 84091594X003)
-  </p>
-  <h3>Technik/Umbau</h3>
-  <p>
-    Wir sorgen für eine Bühne, Beschallungs- und Lichttechnik, Mikrofonierung
-    und Monitoring, außerdem steht für jede Bühne ein Techniker/eine Technikerin
-    zur Verfügung. Bands und Künstler:innen bringen ihre komplette Backline
-    (Instrumente, Verstärker, Schlagzeug, etc.) selbst mit, soweit nichts
-    anderes abgesprochen ist. Um Zeit und Aufwand zu sparen, könnt ihr euch
-    gerne die Backline mit einer anderen Band teilen. Wir stellen auf Nachfrage
-    den Kontakt zu Bands, die vor oder nach euch spielen, her.
-  </p>
-  <h3>Verpflegung</h3>
-  <p>
-    Auf dem Gelände könnt ihr aus einem großen Angebot an Speisen (auch
-    vegetarisch und vegan) und Getränken auswählen. Hierzu bekommt ihr von der
-    Bühnenbetreuung Essens- und Getränkegutscheine.
-  </p>
-  <h3>Inhalte des Auftritts</h3>
-  <p>
-    Die Künstler:innen sind in der Gestaltung ihres Auftritts frei und der
-    Veranstalter hat keine Weisungsbefugnis sowohl in musikalischer als auch
-    inhaltlicher Hinsicht. Wir behalten uns jedoch vor, gegen
-    menschenverachtende Inhalte, wie etwa Rechtsextremismus, Antisemitismus,
-    Sexismus, Gewaltverherrlichung etc., vorzugehen und den Auftritt
-    gegebenenfalls abzubrechen.
-  </p>
-  <h3>Merchandise-Verkauf</h3>
-  <p>
-    Am Tag des Auftrittes könnt ihr vor Ort Merchandising-Artikel sowie
-    Tonträger verkaufen. Dafür werden keine Gebühren erhoben. Der Standort
-    hierfür wird vor Ort mit der Bühnenbetreuung abgesprochen. Das
-    Kulturspektakel stellt kein Personal für den Merch-Verkauf.
-  </p>
-  <h3>Anfahrt</h3>
-  <p>
-    Von München aus ist die Anfahrt über die Autobahn A96 Richtung Lindau zu
-    empfehlen. Die Adresse des Festivals lautet Germeringer Straße, 82131
-    Gauting, die Zufahrt zur Waldbühne erfolgt über die Wiesmahdstraße. An den
-    Zufahrten zum Gelände befinden sich Schranken, diese sollten offen sein.
-    Falls sie geschlossen sind und ihr sie nicht selbst öffnen könnt,
-    kontaktiert die Bühnenbetreuung.
-  </p>
-  <ul>
-    <li>
-      Große Bühne (Germeringer Str. 48, 82131 Gauting):
-      https://maps.app.goo.gl/BnctABDcn6737C5Z9
-    </li>
-    <li>
-      Kultbühne (Germeringer Str. 37, 82131 Gauting):
-      https://maps.app.goo.gl/U2X1fUh7sN4FVMFu6
-    </li>
-    <li>
-      Waldbühne (Wiesmahdstr. 9, 82131 Gauting):
-      https://maps.app.goo.gl/JaDVhJqf4zVAm3Uu9
-    </li>
-  </ul>
-  <p>
-    Fahrzeuge, die nicht zur Anlieferung an die Bühnen müssen, können auf dem
-    Besucherparkplatz in der Birkenstraße parken. Gerne können euch auch die
-    Helfer:innen am Parkplatz zeigen, welche Zufahrt ihr benutzen sollt.
-  </p>
+      <div class="mx-auto shadow-xs bg-white text-brand-900 sm-max-w-prose p-6 sm-rounded-lg sm-mt-6">
+        <p>Hey ${name},&lt;br&gt;
+wir freuen uns, dass ihr beim Kulturspektakel Gauting dabei seid! Hier sind
+alle wichtigen Infos für euren Auftritt. Bitte lest euch alles sorgfältig
+durch und meldet euch bei Fragen oder Unklarheiten bei uns. Wir freuen auf
+ein großartiges Festival mit euch!</p>
+<p><strong>Auftrittsdatum:</strong> ${day}&lt;br&gt;
+<strong>Bühne:</strong> ${stage}&lt;br&gt;
+<strong>Ankunft:</strong> ${getin} Uhr&lt;br&gt;
+<strong>Umbau und Linecheck:</strong> ${soundcheck} Uhr&lt;br&gt;
+<strong>Auftrittsbeginn:</strong> ${start} Uhr&lt;br&gt;
+<strong>Auftrittsende:</strong> ${end} Uhr&lt;br&gt;
+<strong>Veranstaltungsort:</strong> Schulcampus, Germeringer Str. 41, 82131 Gauting&lt;br&gt;
+<strong>Bühnenbetreuung:</strong> ${contact}&lt;br&gt;
+<strong>Alternativer Kontakt:</strong> ${backupContact}&lt;br&gt;
+<strong>Allgemeine Fragen:</strong> booking@kulturspektakel.de</p>
+<p>Die Ankunftszeit ist aus organisatorischen Gründen unbedingt einzuhalten,
+natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
+eurer Bühnenbetreuung, sobald ihr da seid. Bei den genannten Linecheck- und
+Auftrittszeiten handelt es sich um den geplanten Ablauf der Veranstaltung.
+Es besteht kein Anspruch auf exakte Einhaltung. Etwaige Verzögerungen und
+Beschränkungen (z.B. auf Grund von Wetter, Organisation, Lärmschutzauflagen)
+gehen nicht zu Lasten des Kulturspektakels. Den Anweisungen der jeweiligen
+Bühnenbetreuung ist Folge zu leisten. Der Abbau findet zügig und direkt nach
+dem Auftritt statt.</p>
+<h2>Verhinderung</h2>
+<p>Eine Verhinderung ist uns umgehend mitzuteilen. Im Vorfeld der Veranstaltung
+bitte per E-Mail an booking@kulturspektakel.de. Bei kurzfristigen
+Verhinderungen unbedingt zusätzlich telefonisch Bescheid geben. Jegliche
+Zahlung von Aufwandsentschädigung entfällt, sofern der Auftritt nicht
+stattfinden kann und nichts anderweitiges vereinbart wurde.</p>
+<h2>Kosten</h2>
+<p>${fee} Das Kulturspektakel übernimmt die anfallenden Gebühren bei
+GEMA und KSK (Künstlersozialkasse). Die Künster:innen können eigenständig
+die Musikfolge im Onlinesystem der GEMA einreichen. (GEMA-Nummer:
+0943659900; KSK-Nummer: 84091594X003)</p>
+<h2>Technik/Umbau</h2>
+<p>Wir sorgen für eine Bühne, Beschallungs- und Lichttechnik, Mikrofonierung
+und Monitoring, außerdem steht für jede Bühne ein Techniker/eine Technikerin
+zur Verfügung. Bands und Künstler:innen bringen ihre komplette Backline
+(Instrumente, Verstärker, Schlagzeug, etc.) selbst mit, soweit nichts
+anderes abgesprochen ist. Um Zeit und Aufwand zu sparen, könnt ihr euch
+gerne die Backline mit einer anderen Band teilen. Wir stellen auf Nachfrage
+den Kontakt zu Bands, die vor oder nach euch spielen, her.</p>
+<h2>Verpflegung</h2>
+<p>Auf dem Gelände könnt ihr aus einem großen Angebot an Speisen (auch
+vegetarisch und vegan) und Getränken auswählen. Hierzu bekommt ihr von der
+Bühnenbetreuung Essens- und Getränkegutscheine.</p>
+<h2>Inhalte des Auftritts</h2>
+<p>Die Künstler:innen sind in der Gestaltung ihres Auftritts frei und der
+Veranstalter hat keine Weisungsbefugnis sowohl in musikalischer als auch
+inhaltlicher Hinsicht. Wir behalten uns jedoch vor, gegen
+menschenverachtende Inhalte, wie etwa Rechtsextremismus, Antisemitismus,
+Sexismus, Gewaltverherrlichung etc., vorzugehen und den Auftritt
+gegebenenfalls abzubrechen.</p>
+<h2>Merchandise-Verkauf</h2>
+<p>Am Tag des Auftrittes könnt ihr vor Ort Merchandising-Artikel sowie
+Tonträger verkaufen. Dafür werden keine Gebühren erhoben. Der Standort
+hierfür wird vor Ort mit der Bühnenbetreuung abgesprochen. Das
+Kulturspektakel stellt kein Personal für den Merch-Verkauf.</p>
+<h2>Anfahrt</h2>
+<p>Von München aus ist die Anfahrt über die Autobahn A96 Richtung Lindau zu
+empfehlen. Die Adresse des Festivals lautet Germeringer Straße, 82131
+Gauting, die Zufahrt zur Waldbühne erfolgt über die Wiesmahdstraße. An den
+Zufahrten zum Gelände befinden sich Schranken, diese sollten offen sein.
+Falls sie geschlossen sind und ihr sie nicht selbst öffnen könnt,
+kontaktiert die Bühnenbetreuung.</p>
+<ul>
+<li>Große Bühne (Germeringer Str. 48, 82131 Gauting):&lt;br&gt;
+https://maps.app.goo.gl/BnctABDcn6737C5Z9</li>
+<li>Kultbühne (Germeringer Str. 37, 82131 Gauting):&lt;br&gt;
+https://maps.app.goo.gl/U2X1fUh7sN4FVMFu6</li>
+<li>Waldbühne (Wiesmahdstr. 9, 82131 Gauting):&lt;br&gt;
+https://maps.app.goo.gl/JaDVhJqf4zVAm3Uu9</li>
+</ul>
+<p>Fahrzeuge, die nicht zur Anlieferung an die Bühnen müssen, können auf dem
+Besucherparkplatz in der Birkenstraße parken. Gerne können euch auch die
+Helfer:innen am Parkplatz zeigen, welche Zufahrt ihr benutzen sollt.</p>
       </div>
       <div class="text-center text-xs p-6">
         <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" height="40" alt="Kulturspektakel Gauting">
@@ -271,5 +244,25 @@ export default ({name, day, stage, getin, soundcheck, start, end, contact, backu
     </div>
   </body>
 </html>
-`
+`,
+  text: `Verhinderung
+
+Kosten
+
+Technik/Umbau
+
+Verpflegung
+
+Inhalte des Auftritts
+
+Merchandise-Verkauf
+
+Anfahrt
+
+- Große Bühne (Germeringer Str. 48, 82131 Gauting):<br>
+  https://maps.app.goo.gl/BnctABDcn6737C5Z9
+- Kultbühne (Germeringer Str. 37, 82131 Gauting):<br>
+  https://maps.app.goo.gl/U2X1fUh7sN4FVMFu6
+- Waldbühne (Wiesmahdstr. 9, 82131 Gauting):<br>
+  https://maps.app.goo.gl/JaDVhJqf4zVAm3Uu9`
 });

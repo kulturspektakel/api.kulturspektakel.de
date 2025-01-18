@@ -1,10 +1,9 @@
 import {GraphQLError} from 'graphql';
 import {builder} from '../pothos/builder';
 import {scheduleTask} from '../tasks';
-import sendMail from '../utils/sendMail';
+import sendMail, {sendRawMail} from '../utils/sendMail';
 import {SlackChannel} from '../utils/slack';
 import {isValid, printFormat} from 'iban-ts';
-import confirmMembership from '../maizzle/mails/confirmMembership';
 import {config, MembershipT, MembershipTypeT} from '../queries/config';
 
 export const Membership = builder.enumType('Membership', {
@@ -63,7 +62,10 @@ builder.mutationField('createMembershipApplication', (t) =>
           ? ` mit einem Förderbeitrag von ${membershipFee}`
           : '';
 
-      const sender = `${data.membership === 'foerderverein' ? 'foerderverein' : 'kasse'}@kulturspektakel.de`;
+      const sender =
+        data.membership === 'foerderverein'
+          ? ('Förderverein Kulturspektakel Gauting <foerderverein@kulturspektakel.de>' as const)
+          : ('Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>' as const);
       const accountHolder = [
         data.accountHolderName,
         data.accountHolderAddress,
@@ -77,7 +79,8 @@ builder.mutationField('createMembershipApplication', (t) =>
           channel: SlackChannel.dev,
           text: `${data.name} ist jetzt Mitglied im ${MembershipT[data.membership]}${supporter}`,
         }),
-        sendMail({
+        sendRawMail({
+          from: 'Kulturspektakel Gauting <info@kulturspektakel.de>',
           to: sender,
           subject: `Mitgliedsantrag ${data.name}`,
           text: `Verein: ${MembershipT[data.membership]}
@@ -91,16 +94,19 @@ IBAN: ${data.iban}
 ${accountHolder ? `Kontoinhaber: ${accountHolder}` : ''}
 `,
         }),
-        sendMail({
-          to: data.email,
-          subject: `Mitgliedsantrag ${MembershipT[data.membership]}`,
-          html: confirmMembership({
+        sendMail(
+          'confirmMembership',
+          sender,
+          {
             iban: ibanMasked,
             senderEmail: sender,
             membership: MembershipT[data.membership],
             membershipFee,
-          }),
-        }),
+          },
+          {
+            to: data.email,
+          },
+        ),
       ])
         .then(() => true)
         .catch(() => false);
