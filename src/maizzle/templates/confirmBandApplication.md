@@ -11,5 +11,5 @@ uns eine Zu- oder Absage. Es kann allerdings bis wenige Monate vor dem
 Kulturspektakel dauern, bis ihr eine Antwort bekommt. Daher bitten wir euch
 gedulig zu sein.
 
-Viele Grüße,<br />
+Viele Grüße,\
 Das Kulturspektakel-Booking-Team

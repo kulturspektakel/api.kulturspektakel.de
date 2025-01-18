@@ -1,8 +1,8 @@
 // auto-generated file using yarn generate:mail
 // prettier-ignore
 
-export default ({eventYear, bandname}: {eventYear: string, bandname: string}) => ({
-  subject: `Bewerbung „${bandname}“ beim Kulturspektakel ${eventYear}`,
+export default ({bandname, eventYear}: {bandname: string, eventYear: string}) => ({
+  subject: `Absage „${bandname}“ - Kulturspektakel ${eventYear}`,
   html: `<!DOCTYPE html>
 <html lang="de" xmlns:v="urn:schemas-microsoft-com:vml">
   <head>
@@ -37,26 +37,41 @@ export default ({eventYear, bandname}: {eventYear: string, bandname: string}) =>
           mso-line-height-rule: exactly;
         }
       </style>
-    <![endif]-->      <title>Bewerbung „${bandname}“ beim Kulturspektakel ${eventYear}</title>
+    <![endif]-->      <title>Absage „${bandname}“ - Kulturspektakel ${eventYear}</title>
     <style>.hover-underline:hover {
     text-decoration-line: underline
 }</style>  </head>
   <body style="font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; line-height: 1.5rem; word-break: break-word">      <div style="display: none">
-        Eure Bewerbung mit „${bandname}“ für das Kulturspektakel Gauting ${eventYear}
+        Absage zu eurer Bewerbung mit „${bandname}“ für das Kulturspektakel Gauting ${eventYear}
         &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847;
         &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy;
         &nbsp;
       </div>
-    <div role="article" aria-roledescription="email" aria-label="Bewerbung „${bandname}“ beim Kulturspektakel ${eventYear}" lang="de">
+    <div role="article" aria-roledescription="email" aria-label="Absage „${bandname}“ - Kulturspektakel ${eventYear}" lang="de">
       <div style="margin-left: auto; margin-right: auto; max-width: 640px">
-        <h1 style="margin-top: 0; font-size: 1.5rem; line-height: 2rem">Bewerbung für das Kulturspektakel ${eventYear}</h1>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Vielen Dank für eure Bewerbung mit „${bandname}“ für das
-Kulturspektakel Gauting ${eventYear}. Jede Bewerbung bekommt von
-uns eine Zu- oder Absage. Es kann allerdings bis wenige Monate vor dem
-Kulturspektakel dauern, bis ihr eine Antwort bekommt. Daher bitten wir euch
-gedulig zu sein.</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Viele Grüße,<br>
-Das Kulturspektakel-Booking-Team</p>
+        <p style="margin: 0">Hey,</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">vielen Dank für eure Bewerbung mit „${bandname}“ beim
+Kulturspektakel Gauting ${eventYear}.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wir sind überwältigt von der großen Resonanz und den zahlreichen
+Bewerbungen, die wir erhalten haben. Es ist uns eine große Freude zu sehen,
+wie viele talentierte Künstler:innen in bei uns spielen möchten. Dabei
+mussten wir die schwierige Entscheidung treffen, einige Bewerbungen
+abzulehnen, obwohl sie gut zu unserem vielseitigen Programm gepasst hätten.
+Wir bedauern, dass wir euch in diesem Jahr keinen Auftritt anbieten können.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Bei der Planung unseres Festivals ist es unser Anliegen, eine möglichst
+große Bandbreite an musikalischen Stilrichtungen und Newcomer:innen wie auch
+etablierten Künstler:innen eine Plattform zu bieten. Daher versuchen wir
+Jahr für Jahr, vielen verschiedenen Musiker:innen die Möglichkeit zu geben,
+auf unseren Bühnen zu stehen.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wir möchten dir jedoch versichern, dass wir eure Bewerbung sehr zu schätzen
+wissen und würden uns freuen, wenn ihr uns nächstes Jahr erneut eure
+Bewerbung zukommen lasst. Ab August wird es möglich sein, euch über das
+Formular auf unserer Webseite für das Kulturspektakel 2025 zu bewerben.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Das Line-Up für unser Festival veröffentlichen wir in den nächsten Wochen
+auf unserer Webseite. Natürlich würden wir uns auch sehr freuen euch
+trotzdem als Gäste auf dem Kult begrüßen zu dürfen.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Viel Erfolg und hoffentlich bis zum nächsten Jahr!<br>
+Das Bookingteam des Kulturspektakel Gauting</p>
       </div>
       <div style="margin-top: 1.5rem; text-align: center; font-size: 0.75rem; line-height: 1rem">
         <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" height="40" alt="Kulturspektakel Gauting" style="max-width: 100%; vertical-align: middle">
@@ -77,14 +92,33 @@ Das Kulturspektakel-Booking-Team</p>
   </body>
 </html>
 `,
-  text: `Bewerbung für das Kulturspektakel ${eventYear}
+  text: `Hey,
 
-Vielen Dank für eure Bewerbung mit „${bandname}“ für das
-Kulturspektakel Gauting ${eventYear}. Jede Bewerbung bekommt von
-uns eine Zu- oder Absage. Es kann allerdings bis wenige Monate vor dem
-Kulturspektakel dauern, bis ihr eine Antwort bekommt. Daher bitten wir euch
-gedulig zu sein.
+vielen Dank für eure Bewerbung mit „${bandname}“ beim
+Kulturspektakel Gauting ${eventYear}.
 
-Viele Grüße,
-Das Kulturspektakel-Booking-Team`
+Wir sind überwältigt von der großen Resonanz und den zahlreichen
+Bewerbungen, die wir erhalten haben. Es ist uns eine große Freude zu sehen,
+wie viele talentierte Künstler:innen in bei uns spielen möchten. Dabei
+mussten wir die schwierige Entscheidung treffen, einige Bewerbungen
+abzulehnen, obwohl sie gut zu unserem vielseitigen Programm gepasst hätten.
+Wir bedauern, dass wir euch in diesem Jahr keinen Auftritt anbieten können.
+
+Bei der Planung unseres Festivals ist es unser Anliegen, eine möglichst
+große Bandbreite an musikalischen Stilrichtungen und Newcomer:innen wie auch
+etablierten Künstler:innen eine Plattform zu bieten. Daher versuchen wir
+Jahr für Jahr, vielen verschiedenen Musiker:innen die Möglichkeit zu geben,
+auf unseren Bühnen zu stehen.
+
+Wir möchten dir jedoch versichern, dass wir eure Bewerbung sehr zu schätzen
+wissen und würden uns freuen, wenn ihr uns nächstes Jahr erneut eure
+Bewerbung zukommen lasst. Ab August wird es möglich sein, euch über das
+Formular auf unserer Webseite für das Kulturspektakel 2025 zu bewerben.
+
+Das Line-Up für unser Festival veröffentlichen wir in den nächsten Wochen
+auf unserer Webseite. Natürlich würden wir uns auch sehr freuen euch
+trotzdem als Gäste auf dem Kult begrüßen zu dürfen.
+
+Viel Erfolg und hoffentlich bis zum nächsten Jahr!
+Das Bookingteam des Kulturspektakel Gauting`
 });

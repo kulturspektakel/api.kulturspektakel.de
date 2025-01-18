@@ -7,8 +7,8 @@
     <meta charset="{{ page.charset || 'utf-8' }}" />
     <meta name="x-apple-disable-message-reformatting" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- <meta name="color-scheme" content="light dark" /> -->
-    <!-- <meta name="supported-color-schemes" content="light dark" /> -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
     <!--[if mso]>
       <noscript>
         <xml>
@@ -80,14 +80,14 @@
     <stack name="head" />
   </head>
   <body
-    class="text-offwhite-600 bg-offwhite-100 m-0 p-0 w-full font-sans leading-6 [word-break:break-word] [-webkit-font-smoothing:antialiased] {{ page.bodyClass || '' }}"
+    class="font-sans leading-6 [word-break:break-word] {{ page.bodyClass || '' }}"
   >
     <if condition="page.preheader">
       <div class="hidden">
         {{{ page.preheader }}}
-        <each loop="item in Array.from(Array(150))"
-          >&#8199;&#65279;&#847;
-        </each>
+        <each loop="item in Array.from(Array(150))">&#8199;&#847; </each>
+        <each loop="item in Array.from(Array(150))">&shy; </each>
+        &nbsp;
       </div>
     </if>
     <div
@@ -96,13 +96,11 @@
       aria-label="{{{ page.title || '' }}}"
       lang="{{ page.language || 'de' }}"
     >
-      <div
-        class="mx-auto shadow-xs bg-white text-brand-900 sm:max-w-prose p-6 sm:rounded-lg sm:mt-6"
-      >
+      <div class="max-w-screen-sm mx-auto">
         <yield />
       </div>
 
-      <div class="text-center text-xs p-6">
+      <div class="text-center text-xs mt-6">
         <img
           src="logo.png"
           width="40"

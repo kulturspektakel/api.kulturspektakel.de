@@ -18,5 +18,5 @@ Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
 E-Mail an {{ dynamic.senderEmail }} möglich. Der Mitgliedsbeitrag des
 laufenden Jahres verbleibt in der Vereinskasse.
 
-Viele Grüße,<br />
+Viele Grüße,\
 Das Team vom {{ dynamic.membership }}

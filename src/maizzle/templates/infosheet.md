@@ -2,21 +2,21 @@
 title: 'Informationen zum Auftritt von „{{ dynamic.bandname }}“ - Kulturspektakel {{ dynamic.eventYear }}'
 ---
 
-Hey {{ dynamic.name }},<br />
+Hey {{ dynamic.name }}\
 wir freuen uns, dass ihr beim Kulturspektakel Gauting dabei seid! Hier sind
 alle wichtigen Infos für euren Auftritt. Bitte lest euch alles sorgfältig
 durch und meldet euch bei Fragen oder Unklarheiten bei uns. Wir freuen auf
 ein großartiges Festival mit euch!
 
-**Auftrittsdatum:** {{ dynamic.day }}<br />
-**Bühne:** {{ dynamic.stage }}<br />
-**Ankunft:** {{ dynamic.getin }} Uhr<br />
-**Umbau und Linecheck:** {{ dynamic.soundcheck }} Uhr<br />
-**Auftrittsbeginn:** {{ dynamic.start }} Uhr<br />
-**Auftrittsende:** {{ dynamic.end }} Uhr<br />
-**Veranstaltungsort:** Schulcampus, Germeringer Str. 41, 82131 Gauting<br />
-**Bühnenbetreuung:** {{ dynamic.contact }}<br />
-**Alternativer Kontakt:** {{ dynamic.backupContact }}<br />
+**Auftrittsdatum:** {{ dynamic.day }}\
+**Bühne:** {{ dynamic.stage }}\
+**Ankunft:** {{ dynamic.getin }} Uhr\
+**Umbau und Linecheck:** {{ dynamic.soundcheck }} Uhr\
+**Auftrittsbeginn:** {{ dynamic.start }} Uhr\
+**Auftrittsende:** {{ dynamic.end }} Uhr\
+**Veranstaltungsort:** Schulcampus, Germeringer Str. 41, 82131 Gauting\
+**Bühnenbetreuung:** {{ dynamic.contact }}\
+**Alternativer Kontakt:** {{ dynamic.backupContact }}\
 **Allgemeine Fragen:** booking@kulturspektakel.de
 
 Die Ankunftszeit ist aus organisatorischen Gründen unbedingt einzuhalten,
@@ -85,11 +85,11 @@ Zufahrten zum Gelände befinden sich Schranken, diese sollten offen sein.
 Falls sie geschlossen sind und ihr sie nicht selbst öffnen könnt,
 kontaktiert die Bühnenbetreuung.
 
-* Große Bühne (Germeringer Str. 48, 82131 Gauting):<br />
+* Große Bühne (Germeringer Str. 48, 82131 Gauting):\
   https://maps.app.goo.gl/BnctABDcn6737C5Z9
-* Kultbühne (Germeringer Str. 37, 82131 Gauting):<br />
+* Kultbühne (Germeringer Str. 37, 82131 Gauting):\
   https://maps.app.goo.gl/U2X1fUh7sN4FVMFu6
-* Waldbühne (Wiesmahdstr. 9, 82131 Gauting):<br />
+* Waldbühne (Wiesmahdstr. 9, 82131 Gauting):\
   https://maps.app.goo.gl/JaDVhJqf4zVAm3Uu9
 
 Fahrzeuge, die nicht zur Anlieferung an die Bühnen müssen, können auf dem

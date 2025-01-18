@@ -8,7 +8,10 @@ export default ({membership, membershipFee, iban, senderEmail}: {membership: str
   <head>
     <meta charset="utf-8">
     <meta name="x-apple-disable-message-reformatting">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <!--[if mso]>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <!--[if mso]>
       <noscript>
         <xml>
           <o:OfficeDocumentSettings
@@ -35,305 +38,65 @@ export default ({membership, membershipFee, iban, senderEmail}: {membership: str
         }
       </style>
     <![endif]-->      <title>Mitgliedsantrag ${membership}</title>
-    <style>.m-0 {
-    margin: 0px
-}
-.mx-auto {
-    margin-left: auto;
-    margin-right: auto
-}
-.mt-4 {
-    margin-top: 1rem
-}
-.hidden {
-    display: none
-}
-.w-full {
-    width: 100%
-}
-.bg-offwhite-100 {
-    background-color: rgb(246 245 240 / 1)
-}
-.bg-white {
-    background-color: rgb(255 255 255 / 1)
-}
-.p-0 {
-    padding: 0px
-}
-.p-6 {
-    padding: 1.5rem
-}
-.text-center {
-    text-align: center
-}
-.font-sans {
-    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
-}
-.text-xs {
-    font-size: 0.75rem;
-    line-height: 1rem
-}
-.font-semibold {
-    font-weight: 600
-}
-.leading-6 {
-    line-height: 1.5rem
-}
-.text-brand-900 {
-    color: rgb(16 10 40 / 1)
-}
-.text-offwhite-600 {
-    color: rgb(90 87 78 / 1)
-}
-.no-underline {
-    text-decoration-line: none
-}
-.shadow-xs {
-    box-shadow: 0 0 #0000, 0 0 #0000, 0px 1px 2px #dbd8d3, 0px 0px 1px #dbd8d3
-}
-.-webkit-font-smoothing-antialiased {
-    -webkit-font-smoothing: antialiased
-}
-.word-break-break-word {
-    word-break: break-word
-}
-      img {
-    max-width: 100%;
-    vertical-align: middle
-}
-      h1 {
-    margin-top: 0px;
-    font-size: 1.5rem;
-    line-height: 2rem
-}
-      h2 {
-    font-size: 1.25rem;
-    line-height: 1.75rem
-}
-      h3 {
-    margin-bottom: 0px;
-    font-size: 1.125rem;
-    line-height: 1.75rem
-}
-      h4,
-      h5,
-      h6 {
-    font-size: 1rem;
-    line-height: 1.5rem
-}
-      p {
-    margin: 0px
-}
-      * + p {
-    margin-top: 0.5rem;
-    margin-bottom: 0px
-}
-      li {
-    margin-bottom: 0.5rem
-}
-      a {
-    color: rgb(225 46 46 / 1)
-}
-      .hover-underline:hover {
+    <style>.hover-underline:hover {
     text-decoration-line: underline
-}
-      @media (min-width: 640px) {
-    .sm-mt-6 {
-        margin-top: 1.5rem
-    }
-    .sm-max-w-prose {
-        max-width: 65ch
-    }
-    .sm-rounded-lg {
-        border-radius: 0.5rem
-    }
 }</style>  </head>
-  <body class="text-offwhite-600 bg-offwhite-100 m-0 p-0 w-full font-sans leading-6 word-break-break-word -webkit-font-smoothing-antialiased">      <div class="hidden">
+  <body style="font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; line-height: 1.5rem; word-break: break-word">      <div style="display: none">
         Bestätigung deiner Mitgliedschaft
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;
-        &#8199;&#65279;&#847;      </div>
+        &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847;
+        &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy;
+        &nbsp;
+      </div>
     <div role="article" aria-roledescription="email" aria-label="Mitgliedsantrag ${membership}" lang="de">
-      <div class="mx-auto shadow-xs bg-white text-brand-900 sm-max-w-prose p-6 sm-rounded-lg sm-mt-6">
-        <h1>Bestätigung der Mitgliedshaft</h1>
-<p>Herzlich Willkommen als neuestes Mitglied im
+      <div style="margin-left: auto; margin-right: auto; max-width: 640px">
+        <h1 style="margin-top: 0; font-size: 1.5rem; line-height: 2rem">Bestätigung der Mitgliedshaft</h1>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Herzlich Willkommen als neuestes Mitglied im
 <strong>${membership}</strong>! Mit deiner Mitgliedschaft bist du
 nun selbst ein Teil vom Kulturspektakel und trägst zum Fortbestehen unseres
 Festivals bei.</p>
-<p>Der Mitgliedsbeitrag in Höhe von ${membershipFee} wird jährlich
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Der Mitgliedsbeitrag in Höhe von ${membershipFee} wird jährlich
 von deinem Konto ${iban} per Lastschrift abgebucht. Als Mitglied
 erhältst auch du eine Einladung zu unserer jährlichen Mitgliederversammlung.</p>
-<p>Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
 E-Mail an ${senderEmail} möglich. Der Mitgliedsbeitrag des
 laufenden Jahres verbleibt in der Vereinskasse.</p>
-<p>Viele Grüße,&lt;br&gt;
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Viele Grüße,<br>
 Das Team vom ${membership}</p>
       </div>
-      <div class="text-center text-xs p-6">
-        <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" height="40" alt="Kulturspektakel Gauting">
-        <p class="m-0 mt-4">
-          <span class="font-semibold">Kulturspektakel Gauting e.V.</span><br>
+      <div style="margin-top: 1.5rem; text-align: center; font-size: 0.75rem; line-height: 1rem">
+        <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" height="40" alt="Kulturspektakel Gauting" style="max-width: 100%; vertical-align: middle">
+        <p style="margin-bottom: 0; margin: 0; margin-top: 1rem">
+          <span style="font-weight: 600">Kulturspektakel Gauting e.V.</span><br>
           Anschrift: Bahnhofstr. 6, 82131 Gauting<br>
           Festivalgelände: Germeringer Str. 41, Gauting
         </p>
-        <p>
-          <a href="https://kulturspektakel.de" class="no-underline hover-underline">Webseite</a>
+        <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">
+          <a href="https://kulturspektakel.de" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Webseite</a>
           &bull;
-          <a href="https://facebook.com/kulturspektakel" class="no-underline hover-underline">Facebook</a>
+          <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Facebook</a>
           &bull;
-          <a href="https://instagram.com/kulturspektakel" class="no-underline hover-underline">Instagram</a>
+          <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Instagram</a>
         </p>
       </div>
     </div>
   </body>
 </html>
 `,
-  text: `Bestätigung der Mitgliedshaft`
+  text: `Bestätigung der Mitgliedshaft
+
+Herzlich Willkommen als neuestes Mitglied im
+${membership}! Mit deiner Mitgliedschaft bist du
+nun selbst ein Teil vom Kulturspektakel und trägst zum Fortbestehen unseres
+Festivals bei.
+
+Der Mitgliedsbeitrag in Höhe von ${membershipFee} wird jährlich
+von deinem Konto ${iban} per Lastschrift abgebucht. Als Mitglied
+erhältst auch du eine Einladung zu unserer jährlichen Mitgliederversammlung.
+
+Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
+E-Mail an ${senderEmail} möglich. Der Mitgliedsbeitrag des
+laufenden Jahres verbleibt in der Vereinskasse.
+
+Viele Grüße,
+Das Team vom ${membership}`
 });

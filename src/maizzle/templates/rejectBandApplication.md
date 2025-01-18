@@ -30,5 +30,5 @@ Das Line-Up für unser Festival veröffentlichen wir in den nächsten Wochen
 auf unserer Webseite. Natürlich würden wir uns auch sehr freuen euch
 trotzdem als Gäste auf dem Kult begrüßen zu dürfen.
 
-Viel Erfolg und hoffentlich bis zum nächsten Jahr!<br />
+Viel Erfolg und hoffentlich bis zum nächsten Jahr!\
 Das Bookingteam des Kulturspektakel Gauting
