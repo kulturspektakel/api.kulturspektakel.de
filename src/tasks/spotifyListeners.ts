@@ -11,11 +11,15 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
     return;
   }
 
-  const res = await fetch(
-    `https://open.spotify.com/artist/${application.spotifyArtist}`,
-  ).then((res) => res.text());
+  const url = `https://open.spotify.com/artist/${application.spotifyArtist}`;
+  const res = await fetch(url);
 
-  const match = res.match(
+  if (!res.ok) {
+    throw new Error(`HTTP${res.status} ${res.statusText}: ${url}`);
+  }
+
+  const data = await res.text();
+  const match = data.match(
     /data-testid=\"monthly-listeners-label\".+>([0-9,]+) monthly/,
   );
 

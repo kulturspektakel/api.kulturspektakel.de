@@ -152,19 +152,41 @@ builder.mutationField('createBandApplication', (t) =>
       ];
       if (demo) {
         jobs.push(
-          scheduleTask('bandApplicationDemo', {
-            id: application.id,
-          }),
+          scheduleTask(
+            'bandApplicationDemo',
+            {
+              id: application.id,
+            },
+            {
+              maxAttempts: 25,
+            },
+          ),
         );
       }
       if (facebook) {
         jobs.push(scheduleTask('facebookLikes', {id: application.id}));
       }
       if (instagram) {
-        jobs.push(scheduleTask('instagramFollower', {id: application.id}));
+        jobs.push(
+          scheduleTask(
+            'instagramFollower',
+            {id: application.id},
+            {
+              maxAttempts: 25,
+            },
+          ),
+        );
       }
       if (data.spotifyArtist) {
-        jobs.push(scheduleTask('spotifyListeners', {id: application.id}));
+        jobs.push(
+          scheduleTask(
+            'spotifyListeners',
+            {id: application.id},
+            {
+              maxAttempts: 25,
+            },
+          ),
+        );
       }
 
       await Promise.allSettled(jobs).then((res) =>
