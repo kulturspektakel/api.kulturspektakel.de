@@ -27,10 +27,9 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
           demoEmbed = url.searchParams.get('v')?.toString();
           break;
         case 'user':
-          // forUsername
           const username = path[2];
           demoEmbedType = DemoEmbedType.YouTubeVideo;
-          demoEmbed = await youTubeVideoForUsername(username);
+          demoEmbed = await youTubeVideoFor('forUsername', username);
           break;
         case 'playlist':
           demoEmbedType = DemoEmbedType.YouTubePlaylist;
@@ -44,24 +43,14 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
           }
           break;
         case 'c':
-          const channelIdForHandle = await youTubeChannelIdForHandle(
-            path[2],
-            logger,
-          );
-          demoEmbed = await youTubeVideoForChannelId(channelIdForHandle);
+          demoEmbed = await youTubeVideoFor('forHandle', path[2]);
           if (demoEmbed != null) {
             demoEmbedType = DemoEmbedType.YouTubeVideo;
           }
           break;
         default:
           if (path[1] != null) {
-            let handle = path[1];
-            if (handle.startsWith('@')) {
-              handle = handle.substring(1);
-            }
-
-            const channelId = await youTubeChannelIdForHandle(handle, logger);
-            demoEmbed = await youTubeVideoForChannelId(channelId);
+            demoEmbed = await youTubeVideoFor('forHandle', path[1]);
             if (demoEmbed != null) {
               demoEmbedType = DemoEmbedType.YouTubeVideo;
             }
@@ -147,39 +136,6 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   });
 }
 
-async function youTubeChannelIdForHandle(
-  handle: string | undefined,
-  logger: JobHelpers['logger'],
-) {
-  if (!handle) {
-    return;
-  }
-  const res: {
-    kind: 'youtube#channelListResponse';
-    etag: 'NotImplemented';
-    items: [
-      {
-        kind: 'youtube#channel';
-        etag: 'NotImplemented';
-        id: string;
-      },
-    ];
-  } = await fetch(`https://yt.lemnoslife.com/channels?handle=@${handle}`).then(
-    (res) =>
-      res.json().catch(async (e) => {
-        const text = await res.text();
-        logger.debug(`${e}: ${text}`);
-      }),
-  );
-
-  const id = res?.items?.pop()?.id;
-
-  if (id) {
-    return id;
-  }
-  logger.debug(JSON.stringify(res));
-}
-
 type YouTubeChannelListResponse = {
   kind: 'youtube#channelListResponse';
   etag: string;
@@ -213,11 +169,14 @@ type YouTubeChannelListResponse = {
   }>;
 };
 
-async function youTubeVideoForUsername(forUsername: string) {
+async function youTubeVideoFor(
+  forU: 'forUsername' | 'forHandle',
+  value: string,
+) {
   const url = new URL('https://www.googleapis.com/youtube/v3/channels');
   url.searchParams.append('key', env.YOUTUBE_API_KEY);
   url.searchParams.append('part', 'statistics,brandingSettings,contentDetails');
-  url.searchParams.append('forUsername', forUsername);
+  url.searchParams.append(forU, value);
 
   const res: YouTubeChannelListResponse | YouTubeError = await fetch(url).then(
     (res) => res.json(),

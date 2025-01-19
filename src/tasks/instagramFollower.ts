@@ -25,6 +25,16 @@ export default async function (
     },
   );
 
+  if (res.status === 404) {
+    logger.error(`Instagram user ${application.instagram} not found`);
+    return;
+  } else if (res.status === 401) {
+    //  ERROR: 401Istindermache
+    // [job(worker-09b846ca766681bc21: instagramFollower{103806})] ERROR: {"message":"Please wait a few minutes before you try again.","require_login":true,"igweb_rollout":true,"status":"fail"}
+    // TODO back off
+    return;
+  }
+
   try {
     const json: {
       data?: {
@@ -46,9 +56,9 @@ export default async function (
         },
       });
     } else {
-      logger.debug(JSON.stringify(json));
+      logger.error(JSON.stringify(json));
     }
   } catch (e) {
-    logger.debug(String(e));
+    logger.error(String(e));
   }
 }
