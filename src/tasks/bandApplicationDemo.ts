@@ -48,6 +48,10 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
             demoEmbedType = DemoEmbedType.YouTubeVideo;
           }
           break;
+        case 'live':
+          demoEmbed = path[2];
+          demoEmbedType = DemoEmbedType.YouTubeVideo;
+          break;
         default:
           if (path[1] != null) {
             demoEmbed = await youTubeVideoFor('forHandle', path[1]);
