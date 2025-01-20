@@ -108,10 +108,13 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
       const res = await fetch(url, {
         redirect: 'follow',
       });
-      console.log(res.url);
+
       path = new URL(res.url).pathname.split('/');
     // Fallthrough
     case 'spotify.com':
+      if (path[1].match(/^intl-\w+$/gi)) {
+        path.splice(1, 1);
+      }
       switch (path[1]) {
         case 'artist':
           demoEmbedType = DemoEmbedType.SpotifyArtist;
