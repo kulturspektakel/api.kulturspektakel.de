@@ -17,7 +17,7 @@ export const GMAIL_REMINDERS: Record<
     reminderInDays: [3],
   },
   'info@kulturspektakel.de': {
-    channel: SlackChannel.vorstand,
+    channel: SlackChannel.infomails,
     reminderInDays: [3],
   },
   'lager@kulturspektakel.de': {
