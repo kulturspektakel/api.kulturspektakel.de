@@ -35,7 +35,7 @@ app.get('/', async (c) => {
 app.post('/', async (c) => {
   const body = await c.req.parseBody<SlackSlashCommandRequest>();
   await nuclinoTokenGeneration(body.user_id, body.trigger_id);
-  return c.status(200);
+  return c.body(null, 200);
 });
 
 export default app;

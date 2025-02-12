@@ -57,7 +57,7 @@ app.post('/', async (c) => {
             },
             {maxAttempts: 1},
           );
-          return c.status(200);
+          return c.body(null, 200);
       }
   }
 });

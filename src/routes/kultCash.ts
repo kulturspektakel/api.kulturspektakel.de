@@ -108,7 +108,7 @@ app.get('/config', async (c) => {
 
   const list = device?.productList;
   if (!list) {
-    return c.status(204);
+    return c.body(null, 204);
   }
 
   const deviceConfig = getDeviceConfig(list);
@@ -151,7 +151,7 @@ app.get('/lists', async (c) => {
   allLists.timestamp = Math.floor(configVersion.createdAt.getTime() / 1000);
 
   if (c.req.header('if-none-match') === `"${allLists.checksum}"`) {
-    return c.status(304);
+    return c.body(null, 304);
   }
 
   const message = AllLists.encode(allLists).finish();
