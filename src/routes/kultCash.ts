@@ -12,7 +12,7 @@ import {
   ProductList,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {subMilliseconds, subMinutes} from 'date-fns';
+import {subMinutes} from 'date-fns';
 import {tzOffset} from '@date-fns/tz';
 import {ApiError} from '../utils/errorReporting';
 import crc32 from 'crc-32';
@@ -124,7 +124,7 @@ app.get('/lists', async (c) => {
     },
     include: productListQuery,
     orderBy: {
-      id: 'asc',
+      name: 'asc',
     },
   });
 
