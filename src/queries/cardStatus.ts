@@ -30,7 +30,7 @@ builder.queryField('cardStatus', (t) =>
               deviceTime: {
                 gte:
                   // test card
-                  data.cardId === '536FA7C8300001'
+                  data.cardId === '53117EC8300001'
                     ? undefined
                     : sub(new Date(), {days: 3}),
               },
@@ -84,6 +84,9 @@ builder.queryField('cardStatus', (t) =>
 
                 recentTransactions.push(missingTransaction);
                 numberOfMissingTransactions = 0;
+              }
+              if (transactions[ti].transactionType === 'Repair') {
+                continue;
               }
               deposit = transactions[ti].depositBefore;
               balance = transactions[ti].balanceBefore;
