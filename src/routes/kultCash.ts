@@ -12,8 +12,13 @@ import {
   ProductList,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {subMinutes, addDays, subDays, startOfDay} from 'date-fns';
-import {tzOffset} from '@date-fns/tz';
+import {
+  subMinutes,
+  addDays,
+  differenceInCalendarDays,
+  isBefore,
+} from 'date-fns';
+import {TZDate, tzOffset} from '@date-fns/tz';
 import {ApiError} from '../utils/errorReporting';
 import crc32 from 'crc-32';
 import {ParsedToken} from './auth';
@@ -128,7 +133,7 @@ app.get('/lists', async (c) => {
     },
   });
 
-  const privilegeTokens = await prismaClient.crewCard.findMany({
+  const privilegedCrewCards = await prismaClient.crewCard.findMany({
     where: {
       privileged: true,
       suspended: {
@@ -144,7 +149,11 @@ app.get('/lists', async (c) => {
 
   const allLists: AllLists = {
     productList: lists.map(getDeviceConfig),
-    privilegeTokens: privilegeTokens.map((t) => new Uint8Array(t.id)),
+    privilegeTokens: [],
+    privilegedCrewCards: privilegedCrewCards.map((c) => ({
+      id: new Uint8Array(c.id),
+      validUntil: dateToKultEpoch(c.validUntil),
+    })),
     suspendedCrewCards: suspendedCrewCards.map((c) => new Uint8Array(c.id)),
     versionNumber: 0,
     timestamp: 0,
@@ -219,9 +228,8 @@ app.post('/log', async (c) => {
                   create: {
                     // only necessary if crewCard enrollment is not uploaded yet
                     id: order.crewCardId,
-                    validFrom: new Date(),
-                    // do not enroll card
-                    validForDays: -2,
+                    // do not further enroll card
+                    validUntil: new Date(),
                   },
                 },
               }
@@ -298,8 +306,7 @@ app.post('/log', async (c) => {
   if (crewCardEnrollment) {
     const data = {
       id: crewCardEnrollment.crewCardId,
-      validFrom: kultEpochToDate(crewCardEnrollment.validFrom),
-      validTo: crewCardEnrollment.validForDays,
+      validUntil: kultEpochToDate(crewCardEnrollment.validUntil),
     };
     await prismaClient.crewCard.upsert({
       where: {id: crewCardEnrollment.crewCardId},
@@ -353,9 +360,19 @@ function mapPayment(payment: LogMessage_Order_PaymentMethod): OrderPayment {
   }
 }
 
-function kultEpochToDate(epoch: number): Date {
-  const baseDate = new Date(Date.UTC(2025));
-  return addDays(baseDate, epoch);
+// Epoch starts at 01.01.2025 00:00:00 UTC-04:00
+// Using UTC-04:00 as time zone, so cards are valid until 06:00 (UTC+02:00, CEST) the next day
+
+const START_OF_EPOCH = new TZDate(2025, 0, 1, '-04:00');
+export function kultEpochToDate(epoch: number): Date {
+  return addDays(START_OF_EPOCH, epoch);
+}
+
+export function dateToKultEpoch(date: Date): number {
+  if (isBefore(date, START_OF_EPOCH)) {
+    return differenceInCalendarDays(START_OF_EPOCH, date) * -1;
+  }
+  return differenceInCalendarDays(date, START_OF_EPOCH);
 }
 
 export default app;

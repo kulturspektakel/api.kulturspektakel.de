@@ -53,7 +53,6 @@ message LogMessage {
 
   message CrewCardEnrollment {
     bytes crew_card_id = 1;
-    int32 valid_from = 2;
-    int32 valid_for_days = 3;
+    int32 valid_until = 2;
   }
 }

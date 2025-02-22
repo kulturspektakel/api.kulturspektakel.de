@@ -144,15 +144,14 @@ model CardTransaction {
 }
 
 model CrewCard {
-  id           Bytes    @id
-  validFrom    DateTime @db.Date
-  validForDays Int?
-  nickname     String?
-  suspended    Boolean?
-  privileged   Boolean?
-  viewerId     String?
-  viewer       Viewer?  @relation(fields: [viewerId], references: [id])
-  Order        Order[]
+  id         Bytes    @id
+  validUntil DateTime
+  nickname   String?
+  suspended  Boolean?
+  privileged Boolean?
+  viewerId   String?
+  viewer     Viewer?  @relation(fields: [viewerId], references: [id])
+  Order      Order[]
 }
 
 model DeviceLog {
