@@ -31,6 +31,7 @@ model Viewer {
   ViewerLocation         ViewerLocation[]
   NonceRequest           NonceRequest[]
   BandApplicationTag     BandApplicationTag[]
+  CrewCard               CrewCard[]
 }
 
 model Area {
@@ -110,6 +111,9 @@ model Order {
   device          Device?           @relation(fields: [deviceId], references: [id])
   items           OrderItem[]
   CardTransaction CardTransaction[]
+
+  crewCardId Bytes?
+  crewCard   CrewCard? @relation(fields: [crewCardId], references: [id])
 }
 
 model OrderItem {
@@ -137,6 +141,18 @@ model CardTransaction {
   deviceLog DeviceLog @relation(fields: [clientId], references: [clientId])
   Order     Order?    @relation(fields: [orderId], references: [id])
   orderId   Int?
+}
+
+model CrewCard {
+  id           Bytes    @id
+  validFrom    DateTime @db.Date
+  validForDays Int?
+  nickname     String?
+  suspended    Boolean?
+  privileged   Boolean?
+  viewerId     String?
+  viewer       Viewer?  @relation(fields: [viewerId], references: [id])
+  Order        Order[]
 }
 
 model DeviceLog {

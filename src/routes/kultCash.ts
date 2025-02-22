@@ -12,7 +12,7 @@ import {
   ProductList,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {subMinutes} from 'date-fns';
+import {subMinutes, addDays, subDays, startOfDay} from 'date-fns';
 import {tzOffset} from '@date-fns/tz';
 import {ApiError} from '../utils/errorReporting';
 import crc32 from 'crc-32';
@@ -128,11 +128,24 @@ app.get('/lists', async (c) => {
     },
   });
 
-  const privilegeTokens = await prismaClient.devicePrivilegeToken.findMany({});
+  const privilegeTokens = await prismaClient.crewCard.findMany({
+    where: {
+      privileged: true,
+      suspended: {
+        not: true,
+      },
+    },
+  });
+  const suspendedCrewCards = await prismaClient.crewCard.findMany({
+    where: {
+      suspended: true,
+    },
+  });
 
   const allLists: AllLists = {
     productList: lists.map(getDeviceConfig),
     privilegeTokens: privilegeTokens.map((t) => new Uint8Array(t.id)),
+    suspendedCrewCards: suspendedCrewCards.map((c) => new Uint8Array(c.id)),
     versionNumber: 0,
     timestamp: 0,
     checksum: 0,
@@ -183,6 +196,7 @@ app.post('/log', async (c) => {
     deviceId,
     order,
     cardTransaction,
+    crewCardEnrollment,
     ...data
   } = message;
 
@@ -196,6 +210,22 @@ app.post('/log', async (c) => {
       ? {
           payment: mapPayment(order.paymentMethod),
           createdAt: deviceTime,
+          crewCard: order.crewCardId
+            ? {
+                connectOrCreate: {
+                  where: {
+                    id: order.crewCardId,
+                  },
+                  create: {
+                    // only necessary if crewCard enrollment is not uploaded yet
+                    id: order.crewCardId,
+                    validFrom: new Date(),
+                    // do not enroll card
+                    validForDays: -2,
+                  },
+                },
+              }
+            : undefined,
           device: {
             connect: {
               id: deviceId,
@@ -265,6 +295,19 @@ app.post('/log', async (c) => {
     });
   }
 
+  if (crewCardEnrollment) {
+    const data = {
+      id: crewCardEnrollment.crewCardId,
+      validFrom: kultEpochToDate(crewCardEnrollment.validFrom),
+      validTo: crewCardEnrollment.validForDays,
+    };
+    await prismaClient.crewCard.upsert({
+      where: {id: crewCardEnrollment.crewCardId},
+      update: data,
+      create: data,
+    });
+  }
+
   return c.text('Created', 201);
 });
 
@@ -308,6 +351,11 @@ function mapPayment(payment: LogMessage_Order_PaymentMethod): OrderPayment {
     default:
       throw new UnreachableCaseError(payment);
   }
+}
+
+function kultEpochToDate(epoch: number): Date {
+  const baseDate = new Date(Date.UTC(2025));
+  return addDays(baseDate, epoch);
 }
 
 export default app;
