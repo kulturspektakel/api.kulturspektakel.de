@@ -16,7 +16,6 @@ export default async function addToMailingList(email: string) {
   });
 
   let added = true;
-  console.log(email);
 
   await admin.members
     .insert({

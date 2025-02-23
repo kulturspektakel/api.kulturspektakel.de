@@ -6,7 +6,6 @@ const app = new Hono();
 
 app.post('/', async (c) => {
   const body = await c.req.parseBody<SlackSlashCommandRequest>();
-  console.log(body.text);
   const email = body.text.trim().toLowerCase();
   if (!email) {
     throw new Error('Email missing');
