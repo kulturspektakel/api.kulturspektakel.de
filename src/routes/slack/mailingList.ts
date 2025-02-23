@@ -8,7 +8,12 @@ app.post('/', async (c) => {
   const body = await c.req.parseBody<SlackSlashCommandRequest>();
   const email = body.text.trim().toLowerCase();
   if (!email) {
-    throw new Error('Email missing');
+    return c.json(
+      {
+        text: '⚠️ Ungültiges Slash-Command. Email-Adresse fehlt!',
+      },
+      200,
+    );
   }
   const added = await addToMailingList(email);
 
