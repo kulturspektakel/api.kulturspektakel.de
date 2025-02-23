@@ -123,38 +123,50 @@ app.get('/config', async (c) => {
 });
 
 app.get('/lists', async (c) => {
-  const lists = await prismaClient.productList.findMany({
-    where: {
-      active: true,
-    },
-    include: productListQuery,
-    orderBy: {
-      name: 'asc',
-    },
-  });
-
-  const privilegedCrewCards = await prismaClient.crewCard.findMany({
-    where: {
-      privileged: true,
-      suspended: {
-        not: true,
-      },
-    },
-  });
-  const suspendedCrewCards = await prismaClient.crewCard.findMany({
-    where: {
-      suspended: true,
-    },
-  });
+  const [lists, privilegedCrewCards, privilegeTokens, suspendedCrewCards] =
+    await Promise.all([
+      // lists
+      prismaClient.productList.findMany({
+        where: {
+          active: true,
+        },
+        include: productListQuery,
+        orderBy: {
+          name: 'asc',
+        },
+      }),
+      // privilegedCrewCards
+      prismaClient.crewCard.findMany({
+        where: {
+          privileged: true,
+          suspended: {
+            not: true,
+          },
+        },
+        select: {
+          id: true,
+        },
+      }),
+      // privilegeTokens
+      prismaClient.devicePrivilegeToken.findMany({
+        select: {
+          id: true,
+        },
+      }),
+      // suspendedCrewCards
+      prismaClient.crewCard.findMany({
+        where: {
+          suspended: true,
+        },
+      }),
+    ]);
 
   const allLists: AllLists = {
     productList: lists.map(getDeviceConfig),
-    privilegeTokens: [],
-    privilegedCrewCards: privilegedCrewCards.map((c) => ({
-      id: new Uint8Array(c.id),
-      validUntil: dateToKultEpoch(c.validUntil),
-    })),
-    suspendedCrewCards: suspendedCrewCards.map((c) => new Uint8Array(c.id)),
+    privilegeTokens: privilegeTokens
+      .concat(privilegedCrewCards)
+      .map(({id}) => new Uint8Array(id)),
+    suspendedCrewCards: suspendedCrewCards.map(({id}) => new Uint8Array(id)),
     versionNumber: 0,
     timestamp: 0,
     checksum: 0,

@@ -6,12 +6,6 @@ message AllLists {
   int32 checksum = 2;
   int32 version_number = 3;
   int32 timestamp = 4;
-  repeated bytes privilege_tokens = 5 [deprecated=true];
+  repeated bytes privilege_tokens = 5;
   repeated bytes suspended_crew_cards = 6;
-  repeated Card privileged_crew_cards = 7;
-
-  message Card {
-    bytes id = 1;
-    int32 valid_until = 2;
-  }
 }
