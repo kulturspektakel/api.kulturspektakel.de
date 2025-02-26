@@ -1,5 +1,7 @@
 import {Hono} from 'hono';
 import {scheduleTask} from '../../tasks';
+import {SlackApiUser} from '../../utils/slack';
+import addToMailingList from '../../utils/addToMailingList';
 
 const app = new Hono();
 
@@ -41,6 +43,13 @@ app.post('/', async (c) => {
         is_ext_shared_channel: boolean;
         event_context: string;
       }
+    | {
+        event: {
+          type: 'team_join';
+          user: SlackApiUser;
+        };
+        type: 'event_callback';
+      }
   >();
   switch (body.type) {
     case 'url_verification':
@@ -57,6 +66,9 @@ app.post('/', async (c) => {
             },
             {maxAttempts: 1},
           );
+          return c.body(null, 200);
+        case 'team_join':
+          await addToMailingList(body.event.user.profile.email);
           return c.body(null, 200);
       }
   }
