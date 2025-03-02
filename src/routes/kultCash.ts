@@ -24,6 +24,7 @@ import crc32 from 'crc-32';
 import {ParsedToken} from './auth';
 import {AllLists} from '../proto/configs';
 import {Hono, Context} from 'hono';
+import {sendCrewCardEnrollmentMessage} from '../utils/crewCardEnrollment';
 
 const app = new Hono();
 
@@ -325,6 +326,8 @@ app.post('/log', async (c) => {
       update: data,
       create: data,
     });
+
+    await sendCrewCardEnrollmentMessage(data.id, data.validUntil);
   }
 
   return c.text('Created', 201);
