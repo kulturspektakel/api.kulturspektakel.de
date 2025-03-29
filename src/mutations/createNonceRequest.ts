@@ -26,6 +26,7 @@ builder.mutationField('createNonceRequest', (t) =>
           slackUser.user.profile.display_name,
         profilePicture: slackUser.user.profile.image_192,
       };
+
       const user = await prismaClient.viewer.upsert({
         where: {
           id: slackUser.user.id,

@@ -1,4 +1,6 @@
 import {sendMessage, slackApiRequest, SlackChannel} from './slack';
+import prisma from './prismaClient';
+import {upsertViewer} from './upsertViewer';
 
 export async function sendCrewCardEnrollmentMessage(
   cardIdBytes: Uint8Array,
@@ -136,6 +138,28 @@ export async function assignCrewCard(
   }
 
   const {responseUrl, cardId} = JSON.parse(privateMetadata);
+
+  let viewerId = null;
+  let nickname = null;
+  if (slackUserId) {
+    const viewer = await upsertViewer(slackUserId, 'crewCardEnrollment');
+    viewerId = viewer.id;
+  } else if (nonSlackUser) {
+    nickname = nonSlackUser;
+  } else {
+    throw new Error('No user provided');
+  }
+
+  await prisma.crewCard.update({
+    where: {
+      id: cardId,
+    },
+    data: {
+      viewerId,
+      nickname,
+    },
+  });
+
   await fetch(responseUrl, {
     method: 'post',
     headers: {

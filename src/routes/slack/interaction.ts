@@ -5,16 +5,10 @@ import {generateTwoFactorCodeResponse} from './twofactor';
 import {Hono} from 'hono';
 import {
   assignCrewCard,
-  sendCrewCardEnrollmentMessage,
   showCrewCardAssignmentModal,
 } from '../../utils/crewCardEnrollment';
 
 const app = new Hono();
-
-// app.get('/health', async (c) => {
-//   await sendCrewCardEnrollmentMessage('aa:bb:cc:dd:ee:ff', new Date());
-//   return c.text('ok', 200);
-// });
 
 type SlackInteractionPayload = {
   is_enterprise_install: false;

@@ -1,22 +1,13 @@
-import prismaClient from '../../utils/prismaClient';
 import {SlackSlashCommandRequest} from './token';
 import {configString} from '../owntracks';
 import {Hono} from 'hono';
+import {upsertViewer} from '../../utils/upsertViewer';
 
 const app = new Hono();
 
 app.post('/', async (c) => {
   const body = await c.req.parseBody<SlackSlashCommandRequest>();
-  const viewer = await prismaClient.viewer.upsert({
-    create: {
-      displayName: body.user_name,
-      email: '',
-    },
-    update: {},
-    where: {
-      id: body.user_id,
-    },
-  });
+  const viewer = upsertViewer(body.user_id, 'owntracks');
 
   return c.json(
     {

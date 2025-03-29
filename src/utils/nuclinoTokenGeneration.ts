@@ -1,33 +1,15 @@
 import {URL} from 'url';
-import {fetchUser, slackApiRequest} from './slack';
-import {ApiError} from './errorReporting';
-import prismaClient from './prismaClient';
+import {slackApiRequest} from './slack';
 import env from './env';
 import createNonce from './createNonce';
+import {upsertViewer} from './upsertViewer';
 
 export default async function nuclinoTokenGeneration(
   userId: string,
   trigger_id: string,
   redirectUrl = 'https://app.nuclino.com/Kulturspektakel/General',
 ) {
-  const slackUser = await fetchUser(userId);
-  if (!slackUser) {
-    throw new ApiError(404, 'User not found');
-  }
-
-  const userData = {
-    displayName: slackUser.profile.real_name,
-    profilePicture: slackUser.profile.image_192,
-    email: slackUser.profile.email,
-  };
-  const user = await prismaClient.viewer.upsert({
-    create: userData,
-    update: userData,
-    where: {
-      id: slackUser.id,
-    },
-  });
-
+  const user = await upsertViewer(userId, 'nuclionTokenGeneration');
   const nonce = await createNonce(user.id);
 
   const nuclinoSsoUrl = new URL(
