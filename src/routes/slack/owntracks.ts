@@ -7,7 +7,7 @@ const app = new Hono();
 
 app.post('/', async (c) => {
   const body = await c.req.parseBody<SlackSlashCommandRequest>();
-  const viewer = upsertViewer(body.user_id, 'owntracks');
+  const viewer = await upsertViewer(body.user_id, 'owntracks');
 
   return c.json(
     {
