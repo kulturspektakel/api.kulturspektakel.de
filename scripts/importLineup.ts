@@ -5,10 +5,10 @@ import {addDays} from 'date-fns';
 import readGoogleSheet from '../src/utils/readGoogleSheet';
 import {TZDateMini} from '@date-fns/tz';
 
-const EVENT_ID = 'kult2024';
+const EVENT_ID = 'kult2025';
 const SHEET_ID = '------';
 const SHEET_NAME = 'Lineup';
-const ANNOUNCEMENT_TIME = new Date('2024-07-21');
+const ANNOUNCEMENT_TIME = new Date('2025-04-26');
 const CLEAR_LINEUP = false;
 
 async function main() {
@@ -57,11 +57,9 @@ async function main() {
       locale: 'de',
       strict: true,
     });
-    const id = `lineup/${event.start.getFullYear()}/${slug}`;
 
     const create: Prisma.BandPlayingCreateInput = {
       slug,
-      id,
       event: {
         connect: {
           id: EVENT_ID,
@@ -81,7 +79,12 @@ async function main() {
 
     await prismaClient.bandPlaying
       .upsert({
-        where: {id},
+        where: {
+          eventId_slug: {
+            eventId: EVENT_ID,
+            slug,
+          },
+        },
         update: create,
         create,
       })

@@ -5,30 +5,18 @@ preheader: 'Absage zu eurer Bewerbung mit „{{ dynamic.bandname }}“ für das 
 
 Hey,
 
-vielen Dank für eure Bewerbung mit „{{ dynamic.bandname }}“ beim
-Kulturspektakel Gauting {{ dynamic.eventYear }}.
+vielen Dank für eure Bewerbung mit „{{ dynamic.bandname }}“ beim Kulturspektakel Gauting {{ dynamic.eventYear }}.
 
-Wir sind überwältigt von der großen Resonanz und den zahlreichen
-Bewerbungen, die wir erhalten haben. Es ist uns eine große Freude zu sehen,
-wie viele talentierte Künstler:innen in bei uns spielen möchten. Dabei
-mussten wir die schwierige Entscheidung treffen, einige Bewerbungen
-abzulehnen, obwohl sie gut zu unserem vielseitigen Programm gepasst hätten.
-Wir bedauern, dass wir euch in diesem Jahr keinen Auftritt anbieten können.
+Wir haben dieses Jahr so viele Bewerbungen wie noch nie für unser Festival erhalten. Es ist uns eine große Freude zu sehen, wie viele talentierte Künstler:innen in bei uns spielen möchten.
 
-Bei der Planung unseres Festivals ist es unser Anliegen, eine möglichst
-große Bandbreite an musikalischen Stilrichtungen und Newcomer:innen wie auch
-etablierten Künstler:innen eine Plattform zu bieten. Daher versuchen wir
-Jahr für Jahr, vielen verschiedenen Musiker:innen die Möglichkeit zu geben,
-auf unseren Bühnen zu stehen.
+Wir haben uns die Zeit genommen jede einzelne Bewerbung anzuhören, aber aber bei der großen Anzahl der Bewerbungen mussten wir auch oft die schwierige Entscheidung treffen, Bewerbungen abzulehnen, obwohl sie vielleicht gut zu unserem Festival gepasst hätten. Leider können wir euch daher in diesem Jahr keinen Auftritt bei uns anbieten. Falls eine unserer Bands abspringt behalten wir eure Bewerbung im Hinterkopf und würden uns gegebenenfalls nochmal bei euch für einen Nachrücker-Slot melden.
 
-Wir möchten dir jedoch versichern, dass wir eure Bewerbung sehr zu schätzen
-wissen und würden uns freuen, wenn ihr uns nächstes Jahr erneut eure
-Bewerbung zukommen lasst. Ab August wird es möglich sein, euch über das
-Formular auf unserer Webseite für das Kulturspektakel 2025 zu bewerben.
+Bei der Planung unseres Festivals achten wir sehr darauf, möglichst vielen verschiedenen Musiker:innen einen Auftritt zu ermöglichen, deshalb versuchen wir auch in jedem Jahr anderen Bands und neuen Musikrichtungen eine Chance zu geben und natürlich Nachwuchsbands zu fördern.
 
-Das Line-Up für unser Festival veröffentlichen wir in den nächsten Wochen
-auf unserer Webseite. Natürlich würden wir uns auch sehr freuen euch
-trotzdem als Gäste auf dem Kult begrüßen zu dürfen.
+Wir wissen eure Bewerbung sehr zu schätzen und würden uns freuen, wenn ihr uns nächstes Jahr erneut eure Bewerbung zukommen lasst. Ab August wird es möglich sein, euch über das Formular auf unserer Webseite für das Kulturspektakel 2026 zu bewerben.
 
-Viel Erfolg und hoffentlich bis zum nächsten Jahr!\
+Das finale Lineup für unser Festival veröffentlichen wir in den nächsten Wochen auf unserer Webseite. Natürlich würden wir uns auch sehr freuen euch trotzdem als Gäste auf dem Kult begrüßen zu dürfen.
+
+Viel Erfolg und hoffentlich bis zum nächsten Jahr!
+
 Das Bookingteam des Kulturspektakel Gauting

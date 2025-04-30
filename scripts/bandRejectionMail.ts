@@ -4,7 +4,7 @@ import {google} from 'googleapis';
 import env from '../src/utils/env';
 
 const account = 'booking@kulturspektakel.de';
-const EVENT_ID = 'kult2024';
+const EVENT_ID = 'kult2025';
 
 async function main() {
   const event = await prismaClient.event.findUniqueOrThrow({

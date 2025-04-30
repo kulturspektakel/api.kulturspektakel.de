@@ -156,7 +156,7 @@ Auftrittsende: ${end} Uhr
 Veranstaltungsort: Schulcampus, Germeringer Str. 41, 82131 Gauting
 Bühnenbetreuung: ${contact}
 Alternativer Kontakt: ${backupContact}
-Allgemeine Fragen: &#98;&#111;&#x6f;&#x6b;&#105;&#x6e;&#103;&#x40;&#107;&#x75;&#108;&#116;&#x75;&#x72;&#x73;&#112;&#x65;&#107;&#x74;&#97;&#107;&#x65;&#x6c;&#46;&#100;&#101;
+Allgemeine Fragen: &#98;&#111;&#x6f;&#x6b;&#x69;&#110;&#x67;&#x40;&#x6b;&#117;&#108;&#x74;&#x75;&#114;&#x73;&#x70;&#101;&#x6b;&#116;&#97;&#x6b;&#x65;&#x6c;&#46;&#x64;&#x65;
 
 Die Ankunftszeit ist aus organisatorischen Gründen unbedingt einzuhalten,
 natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
@@ -171,7 +171,7 @@ dem Auftritt statt.
 Verhinderung
 
 Eine Verhinderung ist uns umgehend mitzuteilen. Im Vorfeld der Veranstaltung
-bitte per E-Mail an &#98;&#111;&#111;&#107;&#x69;&#x6e;&#x67;&#64;&#107;&#x75;&#x6c;&#x74;&#117;&#x72;&#115;&#x70;&#101;&#x6b;&#x74;&#x61;&#107;&#101;&#108;&#46;&#x64;&#101;. Bei kurzfristigen
+bitte per E-Mail an &#x62;&#x6f;&#x6f;&#107;&#x69;&#x6e;&#103;&#x40;&#107;&#x75;&#108;&#x74;&#x75;&#114;&#x73;&#112;&#x65;&#107;&#x74;&#97;&#107;&#101;&#x6c;&#46;&#100;&#101;. Bei kurzfristigen
 Verhinderungen unbedingt zusätzlich telefonisch Bescheid geben. Jegliche
 Zahlung von Aufwandsentschädigung entfällt, sofern der Auftritt nicht
 stattfinden kann und nichts anderweitiges vereinbart wurde.
