@@ -199,7 +199,14 @@ app.post('/log', async (c) => {
   let message: LogMessage;
   try {
     const body = await c.req.arrayBuffer();
-    message = LogMessage.decode(new Uint8Array(body));
+    const input = new Uint8Array(body);
+    console.log(
+      'Received log message:',
+      Array.from(input)
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join(' '),
+    );
+    message = LogMessage.decode(input);
   } catch (e) {
     throw new ApiError(400, 'Bad Request', e as Error);
   }
@@ -317,12 +324,10 @@ app.post('/log', async (c) => {
   }
 
   if (crewCardEnrollment) {
-    console.log(JSON.stringify(crewCardEnrollment));
     const data = {
       id: crewCardEnrollment.crewCardId,
       validUntil: kultEpochToDate(crewCardEnrollment.validUntil),
     };
-    console.log('enroll crewcard:', JSON.stringify(data));
     await prismaClient.crewCard.upsert({
       where: {id: crewCardEnrollment.crewCardId},
       update: data,
