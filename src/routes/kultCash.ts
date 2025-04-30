@@ -200,12 +200,6 @@ app.post('/log', async (c) => {
   try {
     const body = await c.req.arrayBuffer();
     const input = new Uint8Array(body);
-    console.log(
-      'Received log message:',
-      Array.from(input)
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join(' '),
-    );
     message = LogMessage.decode(input);
   } catch (e) {
     throw new ApiError(400, 'Bad Request', e as Error);

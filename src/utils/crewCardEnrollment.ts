@@ -137,7 +137,13 @@ export async function assignCrewCard(
     throw new Error('No user provided');
   }
 
-  const {responseUrl, cardId} = JSON.parse(privateMetadata);
+  const {
+    responseUrl,
+    cardId,
+  }: {
+    responseUrl: string;
+    cardId: string;
+  } = JSON.parse(privateMetadata);
 
   let viewerId = null;
   let nickname = null;
@@ -152,7 +158,7 @@ export async function assignCrewCard(
 
   await prisma.crewCard.update({
     where: {
-      id: cardId,
+      id: new Uint8Array(cardId.split(':').map((part) => parseInt(part, 16))),
     },
     data: {
       viewerId,
