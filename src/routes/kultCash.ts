@@ -317,6 +317,7 @@ app.post('/log', async (c) => {
   }
 
   if (crewCardEnrollment) {
+    console.log(JSON.stringify(crewCardEnrollment));
     const data = {
       id: crewCardEnrollment.crewCardId,
       validUntil: kultEpochToDate(crewCardEnrollment.validUntil),
