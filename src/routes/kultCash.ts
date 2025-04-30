@@ -321,6 +321,7 @@ app.post('/log', async (c) => {
       id: crewCardEnrollment.crewCardId,
       validUntil: kultEpochToDate(crewCardEnrollment.validUntil),
     };
+    console.log('enroll crewcard:', JSON.stringify(data));
     await prismaClient.crewCard.upsert({
       where: {id: crewCardEnrollment.crewCardId},
       update: data,
