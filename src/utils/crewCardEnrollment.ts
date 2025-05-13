@@ -1,6 +1,7 @@
 import {sendMessage, slackApiRequest, SlackChannel} from './slack';
 import prisma from './prismaClient';
 import {upsertViewer} from './upsertViewer';
+import {subDays} from 'date-fns';
 
 export async function sendCrewCardEnrollmentMessage(
   cardIdBytes: Uint8Array,
@@ -11,7 +12,7 @@ export async function sendCrewCardEnrollmentMessage(
     .join(':')
     .toUpperCase();
 
-  const formattedDate = validUntil.toLocaleDateString('de-DE', {
+  const formattedDate = subDays(validUntil, 1).toLocaleDateString('de-DE', {
     weekday: 'long',
     year: 'numeric',
     month: '2-digit',
@@ -156,7 +157,7 @@ export async function assignCrewCard(
     throw new Error('No user provided');
   }
 
-  await prisma.crewCard.update({
+  const crewCard = await prisma.crewCard.update({
     where: {
       id: new Uint8Array(cardId.split(':').map((part) => parseInt(part, 16))),
     },
@@ -164,6 +165,14 @@ export async function assignCrewCard(
       viewerId,
       nickname,
     },
+  });
+
+  const formattedDate = crewCard.validUntil.toLocaleDateString('de-DE', {
+    weekday: 'long',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'Europe/Berlin',
   });
 
   await fetch(responseUrl, {
@@ -179,7 +188,7 @@ export async function assignCrewCard(
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<@${assignedByUserId}> hat die CrewCard \`${cardId}\` ${slackUserId ? `<@${slackUserId}>` : `_${nonSlackUser}_`} zugeordnet`,
+            text: `<@${assignedByUserId}> hat die CrewCard \`${cardId}\` ${slackUserId ? `<@${slackUserId}>` : `_${nonSlackUser}_`} zugeordnet. Gültig bis einschließlich ${formattedDate}.`,
           },
         },
       ],

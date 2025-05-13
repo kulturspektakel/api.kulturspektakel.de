@@ -12,12 +12,7 @@ import {
   ProductList,
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
-import {
-  subMinutes,
-  addDays,
-  differenceInCalendarDays,
-  isBefore,
-} from 'date-fns';
+import {subMinutes, addDays, isBefore, differenceInDays} from 'date-fns';
 import {TZDate, tzOffset} from '@date-fns/tz';
 import {ApiError} from '../utils/errorReporting';
 import crc32 from 'crc-32';
@@ -321,6 +316,11 @@ app.post('/log', async (c) => {
     const data = {
       id: crewCardEnrollment.crewCardId,
       validUntil: kultEpochToDate(crewCardEnrollment.validUntil),
+      // resetting
+      viewerId: null,
+      nickname: null,
+      suspended: false,
+      privileged: false,
     };
     await prismaClient.crewCard.upsert({
       where: {id: crewCardEnrollment.crewCardId},
@@ -376,19 +376,18 @@ function mapPayment(payment: LogMessage_Order_PaymentMethod): OrderPayment {
   }
 }
 
-// Epoch starts at 01.01.2025 00:00:00 UTC-04:00
+// Epoch starts at 02.01.2025 04:00:00 UTC
 // Using UTC-04:00 as time zone, so cards are valid until 06:00 (UTC+02:00, CEST) the next day
-
-const START_OF_EPOCH = new TZDate(2025, 0, 1, '-04:00');
+const START_OF_EPOCH = new Date(2025, 0, 2, 4);
 export function kultEpochToDate(epoch: number): Date {
   return addDays(START_OF_EPOCH, epoch);
 }
 
 export function dateToKultEpoch(date: Date): number {
   if (isBefore(date, START_OF_EPOCH)) {
-    return differenceInCalendarDays(START_OF_EPOCH, date) * -1;
+    return differenceInDays(date, START_OF_EPOCH);
   }
-  return differenceInCalendarDays(date, START_OF_EPOCH);
+  return differenceInDays(date, START_OF_EPOCH) + 1;
 }
 
 export default app;
