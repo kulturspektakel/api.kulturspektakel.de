@@ -152,6 +152,7 @@ model CrewCard {
   viewerId   String?
   viewer     Viewer?  @relation(fields: [viewerId], references: [id])
   Order      Order[]
+  enrolledAt DateTime
 }
 
 model DeviceLog {

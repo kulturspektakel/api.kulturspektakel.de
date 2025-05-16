@@ -321,6 +321,7 @@ app.post('/log', async (c) => {
       nickname: null,
       suspended: false,
       privileged: false,
+      enrolledAt: deviceTime,
     };
     await prismaClient.crewCard.upsert({
       where: {id: crewCardEnrollment.crewCardId},
