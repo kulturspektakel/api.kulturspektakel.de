@@ -239,6 +239,7 @@ app.post('/log', async (c) => {
                     id: order.crewCardId,
                     // do not further enroll card
                     validUntil: new Date(),
+                    enrolledAt: deviceTime,
                   },
                 },
               }
