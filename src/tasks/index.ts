@@ -21,6 +21,7 @@ import bandApplicationDemo from './bandApplicationDemo';
 import gmailSubscription from './gmailSubscription';
 import nonceRequestInvalidate from './nonceRequestInvalidate';
 import {sleep} from 'graphile-worker/dist/lib';
+import badgeAwarded from './badgeAwarded';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -35,6 +36,7 @@ const taskList = {
   spotifyListeners,
   gmailSubscription,
   nonceRequestInvalidate,
+  badgeAwarded,
 };
 
 const runnerOptions: RunnerOptions = {

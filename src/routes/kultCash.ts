@@ -13,13 +13,14 @@ import {
 } from '@prisma/client';
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {subMinutes, addDays, isBefore, differenceInDays} from 'date-fns';
-import {TZDate, tzOffset} from '@date-fns/tz';
+import {tzOffset} from '@date-fns/tz';
 import {ApiError} from '../utils/errorReporting';
 import crc32 from 'crc-32';
 import {ParsedToken} from './auth';
 import {AllLists} from '../proto/configs';
 import {Hono, Context} from 'hono';
 import {sendCrewCardEnrollmentMessage} from '../utils/crewCardEnrollment';
+import {scheduleTask} from '../tasks';
 
 const app = new Hono();
 
@@ -264,8 +265,15 @@ app.post('/log', async (c) => {
         }
       : undefined;
 
-  await prismaClient.deviceLog
+  const log = await prismaClient.deviceLog
     .create({
+      select: {
+        CardTransaction: {
+          select: {
+            orderId: true,
+          },
+        },
+      },
       data: {
         ...data,
         deviceTime,
@@ -305,6 +313,13 @@ app.post('/log', async (c) => {
       }
       throw e;
     });
+
+  const orderId = log.CardTransaction?.at(0)?.orderId;
+  if (orderCreate && orderCreate.crewCard && orderId) {
+    scheduleTask('badgeAwarded', {
+      orderId,
+    });
+  }
 
   if (!cardTransaction && orderCreate) {
     // manually create order, because it's not part of a card transaction
