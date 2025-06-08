@@ -1,7 +1,7 @@
 import {builder} from '../pothos/builder';
 import {createNonceRequest} from '../utils/createNonce';
-import prismaClient from '../utils/prismaClient';
 import {SlackApiUser, slackApiRequest} from '../utils/slack';
+import {upsertViewer} from '../utils/upsertViewer';
 
 builder.mutationField('createNonceRequest', (t) =>
   t.field({
@@ -19,22 +19,7 @@ builder.mutationField('createNonceRequest', (t) =>
         return null;
       }
 
-      const data = {
-        email: slackUser.user.profile.email,
-        displayName:
-          slackUser.user.profile.real_name ??
-          slackUser.user.profile.display_name,
-        profilePicture: slackUser.user.profile.image_192,
-      };
-
-      const user = await prismaClient.viewer.upsert({
-        where: {
-          id: slackUser.user.id,
-        },
-        create: data,
-        update: data,
-      });
-
+      const user = await upsertViewer(slackUser.user.id, 'createNonceRequest');
       const nonceRequest = await createNonceRequest(user.id);
 
       await slackApiRequest('chat.postMessage', {

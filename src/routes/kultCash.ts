@@ -315,6 +315,9 @@ app.post('/log', async (c) => {
     });
 
   const orderId = log.CardTransaction?.at(0)?.orderId;
+  if (orderCreate) {
+    console.log(JSON.stringify(log));
+  }
   if (orderCreate && orderCreate.crewCard && orderId) {
     scheduleTask('badgeAwarded', {
       orderId,
