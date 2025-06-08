@@ -265,15 +265,8 @@ app.post('/log', async (c) => {
         }
       : undefined;
 
-  const log = await prismaClient.deviceLog
+  await prismaClient.deviceLog
     .create({
-      select: {
-        CardTransaction: {
-          select: {
-            orderId: true,
-          },
-        },
-      },
       data: {
         ...data,
         deviceTime,
@@ -314,21 +307,17 @@ app.post('/log', async (c) => {
       throw e;
     });
 
-  const orderId = log.CardTransaction?.at(0)?.orderId;
-  if (orderCreate) {
-    console.log(JSON.stringify(log));
-  }
-  if (orderCreate && orderCreate.crewCard && orderId) {
-    scheduleTask('badgeAwarded', {
-      orderId,
-    });
-  }
-
   if (!cardTransaction && orderCreate) {
     // manually create order, because it's not part of a card transaction
-    await prismaClient.order.create({
+    const createdOrder = await prismaClient.order.create({
       data: orderCreate,
     });
+
+    if (createdOrder.crewCardId) {
+      scheduleTask('badgeAwarded', {
+        orderId: createdOrder.id,
+      });
+    }
   }
 
   if (crewCardEnrollment) {
