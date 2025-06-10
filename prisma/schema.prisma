@@ -379,6 +379,7 @@ enum CardTransactionType {
   Charge
   Cashout
   Repair
+  Donation
 }
 
 enum DemoEmbedType {
