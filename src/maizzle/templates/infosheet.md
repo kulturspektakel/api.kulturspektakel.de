@@ -20,7 +20,7 @@ ein großartiges Festival mit euch!
 **Allgemeine Fragen:** booking@kulturspektakel.de
 
 Die Ankunftszeit ist aus organisatorischen Gründen unbedingt einzuhalten,
-natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
+aber natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
 eurer Bühnenbetreuung, sobald ihr da seid. Bei den genannten Linecheck- und
 Auftrittszeiten handelt es sich um den geplanten Ablauf der Veranstaltung.
 Es besteht kein Anspruch auf exakte Einhaltung. Etwaige Verzögerungen und
@@ -75,6 +75,14 @@ Am Tag des Auftrittes könnt ihr vor Ort Merchandising-Artikel sowie
 Tonträger verkaufen. Dafür werden keine Gebühren erhoben. Der Standort
 hierfür wird vor Ort mit der Bühnenbetreuung abgesprochen. Das
 Kulturspektakel stellt kein Personal für den Merch-Verkauf.
+
+## Foto- und Videoaufnahmen
+
+Auf dem Festival, inklusive der Auftritte auf den Bühnen, machen wir
+Foto- und Videoaufnahmen, die wir auf unserer Webseite und
+Social-Media-Kanälen zur Bewerbung der Veranstaltung nutzen. Wenn es dazu
+Fragen gibt, wendet euch an presse@kulturspektakel.de. Eigene
+Foto-/Videograf:innen könnt ihr gerne mitbringen.
 
 ## Anfahrt
 
