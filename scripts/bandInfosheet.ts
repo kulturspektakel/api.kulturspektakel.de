@@ -1,7 +1,7 @@
 import readGoogleSheet from '../src/utils/readGoogleSheet';
 import sendMail from '../src/utils/sendMail';
 
-const SHEET_ID = '---------';
+const SHEET_ID = '---';
 const SHEET_NAME = 'Infosheet';
 
 async function main() {
@@ -48,7 +48,7 @@ async function main() {
         to: email,
       },
     );
-    break;
+    console.log(`Sent for ${bandname}`);
   }
 }
 
