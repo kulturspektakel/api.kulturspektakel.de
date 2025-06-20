@@ -2,7 +2,7 @@
 title: 'Informationen zum Auftritt von „{{ dynamic.bandname }}“ - Kulturspektakel {{ dynamic.eventYear }}'
 ---
 
-Hey {{ dynamic.name }}\
+Hey {{ dynamic.name }},\
 wir freuen uns, dass ihr beim Kulturspektakel Gauting dabei seid! Hier sind
 alle wichtigen Infos für euren Auftritt. Bitte lest euch alles sorgfältig
 durch und meldet euch bei Fragen oder Unklarheiten bei uns. Wir freuen auf
@@ -15,9 +15,8 @@ ein großartiges Festival mit euch!
 **Auftrittsbeginn:** {{ dynamic.start }} Uhr\
 **Auftrittsende:** {{ dynamic.end }} Uhr\
 **Veranstaltungsort:** Schulcampus, Germeringer Str. 41, 82131 Gauting\
-**Bühnenbetreuung:** {{ dynamic.contact }}\
-**Alternativer Kontakt:** {{ dynamic.backupContact }}\
-**Allgemeine Fragen:** booking@kulturspektakel.de
+**Bühnenbetreuung vor Ort:** {{ dynamic.contact }}\
+**Booking-Team:** {{ dynamic.backupContact }}
 
 Die Ankunftszeit ist aus organisatorischen Gründen unbedingt einzuhalten,
 aber natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
@@ -34,7 +33,7 @@ dem Auftritt statt.
 Eine Verhinderung ist uns umgehend mitzuteilen. Im Vorfeld der Veranstaltung
 bitte per E-Mail an booking@kulturspektakel.de. Bei kurzfristigen
 Verhinderungen unbedingt zusätzlich telefonisch Bescheid geben. Jegliche
-Zahlung von Aufwandsentschädigung entfällt, sofern der Auftritt nicht
+Ansprüche entfallen, sofern der Auftritt nicht
 stattfinden kann und nichts anderweitiges vereinbart wurde.
 
 ## Kosten

@@ -2,7 +2,7 @@ import readGoogleSheet from '../src/utils/readGoogleSheet';
 import sendMail from '../src/utils/sendMail';
 
 const SHEET_ID = '---------';
-const SHEET_NAME = 'Infosheets';
+const SHEET_NAME = 'Infosheet';
 
 async function main() {
   const {values} = await readGoogleSheet(SHEET_ID, SHEET_NAME);
@@ -48,6 +48,7 @@ async function main() {
         to: email,
       },
     );
+    break;
   }
 }
 

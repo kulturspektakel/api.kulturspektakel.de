@@ -44,7 +44,7 @@ export default ({name, day, stage, getin, soundcheck, start, end, contact, backu
   <body style="font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; line-height: 1.5rem; word-break: break-word">
     <div role="article" aria-roledescription="email" aria-label="Informationen zum Auftritt von „${bandname}“ - Kulturspektakel ${eventYear}" lang="de">
       <div style="margin-left: auto; margin-right: auto; max-width: 640px">
-        <p style="margin: 0">Hey ${name}<br>
+        <p style="margin: 0">Hey ${name},<br>
 wir freuen uns, dass ihr beim Kulturspektakel Gauting dabei seid! Hier sind
 alle wichtigen Infos für euren Auftritt. Bitte lest euch alles sorgfältig
 durch und meldet euch bei Fragen oder Unklarheiten bei uns. Wir freuen auf
@@ -56,11 +56,10 @@ ein großartiges Festival mit euch!</p>
 <strong>Auftrittsbeginn:</strong> ${start} Uhr<br>
 <strong>Auftrittsende:</strong> ${end} Uhr<br>
 <strong>Veranstaltungsort:</strong> Schulcampus, Germeringer Str. 41, 82131 Gauting<br>
-<strong>Bühnenbetreuung:</strong> ${contact}<br>
-<strong>Alternativer Kontakt:</strong> ${backupContact}<br>
-<strong>Allgemeine Fragen:</strong> booking@kulturspektakel.de</p>
+<strong>Bühnenbetreuung vor Ort:</strong> ${contact}<br>
+<strong>Booking-Team:</strong> ${backupContact}</p>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Die Ankunftszeit ist aus organisatorischen Gründen unbedingt einzuhalten,
-natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
+aber natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
 eurer Bühnenbetreuung, sobald ihr da seid. Bei den genannten Linecheck- und
 Auftrittszeiten handelt es sich um den geplanten Ablauf der Veranstaltung.
 Es besteht kein Anspruch auf exakte Einhaltung. Etwaige Verzögerungen und
@@ -72,7 +71,7 @@ dem Auftritt statt.</p>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Eine Verhinderung ist uns umgehend mitzuteilen. Im Vorfeld der Veranstaltung
 bitte per E-Mail an booking@kulturspektakel.de. Bei kurzfristigen
 Verhinderungen unbedingt zusätzlich telefonisch Bescheid geben. Jegliche
-Zahlung von Aufwandsentschädigung entfällt, sofern der Auftritt nicht
+Ansprüche entfallen, sofern der Auftritt nicht
 stattfinden kann und nichts anderweitiges vereinbart wurde.</p>
 <h2 style="font-size: 1.25rem; line-height: 1.75rem">Kosten</h2>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">${fee} Das Kulturspektakel übernimmt die anfallenden Gebühren bei
@@ -103,6 +102,12 @@ gegebenenfalls abzubrechen.</p>
 Tonträger verkaufen. Dafür werden keine Gebühren erhoben. Der Standort
 hierfür wird vor Ort mit der Bühnenbetreuung abgesprochen. Das
 Kulturspektakel stellt kein Personal für den Merch-Verkauf.</p>
+<h2 style="font-size: 1.25rem; line-height: 1.75rem">Foto- und Videoaufnahmen</h2>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Auf dem Festival, inklusive der Auftritte auf den Bühnen, machen wir
+Foto- und Videoaufnahmen, die wir auf unserer Webseite und
+Social-Media-Kanälen zur Bewerbung der Veranstaltung nutzen. Wenn es dazu
+Fragen gibt, wendet euch an presse@kulturspektakel.de. Eigene
+Foto-/Videograf:innen könnt ihr gerne mitbringen.</p>
 <h2 style="font-size: 1.25rem; line-height: 1.75rem">Anfahrt</h2>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Von München aus ist die Anfahrt über die Autobahn A96 Richtung Lindau zu
 empfehlen. Die Adresse des Festivals lautet Germeringer Straße, 82131
@@ -141,7 +146,7 @@ Helfer:innen am Parkplatz zeigen, welche Zufahrt ihr benutzen sollt.</p>
   </body>
 </html>
 `,
-  text: `Hey ${name}
+  text: `Hey ${name},
 wir freuen uns, dass ihr beim Kulturspektakel Gauting dabei seid! Hier sind
 alle wichtigen Infos für euren Auftritt. Bitte lest euch alles sorgfältig
 durch und meldet euch bei Fragen oder Unklarheiten bei uns. Wir freuen auf
@@ -154,12 +159,11 @@ Umbau und Linecheck: ${soundcheck} Uhr
 Auftrittsbeginn: ${start} Uhr
 Auftrittsende: ${end} Uhr
 Veranstaltungsort: Schulcampus, Germeringer Str. 41, 82131 Gauting
-Bühnenbetreuung: ${contact}
-Alternativer Kontakt: ${backupContact}
-Allgemeine Fragen: &#98;&#111;&#x6f;&#x6b;&#x69;&#110;&#x67;&#x40;&#x6b;&#117;&#108;&#x74;&#x75;&#114;&#x73;&#x70;&#101;&#x6b;&#116;&#97;&#x6b;&#x65;&#x6c;&#46;&#x64;&#x65;
+Bühnenbetreuung vor Ort: ${contact}
+Booking-Team: ${backupContact}
 
 Die Ankunftszeit ist aus organisatorischen Gründen unbedingt einzuhalten,
-natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
+aber natürlich könnt ihr auch gerne früher kommen. Bitte meldet euch direkt bei
 eurer Bühnenbetreuung, sobald ihr da seid. Bei den genannten Linecheck- und
 Auftrittszeiten handelt es sich um den geplanten Ablauf der Veranstaltung.
 Es besteht kein Anspruch auf exakte Einhaltung. Etwaige Verzögerungen und
@@ -171,9 +175,9 @@ dem Auftritt statt.
 Verhinderung
 
 Eine Verhinderung ist uns umgehend mitzuteilen. Im Vorfeld der Veranstaltung
-bitte per E-Mail an &#x62;&#x6f;&#x6f;&#107;&#x69;&#x6e;&#103;&#x40;&#107;&#x75;&#108;&#x74;&#x75;&#114;&#x73;&#112;&#x65;&#107;&#x74;&#97;&#107;&#101;&#x6c;&#46;&#100;&#101;. Bei kurzfristigen
+bitte per E-Mail an &#x62;&#111;&#111;&#x6b;&#105;&#x6e;&#x67;&#64;&#107;&#117;&#108;&#116;&#117;&#114;&#115;&#112;&#101;&#x6b;&#x74;&#97;&#x6b;&#101;&#x6c;&#46;&#x64;&#x65;. Bei kurzfristigen
 Verhinderungen unbedingt zusätzlich telefonisch Bescheid geben. Jegliche
-Zahlung von Aufwandsentschädigung entfällt, sofern der Auftritt nicht
+Ansprüche entfallen, sofern der Auftritt nicht
 stattfinden kann und nichts anderweitiges vereinbart wurde.
 
 Kosten
@@ -214,6 +218,14 @@ Am Tag des Auftrittes könnt ihr vor Ort Merchandising-Artikel sowie
 Tonträger verkaufen. Dafür werden keine Gebühren erhoben. Der Standort
 hierfür wird vor Ort mit der Bühnenbetreuung abgesprochen. Das
 Kulturspektakel stellt kein Personal für den Merch-Verkauf.
+
+Foto- und Videoaufnahmen
+
+Auf dem Festival, inklusive der Auftritte auf den Bühnen, machen wir
+Foto- und Videoaufnahmen, die wir auf unserer Webseite und
+Social-Media-Kanälen zur Bewerbung der Veranstaltung nutzen. Wenn es dazu
+Fragen gibt, wendet euch an &#x70;&#114;&#101;&#115;&#115;&#x65;&#64;&#x6b;&#117;&#108;&#x74;&#117;&#x72;&#x73;&#112;&#x65;&#107;&#x74;&#97;&#107;&#101;&#x6c;&#x2e;&#100;&#101;. Eigene
+Foto-/Videograf:innen könnt ihr gerne mitbringen.
 
 Anfahrt
 
