@@ -10,6 +10,7 @@ export enum SlackChannel {
   lager = 'C03LJF6P36E',
   bookingmails = 'C06M4CM6D99',
   infomails = 'C08CGJ5BLAF',
+  crewcards = 'C0965QS6763',
 }
 
 export type SlackApiUser = {

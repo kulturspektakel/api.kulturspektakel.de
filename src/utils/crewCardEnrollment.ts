@@ -22,7 +22,7 @@ export async function sendCrewCardEnrollmentMessage(
 
   await sendMessage({
     text: `CrewCard ${cardId} wurde aktiviert`,
-    channel: SlackChannel.dev,
+    channel: SlackChannel.crewcards,
     blocks: [
       {
         type: 'section',
