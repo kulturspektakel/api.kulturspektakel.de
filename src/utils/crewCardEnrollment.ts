@@ -167,13 +167,16 @@ export async function assignCrewCard(
     },
   });
 
-  const formattedDate = crewCard.validUntil.toLocaleDateString('de-DE', {
-    weekday: 'long',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    timeZone: 'Europe/Berlin',
-  });
+  const formattedDate = subDays(crewCard.validUntil, 1).toLocaleDateString(
+    'de-DE',
+    {
+      weekday: 'long',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'Europe/Berlin',
+    },
+  );
 
   await fetch(responseUrl, {
     method: 'post',
