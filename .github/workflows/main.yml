@@ -16,13 +16,10 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: Prepare environment
         env:
-          Dotenv: ${{ secrets.DOTENV_ME }}
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
         run: |
-          echo "DOTENV_ME=$Dotenv" > .env.me
           bun install
-          bun dotenv-vault pull
-          bun dotenv-vault pull production
-          bun scripts/merge-envs.ts
+          bun bun dotenvx decrypt -f .env.enc --stdout > .env
 
       - name: 'Typecheck'
         run: |

@@ -10,10 +10,7 @@ newrelic_agent.log
 .next
 /yarn-error.log
 .build_local
-.env*
-!.env.project
-!.env.vault
 .flaskenv*
 scripts/output
-/.env.vault
+/.env.keys
 /tsconfig.tsbuildinfo
