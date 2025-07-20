@@ -19,7 +19,7 @@ jobs:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
         run: |
           bun install
-          bun bun dotenvx decrypt -f .env.enc --stdout > .env
+          bun dotenvx decrypt -f .env.enc --stdout > .env
 
       - name: 'Typecheck'
         run: |
