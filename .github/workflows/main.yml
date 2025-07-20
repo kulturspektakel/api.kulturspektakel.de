@@ -20,6 +20,7 @@ jobs:
         run: |
           bun install
           bun dotenvx decrypt -f .env.enc --stdout > .env
+          bun scripts/merge-envs.ts
 
       - name: 'Typecheck'
         run: |
