@@ -28,7 +28,10 @@ export async function upsertViewer(viewerId: string, context?: string) {
   };
 
   viewer = await prismaClient.viewer.upsert({
-    create: userData,
+    create: {
+      id: slackUser.id,
+      ...userData,
+    },
     update: userData,
     where: {
       id: slackUser.id,
