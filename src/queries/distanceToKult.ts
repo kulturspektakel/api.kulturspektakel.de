@@ -83,8 +83,9 @@ export async function getDistanceToKult(placeId: string) {
     status: 'OK';
   } = await response.json();
 
-  return (
-    data.rows.at(0)?.elements.find((element) => element.status === 'OK')
-      ?.distance?.value ?? null
-  );
+  const meters = data.rows
+    .at(0)
+    ?.elements.find((element) => element.status === 'OK')?.distance?.value;
+
+  return meters ? meters / 1000 : null;
 }
