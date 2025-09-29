@@ -9,7 +9,7 @@ import {DonationSource} from '@prisma/client';
 const app = new Hono();
 
 app.post('/webhook', async (c) => {
-  const event = stripe.webhooks.constructEvent(
+  const event = await stripe.webhooks.constructEventAsync(
     await c.req.text(),
     c.req.header('stripe-signature')!,
     env.STRIPE_SIGNING_SECRET,
