@@ -8,6 +8,7 @@ import {ApiError} from './utils/errorReporting';
 import saml from './routes/saml';
 import owntracks from './routes/owntracks';
 import slack from './routes/slack';
+import stripe from './routes/stripe';
 import {createYoga} from 'graphql-yoga';
 import {Context} from './context';
 import {sentry} from '@hono/sentry';
@@ -57,6 +58,7 @@ app.route('/slack', slack);
 app.route('/saml', saml);
 app.route('/owntracks', owntracks);
 app.route('/$$$', kultCash);
+app.route('/stripe', stripe);
 app.use('/public/*', serveStatic({root: 'artifacts'}));
 app.on(['GET', 'POST'], '/graphql', async (c) =>
   createYoga({

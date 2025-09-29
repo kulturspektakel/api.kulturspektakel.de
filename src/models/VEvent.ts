@@ -1,7 +1,7 @@
-import {VEvent, getEventEndFromDuration} from 'ts-ics';
+import {IcsEvent, getEventEndFromDuration} from 'ts-ics';
 import {builder} from '../pothos/builder';
 
-export default builder.objectRef<VEvent>('VEvent').implement({
+export default builder.objectRef<IcsEvent>('VEvent').implement({
   fields: (t) => ({
     uid: t.exposeString('uid'),
     start: t.field({

@@ -1,5 +1,5 @@
 import {builder} from '../pothos/builder';
-import {icsCalendarToObject} from 'ts-ics';
+import {convertIcsCalendar} from 'ts-ics';
 import VEvent from '../models/VEvent';
 import {startOfDay, isAfter} from 'date-fns';
 
@@ -16,7 +16,7 @@ builder.queryField('crewCalendar', (t) =>
         .then((res) => res.text())
         .then(
           (text) =>
-            icsCalendarToObject(text)
+            convertIcsCalendar(undefined, text)
               .events?.filter(
                 (e) =>
                   includePastEvents ||

@@ -76,7 +76,7 @@ export async function generateTwoFactorCodeResponse(
     service: string;
   },
 ) {
-  const {otp} = TOTP.generate(secret);
+  const {otp} = await TOTP.generate(secret);
 
   await sendMessage({
     channel: SlackChannel.dev,

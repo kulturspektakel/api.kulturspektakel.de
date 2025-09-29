@@ -53,4 +53,5 @@ export default {
   GOOGLE_MAPS_KEY: env.get('GOOGLE_MAPS_KEY').required().asString(),
   SPOTIFY_CLIENT_ID: env.get('SPOTIFY_CLIENT_ID').required().asString(),
   SPOTIFY_CLIENT_SECRET: env.get('SPOTIFY_CLIENT_SECRET').required().asString(),
+  STRIPE_SIGNING_SECRET: env.get('STRIPE_SIGNING_SECRET').required().asString(),
 };

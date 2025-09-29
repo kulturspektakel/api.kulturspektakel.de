@@ -359,6 +359,22 @@ model ShortDomainRedirect {
   targetUrl String
 }
 
+model Donation {
+  id        String         @id @default(cuid())
+  amount    Int
+  createdAt DateTime       @default(now())
+  email     String?
+  name      String?
+  message   String?
+  reference String?
+  source    DonationSource
+}
+
+enum DonationSource {
+  Stripe
+  Manual
+}
+
 enum OrderPayment {
   CASH
   BON

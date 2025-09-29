@@ -1,15 +1,15 @@
 import nodemailer from 'nodemailer';
-import * as aws from '@aws-sdk/client-ses';
+import {SESv2Client, SendEmailCommand} from '@aws-sdk/client-sesv2';
 import Mail from 'nodemailer/lib/mailer';
 import mails from '../maizzle/generated';
 
-const ses = new aws.SES({
+const sesClient = new SESv2Client({
   apiVersion: '2010-12-01',
   region: 'eu-west-2',
 });
 
 const transport = nodemailer.createTransport({
-  SES: {ses, aws},
+  SES: {sesClient, SendEmailCommand},
 });
 
 type From =
