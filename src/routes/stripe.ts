@@ -42,7 +42,7 @@ async function checkoutSessionCompleted(
     throw new Error('Amount is missing');
   }
 
-  prismaClient.donation.create({
+  await prismaClient.donation.create({
     data: {
       id,
       createdAt,
