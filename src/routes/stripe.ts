@@ -32,10 +32,10 @@ async function checkoutSessionCompleted(
   const email = event.data.object.customer_email;
   const amount = event.data.object.amount_total;
   const name = event.data.object.custom_fields.find(
-    (field) => field.key === 'Name',
+    (field) => field.key === 'name',
   )?.text?.value;
   const message = event.data.object.custom_fields.find(
-    (field) => field.key === 'Nachricht',
+    (field) => field.key === 'nachricht',
   )?.text?.value;
 
   if (!amount) {
