@@ -28,7 +28,7 @@ async function checkoutSessionCompleted(
   event: stripe.CheckoutSessionCompletedEvent,
 ) {
   const id = event.data.object.id;
-  const createdAt = new Date(event.data.object.created);
+  const createdAt = new Date(event.data.object.created * 1000);
   const email =
     event.data.object.customer_email ||
     event.data.object.customer_details?.email;
