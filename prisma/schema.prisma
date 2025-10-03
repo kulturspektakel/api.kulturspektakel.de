@@ -373,6 +373,7 @@ model Donation {
 enum DonationSource {
   Stripe
   Manual
+  Membership
 }
 
 enum OrderPayment {

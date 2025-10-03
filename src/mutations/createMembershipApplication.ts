@@ -5,6 +5,8 @@ import sendMail, {sendRawMail} from '../utils/sendMail';
 import {SlackChannel} from '../utils/slack';
 import {isValid, printFormat} from 'iban-ts';
 import {config, MembershipT, MembershipTypeT} from '../queries/config';
+import prismaClient from '../utils/prismaClient';
+import {DonationSource} from '@prisma/client';
 
 export const Membership = builder.enumType('Membership', {
   values: Object.keys(MembershipT) as Array<keyof typeof MembershipT>,
@@ -27,6 +29,7 @@ const MembershipApplicationInput = builder.inputType('MembershipApplication', {
     accountHolderName: t.string(),
     accountHolderAddress: t.string(),
     accountHolderCity: t.string(),
+    showNameOnDonationsPage: t.boolean({required: false}),
   }),
 });
 
@@ -73,6 +76,18 @@ builder.mutationField('createMembershipApplication', (t) =>
       ]
         .filter(Boolean)
         .join(', ');
+
+      if (data.membership === 'foerderverein') {
+        await prismaClient.donation.create({
+          data: {
+            source: DonationSource.Membership,
+            amount: data.membershipFee,
+            email: data.email,
+            message: 'Fördermitgliedschaft',
+            name: data.showNameOnDonationsPage ? data.name : null,
+          },
+        });
+      }
 
       return Promise.all([
         scheduleTask('slackMessage', {

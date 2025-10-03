@@ -29,7 +29,9 @@ async function checkoutSessionCompleted(
 ) {
   const id = event.data.object.id;
   const createdAt = new Date(event.data.object.created);
-  const email = event.data.object.customer_email;
+  const email =
+    event.data.object.customer_email ||
+    event.data.object.customer_details?.email;
   const amount = event.data.object.amount_total;
   const name = event.data.object.custom_fields.find(
     (field) => field.key === 'name',
