@@ -10,7 +10,7 @@
     "generate:prisma": "prisma generate",
     "generate:mail": "maizzle build --config ./src/maizzle/config.production.js",
     "generate:proto": "cd src/proto && protoc --experimental_allow_proto3_optional --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=. ./*.proto --ts_proto_opt=esModuleInterop=true",
-    "generate:env": "bun dotenvx decrypt -f .env.enc",
+    "generate:env": "bun dotenvx decrypt -f .env.enc --stdout > .env",
     "update:db": "prisma db push",
     "mail": "maizzle serve --config ./src/maizzle/config.js",
     "update-interactive": "npx npm-check-updates --interactive --format group"
@@ -67,7 +67,7 @@
     "jsonwebtoken": "^9.0.2",
     "lodash.merge": "^4.6.2",
     "markdown-to-txt": "^2.0.1",
-    "nodemailer": "^7.0.9",
+    "nodemailer": "7.0.2",
     "normalize-url": "8",
     "object-inspect": "^1.13.4",
     "samlify": "^2.10.1",

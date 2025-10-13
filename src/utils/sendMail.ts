@@ -9,6 +9,7 @@ const sesClient = new SESv2Client({
 });
 
 const transport = nodemailer.createTransport({
+  // @ts-ignore
   SES: {sesClient, SendEmailCommand},
 });
 
