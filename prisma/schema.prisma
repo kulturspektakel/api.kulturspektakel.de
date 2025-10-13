@@ -374,6 +374,7 @@ enum DonationSource {
   Stripe
   Manual
   Membership
+  Other
 }
 
 enum OrderPayment {
