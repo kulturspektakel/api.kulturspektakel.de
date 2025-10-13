@@ -65,10 +65,17 @@ builder.mutationField('createMembershipApplication', (t) =>
           ? ` mit einem Förderbeitrag von ${membershipFee}`
           : '';
 
-      const sender =
-        data.membership === 'foerderverein'
-          ? ('Förderverein Kulturspektakel Gauting <foerderverein@kulturspektakel.de>' as const)
-          : ('Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>' as const);
+      let senderEmail = 'kasse@kulturspektakel.de';
+      if (data.membership === 'foerderverein') {
+        senderEmail = 'foerderverein@kulturspektakel.de';
+      }
+      let sender =
+        `Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>` as const;
+      if (data.membership === 'foerderverein') {
+        sender =
+          `Förderverein Kulturspektakel Gauting <foerderverein@kulturspektakel.de>` as const;
+      }
+
       const accountHolder = [
         data.accountHolderName,
         data.accountHolderAddress,
@@ -114,7 +121,7 @@ ${accountHolder ? `Kontoinhaber: ${accountHolder}` : ''}
           sender,
           {
             iban: ibanMasked,
-            senderEmail: sender,
+            senderEmail,
             membership: MembershipT[data.membership],
             membershipFee,
           },
