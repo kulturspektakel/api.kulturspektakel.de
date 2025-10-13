@@ -109,7 +109,7 @@ async function checkoutSessionCompleted(
   }
 
   await scheduleTask('slackMessage', {
-    channel: SlackChannel.dev,
+    channel: SlackChannel.zuschuesse,
     text: `💰 ${formattedAmount} Spende von ${nameWithFallback}`,
     blocks,
   });

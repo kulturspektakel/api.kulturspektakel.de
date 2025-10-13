@@ -91,7 +91,7 @@ builder.mutationField('createMembershipApplication', (t) =>
 
       return Promise.all([
         scheduleTask('slackMessage', {
-          channel: SlackChannel.dev,
+          channel: SlackChannel.zuschuesse,
           text: `${data.name} ist jetzt Mitglied im ${MembershipT[data.membership]}${supporter}`,
         }),
         sendRawMail({
