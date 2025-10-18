@@ -69,12 +69,11 @@ builder.mutationField('createMembershipApplication', (t) =>
       if (data.membership === 'foerderverein') {
         senderEmail = 'foerderverein@kulturspektakel.de';
       }
-      let sender =
-        `Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>` as const;
-      if (data.membership === 'foerderverein') {
-        sender =
-          `Förderverein Kulturspektakel Gauting <foerderverein@kulturspektakel.de>` as const;
-      }
+
+      const sender =
+        data.membership === 'foerderverein'
+          ? (`Förderverein Kulturspektakel Gauting <foerderverein@kulturspektakel.de>` as const)
+          : (`Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>` as const);
 
       const accountHolder = [
         data.accountHolderName,
