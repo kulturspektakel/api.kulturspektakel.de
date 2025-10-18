@@ -9,6 +9,7 @@ import saml from './routes/saml';
 import owntracks from './routes/owntracks';
 import slack from './routes/slack';
 import stripe from './routes/stripe';
+import tasksRoute from './routes/tasks';
 import {createYoga} from 'graphql-yoga';
 import {Context} from './context';
 import {sentry} from '@hono/sentry';
@@ -55,6 +56,7 @@ app.use(
 
 // Routes
 app.route('/slack', slack);
+app.route('/tasks', tasksRoute);
 app.route('/saml', saml);
 app.route('/owntracks', owntracks);
 app.route('/$$$', kultCash);
