@@ -52,7 +52,7 @@ export default ({name, bandname, missingDetails, eventYear}: {name: string, band
         <p style="margin: 0">Hey ${name},</p>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">wir freuen uns, dass ihr mit ${bandname} auf dem Kulturspektakel 2025 dabei seid. Mittlerweile ist das Line-Up für das Kulturspektakel vollständig und wir veröffentlichen es am 26.04.2025 auf unserer Webseite und Social Media.</p>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">${missingDetails}</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Ab Veröffentlichung könnt ihr gerne auch anfangen das Festival auf euren Kanälen anzukündigen. Dazu findet ihr unser Logo unter <a href="https://www.kulturspektakel.de/logo" style="color: rgb(225 46 46 / 1)">kulturspektakel.de/logo</a>. Wir haben auch ein Facebook-Event angelegt, dass ihr teilen könnt <a href="https://www.facebook.com/events/9539627082816360" style="color: rgb(225 46 46 / 1)">https://www.facebook.com/events/9539627082816360</a>.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Ab Veröffentlichung könnt ihr gerne auch anfangen das Festival auf euren Kanälen anzukündigen. Dazu findet ihr unser Logo unter <a href="https://www.kulturspektakel.de/logo" style="color: rgb(225, 46, 46)">kulturspektakel.de/logo</a>. Wir haben auch ein Facebook-Event angelegt, dass ihr teilen könnt <a href="https://www.facebook.com/events/9539627082816360" style="color: rgb(225, 46, 46)">https://www.facebook.com/events/9539627082816360</a>.</p>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Anfang Juli schicken wir euch nochmal eine Mail mit den Anfahrtswegen zu den Bühnen, genauen Zeiten für Get-In/Soundcheck und Kontakt zur Bühnenbetreuung zu. Wenn es in der Zwischenzeit noch Fragen gibt, meldet euch jederzeit bei uns per E-Mail.</p>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Grundsätzlich ist jede Band dafür verantwortlich ihre Instrumente und Backline selbst mitzubringen. Wir stellen PA, Mikrofonierung, Monitoring, Licht und FOH inklusive Techniker:innen. Falls ihr möchtet könnt ihr aber eigene In-Ear-Monitore, Mikrofone und Techniker:innen mitbringen.</p>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wir melden die Veranstaltung bei der GEMA an, falls ihr eine Setlist einreichen wollt könnt ihr das nach dem Auftritt selbständig über das GEMA-Onlineportal machen.</p>
@@ -69,11 +69,11 @@ Alex, Jonas, Simon, Gero und Daniel vom Kulturspektakel-Booking-Team</p>
           Festivalgelände: Germeringer Str. 41, Gauting
         </p>
         <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">
-          <a href="https://kulturspektakel.de" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Webseite</a>
+          <a href="https://kulturspektakel.de" class="hover-underline" style="color: rgb(225, 46, 46); text-decoration-line: none">Webseite</a>
           &bull;
-          <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Facebook</a>
+          <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: rgb(225, 46, 46); text-decoration-line: none">Facebook</a>
           &bull;
-          <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Instagram</a>
+          <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: rgb(225, 46, 46); text-decoration-line: none">Instagram</a>
         </p>
       </div>
     </div>

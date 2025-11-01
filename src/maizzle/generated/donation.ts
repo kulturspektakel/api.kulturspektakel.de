@@ -1,8 +1,8 @@
 // auto-generated file using yarn generate:mail
 // prettier-ignore
 
-export default ({membership, membershipFee, iban, senderEmail}: {membership: string, membershipFee: string, iban: string, senderEmail: string}) => ({
-  subject: `Mitgliedsantrag ${membership}`,
+export default ({link}: {link: string}) => ({
+  subject: `Spendenquittung und Ansteckpin`,
   html: `<!DOCTYPE html>
 <html lang="de" xmlns:v="urn:schemas-microsoft-com:vml">
   <head>
@@ -37,31 +37,24 @@ export default ({membership, membershipFee, iban, senderEmail}: {membership: str
           mso-line-height-rule: exactly;
         }
       </style>
-    <![endif]-->      <title>Mitgliedsantrag ${membership}</title>
+    <![endif]-->      <title>Spendenquittung und Ansteckpin</title>
     <style>.hover-underline:hover {
     text-decoration-line: underline
 }</style>  </head>
   <body style="font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; line-height: 1.5rem; word-break: break-word">      <div style="display: none">
-        Bestätigung deiner Mitgliedschaft
+        Wir haben unser Spendenziel erreicht
         &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847;
         &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy;
         &nbsp;
       </div>
-    <div role="article" aria-roledescription="email" aria-label="Mitgliedsantrag ${membership}" lang="de">
+    <div role="article" aria-roledescription="email" aria-label="Spendenquittung und Ansteckpin" lang="de">
       <div style="margin-left: auto; margin-right: auto; max-width: 640px">
-        <h1 style="margin-top: 0; font-size: 1.5rem; line-height: 2rem">Bestätigung der Mitgliedshaft</h1>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Herzlich Willkommen als neuestes Mitglied im
-<strong>${membership}</strong>! Mit deiner Mitgliedschaft bist du
-nun selbst ein Teil vom Kulturspektakel und trägst zum Fortbestehen unseres
-Festivals bei.</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Der Mitgliedsbeitrag in Höhe von ${membershipFee} wird jährlich
-von deinem Konto ${iban} per Lastschrift abgebucht. Als Mitglied
-erhältst auch du eine Einladung zu unserer jährlichen Mitgliederversammlung.</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
-E-Mail an ${senderEmail} möglich. Der Mitgliedsbeitrag des
-laufenden Jahres verbleibt in der Vereinskasse.</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Viele Grüße,<br>
-Das Team vom ${membership}</p>
+        <h1 style="margin-top: 0; font-size: 1.5rem; line-height: 2rem">Vielen Dank für deine Spende</h1>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Dank dir und vielen anderen Spender:innen, haben wir es geschafft und unser Spendenziel von 16.000 Euro erreicht! Das deckt den Verlust, den wir dieses Jahr auf Grund des schlechten Wetters gemacht haben und sorgt dafür, dass das Kult auch nächstes Jahr wie gewohnt stattfinden kann, lebendig und zugänglich für alle bleibt. Eure Spenden zeigen, wie stark der Zusammenhalt in unserer Community ist und wie sehr das Kult in Gauting und Umgebung verwurzelt ist.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Eine Spendenquittung zum Einreichen beim Finanzamt, kannst du dir hier herunterladen: ${link}</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wir möchten dir gerne auch noch einen Kult-Ansteckpin als Zeichen deiner Unterstützung schenken. Pro 25 Euro Spende gibt es einen Pin, bis maximal drei Pins. Wenn du einen (oder mehrere) Pins möchtest, antworte mit deiner Adresse und der gewünschten Anzahl auf diese Email und wir werfen die Pins in den nächsten Wochen bei dir ein.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Vielen Dank und beste Grüße,<br>
+Das Team vom Kulturspektakel</p>
       </div>
       <div style="margin-top: 1.5rem; text-align: center; font-size: 0.75rem; line-height: 1rem">
         <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" height="40" alt="Kulturspektakel Gauting" style="max-width: 100%; vertical-align: middle">
@@ -82,21 +75,14 @@ Das Team vom ${membership}</p>
   </body>
 </html>
 `,
-  text: `Bestätigung der Mitgliedshaft
+  text: `Vielen Dank für deine Spende
 
-Herzlich Willkommen als neuestes Mitglied im
-${membership}! Mit deiner Mitgliedschaft bist du
-nun selbst ein Teil vom Kulturspektakel und trägst zum Fortbestehen unseres
-Festivals bei.
+Dank dir und vielen anderen Spender:innen, haben wir es geschafft und unser Spendenziel von 16.000 Euro erreicht! Das deckt den Verlust, den wir dieses Jahr auf Grund des schlechten Wetters gemacht haben und sorgt dafür, dass das Kult auch nächstes Jahr wie gewohnt stattfinden kann, lebendig und zugänglich für alle bleibt. Eure Spenden zeigen, wie stark der Zusammenhalt in unserer Community ist und wie sehr das Kult in Gauting und Umgebung verwurzelt ist.
 
-Der Mitgliedsbeitrag in Höhe von ${membershipFee} wird jährlich
-von deinem Konto ${iban} per Lastschrift abgebucht. Als Mitglied
-erhältst auch du eine Einladung zu unserer jährlichen Mitgliederversammlung.
+Eine Spendenquittung zum Einreichen beim Finanzamt, kannst du dir hier herunterladen: ${link}
 
-Du kannst jederzeit aus dem Verein austreten. Das ist postalisch oder per
-E-Mail an ${senderEmail} möglich. Der Mitgliedsbeitrag des
-laufenden Jahres verbleibt in der Vereinskasse.
+Wir möchten dir gerne auch noch einen Kult-Ansteckpin als Zeichen deiner Unterstützung schenken. Pro 25 Euro Spende gibt es einen Pin, bis maximal drei Pins. Wenn du einen (oder mehrere) Pins möchtest, antworte mit deiner Adresse und der gewünschten Anzahl auf diese Email und wir werfen die Pins in den nächsten Wochen bei dir ein.
 
-Viele Grüße,
-Das Team vom ${membership}`
+Vielen Dank und beste Grüße,
+Das Team vom Kulturspektakel`
 });

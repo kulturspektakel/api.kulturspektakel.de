@@ -66,11 +66,11 @@ Das Kulturspektakel-Booking-Team</p>
           Festivalgelände: Germeringer Str. 41, Gauting
         </p>
         <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">
-          <a href="https://kulturspektakel.de" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Webseite</a>
+          <a href="https://kulturspektakel.de" class="hover-underline" style="color: rgb(225, 46, 46); text-decoration-line: none">Webseite</a>
           &bull;
-          <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Facebook</a>
+          <a href="https://facebook.com/kulturspektakel" class="hover-underline" style="color: rgb(225, 46, 46); text-decoration-line: none">Facebook</a>
           &bull;
-          <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: rgb(225 46 46 / 1); text-decoration-line: none">Instagram</a>
+          <a href="https://instagram.com/kulturspektakel" class="hover-underline" style="color: rgb(225, 46, 46); text-decoration-line: none">Instagram</a>
         </p>
       </div>
     </div>
