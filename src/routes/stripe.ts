@@ -46,7 +46,7 @@ async function checkoutSessionCompleted(
 
   await prismaClient.donation.create({
     data: {
-      id,
+      reference: id,
       createdAt,
       email,
       amount,
