@@ -1,4 +1,4 @@
-FROM oven/bun:1.1.27
+FROM oven/bun:1.3.1
 
 WORKDIR /usr/src/app
 COPY package.json bun.lock prisma ./
