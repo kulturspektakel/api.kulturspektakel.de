@@ -89,8 +89,8 @@ builder.mutationField('createMembershipApplication', (t) =>
             source: DonationSource.Membership,
             amount: data.membershipFee,
             email: data.email,
-            message: 'Fördermitgliedschaft',
             name: data.showNameOnDonationsPage ? data.name : null,
+            namePrivate: data.name,
           },
         });
       }
