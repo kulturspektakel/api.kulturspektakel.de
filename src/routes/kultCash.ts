@@ -233,11 +233,11 @@ app.post('/log', async (c) => {
             ? {
                 connectOrCreate: {
                   where: {
-                    id: order.crewCardId,
+                    id: new Uint8Array(order.crewCardId.buffer),
                   },
                   create: {
                     // only necessary if crewCard enrollment is not uploaded yet
-                    id: order.crewCardId,
+                    id: new Uint8Array(order.crewCardId.buffer),
                     // do not further enroll card
                     validUntil: new Date(),
                     enrolledAt: deviceTime,
@@ -322,7 +322,7 @@ app.post('/log', async (c) => {
 
   if (crewCardEnrollment) {
     const data = {
-      id: crewCardEnrollment.crewCardId,
+      id: new Uint8Array(crewCardEnrollment.crewCardId.buffer),
       validUntil: kultEpochToDate(crewCardEnrollment.validUntil),
       // resetting
       viewerId: null,
@@ -332,7 +332,7 @@ app.post('/log', async (c) => {
       enrolledAt: deviceTime,
     };
     await prismaClient.crewCard.upsert({
-      where: {id: crewCardEnrollment.crewCardId},
+      where: {id: new Uint8Array(crewCardEnrollment.crewCardId.buffer)},
       update: data,
       create: data,
     });
