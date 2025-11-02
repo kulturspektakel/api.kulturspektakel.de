@@ -374,6 +374,7 @@ model Donation {
   quittungName       String?
   quittungStreet     String?
   quittungCity       String?
+  amountPins         Int?
 
   @@index([reference])
 }

@@ -50,11 +50,12 @@ export default ({link}: {link: string}) => ({
     <div role="article" aria-roledescription="email" aria-label="Spendenquittung und Ansteckpin" lang="de">
       <div style="margin-left: auto; margin-right: auto; max-width: 640px">
         <h1 style="margin-top: 0; font-size: 1.5rem; line-height: 2rem">Vielen Dank für deine Spende</h1>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Dank dir und vielen anderen Spender:innen, haben wir es geschafft und unser Spendenziel von 16.000 Euro erreicht! Das deckt den Verlust, den wir dieses Jahr auf Grund des schlechten Wetters gemacht haben und sorgt dafür, dass das Kult auch nächstes Jahr wie gewohnt stattfinden kann, lebendig und zugänglich für alle bleibt. Eure Spenden zeigen, wie stark der Zusammenhalt in unserer Community ist und wie sehr das Kult in Gauting und Umgebung verwurzelt ist.</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Eine Spendenquittung zum Einreichen beim Finanzamt, kannst du dir hier herunterladen: ${link}</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wir möchten dir gerne auch noch einen Kult-Ansteckpin als Zeichen deiner Unterstützung schenken. Pro 25 Euro Spende gibt es einen Pin, bis maximal drei Pins. Wenn du einen (oder mehrere) Pins möchtest, antworte mit deiner Adresse und der gewünschten Anzahl auf diese Email und wir werfen die Pins in den nächsten Wochen bei dir ein.</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Vielen Dank und beste Grüße,<br>
-Das Team vom Kulturspektakel</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Dank dir und vielen anderen Spender:innen haben wir es geschafft und unser Spendenziel von 16.000 Euro erreicht! Das deckt den Verlust, den wir dieses Jahr auf Grund des schlechten Wetters gemacht haben und sorgt dafür, dass das Kult auch nächstes Jahr wie gewohnt stattfinden kann, lebendig und zugänglich für alle bleibt. Eure Spenden zeigen, wie stark der Zusammenhalt in unserer Community ist und wie sehr das Kult in Gauting und Umgebung verwurzelt ist. Vielen Dank dafür!</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wir möchten dir gerne auch noch einen Kult-Ansteckpin als Zeichen deiner Unterstützung schenken. Pro 25 Euro Spende gibt es einen Pin, bis maximal drei Pins. Wir werden die Pins in den nächsten Wochen verteilen. Außerdem kannst du dir eine Spendenquittung zum Einreichen beim Finanzamt herunterladen.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Für die Pins und Spendenquittung benötigen wir noch deine Postadresse. Diese kannst du unter folgendem Link eintragen: ${link}</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wenn du Fragen hast, melde dich gerne jederzeit bei uns mit einer Antwort auf diese E-Mail.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Vielen Dank und beste Grüße<br>
+das Team vom Kulturspektakel</p>
       </div>
       <div style="margin-top: 1.5rem; text-align: center; font-size: 0.75rem; line-height: 1rem">
         <img src="https://api.kulturspektakel.de/public/maizzle/logo.png" width="40" height="40" alt="Kulturspektakel Gauting" style="max-width: 100%; vertical-align: middle">
@@ -77,12 +78,14 @@ Das Team vom Kulturspektakel</p>
 `,
   text: `Vielen Dank für deine Spende
 
-Dank dir und vielen anderen Spender:innen, haben wir es geschafft und unser Spendenziel von 16.000 Euro erreicht! Das deckt den Verlust, den wir dieses Jahr auf Grund des schlechten Wetters gemacht haben und sorgt dafür, dass das Kult auch nächstes Jahr wie gewohnt stattfinden kann, lebendig und zugänglich für alle bleibt. Eure Spenden zeigen, wie stark der Zusammenhalt in unserer Community ist und wie sehr das Kult in Gauting und Umgebung verwurzelt ist.
+Dank dir und vielen anderen Spender:innen haben wir es geschafft und unser Spendenziel von 16.000 Euro erreicht! Das deckt den Verlust, den wir dieses Jahr auf Grund des schlechten Wetters gemacht haben und sorgt dafür, dass das Kult auch nächstes Jahr wie gewohnt stattfinden kann, lebendig und zugänglich für alle bleibt. Eure Spenden zeigen, wie stark der Zusammenhalt in unserer Community ist und wie sehr das Kult in Gauting und Umgebung verwurzelt ist. Vielen Dank dafür!
 
-Eine Spendenquittung zum Einreichen beim Finanzamt, kannst du dir hier herunterladen: ${link}
+Wir möchten dir gerne auch noch einen Kult-Ansteckpin als Zeichen deiner Unterstützung schenken. Pro 25 Euro Spende gibt es einen Pin, bis maximal drei Pins. Wir werden die Pins in den nächsten Wochen verteilen. Außerdem kannst du dir eine Spendenquittung zum Einreichen beim Finanzamt herunterladen.
 
-Wir möchten dir gerne auch noch einen Kult-Ansteckpin als Zeichen deiner Unterstützung schenken. Pro 25 Euro Spende gibt es einen Pin, bis maximal drei Pins. Wenn du einen (oder mehrere) Pins möchtest, antworte mit deiner Adresse und der gewünschten Anzahl auf diese Email und wir werfen die Pins in den nächsten Wochen bei dir ein.
+Für die Pins und Spendenquittung benötigen wir noch deine Postadresse. Diese kannst du unter folgendem Link eintragen: ${link}
 
-Vielen Dank und beste Grüße,
-Das Team vom Kulturspektakel`
+Wenn du Fragen hast, melde dich gerne jederzeit bei uns mit einer Antwort auf diese E-Mail.
+
+Vielen Dank und beste Grüße
+das Team vom Kulturspektakel`
 });

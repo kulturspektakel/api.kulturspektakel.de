@@ -20,10 +20,9 @@ async function main() {
   });
 
   for (let donation of donations) {
-    console.log(`Sending email to ${donation.email}`);
     await sendMail(
       'donation',
-      'Kulturspektakel Gauting <info@kulturspektakel.de>',
+      'Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>',
       {
         link: `https://www.kulturspektakel.de/spenden/quittung/${donation.id}`,
       },
@@ -40,6 +39,7 @@ async function main() {
         sentConfirmationAt: new Date(),
       },
     });
+    console.log(`Sending email to ${donation.email}`);
   }
 }
 

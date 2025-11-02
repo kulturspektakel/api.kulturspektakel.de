@@ -175,7 +175,7 @@ dem Auftritt statt.
 Verhinderung
 
 Eine Verhinderung ist uns umgehend mitzuteilen. Im Vorfeld der Veranstaltung
-bitte per E-Mail an &#98;&#111;&#111;&#107;&#x69;&#110;&#103;&#x40;&#107;&#x75;&#108;&#x74;&#x75;&#114;&#115;&#x70;&#x65;&#107;&#x74;&#97;&#x6b;&#x65;&#108;&#46;&#100;&#x65;. Bei kurzfristigen
+bitte per E-Mail an &#98;&#111;&#111;&#107;&#x69;&#x6e;&#103;&#64;&#x6b;&#117;&#x6c;&#116;&#117;&#x72;&#115;&#112;&#x65;&#x6b;&#116;&#x61;&#107;&#101;&#x6c;&#x2e;&#x64;&#101;. Bei kurzfristigen
 Verhinderungen unbedingt zusätzlich telefonisch Bescheid geben. Jegliche
 Ansprüche entfallen, sofern der Auftritt nicht
 stattfinden kann und nichts anderweitiges vereinbart wurde.
@@ -224,7 +224,7 @@ Foto- und Videoaufnahmen
 Auf dem Festival, inklusive der Auftritte auf den Bühnen, machen wir
 Foto- und Videoaufnahmen, die wir auf unserer Webseite und
 Social-Media-Kanälen zur Bewerbung der Veranstaltung nutzen. Wenn es dazu
-Fragen gibt, wendet euch an &#112;&#x72;&#x65;&#x73;&#115;&#x65;&#64;&#107;&#x75;&#x6c;&#116;&#117;&#114;&#115;&#112;&#101;&#x6b;&#x74;&#97;&#107;&#101;&#108;&#x2e;&#100;&#x65;. Eigene
+Fragen gibt, wendet euch an &#x70;&#x72;&#101;&#x73;&#115;&#x65;&#x40;&#x6b;&#117;&#x6c;&#116;&#117;&#114;&#x73;&#112;&#x65;&#107;&#116;&#x61;&#x6b;&#x65;&#x6c;&#x2e;&#100;&#x65;. Eigene
 Foto-/Videograf:innen könnt ihr gerne mitbringen.
 
 Anfahrt
