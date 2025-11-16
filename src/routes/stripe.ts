@@ -5,6 +5,7 @@ import {scheduleTask} from '../tasks';
 import {SlackChannel} from '../utils/slack';
 import prismaClient from '../utils/prismaClient';
 import {DonationSource} from '@prisma/client';
+import sendMail from '../utils/sendMail';
 
 const app = new Hono();
 
@@ -36,22 +37,18 @@ async function checkoutSessionCompleted(
   const name = event.data.object.custom_fields.find(
     (field) => field.key === 'name',
   )?.text?.value;
-  const message = event.data.object.custom_fields.find(
-    (field) => field.key === 'nachricht',
-  )?.text?.value;
 
   if (!amount) {
     throw new Error('Amount is missing');
   }
 
-  await prismaClient.donation.create({
+  const donation = await prismaClient.donation.create({
     data: {
       reference: id,
       createdAt,
       email,
       amount,
       name,
-      message,
       source: DonationSource.Stripe,
     },
   });
@@ -63,56 +60,32 @@ async function checkoutSessionCompleted(
   const formattedAmount = currencyFormat.format(amount / 100);
   const nameWithFallback = name || 'Unbekannt';
 
-  const blocks = [
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `💰 ${formattedAmount} Spende von *${nameWithFallback}*`,
-      },
-    },
-  ];
-
-  if (message) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `> ${message}`,
-      },
-    });
-  }
-
-  const {
-    _sum: {amount: totalAmount = 0},
-  } = await prismaClient.donation.aggregate({
-    _sum: {
-      amount: true,
-    },
-  });
-
-  if (totalAmount) {
-    const goal = 1600000;
-    const percentage = Math.round((totalAmount / goal) * 100);
-    const full = Math.floor(percentage / 10);
-
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text:
-          '▄'.repeat(full) +
-          '▁'.repeat(10 - full) +
-          ` ${percentage}% (Insgesamt: ${currencyFormat.format(totalAmount / 100)})`,
-      },
-    });
-  }
-
   await scheduleTask('slackMessage', {
     channel: SlackChannel.zuschuesse,
     text: `💰 ${formattedAmount} Spende von ${nameWithFallback}`,
-    blocks,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `💰 ${formattedAmount} Spende von *${nameWithFallback}*`,
+        },
+      },
+    ],
   });
+
+  if (email) {
+    await sendMail(
+      'donation',
+      'Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>',
+      {
+        link: `https://www.kulturspektakel.de/spenden/quittung/${donation.id}`,
+      },
+      {
+        to: email,
+      },
+    );
+  }
 }
 
 export default app;

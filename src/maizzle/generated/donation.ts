@@ -2,7 +2,7 @@
 // prettier-ignore
 
 export default ({link}: {link: string}) => ({
-  subject: `Spendenquittung und Ansteckpin`,
+  subject: `Spende`,
   html: `<!DOCTYPE html>
 <html lang="de" xmlns:v="urn:schemas-microsoft-com:vml">
   <head>
@@ -37,23 +37,22 @@ export default ({link}: {link: string}) => ({
           mso-line-height-rule: exactly;
         }
       </style>
-    <![endif]-->      <title>Spendenquittung und Ansteckpin</title>
+    <![endif]-->      <title>Spende</title>
     <style>.hover-underline:hover {
     text-decoration-line: underline
 }</style>  </head>
   <body style="font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; line-height: 1.5rem; word-break: break-word">      <div style="display: none">
-        Wir haben unser Spendenziel erreicht
+        Vielen Dank für deine Spende
         &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847;
         &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy; &shy;
         &nbsp;
       </div>
-    <div role="article" aria-roledescription="email" aria-label="Spendenquittung und Ansteckpin" lang="de">
+    <div role="article" aria-roledescription="email" aria-label="Spende" lang="de">
       <div style="margin-left: auto; margin-right: auto; max-width: 640px">
         <h1 style="margin-top: 0; font-size: 1.5rem; line-height: 2rem">Vielen Dank für deine Spende</h1>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Dank dir und vielen anderen Spender:innen haben wir es geschafft und unser Spendenziel von 16.000 Euro erreicht! Das deckt den Verlust, den wir dieses Jahr auf Grund des schlechten Wetters gemacht haben und sorgt dafür, dass das Kult auch nächstes Jahr wie gewohnt stattfinden kann, lebendig und zugänglich für alle bleibt. Eure Spenden zeigen, wie stark der Zusammenhalt in unserer Community ist und wie sehr das Kult in Gauting und Umgebung verwurzelt ist. Vielen Dank dafür!</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wir möchten dir gerne auch noch einen Kult-Ansteckpin als Zeichen deiner Unterstützung schenken. Pro 25 Euro Spende gibt es einen Pin, bis maximal drei Pins. Wir werden die Pins in den nächsten Wochen verteilen. Außerdem kannst du dir eine Spendenquittung zum Einreichen beim Finanzamt herunterladen.</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Für die Pins und Spendenquittung benötigen wir noch deine Postadresse. Diese kannst du unter folgendem Link eintragen: ${link}</p>
-<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wenn du Fragen hast, melde dich gerne jederzeit bei uns mit einer Antwort auf diese E-Mail.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Deine Spende trägt dazu bei, dass das Kult weiterhin lebendig und zugänglich bleibt. Das wissen wir sehr zu schätzen und möchten uns ausdrücklich dafür bedanken. Wir freuen uns dich auch beim nächsten Kulturspektakel wieder zu sehen.</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Wenn du eine Spendenquittung benötigst, kannst du sie unter folgendem Link herunterladen: ${link}</p>
+<p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Falls du sonst noch Fragen hast, melde dich gerne jederzeit bei uns mit einer Antwort auf diese E-Mail.</p>
 <p style="margin: 0; margin-top: 0.5rem; margin-bottom: 0">Vielen Dank und beste Grüße<br>
 das Team vom Kulturspektakel</p>
       </div>
@@ -78,13 +77,11 @@ das Team vom Kulturspektakel</p>
 `,
   text: `Vielen Dank für deine Spende
 
-Dank dir und vielen anderen Spender:innen haben wir es geschafft und unser Spendenziel von 16.000 Euro erreicht! Das deckt den Verlust, den wir dieses Jahr auf Grund des schlechten Wetters gemacht haben und sorgt dafür, dass das Kult auch nächstes Jahr wie gewohnt stattfinden kann, lebendig und zugänglich für alle bleibt. Eure Spenden zeigen, wie stark der Zusammenhalt in unserer Community ist und wie sehr das Kult in Gauting und Umgebung verwurzelt ist. Vielen Dank dafür!
+Deine Spende trägt dazu bei, dass das Kult weiterhin lebendig und zugänglich bleibt. Das wissen wir sehr zu schätzen und möchten uns ausdrücklich dafür bedanken. Wir freuen uns dich auch beim nächsten Kulturspektakel wieder zu sehen.
 
-Wir möchten dir gerne auch noch einen Kult-Ansteckpin als Zeichen deiner Unterstützung schenken. Pro 25 Euro Spende gibt es einen Pin, bis maximal drei Pins. Wir werden die Pins in den nächsten Wochen verteilen. Außerdem kannst du dir eine Spendenquittung zum Einreichen beim Finanzamt herunterladen.
+Wenn du eine Spendenquittung benötigst, kannst du sie unter folgendem Link herunterladen: ${link}
 
-Für die Pins und Spendenquittung benötigen wir noch deine Postadresse. Diese kannst du unter folgendem Link eintragen: ${link}
-
-Wenn du Fragen hast, melde dich gerne jederzeit bei uns mit einer Antwort auf diese E-Mail.
+Falls du sonst noch Fragen hast, melde dich gerne jederzeit bei uns mit einer Antwort auf diese E-Mail.
 
 Vielen Dank und beste Grüße
 das Team vom Kulturspektakel`
