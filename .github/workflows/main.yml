@@ -32,7 +32,9 @@ jobs:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS_JSON }}'
 
       - name: 'Build Docker image'
-        run: gcloud builds submit --config cloudbuild.yaml .
+        run: |
+          bun generate:prisma
+          gcloud builds submit --config cloudbuild.yaml .
 
       - name: 'Deploy container'
         run: gcloud run deploy api --image europe-west1-docker.pkg.dev/gmail-reminder-api/cloud-run-source-deploy/api:latest --env-vars-file ./.env.json --region europe-west1 --allow-unauthenticated
