@@ -1,7 +1,6 @@
 import {GraphQLError} from 'graphql';
 import {builder} from '../pothos/builder';
 import {scheduleTask} from '../tasks';
-import sendMail, {sendRawMail} from '../utils/sendMail';
 import {SlackChannel} from '../utils/slack';
 import {isValid, printFormat} from 'iban-ts';
 import {config, MembershipT, MembershipTypeT} from '../queries/config';
@@ -100,7 +99,7 @@ builder.mutationField('createMembershipApplication', (t) =>
           channel: SlackChannel.zuschuesse,
           text: `${data.name} ist jetzt Mitglied im ${MembershipT[data.membership]}${supporter}`,
         }),
-        sendRawMail({
+        scheduleTask('sendEmail', {
           from: 'Kulturspektakel Gauting <info@kulturspektakel.de>',
           to: sender,
           subject: `Mitgliedsantrag ${data.name}`,
@@ -115,19 +114,17 @@ IBAN: ${data.iban}
 ${accountHolder ? `Kontoinhaber: ${accountHolder}` : ''}
 `,
         }),
-        sendMail(
-          'confirmMembership',
-          sender,
-          {
+        scheduleTask('sendEmail', {
+          template: 'confirmMembership',
+          from: sender,
+          variables: {
             iban: ibanMasked,
             senderEmail,
             membership: MembershipT[data.membership],
             membershipFee,
           },
-          {
-            to: data.email,
-          },
-        ),
+          to: data.email,
+        }),
       ])
         .then(() => true)
         .catch(() => false);
