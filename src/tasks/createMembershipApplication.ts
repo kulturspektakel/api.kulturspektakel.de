@@ -1,6 +1,5 @@
 import {JobHelpers} from 'graphile-worker';
 import {scheduleTask} from '.';
-import sendMail, {sendRawMail} from '../utils/sendMail';
 import {SlackChannel} from '../utils/slack';
 import {isValid, printFormat} from 'iban-ts';
 import {assertNever} from '@pothos/core';
@@ -56,7 +55,7 @@ export default async function (
       channel: SlackChannel.zuschuesse,
       text: `${data.name} ist jetzt Mitglied im ${getLegalName(data.membership)}${supporter}`,
     }),
-    sendRawMail({
+    scheduleTask('sendEmail', {
       from: 'Kulturspektakel Gauting <info@kulturspektakel.de>',
       to: sender,
       subject: `Mitgliedsantrag ${data.name}`,
@@ -71,19 +70,17 @@ IBAN: ${data.iban}
 ${accountHolder ? `Kontoinhaber: ${accountHolder}` : ''}
 `,
     }),
-    sendMail(
-      'confirmMembership',
-      sender,
-      {
+    scheduleTask('sendEmail', {
+      from: sender,
+      to: data.email,
+      template: 'confirmMembership',
+      variables: {
         iban: ibanMasked,
         senderEmail,
         membership: getLegalName(data.membership),
         membershipFee,
       },
-      {
-        to: data.email,
-      },
-    ),
+    }),
   ]);
 }
 

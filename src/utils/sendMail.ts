@@ -8,27 +8,15 @@ const sesClient = new SESv2Client({
   region: 'eu-west-2',
 });
 
-const transport = nodemailer.createTransport({
-  // @ts-ignore
+export const transport = nodemailer.createTransport({
   SES: {sesClient, SendEmailCommand},
 });
 
-type From =
+export type From =
   | 'Kulturspektakel Gauting Booking <booking@kulturspektakel.de>'
   | 'Kulturspektakel Gauting <info@kulturspektakel.de>'
   | 'Förderverein Kulturspektakel Gauting <foerderverein@kulturspektakel.de>'
   | 'Kulturspektakel Gauting Kasse <kasse@kulturspektakel.de>';
-
-export function sendRawMail(
-  data: Mail.Options & {
-    from: From;
-    to: string;
-    subject: string;
-    text: string;
-  },
-) {
-  return transport.sendMail(data);
-}
 
 export default function <T extends keyof typeof mails>(
   mail: T,

@@ -23,6 +23,7 @@ import nonceRequestInvalidate from './nonceRequestInvalidate';
 import {sleep} from 'graphile-worker/dist/lib';
 import badgeAwarded from './badgeAwarded';
 import createMembershipApplication from './createMembershipApplication';
+import sendEmail from './sendEmail';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -39,6 +40,7 @@ const taskList = {
   nonceRequestInvalidate,
   badgeAwarded,
   createMembershipApplication,
+  sendEmail,
 };
 
 const runnerOptions: RunnerOptions = {
@@ -87,7 +89,7 @@ export const scheduleTask = async <T extends keyof typeof taskList>(
     }));
 
   return workerUtils.addJob(identifier, payload as any, {
-    maxAttempts: 1,
+    maxAttempts: 3,
     ...spec,
   });
 };
