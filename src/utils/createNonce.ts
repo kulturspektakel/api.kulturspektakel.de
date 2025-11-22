@@ -2,7 +2,7 @@ import {add} from 'date-fns';
 import {scheduleTask} from '../tasks';
 import prismaClient from './prismaClient';
 import {ApiError} from './errorReporting';
-import {NonceRequestStatus} from '@prisma/client';
+import {NonceRequestStatus} from '../../types/prisma/enums';
 
 const NONCE_LIFETIME_MINUTES = 5;
 

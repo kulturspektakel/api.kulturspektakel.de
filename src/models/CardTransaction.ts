@@ -1,6 +1,6 @@
 import {builder} from '../pothos/builder';
-import {CardTransactionType as CardTransactionTypeValues} from '@prisma/client';
 import {Transactionable} from './Transactionable';
+import {CardTransactionType as CardTransactionTypeValues} from '../../types/prisma/enums';
 
 type TransactionData = {
   depositAfter: number;

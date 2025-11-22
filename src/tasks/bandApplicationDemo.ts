@@ -3,7 +3,7 @@ import prismaClient from '../utils/prismaClient';
 import bandcamp from 'bandcamp-scraper';
 import env from '../utils/env';
 import {promisify} from 'util';
-import {DemoEmbedType} from '@prisma/client';
+import {DemoEmbedType} from '../../types/prisma/enums';
 
 export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const bandApplication = await prismaClient.bandApplication.findUniqueOrThrow({

@@ -1,4 +1,4 @@
-import {EventType} from '@prisma/client';
+import {EventType} from '../../types/prisma/enums';
 import {builder} from '../pothos/builder';
 
 export default builder.enumType('EventType', {

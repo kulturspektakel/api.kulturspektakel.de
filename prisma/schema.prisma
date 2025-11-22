@@ -1,18 +1,17 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider        = "prisma-client"
+  output          = "../types/prisma"
   previewFeatures = ["fullTextSearchPostgres", "postgresqlExtensions"]
-  binaryTargets   = ["native"]
 }
 
 generator pothos {
   provider     = "prisma-pothos-types"
-  clientOutput = "@prisma/client"
+  clientOutput = "./prisma"
+  output       = "../types/pothos.ts"
 }
 
 datasource db {
   provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  directUrl  = env("DIRECT_URL")
   extensions = [pg_trgm, unaccent, pgcrypto, uuid_ossp(map: "uuid-ossp", schema: "public"), citext]
 }
 

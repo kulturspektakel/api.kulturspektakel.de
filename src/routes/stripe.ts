@@ -4,8 +4,8 @@ import env from '../utils/env';
 import {scheduleTask} from '../tasks';
 import {SlackChannel} from '../utils/slack';
 import prismaClient from '../utils/prismaClient';
-import {DonationSource} from '@prisma/client';
 import sendMail from '../utils/sendMail';
+import {DonationSource} from '../../types/prisma/enums';
 
 const app = new Hono();
 

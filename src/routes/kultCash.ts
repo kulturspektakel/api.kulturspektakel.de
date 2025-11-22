@@ -5,12 +5,7 @@ import {
   LogMessage_Order_PaymentMethod,
 } from '../proto/logmessage';
 import {DeviceConfig} from '../proto/config';
-import {
-  OrderPayment,
-  CardTransactionType,
-  Prisma,
-  ProductList,
-} from '@prisma/client';
+
 import UnreachableCaseError from '../utils/UnreachableCaseError';
 import {subMinutes, addDays, isBefore, differenceInDays} from 'date-fns';
 import {tzOffset} from '@date-fns/tz';
@@ -21,6 +16,12 @@ import {AllLists} from '../proto/configs';
 import {Hono, Context} from 'hono';
 import {sendCrewCardEnrollmentMessage} from '../utils/crewCardEnrollment';
 import {scheduleTask} from '../tasks';
+import {
+  ProductList,
+  Prisma,
+  OrderPayment,
+  CardTransactionType,
+} from '../../types/prisma/client';
 
 const app = new Hono();
 

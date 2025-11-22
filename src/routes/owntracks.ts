@@ -1,4 +1,3 @@
-import {Viewer} from '@prisma/client';
 import env from '../utils/env';
 import {createHash} from 'crypto';
 import prismaClient from '../utils/prismaClient';
@@ -7,6 +6,7 @@ import {Jimp} from 'jimp';
 import viewerIdFromToken from '../utils/viewerIdFromToken';
 import {Hono} from 'hono';
 import {ApiError} from '../utils/errorReporting';
+import {Viewer} from '../../types/prisma/client';
 
 const app = new Hono();
 

@@ -1,4 +1,4 @@
-import {Viewer} from '@prisma/client';
+import {Viewer} from '../../types/prisma/client';
 import {ParsedToken} from '../routes/auth';
 import prismaClient from './prismaClient';
 import viewerIdFromToken from './viewerIdFromToken';

@@ -1,13 +1,5 @@
 import merge from 'lodash.merge';
-import {
-  Device,
-  Order,
-  OrderItem,
-  OrderPayment,
-  Prisma,
-  Product,
-  ProductList,
-} from '@prisma/client';
+
 import {
   add,
   differenceInHours,
@@ -21,6 +13,15 @@ import prismaClient from '../utils/prismaClient';
 import OrderPaymentEnum from './OrderPayment';
 import TimeGrouping from './TimeGrouping';
 import {GraphQLError} from 'graphql';
+import {
+  Device,
+  Order,
+  OrderItem,
+  OrderPayment,
+  Prisma,
+  Product,
+  ProductList,
+} from '../../types/prisma/client';
 
 type OrderItems = Array<OrderItem & {order: Order}>;
 

@@ -1,7 +1,7 @@
-import {NonceRequestStatus} from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import createNonce from '../utils/createNonce';
+import {NonceRequestStatus} from '../../types/prisma/enums';
 
 builder.mutationField('nonceFromRequest', (t) =>
   t.field({

@@ -2,11 +2,11 @@ import SchemaBuilder from '@pothos/core';
 import PrismaPlugin from '@pothos/plugin-prisma';
 import RelayPlugin from '@pothos/plugin-relay';
 import prismaClient from '../utils/prismaClient';
-import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import {GraphQLDate, GraphQLDateTime} from 'graphql-scalars';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import {Context} from '../context';
 import {GraphQLError} from 'graphql';
+import PrismaTypes, {getDatamodel} from '../../types/pothos';
 
 export const builder = new SchemaBuilder<{
   DefaultFieldNullability: false;
@@ -30,6 +30,7 @@ export const builder = new SchemaBuilder<{
   defaultFieldNullability: false,
   plugins: [ScopeAuthPlugin, PrismaPlugin, RelayPlugin],
   prisma: {
+    dmmf: getDatamodel(),
     client: prismaClient,
     filterConnectionTotalCount: true,
   },

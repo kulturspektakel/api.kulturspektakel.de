@@ -6,7 +6,7 @@ import {SlackChannel} from '../utils/slack';
 import {isValid, printFormat} from 'iban-ts';
 import {config, MembershipT, MembershipTypeT} from '../queries/config';
 import prismaClient from '../utils/prismaClient';
-import {DonationSource} from '@prisma/client';
+import {DonationSource} from '../../types/prisma/enums';
 
 export const Membership = builder.enumType('Membership', {
   values: Object.keys(MembershipT) as Array<keyof typeof MembershipT>,

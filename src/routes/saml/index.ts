@@ -4,9 +4,9 @@ import prismaClient from '../../utils/prismaClient';
 import env from '../../utils/env';
 import {readFileSync} from 'fs';
 import {join} from 'path';
-import {Viewer} from '@prisma/client';
 import {Hono, Context} from 'hono';
 import {html} from 'hono/html';
+import {Viewer} from '../../../types/prisma/client';
 
 const app = new Hono();
 

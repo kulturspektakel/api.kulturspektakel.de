@@ -1,4 +1,4 @@
-import {DeviceType} from '@prisma/client';
+import {DeviceType} from '../../types/prisma/enums';
 import {builder} from '../pothos/builder';
 
 export default builder.enumType('DeviceType', {

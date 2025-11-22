@@ -1,9 +1,9 @@
 import slugify from 'slugify';
 import prismaClient from '../src/utils/prismaClient';
-import {Prisma} from '@prisma/client';
 import {addDays} from 'date-fns';
 import readGoogleSheet from '../src/utils/readGoogleSheet';
 import {TZDateMini} from '@date-fns/tz';
+import {Prisma} from '../types/prisma/client';
 
 const EVENT_ID = 'kult2025';
 const SHEET_ID = '------';

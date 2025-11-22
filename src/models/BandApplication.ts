@@ -1,9 +1,3 @@
-import {
-  HeardAboutBookingFrom as HeardAboutBookingFromValues,
-  GenreCategory as GenreCategoryValues,
-  DemoEmbedType as DemoEmbedTypeValues,
-  BandRepertoire as BandRepertoireValues,
-} from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import './BandApplicationRating';
@@ -11,6 +5,12 @@ import PreviouslyPlayed from './PreviouslyPlayed';
 import {isPast} from 'date-fns';
 import viewerIdFromToken from '../utils/viewerIdFromToken';
 import sanitizeTSQuery from '../utils/sanitizeTSQuery';
+import {
+  HeardAboutBookingFrom as HeardAboutBookingFromValues,
+  GenreCategory as GenreCategoryValues,
+  DemoEmbedType as DemoEmbedTypeValues,
+  BandRepertoire as BandRepertoireValues,
+} from '../../types/prisma/enums';
 
 export const HeardAboutBookingFrom = builder.enumType('HeardAboutBookingFrom', {
   values: Object.values(HeardAboutBookingFromValues),

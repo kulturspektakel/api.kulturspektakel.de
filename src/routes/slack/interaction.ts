@@ -1,4 +1,3 @@
-import {NonceRequestStatus} from '@prisma/client';
 import nuclinoTokenGeneration from '../../utils/nuclinoTokenGeneration';
 import prismaClient from '../../utils/prismaClient';
 import {generateTwoFactorCodeResponse} from './twofactor';
@@ -7,6 +6,7 @@ import {
   assignCrewCard,
   showCrewCardAssignmentModal,
 } from '../../utils/crewCardEnrollment';
+import {NonceRequestStatus} from '../../../types/prisma/enums';
 
 const app = new Hono();
 

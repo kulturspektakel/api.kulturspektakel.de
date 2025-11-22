@@ -1,13 +1,13 @@
-import {
-  CardTransaction as CardTransactionT,
-  Device,
-  Prisma,
-} from '@prisma/client';
 import {isAfter} from 'date-fns';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import CardTransaction, {CardTransactionType} from './CardTransaction';
 import {GraphQLError} from 'graphql';
+import {
+  Device,
+  CardTransaction as CardTransactionT,
+  Prisma,
+} from '../../types/prisma/client';
 
 export class Transactionable {}
 

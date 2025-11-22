@@ -1,4 +1,3 @@
-import {Prisma} from '@prisma/client';
 import {builder} from '../pothos/builder';
 import prismaClient from '../utils/prismaClient';
 import {DirectusPixelImage, PixelImage} from './Asset';
@@ -8,6 +7,7 @@ import {
   PrismaModelTypes,
   PrismaObjectFieldBuilder,
 } from '@pothos/plugin-prisma';
+import {Prisma} from '../../types/prisma/client';
 
 const MarkdownString = builder
   .objectRef<{
