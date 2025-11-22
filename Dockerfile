@@ -8,5 +8,5 @@ COPY --from=node:20 /usr/local/bin/node /usr/local/bin/node
 
 COPY . .
 RUN bun generate:prisma
-
+ENV NODE_ENV production
 CMD ["bun", "run", "src/index.ts"]
