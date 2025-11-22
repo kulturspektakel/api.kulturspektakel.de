@@ -22,6 +22,7 @@ import gmailSubscription from './gmailSubscription';
 import nonceRequestInvalidate from './nonceRequestInvalidate';
 import {sleep} from 'graphile-worker/dist/lib';
 import badgeAwarded from './badgeAwarded';
+import createMembershipApplication from './createMembershipApplication';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -37,6 +38,7 @@ const taskList = {
   gmailSubscription,
   nonceRequestInvalidate,
   badgeAwarded,
+  createMembershipApplication,
 };
 
 const runnerOptions: RunnerOptions = {
