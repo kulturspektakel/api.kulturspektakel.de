@@ -24,6 +24,7 @@ import {sleep} from 'graphile-worker/dist/lib';
 import badgeAwarded from './badgeAwarded';
 import createMembershipApplication from './createMembershipApplication';
 import sendEmail from './sendEmail';
+import createBandApplication from './createBandApplication';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -41,6 +42,7 @@ const taskList = {
   badgeAwarded,
   createMembershipApplication,
   sendEmail,
+  createBandApplication,
 };
 
 const runnerOptions: RunnerOptions = {
