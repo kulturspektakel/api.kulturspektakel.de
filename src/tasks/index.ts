@@ -46,9 +46,10 @@ const taskList = {
 };
 
 const runnerOptions: RunnerOptions = {
-  connectionString: env.DIRECT_URL,
+  connectionString: env.DATABASE_URL,
   concurrency: 5,
   taskList: taskList as any,
+  noPreparedStatements: true,
   events,
   crontab: [
     '*/5 * * * * nuclinoUpdateMessage ?max=1&jobKey=nuclinoUpdateMessage&jobKeyMode=replace',
