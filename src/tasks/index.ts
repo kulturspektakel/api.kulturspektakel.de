@@ -72,7 +72,6 @@ export async function restart() {
 
 export default async function () {
   runner = await run(runnerOptions);
-  runner.promise.catch(console.error).finally(restart);
 }
 
 type Payload<T extends keyof typeof taskList> = Parameters<
