@@ -47,7 +47,7 @@ const taskList = {
 
 const runnerOptions: RunnerOptions = {
   connectionString: env.DIRECT_URL,
-  concurrency: 1,
+  concurrency: 5,
   taskList: taskList as any,
   events,
   crontab: [
@@ -71,7 +71,7 @@ export async function restart() {
 
 export default async function () {
   runner = await run(runnerOptions);
-  runner.promise.finally(restart);
+  runner.promise.catch(console.error).finally(restart);
 }
 
 type Payload<T extends keyof typeof taskList> = Parameters<

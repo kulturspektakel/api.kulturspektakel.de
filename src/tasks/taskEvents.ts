@@ -18,6 +18,7 @@ emitter.addListener('worker:fatalError', restart);
 emitter.addListener('gracefulShutdown', restart);
 
 [
+  'job:error' as const,
   'pool:listen:error' as const,
   'pool:listen:release' as const,
   'pool:release' as const,
