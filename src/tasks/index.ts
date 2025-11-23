@@ -93,7 +93,3 @@ export const scheduleTask = async <T extends keyof typeof taskList>(
     ...spec,
   });
 };
-
-await scheduleTask('gmailSubscription', {
-  account: 'booking@kulturspektakel.de',
-});
