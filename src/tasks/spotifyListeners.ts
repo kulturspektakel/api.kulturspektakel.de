@@ -22,9 +22,14 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   const match = data.match(
     /data-testid=\"monthly-listeners-label\">([0-9,]+) monthly/,
   );
-
+  let spotifyMonthlyListeners: number | null = null;
   if (match && match.length > 0) {
-    const spotifyMonthlyListeners = parseInt(match[1].replace(/\D/g, ''), 10);
+    spotifyMonthlyListeners = parseInt(match[1].replace(/\D/g, ''), 10);
+  } else if (data.includes(' 0 monthly listeners')) {
+    spotifyMonthlyListeners = 0;
+  }
+
+  if (spotifyMonthlyListeners != null) {
     await prismaClient.bandApplication.update({
       data: {
         spotifyMonthlyListeners,
