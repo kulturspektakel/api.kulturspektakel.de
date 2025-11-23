@@ -20,7 +20,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
 
   const data = await res.text();
   const match = data.match(
-    /data-testid=\"monthly-listeners-label\".+>([0-9,]+) monthly/,
+    /data-testid=\"monthly-listeners-label\">([0-9,]+) monthly/,
   );
 
   if (match && match.length > 0) {
