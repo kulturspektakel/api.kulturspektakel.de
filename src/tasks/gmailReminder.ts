@@ -58,10 +58,16 @@ export default async function (
     version: 'v1',
   });
 
-  const message = await gmail.users.messages.get({
-    id: messageId,
-    userId: account,
-  });
+  const message = await gmail.users.messages
+    .get({
+      id: messageId,
+      userId: account,
+    })
+    .catch(() => null);
+
+  if (!message) {
+    return;
+  }
 
   const threadId = message.data.threadId;
 
