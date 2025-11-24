@@ -24,6 +24,7 @@ import badgeAwarded from './badgeAwarded';
 import createMembershipApplication from './createMembershipApplication';
 import sendEmail from './sendEmail';
 import createBandApplication from './createBandApplication';
+import {Pool} from 'pg';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -57,7 +58,15 @@ export async function restart(reason?: string) {
 
 async function startRunner() {
   runner = await run({
-    connectionString: env.DATABASE_URL,
+    pgPool: new Pool({
+      connectionString: process.env.DATABASE_URL,
+      max: 5,
+      idleTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 5_000,
+      keepAlive: true,
+      keepAliveInitialDelayMillis: 10_000,
+      log: console.log,
+    }),
     concurrency: 5,
     taskList: taskList as any,
     noPreparedStatements: true,
