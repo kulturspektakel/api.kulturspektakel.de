@@ -1,5 +1,6 @@
 import {EventEmitter} from 'events';
 import {WorkerEvents} from 'graphile-worker';
+import {restart} from '.';
 
 const emitter: WorkerEvents = new EventEmitter();
 
@@ -13,6 +14,14 @@ const emitter: WorkerEvents = new EventEmitter();
   'worker:fatalError' as const,
   'gracefulShutdown' as const,
   'forcefulShutdown' as const,
-].map((e) => emitter.addListener(e, () => console.error('worker_log', e)));
+].map((e) =>
+  emitter.addListener(e, async (data) => {
+    console.error(`[graphile-worker] ${e}}`, data);
+    if (e === 'gracefulShutdown' || e === 'forcefulShutdown') {
+      console.error(`[graphile-worker] triggering restart after ${e}`);
+      await restart(e);
+    }
+  }),
+);
 
 export default emitter;

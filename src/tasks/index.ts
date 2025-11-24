@@ -4,7 +4,6 @@ import {
   WorkerUtils,
   TaskSpec,
   Runner,
-  RunnerOptions,
 } from 'graphile-worker';
 import env from '../utils/env';
 import facebookLikes from './facebookLikes';
@@ -45,34 +44,37 @@ const taskList = {
   createBandApplication,
 };
 
-const runnerOptions: RunnerOptions = {
-  connectionString: env.DATABASE_URL,
-  concurrency: 5,
-  taskList: taskList as any,
-  noPreparedStatements: true,
-  events,
-  crontab: [
-    '*/5 * * * * nuclinoUpdateMessage ?max=1&jobKey=nuclinoUpdateMessage&jobKeyMode=replace',
-    `0 0 * * * gmailSubscription ?id=booking&fill=1d&max=3 {"account":"booking@kulturspektakel.de"}`,
-    `0 0 * * * gmailSubscription ?id=info&fill=1d&max=3 {"account":"info@kulturspektakel.de"}`,
-    `0 0 * * * gmailSubscription ?id=lager&fill=1d&max=3 {"account":"lager@kulturspektakel.de"}`,
-  ].join('\n'),
-};
-
 let runner: Runner | null = null;
 
-export async function restart() {
-  console.log('runner_error: restarting');
+export async function restart(reason?: string) {
+  console.log(`[graphile-worker]: restarting ${reason}`);
   try {
     await runner?.stop();
   } catch (e) {}
   await sleep(5000);
-  await run(runnerOptions);
+  await startRunner();
 }
 
-export default async function () {
-  runner = await run(runnerOptions);
+async function startRunner() {
+  runner = await run({
+    connectionString: env.DATABASE_URL,
+    concurrency: 5,
+    taskList: taskList as any,
+    noPreparedStatements: true,
+    events,
+    crontab: [
+      '*/5 * * * * nuclinoUpdateMessage ?max=1&jobKey=nuclinoUpdateMessage&jobKeyMode=replace',
+      `0 0 * * * gmailSubscription ?id=booking&fill=1d&max=3 {"account":"booking@kulturspektakel.de"}`,
+      `0 0 * * * gmailSubscription ?id=info&fill=1d&max=3 {"account":"info@kulturspektakel.de"}`,
+      `0 0 * * * gmailSubscription ?id=lager&fill=1d&max=3 {"account":"lager@kulturspektakel.de"}`,
+    ].join('\n'),
+  });
+  if (runner) {
+    console.log('[graphile-worker]: started');
+  }
 }
+
+export default startRunner;
 
 type Payload<T extends keyof typeof taskList> = Parameters<
   (typeof taskList)[T]
