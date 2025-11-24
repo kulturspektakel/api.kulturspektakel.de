@@ -57,17 +57,16 @@ export async function restart(reason?: string) {
 }
 
 async function startRunner() {
-  const pgPool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    max: 5,
-    idleTimeoutMillis: 30_000,
-    connectionTimeoutMillis: 10_000,
-    keepAlive: true,
-    keepAliveInitialDelayMillis: 10_000,
-  });
-
+  console.log('[graphile-worker]: attempting to start');
   runner = await run({
-    pgPool,
+    pgPool: new Pool({
+      connectionString: process.env.DATABASE_URL,
+      max: 5,
+      idleTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 10_000,
+      keepAlive: true,
+      keepAliveInitialDelayMillis: 10_000,
+    }),
     concurrency: 5,
     taskList: taskList as any,
     noPreparedStatements: true,
@@ -81,6 +80,8 @@ async function startRunner() {
   });
   if (runner) {
     console.log('[graphile-worker]: started');
+  } else {
+    console.error('[graphile-worker]: failed to start');
   }
 }
 
