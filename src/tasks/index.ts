@@ -62,7 +62,7 @@ async function startRunner() {
     pgPool: new Pool({
       connectionString: process.env.DATABASE_URL,
       max: 5,
-      idleTimeoutMillis: 30_000,
+      idleTimeoutMillis: 0,
       connectionTimeoutMillis: 10_000,
       keepAlive: true,
       keepAliveInitialDelayMillis: 10_000,
