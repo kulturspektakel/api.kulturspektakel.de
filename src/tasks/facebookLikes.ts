@@ -14,21 +14,33 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
   }
 
   const fbid = extractFbid(application.facebook);
+  if (!fbid) {
+    return;
+  }
   const res = await fetch(
-    `https://graph.facebook.com/v16.0/${fbid}?fields=followers_count&access_token=${env.FACEBOOK_ACCESS_TOKEN}`,
+    `https://graph.facebook.com/v24.0/${fbid}?fields=followers_count&access_token=${env.FACEBOOK_ACCESS_TOKEN}`,
   );
 
-  if (!res.ok) {
+  const data:
+    | {
+        followers_count?: number;
+      }
+    | {
+        error: {
+          message: string;
+          type: string;
+          code: number;
+          error_subcode: number;
+        };
+      } = await res.json().catch(() => null);
+
+  if (!data) {
     const text = await res.text();
     logger.error(text);
     throw new Error(`Facebook API error: ${text}`);
   }
 
-  const data: {
-    followers_count?: number;
-  } = await res.json();
-
-  if (data.followers_count != null) {
+  if (res.ok && 'followers_count' in data) {
     await prismaClient.bandApplication.update({
       data: {
         facebookLikes: data.followers_count,
@@ -37,6 +49,13 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
         id,
       },
     });
+  } else if (
+    'error' in data &&
+    data.error.code === 100 &&
+    data.error.error_subcode === 33
+  ) {
+    // Private profile
+    return;
   } else {
     logger.error(JSON.stringify(res));
     throw new Error(`Facebook API error: ${res}`);
