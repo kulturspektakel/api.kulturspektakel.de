@@ -24,4 +24,11 @@ const emitter: WorkerEvents = new EventEmitter();
   }),
 );
 
+emitter.addListener('job:complete', async ({job}) => {
+  const duration = new Date().getTime() - job.run_at.getTime();
+  console.log(
+    `[graphile-worker] job:complete ${job.task_identifier} ${job.id} duration=${Math.round(duration / 1000)}s `,
+  );
+});
+
 export default emitter;
