@@ -2,57 +2,63 @@ import {expect, test, describe} from 'bun:test';
 import {extractFbid} from './facebookLikes';
 
 describe('extractFbid', () => {
-  test('direct ID', () => {
-    expect(extractFbid('https://www.facebook.com/1234567890')).toBe(
+  test('direct ID', async () => {
+    expect(await extractFbid('https://www.facebook.com/1234567890')).toBe(
       '1234567890',
     );
   });
 
-  test('vanity url', () => {
-    expect(extractFbid('https://www.facebook.com/kulturspektakel')).toBe(
+  test('vanity url', async () => {
+    expect(await extractFbid('https://www.facebook.com/kulturspektakel')).toBe(
       'kulturspektakel',
     );
   });
 
-  test('page name with ID', () => {
+  test('page name with ID', async () => {
     expect(
-      extractFbid('https://www.facebook.com/kulturspektakel-123456789'),
+      await extractFbid('https://www.facebook.com/kulturspektakel-123456789'),
     ).toBe('123456789');
   });
 
-  test('pages/category', () => {
+  test('pages/category', async () => {
     expect(
-      extractFbid('https://www.facebook.com/pages/category/kulturspektakel'),
+      await extractFbid(
+        'https://www.facebook.com/pages/category/kulturspektakel',
+      ),
     ).toBe('kulturspektakel');
   });
 
-  test('people', () => {
+  test('people', async () => {
     expect(
-      extractFbid('https://www.facebook.com/people/kulturspektakel/123456789'),
+      await extractFbid(
+        'https://www.facebook.com/people/kulturspektakel/123456789',
+      ),
     ).toBe('123456789');
   });
 
-  test('profile.php?id=', () => {
+  test('profile.php?id=', async () => {
     expect(
-      extractFbid('https://www.facebook.com/profile.php?id=1234567890'),
+      await extractFbid('https://www.facebook.com/profile.php?id=1234567890'),
     ).toBe('1234567890');
   });
 
-  test('with periods and numbers', () => {
-    expect(extractFbid('https://www.facebook.com/kult.ur.sp.ek.tak.el.3')).toBe(
-      'kult.ur.sp.ek.tak.el.3',
-    );
+  test('with periods and numbers', async () => {
+    expect(
+      await extractFbid('https://www.facebook.com/kult.ur.sp.ek.tak.el.3'),
+    ).toBe('kult.ur.sp.ek.tak.el.3');
   });
 
-  test('name with ID', () => {
+  test('name with ID', async () => {
     expect(
-      extractFbid('https://m.facebook.com/p/Blues-Control-100063225460167'),
+      await extractFbid(
+        'https://m.facebook.com/p/Blues-Control-100063225460167',
+      ),
     ).toBe('100063225460167');
   });
 
-  test('name with ID', () => {
+  test('name with ID', async () => {
     expect(
-      extractFbid(
+      await extractFbid(
         'https://facebook.com/pages/Sleepwalkers-Station/48223376746',
       ),
     ).toBe('48223376746');

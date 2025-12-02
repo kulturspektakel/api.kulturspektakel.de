@@ -13,7 +13,7 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
     return;
   }
 
-  const fbid = extractFbid(application.facebook);
+  const fbid = await extractFbid(application.facebook);
   if (!fbid) {
     return;
   }
@@ -57,12 +57,12 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
     // Private profile
     return;
   } else {
-    logger.error(JSON.stringify(res));
-    throw new Error(`Facebook API error: ${res}`);
+    const text = await res.text();
+    throw new Error(`Facebook API error: ${text}`);
   }
 }
 
-export function extractFbid(uri: string) {
+export async function extractFbid(uri: string, followRedirects = true) {
   const url = new URL(uri);
 
   if (
@@ -81,6 +81,13 @@ export function extractFbid(uri: string) {
 
   if ((path[1] === 'pages' || path[1] === 'people') && path.length > 3) {
     return path[3];
+  }
+  if (path[1] === 'share' && followRedirects) {
+    const res = await fetch(uri, {
+      method: 'HEAD',
+      redirect: 'follow',
+    });
+    return await extractFbid(res.url, false);
   }
 
   let slug = path[1];
