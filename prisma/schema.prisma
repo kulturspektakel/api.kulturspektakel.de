@@ -292,11 +292,12 @@ model Nonce {
 }
 
 model NonceRequest {
-  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  expiresAt    DateTime
-  createdForId String?
-  createdFor   Viewer?            @relation(fields: [createdForId], references: [id])
-  status       NonceRequestStatus @default(Pending)
+  id              String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  expiresAt       DateTime
+  createdForId    String?
+  createdForEmail String?
+  createdFor      Viewer?            @relation(fields: [createdForId], references: [id])
+  status          NonceRequestStatus @default(Pending)
 }
 
 model GmailReminders {

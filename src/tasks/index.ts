@@ -25,6 +25,7 @@ import createMembershipApplication from './createMembershipApplication';
 import sendEmail from './sendEmail';
 import createBandApplication from './createBandApplication';
 import {Pool} from 'pg';
+import createNonceRequest from './createNonceRequest';
 
 const taskList = {
   nuclinoUpdateMessage,
@@ -43,6 +44,7 @@ const taskList = {
   createMembershipApplication,
   sendEmail,
   createBandApplication,
+  createNonceRequest,
 };
 
 let runner: Runner | null = null;
