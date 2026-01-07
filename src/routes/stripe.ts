@@ -10,9 +10,17 @@ import {DonationSource} from '../../types/prisma/enums';
 const app = new Hono();
 
 app.post('/webhook', async (c) => {
+  // Get raw body as string - Stripe needs the exact raw bytes for signature verification
+  const rawBody = await c.req.raw.text();
+  const signature = c.req.header('stripe-signature');
+
+  if (!signature) {
+    return c.json({error: 'No stripe signature header'}, {status: 400});
+  }
+
   const event = await stripe.webhooks.constructEventAsync(
-    await c.req.text(),
-    c.req.header('stripe-signature')!,
+    rawBody,
+    signature,
     env.STRIPE_SIGNING_SECRET,
   );
 
