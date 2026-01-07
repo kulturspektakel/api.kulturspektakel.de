@@ -10,8 +10,8 @@ import {DonationSource} from '../../types/prisma/enums';
 const app = new Hono();
 
 app.post('/webhook', async (c) => {
-  // Get raw body as string - Stripe needs the exact raw bytes for signature verification
-  const rawBody = await c.req.raw.text();
+  // Get raw body as Buffer - Stripe needs the exact raw bytes for signature verification
+  const rawBody = await c.req.raw.arrayBuffer();
   const signature = c.req.header('stripe-signature');
 
   if (!signature) {
@@ -19,7 +19,7 @@ app.post('/webhook', async (c) => {
   }
 
   const event = await stripe.webhooks.constructEventAsync(
-    rawBody,
+    Buffer.from(rawBody),
     signature,
     env.STRIPE_SIGNING_SECRET,
   );
