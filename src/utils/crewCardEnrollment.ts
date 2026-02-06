@@ -157,9 +157,22 @@ export async function assignCrewCard(
     throw new Error('No user provided');
   }
 
+  const cardIdBytes = new Uint8Array(
+    cardId.split(':').map((part) => parseInt(part, 16)),
+  );
+
+  const previousCards = await prisma.crewCard.updateManyAndReturn({
+    where: {
+      ...(viewerId ? {viewerId} : {nickname}),
+      suspended: {not: true},
+      id: {not: cardIdBytes},
+    },
+    data: {suspended: true},
+  });
+
   const crewCard = await prisma.crewCard.update({
     where: {
-      id: new Uint8Array(cardId.split(':').map((part) => parseInt(part, 16))),
+      id: cardIdBytes,
     },
     data: {
       viewerId,
@@ -178,6 +191,12 @@ export async function assignCrewCard(
     },
   );
 
+  let text = `<@${assignedByUserId}> hat die CrewCard \`${cardId}\` ${slackUserId ? `<@${slackUserId}>` : `_${nonSlackUser}_`} zugeordnet. Gültig bis einschließlich ${formattedDate}.`;
+
+  if (previousCards.length > 0) {
+    text += '\nDie alte CrewCard für diese Person wurde deaktiviert.';
+  }
+
   await fetch(responseUrl, {
     method: 'post',
     headers: {
@@ -191,7 +210,7 @@ export async function assignCrewCard(
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<@${assignedByUserId}> hat die CrewCard \`${cardId}\` ${slackUserId ? `<@${slackUserId}>` : `_${nonSlackUser}_`} zugeordnet. Gültig bis einschließlich ${formattedDate}.`,
+            text,
           },
         },
       ],
