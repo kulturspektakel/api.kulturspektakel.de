@@ -3,7 +3,10 @@ import {JobHelpers} from 'graphile-worker';
 import {slackApiRequest, SlackApiUser} from '../utils/slack';
 import {upsertViewer} from '../utils/upsertViewer';
 
-export default async function ({id}: {id: string}, {logger}: JobHelpers) {
+export default async function (
+  {id, email}: {id: string; email: string},
+  {logger}: JobHelpers,
+) {
   const nonceRequest = await prismaClient.nonceRequest.findUniqueOrThrow({
     where: {
       id,
@@ -12,12 +15,20 @@ export default async function ({id}: {id: string}, {logger}: JobHelpers) {
 
   const slackUser = await slackApiRequest<{
     user: SlackApiUser;
-  }>(`users.lookupByEmail?email=${nonceRequest.createdForEmail}`);
+  }>(`users.lookupByEmail?email=${email}`);
 
   if (!slackUser.ok) {
     return null;
   }
-  await upsertViewer(slackUser.user.id, 'createNonceRequest');
+  const viewer = await upsertViewer(slackUser.user.id, 'createNonceRequest');
+  await prismaClient.nonceRequest.update({
+    where: {
+      id,
+    },
+    data: {
+      createdForId: viewer.id,
+    },
+  });
 
   await slackApiRequest('chat.postMessage', {
     channel: slackUser.user.id,
