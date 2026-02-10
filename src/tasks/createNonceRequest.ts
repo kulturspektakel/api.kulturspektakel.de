@@ -52,7 +52,7 @@ export default async function (
               text: 'Bestätigen',
             },
             action_id: 'approve-nonce-request',
-            value: nonceRequest,
+            value: nonceRequest.id,
           },
           {
             type: 'button',
@@ -62,7 +62,7 @@ export default async function (
               text: 'Ablehnen',
             },
             action_id: 'reject-nonce-request',
-            value: nonceRequest,
+            value: nonceRequest.id,
           },
         ],
       },
