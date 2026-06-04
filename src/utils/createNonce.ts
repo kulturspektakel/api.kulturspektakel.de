@@ -1,5 +1,4 @@
 import {add} from 'date-fns';
-import {scheduleTask} from '../tasks';
 import prismaClient from './prismaClient';
 import {ApiError} from './errorReporting';
 import {NonceRequestStatus} from '../../types/prisma/enums';
@@ -17,14 +16,8 @@ export default async function createNonce(createdForId?: string | null) {
       createdForId,
     },
   });
-  await scheduleTask(
-    'nonceInvalidate',
-    {nonce: data.nonce},
-    {
-      runAt: expiresAt,
-      maxAttempts: 1,
-    },
-  );
+  // Nonces are validated against `expiresAt`; expired rows are no longer
+  // garbage-collected here (the nonceInvalidate worker task was removed).
   return data.nonce;
 }
 
@@ -42,14 +35,7 @@ export async function createNonceRequest(userId: string) {
     },
   });
 
-  await scheduleTask(
-    'nonceRequestInvalidate',
-    {nonceRequest: nonceRequest.id},
-    {
-      runAt: expiresAt,
-      maxAttempts: 1,
-    },
-  );
-
+  // Validated against `expiresAt`; expired rows are no longer
+  // garbage-collected here (the nonceRequestInvalidate worker task was removed).
   return nonceRequest.id;
 }

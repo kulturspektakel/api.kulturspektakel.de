@@ -2,14 +2,10 @@ import {Hono} from 'hono';
 import schema from './pothos/schema';
 import env from './utils/env';
 import auth from './routes/auth';
-import tasks from './tasks';
-import kultCash from './routes/kultCash';
 import {ApiError} from './utils/errorReporting';
 import saml from './routes/saml';
 import owntracks from './routes/owntracks';
 import slack from './routes/slack';
-import stripe from './routes/stripe';
-import tasksRoute from './routes/tasks';
 import {createYoga} from 'graphql-yoga';
 import {Context} from './context';
 import {sentry} from '@hono/sentry';
@@ -17,7 +13,6 @@ import {serveStatic} from 'hono/bun';
 import {cors} from 'hono/cors';
 import kultWiki from './kult.wiki';
 import {Toucan} from 'toucan-js';
-import {sleep} from 'graphile-worker/dist/lib';
 
 const app = new Hono<{Variables: Context & {sentry: Toucan}}>();
 
@@ -56,11 +51,8 @@ app.use(
 
 // Routes
 app.route('/slack', slack);
-app.route('/tasks', tasksRoute);
 app.route('/saml', saml);
 app.route('/owntracks', owntracks);
-app.route('/$$$', kultCash);
-app.route('/stripe', stripe);
 app.use('/public/*', serveStatic({root: 'artifacts'}));
 app.on(['GET', 'POST'], '/graphql', async (c) =>
   createYoga({
@@ -94,5 +86,3 @@ app.onError(async (error, c) => {
 
 Bun.serve({port: env.PORT, fetch: app.fetch});
 console.log(`🚀 Server ready at http://localhost:${env.PORT}`);
-
-await tasks();
